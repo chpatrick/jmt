@@ -1,0 +1,95 @@
+package jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.panels;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
+
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
+import jmt.engine.jwat.workloadAnalysis.chart.DispFuzzyMatrix;
+import jmt.engine.jwat.workloadAnalysis.chart.DispKMeanMatrix;
+import jmt.engine.jwat.workloadAnalysis.utils.JavaWatColor;
+import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
+
+public class DispersionFuzzyPanel extends JPanel {
+	private ModelWorkloadAnalysis model;
+	private int clustering;
+	private int clusters;
+	private DispFuzzyMatrix matrix;
+	private boolean redraw = true;
+	public DispersionFuzzyPanel(ModelWorkloadAnalysis model,int clustering,int clusters){
+		this.setLayout(new BorderLayout());
+		this.model = model;
+		this.clustering = clustering;
+		this.clusters = clusters;
+		matrix = new DispFuzzyMatrix(model,-1);
+		this.add(matrix,BorderLayout.CENTER);
+		matrix.setClustering(clustering,clusters);
+		this.add(new JScrollPane(new myPanel(),JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),BorderLayout.EAST);
+	}
+	public DispFuzzyMatrix getMatrix(){
+		return matrix;
+	}
+	public void setClustering(int cluster){
+		clusters = cluster;
+		redraw = true;
+	}
+	private class myPanel extends JPanel{
+		private int START_SQUARE_H = 5;
+		private int START_SQUARE_W = 5;
+		private int SQUARE_L = 10;
+		private int LINE_H = 10;
+		private BufferedImage legenda;
+		public myPanel(){
+			this.setLayout(new FlowLayout());
+			setPreferredSize(new Dimension(110,(SQUARE_L + LINE_H) * (clusters+4)));
+			legenda = new BufferedImage(110,(SQUARE_L + LINE_H) * (clusters+4),BufferedImage.TYPE_INT_RGB);
+		}
+		public void paint(Graphics g1){
+			if(redraw){
+				redraw = false;
+				Graphics2D g = (Graphics2D) legenda.getGraphics();
+				g.setColor(Color.WHITE);
+				g.fillRect(0,0,110,(SQUARE_L + LINE_H) * (clusters + 4));
+				
+				for(int i = 0 ; i <= (clusters + 3);i++){
+					g.setColor(JavaWatColor.getColor((i)));
+					if(i == 0){
+						g.fillRect(START_SQUARE_W,
+								(START_SQUARE_H  + (SQUARE_L + LINE_H) * (i)),
+								SQUARE_L,SQUARE_L);
+						g.setColor(Color.BLACK);
+						g.drawString("Not assigned",
+								START_SQUARE_W + SQUARE_L + SQUARE_L,
+								(START_SQUARE_H  + (SQUARE_L + LINE_H) * (i) + LINE_H));
+						continue;
+					}
+					if(i == 1){
+						g.fillRect(START_SQUARE_W,
+								(START_SQUARE_H  + (SQUARE_L + LINE_H) * (i)),
+								SQUARE_L,SQUARE_L);
+						g.setColor(Color.BLACK);
+						g.drawString("Multiple",
+								START_SQUARE_W + SQUARE_L + SQUARE_L,
+								(START_SQUARE_H  + (SQUARE_L + LINE_H) * (i) + LINE_H));
+						continue;
+					}
+					g.fillRect(START_SQUARE_W,
+							(START_SQUARE_H  + (SQUARE_L + LINE_H) * (i)),
+							SQUARE_L,SQUARE_L);
+					g.setColor(Color.BLACK);
+					g.drawString("Cluster " + (i-1),
+							START_SQUARE_W + SQUARE_L + SQUARE_L,
+							(START_SQUARE_H  + (SQUARE_L + LINE_H) * (i) + LINE_H));
+				}
+			}
+			g1.drawImage(legenda,0,0,null);
+		}
+	}
+
+}

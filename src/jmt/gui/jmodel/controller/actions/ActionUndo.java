@@ -1,0 +1,65 @@
+/**    
+  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+  * (at your option) any later version.
+
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+
+  * You should have received a copy of the GNU General Public License
+  * along with this program; if not, write to the Free Software
+  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  */
+  
+package jmt.gui.jmodel.controller.actions;
+
+import jmt.gui.jmodel.controller.Mediator;
+
+import javax.swing.*;
+import javax.swing.undo.UndoManager;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+/**
+
+ * @author Conti Andrea
+ * Date: 27-ago-2003
+ * Time: 23.55.04
+
+ */
+
+/**
+ * A class representing an "undo" action.
+ * @see jmt.gui.jmodel.controller.actions.AbstractUndoRedoAction
+ */
+public class ActionUndo extends AbstractUndoRedoAction {
+
+	protected UndoManager um;
+
+	public ActionUndo(Mediator mediator, UndoManager um) {
+		super("Undo", mediator);
+		this.um = um;
+		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_U));
+		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Z, KeyEvent.CTRL_MASK));
+		update();
+	}
+
+	public void actionPerformed(ActionEvent e) {
+        mediator.undo();
+		updateAll();
+	}
+
+	/**
+	 * Update the state (name & enabled) of this instance
+	 */
+	public void update() {
+		setEnabled(um.canUndo());
+		putValue(SHORT_DESCRIPTION, um.getUndoPresentationName());
+	}
+
+}

@@ -1,0 +1,84 @@
+%
+% This document is free; you can redistribute it and/or modify
+% it under the terms of the GNU General Public License as published by
+% the Free Software Foundation; either version 2 of the License, or
+% (at your option) any later version.
+%
+% This document is distributed in the hope that it will be useful, but
+% WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+% General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this document; if not, write to the Free Software
+% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+% 02110-1301, USA.
+%
+% Author: Bertoli Marco
+%
+\chapter{Basic Definitions}
+\label{cha:glossary}
+\begin{description}
+\item[Customer :] or \emph{job} or \emph{transaction} is the element that will require
+service from our network. For example, it can be an \emph{http
+request}, a \emph{database query}, or an \emph{ftp download
+command}.
+\item[Class :] a group of elements that are statistically equal.
+The customers of a class have the same workload intensity and the
+same average service demands.
+\item[Station :] or service center, it represents a system resource.
+Customers arrive at the station and then, if necessary, wait in
+queue, receive service from server then depart.
+\item[Workload Intensity ($\lambda$ or $N$) :] rate at which customers of a
+given class arrive at the system.  Each class has its own workload
+intensity. If a class is closed the constant \emph{number of
+customers} $N$ that are present in the system must be provided, if a
+class is open the \emph{arrival rate} $\lambda$ of customers to the
+system is requested.
+\item[Population Mix ($\beta_i$) :] the ratio between \emph{number of
+customers} of closed class $i$ and the total number of customers in
+the system: $\beta_i = N_i / \sum_k N_k$
+\item[Service Time ($S_k$):] average time of service required at
+each visit to resource $k$; it is computed as the ratio of the busy
+time to the number of system completions. It is an alternatively way
+to describe the service requirement.
+\item[Visit (number of -) ($V_k$) :] average number of visits that
+a customer makes at station $k$ during a complete execution; it is
+computed as the ratio of the number of completions at resource k to
+the number of system completions. If resource $k$ is a delay center
+representing a client station, it is a convention assign a unitary
+value to number of visits to this station.
+\item[Service Demand ($D_k$) :] average service requirement of
+a customer, that is the total amount of service required  by a
+complete execution at resource $k$. In the model it is necessary to
+provide separate service demand for each pair service center-class.
+It is given by $D_k = V_k * S_k$.
+\item[Throughput ($X_k$) :] rate at which customers are executed
+by station $k$, that is the number of completions in a time unit.
+\item[Queue length ($Q_k$) :] average number of customers at station
+$k$, either waiting in queue and receiving service.
+\item[Response Time ($R_k$):] average time interval between the instant
+a customer arrives at station $k$ and the instants it terminate its
+servicing.
+\item[Residence Time ($W_k$) :] average
+time that a customer spent at station $k$ during a complete
+interaction with the system. It includes time spent queueing and
+time spent receiving service. It does not correspond to
+\emph{Response Time} $R_k$ of a station since $W_k = R_k * V_k$.
+\item[Utilization ($U_k$) :] proportion of time in which the station $k$ is busy or, in the case
+of a delay center, is the average  number of  customers in the
+station (see Little Law \cite{Little}).
+\item[System Throughput ($X$) :] rate at which customers perform
+an entire interaction with the system. This is the aggregate measure
+of \emph{Throughput}: $X = X_k / V_k$.
+\item[System Response Time ($R$):] correspond to the intuitive
+notion of response time perceived by users, that is, the time
+interval between the instant of the submission of a request to a
+system and the instant the corresponding reply arrives completely at
+the user. It is the aggregate measure of \emph{Residence Times}: $R
+= \sum_k W_k$.
+\item[Average number of customers in the system ($N$):] the average
+number of customer in the system, either waiting in queue or
+receiving service. It is the aggregate measure of \emph{Queue
+Length}: $N = \sum_k Q_k$.
+\end{description}

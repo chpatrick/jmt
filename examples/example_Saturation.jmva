@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<model xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="JMTmodel.xsd">
+	<description><![CDATA[This is an example of a model containing open classes that cannot be solved because one or more resources are in saturation.
+
+This means that the system has no sufficent processing capacity to process the arriving requests.
+
+
+
+To solve the model, arrival rates or service demands of the open classes must be decreased.
+
+]]></description>
+	<parameters>
+		<classes number="1">
+			<openclass name="Class1" rate="1.5"/>
+		</classes>
+		<stations number="2">
+			<listation name="Station1">
+				<servicetimes>
+					<servicetime customerclass="Class1">1.0</servicetime>
+				</servicetimes>
+				<visits>
+					<visit customerclass="Class1">1.0</visit>
+				</visits>
+			</listation>
+			<listation name="Station2">
+				<servicetimes>
+					<servicetime customerclass="Class1">2.0</servicetime>
+				</servicetimes>
+				<visits>
+					<visit customerclass="Class1">1.0</visit>
+				</visits>
+			</listation>
+		</stations>
+	</parameters>	
+</model>
