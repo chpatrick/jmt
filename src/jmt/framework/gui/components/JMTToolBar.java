@@ -184,7 +184,6 @@ public class JMTToolBar extends JToolBar {
     
     /**
      * Adds a new button toggle to this toolbar.
-     * @param name name of the button to be added (can be used to retrive it, must be unique)
      * @param action action associated to the button
      * @param group identifier of button group. Each button belonging to the same group cannot be pressed together.
      * Groups are created here, if group is less than zero means no grouping.
@@ -197,8 +196,6 @@ public class JMTToolBar extends JToolBar {
     /**
      * Adds a new button toggle to this toolbar. This button has no group.
      * @param action action associated to the button
-     * @param group identifier of button group. Each button belonging to the same group cannot be pressed together.
-     * Groups are created here, if group is less than zero means no grouping.
      * @return created button
      */
     public JToggleButton addToggleButton(AbstractJMTAction action){
@@ -248,8 +245,9 @@ public class JMTToolBar extends JToolBar {
             // Removes listener (if any)
             if (data.listener != null)
                 data.listener.remove();
+            return data.button;
         }
-        return data.button;
+        return null;
     }
     
     /**
@@ -323,7 +321,7 @@ public class JMTToolBar extends JToolBar {
     
     /**
      * Clicks a given button
-     * @param name action of the button to be clicked
+     * @param action action of the button to be clicked
      */
     public void clickButton(AbstractJMTAction action) {
         AbstractButton button = getButton(action);
@@ -358,7 +356,7 @@ public class JMTToolBar extends JToolBar {
     /**
      * Populates this toolbar reading all properties from specified actions. null values 
      * are used to add a separator.
-     * @param actions a collection of AbstractJMTAction with all actions to be added
+     * @param abstractJMTactions a collection of AbstractJMTAction with all actions to be added
      * @return an ArrayList with all added objects (each element is instanceof AbstractButton)
      * @see AbstractJMTAction
      */
@@ -378,14 +376,14 @@ public class JMTToolBar extends JToolBar {
     /**
      * Populates this toolbar reading all properties from specified actions. null values 
      * are used to add a separator.
-     * @param actions an array of AbstractJMTAction with all actions to be added
+     * @param abstractJMTactions an array of AbstractJMTAction with all actions to be added
      * @return an ArrayList with all added objects (each element is instanceof AbstractButton)
      * @see AbstractJMTAction
      */
     public ArrayList populateToolbar(AbstractJMTAction[] abstractJMTactions) {
         ArrayList ret = new ArrayList();
         for (int i=0; i< abstractJMTactions.length; i++) {
-            AbstractJMTAction action = (AbstractJMTAction) abstractJMTactions[i];
+            AbstractJMTAction action = abstractJMTactions[i];
             if (action == null) {
                 addSeparator();
             } else {
