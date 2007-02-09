@@ -40,7 +40,7 @@ public interface CommonConstants {
     public final static String STATION_TYPE_SOURCE = "Source";
     public final static String STATION_TYPE_SINK = "Sink";
     public final static String STATION_TYPE_TERMINAL = "Terminal";
-    public final static String STATION_TYPE_ROUTER = "LoadSplitter";
+    public final static String STATION_TYPE_ROUTER = "RoutingStation";
     public final static String STATION_TYPE_DELAY = "Delay";
     public final static String STATION_TYPE_SERVER = "Server";
     public final static String STATION_TYPE_FORK = "Fork";

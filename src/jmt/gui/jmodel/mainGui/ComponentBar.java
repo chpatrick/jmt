@@ -18,12 +18,12 @@
   
 package jmt.gui.jmodel.mainGui;
 
-import java.lang.reflect.Field;
-
 import jmt.framework.gui.components.JMTToolBar;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.jmodel.controller.Mediator;
 import jmt.gui.jmodel.controller.actions.SetInsertState;
+
+import java.lang.reflect.Field;
 
 /**
  * <p>Title: Component Toolbar</p>
@@ -71,7 +71,7 @@ public class ComponentBar extends JMTToolBar {
         for (int i=0; i<fields.length; i++)
             if (fields[i].getName().startsWith("STATION_TYPE_")) {
                 // Checks for existance of graphic component
-                String name = (String) fields[i].get(null)  + "Cell";
+                String name = ((String) fields[i].get(null)).replaceAll(" ","")  + "Cell";
                 try {
                     boolean enabled = Class.forName(path + name).getDeclaredField("canBePlaced").getBoolean(null);
                     if (enabled)

@@ -32,7 +32,7 @@ import javax.swing.*;
  *         Date: 20-feb-2006
  *         Time: 17.53.21
  */
-public class LoadSplitterCell extends JmtCell {
+public class RoutingStationCell extends JmtCell {
     // Disables this component
     public static final boolean canBePlaced = true;
 
@@ -46,8 +46,8 @@ public class LoadSplitterCell extends JmtCell {
      * @param userObject an Object provided by the user that constitutes
      *                   the cell's data
      */
-    public LoadSplitterCell(Object userObject) {
-        super(LoadSplitterCell.ICON, userObject);
+    public RoutingStationCell(Object userObject) {
+        super(RoutingStationCell.ICON, userObject);
         type = TERMINAL;
     }
 
