@@ -18,53 +18,15 @@
 
 package jmt.gui.jmodel.controller;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Graphics2D;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
 import jmt.framework.gui.components.JMTMenuBar;
 import jmt.framework.gui.components.JMTToolBar;
 import jmt.framework.gui.listeners.MenuAction;
 import jmt.gui.common.controller.DispatcherThread;
 import jmt.gui.common.controller.ModelChecker;
 import jmt.gui.common.controller.PADispatcherThread;
-import jmt.gui.common.definitions.BlockingRegionDefinition;
-import jmt.gui.common.definitions.GuiInterface;
-import jmt.gui.common.definitions.ModelConverter;
-import jmt.gui.common.definitions.PAResultsModel;
-import jmt.gui.common.definitions.ResultsModel;
-import jmt.gui.common.definitions.SimulationDefinition;
+import jmt.gui.common.definitions.*;
 import jmt.gui.common.editors.DefaultsEditor;
-import jmt.gui.common.panels.AboutDialogFactory;
-import jmt.gui.common.panels.BlockingRegionParameterPanel;
-import jmt.gui.common.panels.MeasurePanel;
-import jmt.gui.common.panels.ResultsWindow;
-import jmt.gui.common.panels.SimulationPanel;
-import jmt.gui.common.panels.StationParameterPanel;
-import jmt.gui.common.panels.WarningWindow;
+import jmt.gui.common.panels.*;
 import jmt.gui.common.panels.parametric.PAProgressWindow;
 import jmt.gui.common.panels.parametric.PAResultsWindow;
 import jmt.gui.common.panels.parametric.ParametricAnalysisPanel;
@@ -74,47 +36,8 @@ import jmt.gui.common.xml.XMLWriter;
 import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.ExactWizard;
 import jmt.gui.jmodel.DialogFactory;
-import jmt.gui.jmodel.JGraphMod.BlockingRegion;
-import jmt.gui.jmodel.JGraphMod.CellComponent;
-import jmt.gui.jmodel.JGraphMod.CellFactory;
-import jmt.gui.jmodel.JGraphMod.InputPort;
-import jmt.gui.jmodel.JGraphMod.JmtCell;
-import jmt.gui.jmodel.JGraphMod.JmtEdge;
-import jmt.gui.jmodel.JGraphMod.JmtGraphConstants;
-import jmt.gui.jmodel.JGraphMod.JmtJGraph;
-import jmt.gui.jmodel.JGraphMod.OutputPort;
-import jmt.gui.jmodel.controller.actions.About;
-import jmt.gui.jmodel.controller.actions.AbstractJmodelAction;
-import jmt.gui.jmodel.controller.actions.ActionCopy;
-import jmt.gui.jmodel.controller.actions.ActionCut;
-import jmt.gui.jmodel.controller.actions.ActionDelete;
-import jmt.gui.jmodel.controller.actions.ActionPaste;
-import jmt.gui.jmodel.controller.actions.ActionRedo;
-import jmt.gui.jmodel.controller.actions.ActionUndo;
-import jmt.gui.jmodel.controller.actions.AddBlockingRegion;
-import jmt.gui.jmodel.controller.actions.CloseModel;
-import jmt.gui.jmodel.controller.actions.EditDefaults;
-import jmt.gui.jmodel.controller.actions.EditMeasures;
-import jmt.gui.jmodel.controller.actions.EditPAParams;
-import jmt.gui.jmodel.controller.actions.EditSimParams;
-import jmt.gui.jmodel.controller.actions.EditUserClasses;
-import jmt.gui.jmodel.controller.actions.Exit;
-import jmt.gui.jmodel.controller.actions.NewModel;
-import jmt.gui.jmodel.controller.actions.OpenHelp;
-import jmt.gui.jmodel.controller.actions.OpenModel;
-import jmt.gui.jmodel.controller.actions.PauseSimulation;
-import jmt.gui.jmodel.controller.actions.SaveModel;
-import jmt.gui.jmodel.controller.actions.SaveModelAs;
-import jmt.gui.jmodel.controller.actions.SetConnectState;
-import jmt.gui.jmodel.controller.actions.SetOptions;
-import jmt.gui.jmodel.controller.actions.SetSelectState;
-import jmt.gui.jmodel.controller.actions.ShowResults;
-import jmt.gui.jmodel.controller.actions.Simulate;
-import jmt.gui.jmodel.controller.actions.SolveAnalytic;
-import jmt.gui.jmodel.controller.actions.SolveApprox;
-import jmt.gui.jmodel.controller.actions.StopSimulation;
-import jmt.gui.jmodel.controller.actions.SwitchToExactSolver;
-import jmt.gui.jmodel.controller.actions.TakeScreenShot;
+import jmt.gui.jmodel.JGraphMod.*;
+import jmt.gui.jmodel.controller.actions.*;
 import jmt.gui.jmodel.definitions.JMODELModel;
 import jmt.gui.jmodel.definitions.JmodelClassDefinition;
 import jmt.gui.jmodel.definitions.JmodelStationDefinition;
@@ -123,17 +46,19 @@ import jmt.gui.jmodel.mainGui.MainWindow;
 import jmt.gui.jmodel.panels.JModelProblemsWindow;
 import jmt.gui.jmodel.panels.StationNamePanel;
 import jmt.gui.jmodel.panels.jmodelClassesPanel;
-
 import org.jgraph.JGraph;
-import org.jgraph.graph.CellHandle;
-import org.jgraph.graph.CellView;
-import org.jgraph.graph.ConnectionSet;
-import org.jgraph.graph.DefaultGraphModel;
-import org.jgraph.graph.DefaultPort;
-import org.jgraph.graph.GraphConstants;
-import org.jgraph.graph.GraphModel;
-import org.jgraph.graph.GraphUndoManager;
-import org.jgraph.graph.PortView;
+import org.jgraph.graph.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.io.File;
+import java.util.*;
+import java.util.List;
 
 /**
  * This class mantains a reference to all the main copmponents of the Gui,
@@ -625,6 +550,7 @@ public class Mediator implements GuiInterface {
             // At this point loading was successful, so substitutes old model with loaded one
             model = tmpmodel;
             this.populateGraph();
+            setSelect.setEnabled(true);
             componentBar.clickButton(setSelect);
             openedArchive = modelLoader.getSelectedFile();
             // Removes selection
@@ -649,6 +575,7 @@ public class Mediator implements GuiInterface {
         if (state == ModelLoader.WARNING) {
             new WarningWindow(modelLoader.getLastWarnings(), mainWindow).show();
         }
+
 
     }
 
