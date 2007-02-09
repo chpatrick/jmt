@@ -18,6 +18,7 @@
   
 package jmt.gui.jmodel;
 
+import jmt.framework.gui.components.JMTDialog;
 import jmt.framework.gui.wizard.WizardPanel;
 
 import javax.swing.*;
@@ -40,17 +41,24 @@ public class DialogFactory {
     private static final int height = 520;
 
     // Private variables
-    private static JDialog dialogFrame;
-    private static JFrame mainWindow;
+    private JMTDialog dialogFrame;
+    private Frame mainWindow;
 
-    private static void createDialog() {
+    /**
+     * Creates a new DialogFactory
+     * @param mainWindow owner frame for created dislogs.
+     */
+    public DialogFactory(Frame mainWindow) {
+        this.mainWindow = mainWindow;
+    }
+
+    private void createDialog() {
         // Creates modal dialog
-        dialogFrame = new JDialog(mainWindow, true);
-        dialogFrame.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        Dimension scrDim = Toolkit.getDefaultToolkit().getScreenSize();
-        dialogFrame.setBounds((scrDim.width-width)/2,(scrDim.height-height)/2,width,height);
+        dialogFrame = new JMTDialog(mainWindow, true);
+        dialogFrame.centerWindow(width,height);
         //dialogFrame.setResizable(false);
         dialogFrame.getContentPane().setLayout(new BorderLayout());
+        dialogFrame.setDefaultCloseOperation(JMTDialog.DO_NOTHING_ON_CLOSE);
 
         //Adds button bar
         JPanel buttonbar = new JPanel(new FlowLayout());
@@ -81,7 +89,7 @@ public class DialogFactory {
      * @param  panel to be shown on the center area of this dialog
      * @param title title of this dialog
      */
-    public static void getDialog(final JComponent panel, String title) {
+    public void getDialog(final JComponent panel, String title) {
         createDialog();
         // Adds input panel
         dialogFrame.getContentPane().add(panel, BorderLayout.CENTER);
@@ -95,13 +103,5 @@ public class DialogFactory {
 
         // Shows dialog
         dialogFrame.show();
-    }
-
-    /**
-     * Sets owner frame for created dialogs
-     * @param f current main window
-     */
-    public static void setOwner(JFrame f) {
-        mainWindow = f;
     }
 }

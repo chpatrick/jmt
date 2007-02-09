@@ -82,6 +82,10 @@ import java.util.List;
 public class Mediator implements GuiInterface {
     // making it final allows the compiler to skip code generation when false
     private GraphMouseListner mouseListner;
+    // Dialog factory
+    private DialogFactory dialogFactory;
+    // Cell factory
+    private CellFactory cellFactory;
 
     private AbstractJmodelAction closeModel, newModel, openHelp, openModel,
     saveModel, 	setConnect, actionCopy , actionCut, setOptions, actionPaste,
@@ -125,7 +129,8 @@ public class Mediator implements GuiInterface {
 
     public Mediator(final JmtJGraph graph, MainWindow mainWindow) {
         this.mainWindow = mainWindow;
-        DialogFactory.setOwner(mainWindow);
+        dialogFactory = new DialogFactory(mainWindow);
+        cellFactory = new CellFactory(this);
         this.graph = graph;
         closeModel = new CloseModel(this);
         newModel = new NewModel(this);
@@ -162,7 +167,6 @@ public class Mediator implements GuiInterface {
         about = new About(this);
         addBlockingRegion = new AddBlockingRegion(this);
         takeScreenShot = new TakeScreenShot(this);
-        CellFactory.setMediator(this);
         editUserClasses = new EditUserClasses(this);
         editMeasures = new EditMeasures(this);
         switchToExactSolver = new SwitchToExactSolver(this);
@@ -466,6 +470,14 @@ public class Mediator implements GuiInterface {
 
     public AbstractJmodelAction getSolveApp() {
         return solveApp;
+    }
+
+    /**
+     * Gets cell factory to create new graph cells
+     * @return cell factory
+     */
+    public CellFactory getCellFactory() {
+        return cellFactory;
     }
 
     public void newModel() {
@@ -943,7 +955,7 @@ public class Mediator implements GuiInterface {
      */
     public PortView getInPortViewAt(int x, int y) {
         return (PortView) graph.getGraphLayoutCache().
-                getMapping(((JmtJGraph) graph).getInPortAt(x, y), false);
+                getMapping(graph.getInPortAt(x, y), false);
     }
 
     /** gets the first portView of the output port of the cell at position
@@ -954,7 +966,7 @@ public class Mediator implements GuiInterface {
      */
     public PortView getOutPortViewAt(int x, int y) {
         return (PortView) graph.getGraphLayoutCache().
-                getMapping(((JmtJGraph) graph).getOutPortAt(x, y), false);
+                getMapping(graph.getOutPortAt(x, y), false);
     }
 
     /**
@@ -990,13 +1002,13 @@ public class Mediator implements GuiInterface {
             stationPanel.add(
                     new StationNamePanel(model, ((CellComponent)((JmtCell)cell).getUserObject()).getKey()),
                     BorderLayout.NORTH);
-            DialogFactory.getDialog(stationPanel,
+            dialogFactory.getDialog(stationPanel,
                     "Editing " + ((JmtCell)cell).getUserObject().toString() + " Properties...");
         }
         // Blocking region editing
         else if ((cell != null) && (cell instanceof BlockingRegion)) {
             Object regionKey = ((BlockingRegion)cell).getKey();
-            DialogFactory.getDialog(new BlockingRegionParameterPanel(model,
+            dialogFactory.getDialog(new BlockingRegionParameterPanel(model,
                     model,
                     regionKey),
                     "Editing " + model.getRegionName(regionKey) + " Properties...");
@@ -1232,7 +1244,7 @@ public class Mediator implements GuiInterface {
 
         // Shows stations
         for (int i=0; i<stations.length; i++) {
-            cell = CellFactory.createStationCell(stations[i]);
+            cell = cellFactory.createStationCell(stations[i]);
             Point2D position = model.getStationPosition(stations[i]);
             // If position is not present, auto-position this station
             // TODO implement a good algorithm for auto-placement... This is silly but avoids exceptions
@@ -1283,7 +1295,7 @@ public class Mediator implements GuiInterface {
      * Launches the <code>UserClass</code> editor.
      */
     public void editUserClasses() {
-        DialogFactory.getDialog(new jmodelClassesPanel(model, model), "Define customer classes");
+        dialogFactory.getDialog(new jmodelClassesPanel(model, model), "Define customer classes");
     }
 
     /**
@@ -1558,7 +1570,7 @@ public class Mediator implements GuiInterface {
      * Author: Bertoli Marco
      */
     public void editMeasures() {
-        DialogFactory.getDialog(new MeasurePanel(model, model, model), "Define performance indices");
+        dialogFactory.getDialog(new MeasurePanel(model, model, model), "Define performance indices");
     }
 
     /**
@@ -1727,14 +1739,14 @@ public class Mediator implements GuiInterface {
      * Called when EditSimParams action is triggered
      */
     public void editSimulationParameters() {
-        DialogFactory.getDialog(new SimulationPanel(model, model,model,this), "Define Simulation Parameters");
+        dialogFactory.getDialog(new SimulationPanel(model, model,model,this), "Define Simulation Parameters");
     }
 
     /**
      * Called when EditPAParams action is triggered
      */
     public void editPAParameters() {
-        DialogFactory.getDialog(new ParametricAnalysisPanel(model, model,model,this), "Define What-if analysis parameters");
+        dialogFactory.getDialog(new ParametricAnalysisPanel(model, model,model,this), "Define What-if analysis parameters");
     }
 
     /**
@@ -1830,7 +1842,7 @@ public class Mediator implements GuiInterface {
     public void showRelatedPanel(int problemType,int problemSubType, Object relatedStation, Object relatedClass) {
         //if it is a no class error show the class panel
         if ((problemSubType == ModelChecker.NO_CLASSES_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM) ) {
-            DialogFactory.getDialog(new jmodelClassesPanel(model,model),"Manage User Classes");
+            dialogFactory.getDialog(new jmodelClassesPanel(model,model),"Manage User Classes");
             model.manageJobs();  //a close class may be added
         }
         //if it is a no station error show an error message dialog
@@ -1838,11 +1850,11 @@ public class Mediator implements GuiInterface {
             JOptionPane.showMessageDialog(null,"Please insert at least one server or delay before starting simulation.", "Error",JOptionPane.ERROR_MESSAGE);
         }
         else if ( (problemSubType == ModelChecker.SIMULATION_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) {
-            DialogFactory.getDialog(new MeasurePanel(model,model,model),"Edit Performance Indices");
+            dialogFactory.getDialog(new MeasurePanel(model,model,model),"Edit Performance Indices");
         }
         //if a measure is inconsistent (i.e have one or more 'null' field) show performance indices panel
         else if ( (problemSubType == ModelChecker.INCONSISTENT_MEASURE_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) {
-            DialogFactory.getDialog(new MeasurePanel(model,model,model),"Edit Performance Indices");
+            dialogFactory.getDialog(new MeasurePanel(model,model,model),"Edit Performance Indices");
         }
         //if a measure was defined more than once ask to erase all redundant measure
         else if ((problemSubType == ModelChecker.DUPLICATE_MEASURE_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) {
@@ -1853,18 +1865,18 @@ public class Mediator implements GuiInterface {
         }
         //if it is a reference station error show the class panel
         else if ((problemSubType == ModelChecker.REFERENCE_STATION_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) {
-            DialogFactory.getDialog(new jmodelClassesPanel(model,model),"Manage User Classes");
+            dialogFactory.getDialog(new jmodelClassesPanel(model,model),"Manage User Classes");
             model.manageJobs(); //a close class may be added
         }
         //if a source has been inserted in the model but no open classes defined show the class panel
-        else if ((problemSubType == ModelChecker.SOURCE_WITH_NO_OPEN_CLASSES_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) DialogFactory.getDialog(new jmodelClassesPanel(model,model),"Manage User Classes");
+        else if ((problemSubType == ModelChecker.SOURCE_WITH_NO_OPEN_CLASSES_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) dialogFactory.getDialog(new jmodelClassesPanel(model,model),"Manage User Classes");
         //if there is a routing error show the station parameter panel
         else if ((problemSubType == ModelChecker.ROUTING_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) {
             StationParameterPanel tempPanel = new StationParameterPanel(model,model,relatedStation);
             String stationName = model.getStationName(relatedStation);
             //set the station parameter panel to show the routing section
             tempPanel.showRoutingSectionPanel(relatedClass);
-            DialogFactory.getDialog(tempPanel,"Editing " + stationName + " Properties...");
+            dialogFactory.getDialog(tempPanel,"Editing " + stationName + " Properties...");
         }
         //if a class may be routed into a station whose forward stations are all sink show an error message
         else if ((problemSubType == ModelChecker.ALL_FORWARD_STATION_ARE_SINK_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) {
@@ -1874,7 +1886,7 @@ public class Mediator implements GuiInterface {
         }
         //if no open classes defined but at least a sink has been defined show the class panel
         else if ((problemSubType == ModelChecker.SINK_BUT_NO_OPEN_CLASSES_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)){
-            DialogFactory.getDialog(new jmodelClassesPanel(model,model),"Manage User Classes");
+            dialogFactory.getDialog(new jmodelClassesPanel(model,model),"Manage User Classes");
             //JOptionPane.showConfirmDialog(null,"Add an open class to the model?", "Error",JOptionPane.OK_CANCEL_OPTION,JOptionPane.ERROR_MESSAGE);
         }
         //if an open class defined but no sink have been defined show an error message
@@ -1906,7 +1918,7 @@ public class Mediator implements GuiInterface {
                 StationParameterPanel tempPanel = new StationParameterPanel(model,model,relatedStation);
                 //set the station parameter panel to show the queue section
                 tempPanel.showQueueSectionPanel();
-                DialogFactory.getDialog(tempPanel,"Editing " + name + " Properties...");
+                dialogFactory.getDialog(tempPanel,"Editing " + name + " Properties...");
             }
         }
         //used only in JMVA conversion
@@ -1917,7 +1929,7 @@ public class Mediator implements GuiInterface {
                 StationParameterPanel tempPanel = new StationParameterPanel(model,model,relatedStation);
                 //set the station parameter panel to show the queue section
                 tempPanel.showServiceSectionPanel();
-                DialogFactory.getDialog(tempPanel,"Editing " + name + " Properties...");
+                dialogFactory.getDialog(tempPanel,"Editing " + name + " Properties...");
             }
         }
         //used only in JMVA conversion
@@ -1928,7 +1940,7 @@ public class Mediator implements GuiInterface {
                 StationParameterPanel tempPanel = new StationParameterPanel(model,model,relatedStation);
                 //set the station parameter panel to show the queue section
                 tempPanel.showServiceSectionPanel();
-                DialogFactory.getDialog(tempPanel,"Editing " + name + " Properties...");
+                dialogFactory.getDialog(tempPanel,"Editing " + name + " Properties...");
             }
         }
         //used only in JMVA conversion
@@ -1939,7 +1951,7 @@ public class Mediator implements GuiInterface {
                 StationParameterPanel tempPanel = new StationParameterPanel(model,model,relatedStation);
                 //set the station parameter panel to show the queue section
                 tempPanel.showServiceSectionPanel();
-                DialogFactory.getDialog(tempPanel,"Editing " + name + " Properties...");
+                dialogFactory.getDialog(tempPanel,"Editing " + name + " Properties...");
             }
         }
         //used only for to JMVA conversion, for non Random Routing routing strategy errors
@@ -1962,7 +1974,7 @@ public class Mediator implements GuiInterface {
             if (k==0) {
                 model.getParametricAnalysisModel().checkCorrectness(true);
                 ParametricAnalysisPanel paPanel = new ParametricAnalysisPanel(model,model,model,this);
-                DialogFactory.getDialog(paPanel,"Edit what-if analysis parameters");
+                dialogFactory.getDialog(paPanel,"Edit what-if analysis parameters");
             }
         }
         else if ((problemSubType == ModelChecker.PARAMETRIC_ANALYSIS_NO_MORE_AVAIBLE_WARNING) && (problemType == ModelChecker.WARNING_PROBLEM)) {
@@ -1992,7 +2004,7 @@ public class Mediator implements GuiInterface {
      * Shows the class panel
      */
     public void showClassPanel() {
-        DialogFactory.getDialog(new jmodelClassesPanel(model,model),"Manage User Classes");
+        dialogFactory.getDialog(new jmodelClassesPanel(model,model),"Manage User Classes");
     }
 
     /**

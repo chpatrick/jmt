@@ -18,8 +18,6 @@
   
 package jmt.gui.jmodel.controller;
 
-import jmt.gui.jmodel.JGraphMod.CellFactory;
-
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
@@ -53,11 +51,11 @@ public class InsertState extends UIStateDefault {
 	 */
 	public void handlePress(MouseEvent e) {
 		// Does vertex overlap an existing cell?
-		if (mediator.overlapCells(e.getPoint(), CellFactory.predictCellSize(insertClass))) {
+		if (mediator.overlapCells(e.getPoint(), mediator.getCellFactory().predictCellSize(insertClass))) {
 			// Yes, do nothing
 			return;
 		}
-		mediator.InsertCell(e.getPoint(), CellFactory.createCell(insertClass));
+		mediator.InsertCell(e.getPoint(), mediator.getCellFactory().createCell(insertClass));
 		mediator.selectAt(e);
 	}
 

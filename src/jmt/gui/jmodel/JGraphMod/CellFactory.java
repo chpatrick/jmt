@@ -39,12 +39,15 @@ import java.lang.reflect.InvocationTargetException;
  * A class grouping all cell creation suff
  */
 public class CellFactory {
+    private Mediator mediator;
 
-	private static Mediator mediator;
-
-	public static void setMediator(Mediator mediator) {
-		CellFactory.mediator = mediator;
-	}
+    /**
+     * Instantiate a new CellFactory
+     * @param mediator reference to mediator
+     */
+    public CellFactory(Mediator mediator) {
+        this.mediator = mediator;
+    }
 
 	/**
 	 * Creates a new cell of given class with default user object (CellComponent)
@@ -53,7 +56,7 @@ public class CellFactory {
      *
      * Author: Bertoli Marco
 	 */
-	public static JmtCell createCell(String className) {
+	public JmtCell createCell(String className) {
         // Creates the internal component
         CellComponent component = createComponent(className);
         return createCell(className, component);
@@ -64,7 +67,7 @@ public class CellFactory {
      * @param key search's key (into data structure) for station cell to be created
      * @return created cell component
      */
-    public static JmtCell createStationCell(Object key) {
+    public JmtCell createStationCell(Object key) {
         CellComponent component = new CellComponent(key, mediator.getStationDefinition());
         return createCell(mediator.getStationDefinition().getStationType(key)+"Cell", component);
     }
@@ -77,7 +80,7 @@ public class CellFactory {
      *
      * Author: Bertoli Marco
      */
-    public static JmtCell createCell(String className, Object userObject) {
+    public JmtCell createCell(String className, Object userObject) {
         String path = "jmt.gui.jmodel.JGraphMod.";
 
         // Recalls the cell constructor passing the component as user object
@@ -112,7 +115,7 @@ public class CellFactory {
      *
      * Author: Bertoli Marco
 	 */
-	public static CellComponent createComponent(String className) {
+	public CellComponent createComponent(String className) {
         JmodelStationDefinition sd = mediator.getStationDefinition();
 		return new CellComponent(sd.addStation(getComponentType(className)), sd);
 	}
@@ -126,7 +129,7 @@ public class CellFactory {
      *
      * Author: Bertoli Marco
      */
-    public static String getComponentType(String className) {
+    public String getComponentType(String className) {
         // For convention Component type is simply its className without "Cell"
         return className.substring(0, className.lastIndexOf("Cell"));
         /*
@@ -151,7 +154,7 @@ public class CellFactory {
      * Deletes a JmtCell component removing its data structure
      * @param cell component to be eliminated
      */
-    public static void deleteCell (JmtCell cell) {
+    public void deleteCell (JmtCell cell) {
         JmodelStationDefinition sd = mediator.getStationDefinition();
         sd.deleteStation(((CellComponent)cell.getUserObject()).getKey());
     }
@@ -162,7 +165,7 @@ public class CellFactory {
      * @param className name of the *Cell that will be instantiated
      * @return predicted dimensions of Node
      */
-    public static Dimension predictCellSize(String className) {
+    public Dimension predictCellSize(String className) {
         JmodelStationDefinition sd = mediator.getStationDefinition();
         String path = "jmt.gui.jmodel.JGraphMod.";
         ImageIcon icon = null;

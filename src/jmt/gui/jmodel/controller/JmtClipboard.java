@@ -21,7 +21,6 @@ package jmt.gui.jmodel.controller;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
 import jmt.gui.common.routingStrategies.RoutingStrategy;
 import jmt.gui.jmodel.JGraphMod.CellComponent;
-import jmt.gui.jmodel.JGraphMod.CellFactory;
 import jmt.gui.jmodel.JGraphMod.JmtCell;
 import jmt.gui.jmodel.JGraphMod.JmtEdge;
 import jmt.gui.jmodel.definitions.JmodelStationDefinition;
@@ -147,7 +146,7 @@ public class JmtClipboard {
             oldkey = keys.next();
             // Creates a new station with parameters got from previous copy operation
             newkey = sd.deserializeStation(stations.get(oldkey));
-            newcell = CellFactory.createCell(sd.getStationType(newkey)+"Cell", 
+            newcell = mediator.getCellFactory().createCell(sd.getStationType(newkey)+"Cell", 
                     new CellComponent(newkey, sd));
             tempkey.put(oldkey, newkey);
             // Calculates where this station should be put
