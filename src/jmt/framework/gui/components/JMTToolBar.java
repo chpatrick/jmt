@@ -49,12 +49,6 @@ import jmt.framework.gui.listeners.SelectedActionButtonChangeListener;
 public class JMTToolBar extends JToolBar {
     /** Component used to load images */
     protected ImageLoader imageLoader;
-    /** Suffix to be used for pressed button images */
-    public static final String PRESSED_SUFFIX = "P";
-    /** Suffix to be used for rollover button images */
-    public static final String ROLLOVER_SUFFIX = "RO";
-    /** Suffix to be used for selected (toggled) button images */
-    public static final String SELECTED_SUFFIX = "S";
     
     /** A map with all buttons with associated component and groups */
     protected HashMap buttons = new HashMap();
@@ -103,8 +97,8 @@ public class JMTToolBar extends JToolBar {
         else {
             // Sets images
             button.setIcon(imageLoader.loadIcon(iconName));
-            button.setRolloverIcon(imageLoader.loadIcon(deriveIconName(iconName,ROLLOVER_SUFFIX)));
-            button.setPressedIcon(imageLoader.loadIcon(deriveIconName(iconName,PRESSED_SUFFIX)));
+            button.setRolloverIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_ROLLOVER));
+            button.setPressedIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_PRESSED));
         }
         button.setFocusPainted(false);
         button.setContentAreaFilled(false);
@@ -153,9 +147,9 @@ public class JMTToolBar extends JToolBar {
         else {
             // Sets images
             button.setIcon(imageLoader.loadIcon(iconName));
-            button.setRolloverIcon(imageLoader.loadIcon(deriveIconName(iconName,ROLLOVER_SUFFIX)));
-            button.setPressedIcon(imageLoader.loadIcon(deriveIconName(iconName,PRESSED_SUFFIX)));
-            button.setSelectedIcon(imageLoader.loadIcon(deriveIconName(iconName,SELECTED_SUFFIX)));
+            button.setRolloverIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_ROLLOVER));
+            button.setPressedIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_PRESSED));
+            button.setSelectedIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_SELECTED));
         }
         button.setFocusPainted(false);
         button.setContentAreaFilled(false);
@@ -250,22 +244,6 @@ public class JMTToolBar extends JToolBar {
         return null;
     }
     
-    /**
-     * Derives an icon name to apply suffixes before extension
-     * @param iconName name of the icon to be derived
-     * @param suffix suffix to be appended
-     * @return derived name
-     */
-    public static String deriveIconName(String iconName, String suffix) {
-        int dot = iconName.lastIndexOf('.');
-        if (dot < 0) {
-            return iconName + suffix;
-        }
-        else {
-            return iconName.substring(0, dot) + suffix + iconName.substring(dot);
-        }
-    }
-
     /* (non-Javadoc)
      * @see javax.swing.JToolBar#addSeparator()
      */

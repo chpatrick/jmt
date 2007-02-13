@@ -124,7 +124,7 @@ public class JMTMenuBar extends JMenuBar {
                 // Sets selected icon
                 String iconName = (String) action.getValue(AbstractJMTAction.IMAGE_NAME);
                 if (iconName != null) {
-                    item.setSelectedIcon(imageLoader.loadIcon(JMTToolBar.deriveIconName(iconName,JMTToolBar.SELECTED_SUFFIX)));
+                    item.setSelectedIcon(imageLoader.loadIcon(iconName,ImageLoader.MODIFIER_SELECTED));
                 }
                 // Adds a listener to both item and action to synchronize their selected state
                 new SelectedActionButtonChangeListener(action, item);

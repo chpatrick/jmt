@@ -20,6 +20,7 @@ package jmt.framework.gui.image;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.util.HashMap;
@@ -39,7 +40,18 @@ import javax.swing.ImageIcon;
  * @version 1.0
  */
 public abstract class ImageLoader {
+    /** Modifier to be used for mirror images (rotated on y axis) */
     public static final String MODIFIER_MIRROR = "MIRROR";
+    /** Modifier to be used for pressed button images */
+    public static final String MODIFIER_PRESSED = "P";
+    /** Modifier to be used for rollover button images */
+    public static final String MODIFIER_ROLLOVER = "RO";
+    /** Modifier to be used for selected (toggled) button images */
+    public static final String MODIFIER_SELECTED = "S";
+    /** Template used to derive modified toolbar images */
+    private static final String TEMPLATE_IMAGE_NAME = "templateToolbarImage";
+    
+    /** Allowed images extensions */
     private static final String[] EXTENSIONS = new String[] {".gif", ".png", ".jpg"};
     /** Maximum number of cached elements */
     protected int maxCache = 256; 
@@ -92,9 +104,9 @@ public abstract class ImageLoader {
         } else if (modifier != null) {
             // Loads base icon without modifiers
             ImageIcon base = loadIcon(iconName);
-            // Apply known modifiers
-            if (modifier.equals(MODIFIER_MIRROR)) {
-                tmp = mirrorImage(base);
+            if (base != null) {
+                // Apply known modifiers
+                tmp = applyModifier(base, modifier);
             }
         }
 
@@ -140,6 +152,59 @@ public abstract class ImageLoader {
     }
 
     // --- Methods to apply modifiers to loaded icons ---------------------------------------------------
+    /**
+     * Apply known modifiers to given image
+     * @param base base image to be modified
+     * @param modifier modifier to be applied
+     * @return modified image
+     */
+    protected ImageIcon applyModifier(ImageIcon base, String modifier) {
+        if (modifier.equals(MODIFIER_MIRROR)) {
+            return mirrorImage(base);
+        } else if (modifier.equals(MODIFIER_ROLLOVER) || modifier.equals(MODIFIER_SELECTED)) {
+            ImageIcon background = loadIcon(deriveIconName(TEMPLATE_IMAGE_NAME, modifier));
+            if (background != null) {
+                return mergeIcons(background, base, 
+                        new Point(1,1), new Point(background.getIconWidth()-2, background.getIconHeight()-2), 
+                        new Point(1,1));
+            }
+        } else if (modifier.equals(MODIFIER_PRESSED)) {
+            ImageIcon background = loadIcon(deriveIconName(TEMPLATE_IMAGE_NAME, modifier));
+            if (background != null) {
+                return mergeIcons(background, base, 
+                        new Point(1,1), new Point(background.getIconWidth()-3, background.getIconHeight()-3), 
+                        new Point(2,2));
+            }
+        }
+        // Modifier unsupported or template images not found.
+        return base;
+    }
+    
+    /**
+     * Merge two icons together. Output icon dimension is the same as background one.
+     * @param background background icon
+     * @param overlay overlay icon, needs to be transparent (will be moved and cropped)
+     * @param cropMin minimum crop point for overlay icon (0,0 for no crop)
+     * @param cropMax maximum crop point for overlay icon (width and height for no crop)
+     * @param move upper left corner where cropped overlay image should be positioned on background image
+     * @return merged icon
+     */
+    protected ImageIcon mergeIcons(ImageIcon background, ImageIcon overlay, Point cropMin, Point cropMax, Point move) {
+        BufferedImage out = new BufferedImage(background.getIconWidth(), background.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = out.createGraphics();
+        g.drawImage(background.getImage(), 0, 0, null);
+        g.drawImage(overlay.getImage(), move.x, move.y, 
+                move.x + cropMax.x - cropMin.x, move.y + cropMax.y - cropMin.y, 
+                cropMin.x, cropMin.y, cropMax.x, cropMax.y, 
+                null);
+        return new ImageIcon(out);
+    }
+    
+    /**
+     * Rotates image on y axis
+     * @param base image to be modified
+     * @return mirrored image
+     */
     protected ImageIcon mirrorImage(ImageIcon base) {
         BufferedImage out = new BufferedImage(base.getIconWidth(),base.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
         Graphics2D g = out.createGraphics();
