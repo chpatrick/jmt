@@ -165,14 +165,14 @@ public abstract class ImageLoader {
             ImageIcon background = loadIcon(deriveIconName(TEMPLATE_IMAGE_NAME, modifier));
             if (background != null) {
                 return mergeIcons(background, base, 
-                        new Point(1,1), new Point(background.getIconWidth()-2, background.getIconHeight()-2), 
+                        new Point(1,1), new Point(background.getIconWidth()-1, background.getIconHeight()-1), 
                         new Point(1,1));
             }
         } else if (modifier.equals(MODIFIER_PRESSED)) {
             ImageIcon background = loadIcon(deriveIconName(TEMPLATE_IMAGE_NAME, modifier));
             if (background != null) {
                 return mergeIcons(background, base, 
-                        new Point(1,1), new Point(background.getIconWidth()-3, background.getIconHeight()-3), 
+                        new Point(1,1), new Point(background.getIconWidth()-2, background.getIconHeight()-2), 
                         new Point(2,2));
             }
         }
