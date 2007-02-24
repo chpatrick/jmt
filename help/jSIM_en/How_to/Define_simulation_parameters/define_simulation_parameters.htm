@@ -1,0 +1,158 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+
+
+
+
+<head>
+<title>Define simulation parameters</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="generator" content="RoboHelp by eHelp Corporation www.ehelp.com">
+<link href="../../default.css" rel="stylesheet" type="text/css"><style title="hcp" type="text/css">
+<!--
+p.hcp1 { text-align:Center; }
+-->
+</style>
+</head>
+<body>
+<p class="stile1">Define simulation parameters</p>
+
+<p class="stile2">_________________</p>
+
+<p>&nbsp;</p>
+
+<p>By clicking Simulation tab you can set up the <a href="define_simulation_parameters.htm#parameters">Simulation 
+ Parameters</a> and <a href="define_simulation_parameters.htm#state">Initial 
+ State</a> for your model.</p>
+
+<p>&nbsp;</p>
+
+<p style="text-align: center; margin-left: 0px;" Align="center"><img src="Images/sim_tabs.gif"
+						x-maintain-ratio=TRUE
+						style="border: none;
+								float: none;
+								width: 474px;
+								height: 41px;
+								border-style: none;"
+						width=474
+						height=41
+						border=0></p>
+
+<p>&nbsp;</p>
+
+<p class="stile3">Simulation parameters:<a name=parameters
+										id=parameters></a></p>
+
+<blockquote>
+<p>In the top section of this windows you can edit general simulation parameters.</p>
+</blockquote>
+
+<p Align="center" class="hcp1"><img src="Images/first_section.gif"
+						x-maintain-ratio=TRUE
+						style="width: 432px;
+								height: 183px;
+								float: none;
+								border-style: none;
+								border-style: none;"
+						width=432
+						height=183
+						border=0></p>
+
+<p Align="center" class="hcp1">&nbsp;</p>
+
+<ol>
+	
+	<li class="kadov-p-cstile4">
+	<p class="stile4"><em class="stile6" style="font-style: italic;">Simulation Seed:</em> 
+ The seed is a number used by random engine to generate casual numbers. 
+ As this numbers are pseudo-casual if you change the seed, you will obtain 
+ random numbers that are different from others. If you use the same seed 
+ number, the random engine will produce the same numbers and the simulation 
+ results will be equal.</p>
+	
+	<p class="stile4">Insert a number if you want a personalized simulation, 
+ or check &quot;random&quot; if you don't want to define a particular seed.</p>
+	
+	<p>&nbsp;</p>
+	</li>
+	
+	<li class="kadov-p-cstile4">
+	<p class="stile4"><em class="stile6" style="font-style: italic;">Maximum duration (sec):</em> 
+ represents the time in seconds that the simulation will run at last. If 
+ simulation ends before this amount of seconds, it won't be affected by 
+ this parameter. If you don't want to specify a maximum time you can check 
+ &quot;Infinite&quot; in check-box. The &quot;infinite&quot; setting forces 
+ the simulation to stop only when it has reached a solution but it can 
+ take a long computation time.</p>
+	
+	<p>&nbsp;</p>
+	</li>
+	
+	<li class="kadov-p"><p><em class="stile6" style="font-style: italic;">Maximum number 
+ of samples:</em> <span class="stile4">it's the greatest number of samples 
+ for one measure that JSIM collects before ending the simulation.</span> 
+ <span class="stile4">During a simulation, measurement can be stopped by:</span></p></li>
+	
+	<p>&nbsp;</p>
+	
+	<p class="stile4">- Success, if the results have reached the required 
+ Confidence Interval and the Max Relative Error</p>
+	
+	<p class="stile4">- Failure, if the simulation has analyzed the maximum 
+ number of samples</p>
+	
+	<p class="stile4">- Failure, if timeout happens before succeeding.</p>
+	
+	<p>&nbsp;</p>
+	
+	<p class="stile4">In &quot;Max number of samples&quot; insert the number 
+ of samples that are used by the simulation engine.</p>
+	
+	<p>&nbsp;</p>
+	
+	<li class="kadov-p-cstile4"><p class="stile4"><em class="stile6" style="font-style: italic;">Representation 
+ Interval (sec):</em> you can insert a number of seconds that are represented 
+ in the graphics plotted by the simulation engine in the results. As always, 
+ an higher value will take more time to show changes in the simulation 
+ while a lower value will give an &quot;immediate&quot; look of the model 
+ behaviour.</p></li>
+	
+	<p>&nbsp;</p>
+</ol>
+
+<p class="stile3">Initial state:<a name=state
+								id=state></a></p>
+
+<blockquote>
+<p class="stile4">Initial state is the number of jobs that are in the station 
+ queue before starting a simulation. It shows the network situation at 
+ time 0.</p>
+
+<p class="stile4">For closed customer classes, all jobs are initially allocated 
+ in their reference station. You can at any time modify this allocation 
+ considering that the total number of jobs should be the one defined in 
+ the classes page of tabs menu (<a href="../Define_class/define_class.html#closed">link</a>). 
+ In open customer classes it's possible to initialize every station with 
+ any desired number of jobs.</p>
+
+<p class="stile4">The following table represents an example of an initial 
+ state of three stations with their classes.</p>
+
+<p class="stile4">&nbsp;</p>
+
+<p Align="center" class="hcp1"><img src="Images/bottom_section.gif"
+						style="width: 333px;
+								height: 76px;
+								border-style: none;
+								border-style: none;"
+						width=333
+						height=76
+						border=0></p>
+
+<p class="hcp21">&nbsp;</p>
+</blockquote>
+
+</body>
+</html>

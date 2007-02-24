@@ -1,0 +1,281 @@
+<!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
+
+<html>
+
+
+
+
+
+<head>
+<title>Define what if analysis</title>
+<meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<meta name="generator" content="RoboHelp by eHelp Corporation www.ehelp.com">
+<link href="../../default.css" rel="stylesheet" type="text/css"><style title="hcp" type="text/css">
+<!--
+img.hcp1 { border-style:none; }
+p.hcp2 { text-align:Center; }
+img.hcp3 { float:none; border-style:none; }
+td.hcp4 { padding-left:20px; padding-top:20px; padding-right:20px; padding-bottom:20px; }
+-->
+</style>
+</head>
+<body>
+<p class="stile1">Define What-If Analysis</p>
+
+<p class="stile2">_________________</p>
+
+<p class="stile4">&nbsp;</p>
+
+<p class="stile4">In this section it will be told how to set and how to use 
+ a What-If Analysis. </p>
+
+<p class="stile4">&nbsp;</p>
+
+<blockquote>
+<p class="stile4">A What-If Analysis consists on a sequence of simulations 
+ in which one or more parameters are modified from a starting value to 
+ an ending one. </p>
+
+<p class="stile4">In this way you can compare different results depending 
+ on different parameters value, so what-if analysis simulation view is 
+ fairly different from standard JSIM simulation view. </p>
+
+<blockquote>
+<p class="stile4"><a href="define_what_if_analysis.html#1">Activating the 
+ What-If Analysis</a></p>
+
+<p class="stile4"><a href="define_what_if_analysis.html#2">Selecting the 
+ What-If Analysis Parameter </a></p>
+</blockquote>
+</blockquote>
+
+<p>&nbsp;</p>
+
+<blockquote>
+<p class="stile3">Activating the What-If Analysis <a name=1
+													id=1></a></p>
+
+<blockquote>
+<p class="stile4">After have created a new model, from the Tab list just 
+ select the &quot;What-If Analysis&quot; tab.</p>
+
+<p class="stile4">&nbsp;</p>
+
+<p class="stile4" style="text-align: Center;" Align="center"><img src="Images/whatif_tab.gif" style="width:185px; height:55px;" width="185" height="55" border="0" class="hcp1"></p>
+
+<p class="stile4">&nbsp;</p>
+
+<p class="stile4">As what-if analysis is disabled by default, you have to 
+ click in the top right section of the tab the &quot;Enable what-if analysis&quot; 
+ checkbox to activate it.</p>
+
+<p>&nbsp;</p>
+</blockquote>
+</blockquote>
+
+<p Align="center" class="hcp2"><img src="Images/enable_box.gif" x-maintain-ratio="TRUE" style="width:423px; height:68px;" width="423" height="68" border="0" class="hcp3"></p>
+
+<p>&nbsp;</p>
+
+<blockquote>
+<p class="stile3">Selecting the What-If Analysis Parameter <a name=2
+															id=2></a></p>
+
+<blockquote>
+<p class="stile4">Now it's time to select which parameter you want to control 
+ in the proper listbox:</p>
+</blockquote>
+</blockquote>
+
+<p class="stile4">&nbsp;</p>
+
+<p class="stile4" style="text-align: Center;" Align="center"><img src="Images/type_selection.gif" x-maintain-ratio="TRUE" style="width:484px; height:123px;" width="484" height="123" border="0" class="hcp3"></p>
+
+<p class="stile4">&nbsp;</p>
+
+<blockquote>
+<blockquote>
+<p class="stile4">Whenever you select a what-if analysis parameter the bottom 
+ section of the window will change in association with that parameter. 
+ A short description on selected parameter will appear on the right bottom 
+ section of the current window to help in modifying values. </p>
+
+<p class="stile4">Selectable parameters are different depending on the number 
+ and on the type of classes in current model:</p>
+
+<ul>
+	
+	<li class="kadov-p" class="kadov-p">If you have single classes you can select the parameters 
+ you want to change during simulation</li>
+	
+	<li class="kadov-p" class="kadov-p">If you have multiple classes you can select the parameters 
+ and chose if you want to apply them to all classes or just to one class.</li>
+</ul>
+
+<p class="stile6">&nbsp;</p>
+
+<p class="stile6">Number of Customers (only if there is a model with closed 
+ classes)<a name=customers
+			id=customers></a></p>
+
+<p class="stile4">&nbsp;</p>
+
+<p class="stile4">JSIM repeats the simulation changing the number of jobs 
+ in each interaction, starting from the number inserted when you have defined 
+ the closed classes to the number inserted here, in the form &quot;To&quot;.</p>
+</blockquote>
+</blockquote>
+
+<blockquote>
+<blockquote>
+
+ <div Align="center">
+ <table x-use-null-cells
+		style="float: aligncenter; width: 100%;"
+		width=100%>
+<col>
+
+<tr>
+<td class="hcp4">
+<p Align="center" class="hcp2"><img src="Images/customers.gif" style="width:369px; height:297px;" width="369" height="297" border="0" class="hcp1"></p>
+<p Align="center" class="hcp2">&nbsp;</p>
+<p class="stile4" style="text-align: left;" Align="left">In this figure (example of what-if analysis on only one 
+ class) you can see the initial value that is the sum of the populations 
+ of closed classes (modifiable from Define menu in &quot;Customer Classes&quot;.</p>
+<p class="stile4" style="text-align: left;" Align="left">You must insert the final value &quot;To&quot;, the steps 
+ for the simulation and the relative closed class. The new simulation will 
+ be calculated on the selected class only. </p>
+<p class="stile4">If you have chosen &quot;all-classes&quot;, the proportion 
+ of jobs in different classes will be kept constant, but the number of 
+ steps that can be executed may be very small. </p>
+<p class="stile4">The table shows the number of customers in each class, 
+ and the proportion of jobs for each class respect the sum of all jobs. 
+ The sum of all proportions is always 1. </td></tr>
+</table>
+</div>
+ <p>&nbsp;</p>
+</blockquote>
+</blockquote>
+
+<blockquote>
+<blockquote>
+<p class="stile6">Arrival Rate: (only if there are open classes)<a name=arrival
+	id=arrival></a></p>
+
+<p class="stile4" style="text-align: left;" Align="left">&nbsp;</p>
+
+<p class="stile4" style="text-align: left;" Align="left">Arrival rate is the number of job arriving in a station/device 
+ during a period of time T</p>
+
+<p class="stile4" style="text-align: left;" Align="left">&nbsp;</p>
+
+<p><span class="stile4">Select the class or all classes to repeat the simulation 
+ with different arrival rates. If you select all open classes, the measure 
+ is counted in % otherwise in jobs per second (j/s) . </span></p>
+</blockquote>
+</blockquote>
+
+<blockquote>
+<blockquote>
+
+ <table x-use-null-cells
+		style="width: 100%;"
+		width=100%>
+<col>
+
+<tr>
+<td class="hcp4">
+<p Align="center" class="hcp2"><img src="Images/ex1.gif" style="width:272px; height:134px;" width="272" height="134" border="0" class="hcp1"></p>
+<p Align="center" class="hcp2">&nbsp;</p>
+<p class="stile4">This figure shows an example of the arrival rate parameter 
+ with all classes selected. </p>
+<ol>
+	
+	<li class="kadov-p" class="kadov-p">Insert the value &quot;To&quot; that represents the 
+ final arrival rate (in this case in percentage). </li>
+	
+	<li class="kadov-p" class="kadov-p">Insert the number of steps that JSIM will perform 
+ to reach value &quot;To&quot;, starting from the initial value you have 
+ selected when you have defined the class. Initial value depends on the 
+ type of distribution selected in Arrival Rate for that class.</li>
+</ol></td></tr>
+</table>
+
+<p class="stile6">&nbsp;</p>
+</blockquote>
+</blockquote>
+
+<blockquote>
+<blockquote>
+<p class="stile6">Service time (for all types of classes)<a name=service
+															id=service></a></p>
+
+<p class="stile4" style="text-align: left;" Align="left">&nbsp;</p>
+
+<p class="stile4" style="text-align: left;" Align="left">Service Time is the time required per visit in a station 
+ k.</p>
+</blockquote>
+</blockquote>
+
+<blockquote>
+<blockquote>
+
+ <table x-use-null-cells
+		style="width: 100%;"
+		width=100%>
+<col>
+
+<tr>
+<td class="hcp4">
+<p Align="center" class="hcp2"><img src="Images/ex2_service_time.gif" style="width:235px; height:105px;" width="235" height="105" border="0" class="hcp1"></p>
+<p>&nbsp;</p>
+<p style="text-align: left;" Align="left"><span class="stile4">This is the figure you see, for example, 
+ when you select one class only. The simulation will be repeated changing 
+ the Service Time for the station you select in this form. The simulation 
+ will be repeated n times according to the number of steps you have chosen. 
+ The initial value is calculated on the type of class, the arrival distribution 
+ and the number of jobs in the initial state.</span></p>
+<p class="stile4" style="text-align: left;" Align="left">You must insert the final value for the Service Time, the 
+ station and the Class you want to apply to the simulation. </p>
+<p class="stile4" style="text-align: left;" Align="left">Select one class or All, if you choose a class only the 
+ measures is in Seconds (s), otherwise (All Classes-multiple classes model) 
+ is in %. The simulation engine repeats the calculations from initial value 
+ to final value in n step and will show you the results graph.</td></tr>
+</table>
+
+<p>&nbsp;</p>
+</blockquote>
+</blockquote>
+
+<blockquote>
+<blockquote>
+<p class="stile6">Seed (for all types of classes)<a name=seed
+													id=seed></a></p>
+
+<p class="stile4" style="text-align: left;" Align="left">&nbsp;</p>
+
+<p class="stile4" style="text-align: center;" Align="center"><img src="Images/sedd.gif" style="width:235px; height:18px;" width="235" height="18" border="0" class="hcp1"></p>
+
+<p class="stile4" style="text-align: left;" Align="left">&nbsp;</p>
+
+<p class="stile4" style="text-align: left;" Align="left">The Simulation engine uses a random algorithm to generate 
+ numbers and for each calculation it uses a &quot;seed&quot;. <span>However 
+ these numbers are not really random because the algorithm uses the usual 
+ seed to generate it. If you change the seed number you can obtain various 
+ random numbers that are different from other numbers which were previously 
+ generated.</span></p>
+
+<p class="stile4" style="text-align: left;" Align="left">If you repeat a simulation with usual seed, you obtain usual 
+ numbers and this doesn't realize a random algorithm or random numbers.</p>
+
+<p class="stile4" style="text-align: left;" Align="left">To generate different random numbers you should change the 
+ seed each time the simulation starts. </p>
+
+<p class="stile4" style="text-align: left;" Align="left">The initial value is already inserted in &quot;Simulation 
+ Parameters&quot; in Define menu, and in this type of simulation you should 
+ insert only the number of steps. </p>
+</blockquote>
+</blockquote>
+
+</body>
+</html>
