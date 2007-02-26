@@ -91,16 +91,19 @@ priority (conventionally a <em>small</em> priority number = low
  priority). Customers with the same priority are served FCFS.</li>
 	
 <li class="kadov-p" class="kadov-p"><span class="hcp1"><B>LCFS:</B></span>
-under the Last Come First Served queueing discipline, an arriving job preempts 
-the job currenlty in service (if any) and immediately begins service.
-When a job completion occurs, the most recently preempted job resumes service 
-at the point at which it was interrupted.</li>
+under the Last Come First Served queueing discipline, an arriving job jumps 
+ahead of the queue and will be served first, unless other jobs arrive before
+the one currently in service finishes.
+The LCFS discipline implemented in JSIM is not the preemptive-resume 
+type. 
+</li>
 	
 <li class="kadov-p" class="kadov-p"><span class="hcp1"><B>LCFS (Priority):</B></span> 
 under this policy, the next customer to be served is one with the highest 
 priority (conventionally a <em>small</em> priority number = low priority),
-so an arriving customer can only preempt the executing one if its priority
-is equal or greater. Customers with the same priority are served LCFS.</li>
+so an arriving customer can only jump ahead of the queue of the other jobs
+with the equal or smaller priority.
+Customers with the same priority are served LCFS.</li>
 </ul>
 </blockquote>
 
