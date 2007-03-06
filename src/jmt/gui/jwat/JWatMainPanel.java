@@ -28,14 +28,10 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
-import jmt.engine.jwat.VariableNumber;
-import jmt.engine.jwat.input.ProgressMonitorShow;
-import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.MainFuzzyKMean;
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.panels.AboutDialogFactory;
 import jmt.gui.common.resources.JMTImageLoader;
-import jmt.gui.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 
 public class JWatMainPanel extends WizardPanel {
 	//Start screen image

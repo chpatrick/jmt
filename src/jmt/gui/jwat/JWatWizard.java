@@ -12,8 +12,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
-import org.apache.log4j.Logger;
-
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.Wizard;
 

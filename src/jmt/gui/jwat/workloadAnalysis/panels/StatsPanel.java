@@ -81,7 +81,6 @@ import jmt.gui.jwat.workloadAnalysis.tables.JWatBivariateStatsTable;
 import jmt.gui.jwat.workloadAnalysis.tables.JWatBivariateStatsTableModel;
 import jmt.gui.jwat.workloadAnalysis.tables.JWatUnivariateStatsTable;
 import jmt.gui.jwat.workloadAnalysis.tables.JWatUnivariateStatsTableModel;
-import jmt.gui.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 
 public class StatsPanel extends WizardPanel implements CommonConstants,JWATConstants {
 	//UPDATE 15/11/2006

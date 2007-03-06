@@ -46,7 +46,6 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import jmt.framework.gui.controller.Manager;
 import jmt.gui.common.resources.JMTImageLoader;
-import jmt.gui.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 
 public class JWatStartScreen extends JFrame {
 	//Start screen image
@@ -76,7 +75,7 @@ public class JWatStartScreen extends JFrame {
 			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage(IMG_WL_ICON, new Dimension(BUTTONSIZE+10, BUTTONSIZE+10)));
 		}
 		public void actionPerformed(ActionEvent e) {
-			WorkloadAnalysisWizard.main(new String[]{"load"});
+//			WorkloadAnalysisWizard.main(new String[]{"load"});
 			JWatStartScreen.this.dispose();
 		}
 	};
@@ -96,7 +95,7 @@ public class JWatStartScreen extends JFrame {
 			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage(IMG_SAVE_ICON, new Dimension(BUTTONSIZE+10, BUTTONSIZE+10)));
 		}
 		public void actionPerformed(ActionEvent e) {
-			WorkloadAnalysisWizard.main(new String[]{"demo"});
+//			WorkloadAnalysisWizard.main(new String[]{"demo"});
 			JWatStartScreen.this.dispose();
 		}
 	};

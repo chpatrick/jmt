@@ -34,7 +34,6 @@ import jmt.gui.common.CommonConstants;
 import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.JWatWizard;
 import jmt.gui.jwat.MainJwatWizard;
-import jmt.gui.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 
 public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATConstants{
 	public static String absolutePath = "./";

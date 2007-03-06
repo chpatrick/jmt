@@ -25,15 +25,12 @@ import jmt.engine.jwat.VariableNumber;
 import jmt.engine.jwat.input.ProgressMonitorShow;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.MainKMean;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
-import jmt.framework.gui.image.ImageLoader;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.resources.JMTImageLoader;
-import jmt.gui.jwat.JWatMainPanel;
 import jmt.gui.jwat.JWatWizard;
 import jmt.gui.jwat.MainJwatWizard;
 import jmt.gui.jwat.workloadAnalysis.panels.ClusterPanel;
-import jmt.gui.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 
 //UPDATE 29/10/2006: + aggiunto pannello per selezione trasformazione da applicare alle variabili durange K-Means
 

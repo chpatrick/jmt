@@ -72,7 +72,6 @@ import jmt.gui.jwat.MainJwatWizard;
 import jmt.gui.jwat.workloadAnalysis.tables.JWatVariableInputTable;
 import jmt.gui.jwat.workloadAnalysis.tables.JWatVariableInputTableModel;
 import jmt.gui.jwat.workloadAnalysis.tables.listeners.RowDeleteListener;
-import jmt.gui.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 /**
  * Description: This class rapresents workload analysis tool input panel
  *

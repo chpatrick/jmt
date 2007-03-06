@@ -25,7 +25,6 @@ import jmt.engine.jwat.workloadAnalysis.clustering.Clustering;
 import jmt.engine.jwat.workloadAnalysis.exceptions.TrasformException;
 import jmt.gui.jwat.JWatModel;
 import jmt.gui.jwat.MainJwatWizard;
-import jmt.gui.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 
 public class ModelWorkloadAnalysis implements JWatModel{
 	// Matrice delle osservazioni

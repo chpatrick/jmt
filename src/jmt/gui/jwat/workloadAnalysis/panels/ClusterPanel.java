@@ -34,7 +34,6 @@ import jmt.gui.jwat.JWatWizard;
 import jmt.gui.jwat.MainJwatWizard;
 import jmt.gui.jwat.workloadAnalysis.clustering.fuzzyKMean.panels.FuzzyOptPanel;
 import jmt.gui.jwat.workloadAnalysis.clustering.kMean.panels.KMeansOptPanel;
-import jmt.gui.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 
 public class ClusterPanel extends WizardPanel implements CommonConstants,JWATConstants{
 	 
