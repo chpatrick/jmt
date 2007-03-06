@@ -1,7 +1,5 @@
 package jmt.engine.jwat.workloadAnalysis.clustering.kMean;
 
-import java.util.Vector;
-
 import jmt.engine.jwat.MatrixOsservazioni;
 import jmt.engine.jwat.workloadAnalysis.clustering.Clustering;
 import jmt.engine.jwat.workloadAnalysis.clustering.ClusteringInfos;

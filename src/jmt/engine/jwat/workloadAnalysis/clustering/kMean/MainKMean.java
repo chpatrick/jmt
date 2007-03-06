@@ -5,9 +5,9 @@ import java.lang.reflect.InvocationTargetException;
 import jmt.engine.jwat.MatrixOsservazioni;
 import jmt.engine.jwat.TimeConsumingWorker;
 import jmt.engine.jwat.VariableNumber;
+import jmt.engine.jwat.input.EventFinishAbort;
+import jmt.engine.jwat.input.ProgressShow;
 import jmt.engine.jwat.workloadAnalysis.clustering.EventClusteringDone;
-import jmt.gui.jwat.input.EventFinishAbort;
-import jmt.gui.jwat.input.ProgressShow;
 
 //UPDATE 29/10/2006: + aggiunto passaggio parametro costruttore del tipo di trasformazione da applicare a variabili selezionate
 //+ aggiunta trasformazione e anti a variabili selezionate per clustering			

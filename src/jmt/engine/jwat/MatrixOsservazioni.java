@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.Vector;
 
 import jmt.engine.jwat.filters.FilterOnVariable;
+import jmt.engine.jwat.input.VariableMapping;
 import jmt.engine.jwat.workloadAnalysis.exceptions.TrasformException;
-import jmt.gui.jwat.input.VariableMapping;
 /**
  * This class stores all information about observations, variables and bivariate statistics
  * @author Brambilla Davide, Fumagalli Claudio

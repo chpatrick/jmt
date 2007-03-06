@@ -12,6 +12,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
 
+import org.apache.log4j.Logger;
+
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.Wizard;
 
@@ -41,6 +43,8 @@ public class JWatWizard extends Wizard {
 
         JPanel buttons = new JPanel();
         btnList=new JButton[5];
+
+        /* Added first pane of all */
         
         JButton button_finish = new JButton(ACTION_FINISH);
         help.addHelp(button_finish, "Validates choices and start selected clustering");
@@ -88,8 +92,14 @@ public class JWatWizard extends Wizard {
 			}
 		}
 		if(toolBar != null){
-			toolBar.getComponent(4).setEnabled(enabl);
+			for(int i = 0; i < toolBar.getComponentCount(); i++){
+				if(toolBar.getComponent(i).getName() != null && toolBar.getComponent(i).getName().equals("Solve")){
+					toolBar.getComponent(i).setEnabled(enabl);
+					break;
+				}
+			}
 		}
+
 	}
 	
 	public void setActionButton(String button,AbstractAction a)
@@ -108,7 +118,7 @@ public class JWatWizard extends Wizard {
 	}
 	
 	public void setActionTool(AbstractAction a){
-		if(toolBar != null){
+		if(toolBar != null && toolBar.getComponentCount() >=4){
 			((JButton)toolBar.getComponent(4)).setAction(a);
 		}
 	}

@@ -19,7 +19,7 @@ package jmt.engine.jwat;
 
 import java.util.Date;
 
-import jmt.gui.jwat.input.VariableMapping;
+import jmt.engine.jwat.input.VariableMapping;
 
 public class VariableDate extends VariableNumber {
 //	 Utilizzata per mantenere l'associazione ra numero e stringa

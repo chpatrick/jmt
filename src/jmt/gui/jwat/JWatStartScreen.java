@@ -44,10 +44,9 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import jmt.engine.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 import jmt.framework.gui.controller.Manager;
 import jmt.gui.common.resources.JMTImageLoader;
-//import jwat.trafficAnalysis.burstiness.BurstWizard;
+import jmt.gui.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 
 public class JWatStartScreen extends JFrame {
 	//Start screen image
@@ -84,10 +83,11 @@ public class JWatStartScreen extends JFrame {
 	protected AbstractAction startTraffic = new AbstractAction(""){
 		{
 			putValue(Action.SHORT_DESCRIPTION, "Burstiness analysis");
-			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage(IMG_TRAFFIC_ICON, new Dimension(BUTTONSIZE, BUTTONSIZE)));
+			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage(IMG_TRAFFIC_ICON, new Dimension(BUTTONSIZE+10, BUTTONSIZE+10)));
 		}
 		public void actionPerformed(ActionEvent e) {
 			//BurstWizard.main(null);
+			JWatStartScreen.this.dispose();
 		}
 	};
 	protected AbstractAction startLoad = new AbstractAction(""){
@@ -116,7 +116,6 @@ public class JWatStartScreen extends JFrame {
 	 * jWAT Constructor.
 	 */
 	public JWatStartScreen(){
-		Manager.addWindow(this);	//Add jWAT screen reference to windows manager
 		initGUI();
 		addListeners();
 	}
@@ -178,7 +177,7 @@ public class JWatStartScreen extends JFrame {
         button.addMouseListener(rollover);
         if(action == buttonAction[3]) button.setVisible(false);
         if(action == buttonAction[0]) button.setEnabled(false);
-        if(action == buttonAction[2]) button.setEnabled(false);
+        //if(action == buttonAction[2]) button.setEnabled(false);
         //if(action == buttonAction[4]) button.setEnabled(false);
         panel.add(button);
         return panel;

@@ -1,6 +1,6 @@
 package jmt.engine.jwat.workloadAnalysis.clustering;
 
-import jmt.gui.jwat.input.EventStatus;
+import jmt.engine.jwat.input.EventStatus;
 
 public class EventClusteringDone implements EventStatus{
 

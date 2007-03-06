@@ -28,6 +28,7 @@ import jmt.gui.jaba.JabaWizard;
 import jmt.gui.jmodel.mainGui.MainWindow;
 import jmt.gui.jsim.JSIMMain;
 import jmt.gui.jwat.JWatStartScreen;
+import jmt.gui.jwat.MainJwatWizard;
 import jmt.jmarkov.MMQueues;
 
 import javax.swing.*;
@@ -117,7 +118,8 @@ public class GraphStartScreen extends JMTFrame{
         }
 
         public void actionPerformed(ActionEvent e) {
-        	JWatStartScreen.main(args);
+        	//JWatStartScreen.main(args);
+        	MainJwatWizard.main(args);
         }
     };
 

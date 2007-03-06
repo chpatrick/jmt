@@ -8,9 +8,9 @@ import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
-import jmt.framework.gui.controller.SwingWorker;
-import jmt.gui.jwat.input.EventStatus;
-import jmt.gui.jwat.input.ProgressShow;
+import jmt.engine.jwat.input.EventStatus;
+import jmt.engine.jwat.input.ProgressShow;
+import jmt.gui.jwat.SwingWorker;
 
 
 /**

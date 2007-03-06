@@ -18,18 +18,13 @@
   
 package jmt.engine.jwat.workloadAnalysis.clustering.kMean;
 
-import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Vector;
 
 import jmt.engine.jwat.MatrixOsservazioni;
 import jmt.engine.jwat.Observation;
 import jmt.engine.jwat.TimeConsumingWorker;
 import jmt.engine.jwat.VariableNumber;
-import jmt.gui.jwat.input.ProgressShow;
-//UPDATE 2/11/2006:	- eliminazione Vector dclusArray contenente le distanze punti-centri perche' MAI utilizzato
-//					+ inserimneto matrice di short delle appartenenze osservazioni ai cluster
 
 public class KMeanClusteringEngine{
 	private TimeConsumingWorker worker;

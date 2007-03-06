@@ -2,13 +2,9 @@ package jmt.engine.jwat.workloadAnalysis.utils;
 
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.util.Vector;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.plaf.basic.BasicComboPopup;
 import javax.swing.plaf.basic.ComboPopup;
-import javax.swing.plaf.metal.MetalComboBoxUI;
 
 import com.jgoodies.looks.plastic.PlasticComboBoxUI;
 

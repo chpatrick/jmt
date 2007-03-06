@@ -1,6 +1,6 @@
 package jmt.engine.jwat;
 
-import jmt.gui.jwat.input.EventStatus;
+import jmt.engine.jwat.input.EventStatus;
 
 public interface ProgressStatusListener {
 	

@@ -40,7 +40,6 @@ public class UnivariateStatistics {
 	// Observations list
 	private Observation[] list = null;
 	private int nVar;
-	
 	/**
 	 * Constructor: calculates univariate statistics using list observation array for the nVar-th variable
 	 * @param list list of observation sorted by nVar-th variable
@@ -154,11 +153,9 @@ public class UnivariateStatistics {
 	private void calculateStatistics(){
 		// Calculate mean and variance and quantili and interval
 		int qIndex = 1;
-		
 		int i = 0;
 		minimum = list[0].getIndex(nVar);
-		maximum = list[list.length - 1].getIndex(nVar);
-		
+		maximum = list[list.length - 1].getIndex(nVar);		
 		for(i=0;i<list.length;i++){
 			mean += list[i].getIndex(nVar);
 			variance += Math.pow(list[i].getIndex(nVar),2);
@@ -167,7 +164,7 @@ public class UnivariateStatistics {
 				quantili[qIndex - 1] = i;
 				qIndex++;
 			}
-		}
+		}		
 		/*** MEAN ***/
 		mean = mean / list.length;
 		/*** VARIANCE ***/
@@ -180,15 +177,13 @@ public class UnivariateStatistics {
 			skewness+=Math.pow((list[i].getIndex(nVar)-mean),3);
 			mu4+=Math.pow((list[i].getIndex(nVar)-mean),4);
 		}
-		
 		/*** SKEWNESS ***/
 		skewness*=list.length;
         skewness/=(list.length-1);
         skewness/=(list.length-2);
         skewness/=Math.sqrt(Math.pow(variance,3));
-        
         /*** KURTOSIS ***/
-		kurtosis = (float) (mu4 * list.length);
+		kurtosis = (float) (mu4 * (list.length - 1));
 		kurtosis /= Math.pow(list.length * variance,2);
 		kurtosis -= 3;
 	}

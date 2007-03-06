@@ -44,13 +44,11 @@ public class Observation implements Comparable{
 			observation[i] = obsList[i];
 	}
 	
-	public int getID()
-	{
+	public int getID(){
 		return ID;
 	}
 	
-	public void setID(int ID)
-	{
+	public void setID(int ID){
 		this.ID=ID;
 	}
 	/**
@@ -59,7 +57,7 @@ public class Observation implements Comparable{
 	 * @return a negative integer, zero, or a positive integer as this object 
 	 *         is less than, equal to, or greater than the specified object.
 	 */
-	public int compareTo(Object obj) {
+	public int compareTo(Object obj){
 		if(observation[sortIndex] > ((Observation)obj).getIndex(sortIndex))
             return 1;
         if(observation[sortIndex] == ((Observation)obj).getIndex(sortIndex))
@@ -72,8 +70,7 @@ public class Observation implements Comparable{
      * @throws ArrayIndexOutOfBoundsException Index out of the range allowed
      * @return Ith element
      */
-    public double getIndex(int Index) throws ArrayIndexOutOfBoundsException
-    {
+    public double getIndex(int Index) throws ArrayIndexOutOfBoundsException{
         /* Throws an exception if the Index value is out of range allowed */
         if(Index < 0 || Index >observation.length)
             throw new ArrayIndexOutOfBoundsException();
@@ -87,8 +84,7 @@ public class Observation implements Comparable{
      * @param val value to store
      * @throws ArrayIndexOutOfBoundsException Index out of the range allowed
      */
-    public void setIndex(int Index, double val) throws ArrayIndexOutOfBoundsException
-    {
+    public void setIndex(int Index, double val) throws ArrayIndexOutOfBoundsException{
         if(Index < 0 || Index >observation.length)
             throw new ArrayIndexOutOfBoundsException();
         else
@@ -98,16 +94,14 @@ public class Observation implements Comparable{
      * Returns the size ( number of elements ) of the observation
      * @return Size of the observation
      */
-    public int getSize()
-    {
+    public int getSize(){
         return observation.length;
     }
     /**
      * Sets up element on which perform compareTo method 
      * @param Index index of element
      */
-    public void setSorter(int Index) throws ArrayIndexOutOfBoundsException
-    {
+    public void setSorter(int Index) throws ArrayIndexOutOfBoundsException{
         if(Index >= 0 && Index < observation.length)
             sortIndex = Index;
         else

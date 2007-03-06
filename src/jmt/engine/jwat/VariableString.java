@@ -17,8 +17,8 @@
   */
 package jmt.engine.jwat;
 
-import jmt.gui.jwat.input.StringMapping;
-import jmt.gui.jwat.input.VariableMapping;
+import jmt.engine.jwat.input.StringMapping;
+import jmt.engine.jwat.input.VariableMapping;
 
 public class VariableString extends VariableNumber {
 	// Utilizzata per mantenere l'associazione ra numero e stringa

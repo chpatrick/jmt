@@ -40,4 +40,14 @@ public interface JWATConstants {
 	public final static String InputMsgAbort="Loading aborted by user";
 	public final static String InputMsgAbortWrongFormat="Wrong format, no data match the given pattern";
 	public final static String InputMsgFail="Fatal error in loading data!!";
+	
+	public static final int WORKLOAD_INPUT_PANEL = 1;
+	public static final int WORKLOAD_BIVARIATE_PANEL = 2;
+	public static final int WORKLOAD_CLUSTERING_PANEL = 3;
+	public static final int WORKLOAD_INFOCLUSTERING_PANEL = 4;
+	
+	public static final int TRAFFIC_INPUT_PANEL = 1;
+	public static final int TRAFFIC_TEXTUAL_PANEL = 2;
+	public static final int TRAFFIC_GRAPH_PANEL = 3;
+	public static final int TRAFFIC_GRAPHARRIVAL_PANEL = 4;
 }

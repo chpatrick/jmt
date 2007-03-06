@@ -21,16 +21,18 @@ package jmt.engine.jwat;
 import java.util.ArrayList;
 
 import jmt.engine.jwat.filters.FilterOnVariable;
+import jmt.engine.jwat.input.VariableMapping;
 import jmt.engine.jwat.workloadAnalysis.exceptions.TrasformException;
 import jmt.gui.jwat.JWATConstants;
-import jmt.gui.jwat.input.VariableMapping;
 
 /**
  * Description: This class represents a single variable which contains numerical
- * values. It provides statistics information and variable transofrmations
+ * values. It provides statistics information and variable transofrmations and
+ * sampling operations
  * 
- * @author Brambilla Davide Matr 667986, Fumagalli Claudio 667971 Class created
- *         1-ago-2006 8.08.30 Darksch
+ * @author Brambilla Davide Matr 667986, Fumagalli Claudio 667971 
+ * Created: 1-ago-2006 
+ * Modified: 27-dec-2006
  * 
  */
 public class VariableNumber implements JWATConstants {
@@ -40,7 +42,6 @@ public class VariableNumber implements JWATConstants {
 	public static final short STDEV = 2;
 	public static final short SAMPLING = 3;
 	public static final short NONE = 4;
-
 	/* List of observations sorted according to this variable */
 	protected Observation[] obsValue;
 	/* Original observations value keep as backup for undo sampling transformations */
@@ -58,9 +59,7 @@ public class VariableNumber implements JWATConstants {
 	/* List of transformations applied to variable */
 	private ArrayList listOfTransfs = new ArrayList(); //Integer
 	/* Dimensions of intervals and intervals */
-	private final int intervalSize = 100;
 	private final int intervalGraphSize = 1000;
-	private int[] interval = new int[intervalSize + 1];
 	private int[] intervalGraph = new int[intervalGraphSize + 1];
 	/* Number of observations */
 	private int numOss = 0;
@@ -188,16 +187,10 @@ public class VariableNumber implements JWATConstants {
 
 	// This method calculates index of intervals used to plot graphs
 	private void calculateIntervals() {
-		interval[0] = 0;
 		intervalGraph[0] = 0;
-
-		int posInt = 1;
 		int posIntG = 1;
-
 		double range = ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getRangeValue();
 		double min = ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getMinValue();
-
-		int nIns = 0;
 		int nInsG = 0;
 
 		for (int i = 0; i < numOss; i++) {
@@ -217,21 +210,11 @@ public class VariableNumber implements JWATConstants {
 			if(posIntG == 1001){
 				break;
 			}
-			// Graph interval ( 100 intervals )
-/*			if (obsValue[i].getIndex(nVar) <= range * (0.01 * posInt) + min	|| obsValue[i].getIndex(nVar) > range + min) {
-				nIns++;
-			} else {
-				if (nIns == 0) {
-					interval[posInt] = interval[posInt - 1];
-				} else {
-					interval[posInt] = i - 1;
-				}
-				posInt++;
-				nIns = 0;
-			}*/
+		}
+		for(;posIntG < 1001;posIntG++){
+			intervalGraph[posIntG] = obsValue.length - 1;
 		}
 		intervalGraph[1000] = obsValue.length - 1;
-		//interval[100] = obsValue.length - 1;
 	}
 
 	/** ******* TRANSFORMATIONS SECTION ********* */
@@ -416,11 +399,6 @@ public class VariableNumber implements JWATConstants {
 		}
 		ret += "X";
 		for(i= 0; i < j; i++) ret += ")";
-		/*if (i == 0)
-			ret = "X";
-		else
-			ret += "X)";
-        */
 		return ret;
 	}
 

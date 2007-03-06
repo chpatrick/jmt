@@ -2,7 +2,6 @@ package jmt.engine.jwat.workloadAnalysis.clustering.kMean;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Vector;
 
 import jmt.engine.jwat.MatrixOsservazioni;
 import jmt.engine.jwat.Observation;
@@ -67,7 +66,7 @@ public class ClusteringInfosKMean implements ClusteringInfos{
 		for (int i=0; i<varSel.length; i++) r[i]=0;
 		
 		double th = Math.pow(10,-10);
-		double	dfb = numCluster;
+		double	dfb = numCluster + 1;
 		tempStr = "Partition with " + (numCluster-1) + " clusters.";
         log  = tempStr + crlf;
 		log +="--------------------------------------------------------------------------------------------------------------------------------"+crlf+crlf;
@@ -88,7 +87,6 @@ public class ClusteringInfosKMean implements ClusteringInfos{
 			}
 			
 			dfw = sc - dfb - 2;
-			
 			if (sc == 0.) sc = th;
 			if (dfw== 0.) dfw= th;
 			if (dfb== 0.) dfb= th;
@@ -113,7 +111,6 @@ public class ClusteringInfosKMean implements ClusteringInfos{
 		}
 		tempStr = "Overall within sum of squares: " + Floatformatter.format(assw);
         log+= tempStr + crlf;
-        
 		if (assw == 0) {
 			omsr = 0;
 		} else {

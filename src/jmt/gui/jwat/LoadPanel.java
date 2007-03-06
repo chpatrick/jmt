@@ -19,9 +19,8 @@
 package jmt.gui.jwat;
 
 
-import javax.swing.*;
-
-import jmt.framework.gui.controller.SwingWorker;
+import javax.swing.JFrame;
+import javax.swing.ProgressMonitor;
 
 /**
  * Created by IntelliJ IDEA.

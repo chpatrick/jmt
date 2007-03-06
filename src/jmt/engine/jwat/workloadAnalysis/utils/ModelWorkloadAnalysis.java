@@ -23,13 +23,15 @@ import jmt.engine.jwat.MatrixOsservazioni;
 import jmt.engine.jwat.filters.FilterOnVariable;
 import jmt.engine.jwat.workloadAnalysis.clustering.Clustering;
 import jmt.engine.jwat.workloadAnalysis.exceptions.TrasformException;
-import jmt.engine.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
+import jmt.gui.jwat.JWatModel;
+import jmt.gui.jwat.MainJwatWizard;
+import jmt.gui.jwat.workloadAnalysis.wizard.WorkloadAnalysisWizard;
 
-public class ModelWorkloadAnalysis{
+public class ModelWorkloadAnalysis implements JWatModel{
 	// Matrice delle osservazioni
 	private MatrixOsservazioni matrix = null;
 	// Finestra di partenza
-	private WorkloadAnalysisWizard parent = null;
+	private MainJwatWizard parent = null;
 	// vector of the listener on set matrix
 	private Vector listenerOnMatrixChange = null; //<SetMatrixListener> 
 	// vector of the listener on change variable ( transformations )
@@ -43,7 +45,7 @@ public class ModelWorkloadAnalysis{
 	/**
 	 * @param par
 	 */
-	public ModelWorkloadAnalysis(WorkloadAnalysisWizard par){
+	public ModelWorkloadAnalysis(MainJwatWizard par){
 		parent = par;
 		listenerOnMatrixChange = new Vector();
 		listenerOnChangeVariable = new Vector();
@@ -66,6 +68,9 @@ public class ModelWorkloadAnalysis{
 		if(pos < clusterOperation.size()){
 			clusterOperation.remove(pos);
 			fireNotifyOnModifiedClustering();
+			System.err.println(Runtime.getRuntime().freeMemory());
+			System.gc();
+			System.err.println(Runtime.getRuntime().freeMemory());
 		}
 	}
 	
@@ -83,7 +88,7 @@ public class ModelWorkloadAnalysis{
 	/**
 	 * @return
 	 */
-	public WorkloadAnalysisWizard getParent() {
+	public MainJwatWizard getParent() {
 		return parent;
 	}
 	/**
