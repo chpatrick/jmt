@@ -70,14 +70,14 @@ public class ArrivalRatesPanel extends ParameterOptionPanel {
         super.setDividerSize(3);
 
         DESCRIPTION = "Repeat the simulation with different arrival rate for all open " +
-                "class.\n\n" +
+                "classes.\n\n" +
                 "The 'To' value represents the percentage of the final arrival rate with" +
-                " respect of the initial value.\n\n" +
+                " respect to the initial value.\n\n" +
                 "This option will not be available if there is at least one" +
                 " open class with an interarrival time distribution with infinite or null mean value.\n\n";
 
-        DESCRIPTION_SINGLE = "Repeat the simulation with different arrival rate for an open " +
-                "class, provided that its distribution of interarrival time has a finite, not null, mean value. " +
+        DESCRIPTION_SINGLE = "Repeat the simulation with different arrival rates for an open " +
+                "classes, provided that the interarrival time distribution has a finite, not null, mean value. " +
                 "The 'To' value is the final arrival rate.\n\n ";
 
         cd = classDef;

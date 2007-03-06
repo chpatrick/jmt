@@ -65,7 +65,8 @@ public class PopulationMixPanel extends ParameterOptionPanel {
         PMPA = pmpa;
         super.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         super.setDividerSize(3);
-        DESCRIPTION ="This type of analysis is available for closed models with two classes only.\n\n" +
+        DESCRIPTION ="This type of analysis is available for closed models with two classes only " +
+                "(and possibly other open classes) and it applies only to the closed classes.\n\n" +
                 "Repeat the simulation changing the proportion of jobs " +
                 "between the two closed classes, keeping constant the total number of jobs.\n\n" +
                 "The 'From' and 'To' values represent the initial and final values of " +

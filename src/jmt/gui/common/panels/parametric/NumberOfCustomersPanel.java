@@ -79,7 +79,7 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
         super.setOrientation(JSplitPane.HORIZONTAL_SPLIT);
         super.setDividerSize(3);
         DESCRIPTION = "Repeat the simulation with different number of jobs in each iteration, " +
-                    "starting from the current number of jobs in the close class.\n\n" +
+                    "starting from the current number of jobs in the closed class.\n\n" +
                     "The proportion of the number of jobs in the different " +
                     "classes will be kept constant, so the number of steps that can be practically executed " +
                     "may be very small (since only integer values are allowed).";
@@ -96,9 +96,9 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 
     public void initialize() {
         JPanel radioButtonsPanel = new JPanel(new GridLayout(2,1));
-        allClass = new JRadioButton("Increase number of job of all closed classes");
+        allClass = new JRadioButton("Increase number of jobs of all closed classes");
         allClass.setToolTipText("Increase population of all close classes");
-        singleClass = new JRadioButton("Increase number of job of one closed class");
+        singleClass = new JRadioButton("Increase number of jobs of one closed class");
         singleClass.setToolTipText("Increase only population of one class");
         ButtonGroup group = new ButtonGroup();
         group.add(allClass);

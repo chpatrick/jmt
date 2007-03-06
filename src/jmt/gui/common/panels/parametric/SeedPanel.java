@@ -61,7 +61,7 @@ public class SeedPanel extends ParameterOptionPanel {
         DESCRIPTION = "Repeat the simulations changing only the seed of the random number " +
                 "generator.\n\n" +
                 "The seeds used for the repeated simulations are randomly" +
-                " generated, starting from the seed inserted by the user in the 'Simulation Parameters' panel.";
+                " generated, starting from the seed specified in the 'Simulation Parameters' panel.";
         checker = new ParametricAnalysisChecker(cd,sd,simd);
         cd = classDef;
         sd = stationDef;

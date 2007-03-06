@@ -36,7 +36,7 @@ public interface ParametricAnalysis {
     public final String PA_TYPE_NUMBER_OF_CUSTOMERS = "Number of customers";
     public final String PA_TYPE_POPULATION_MIX = "Population mix";
     public final String PA_TYPE_SERVICE_TIMES = "Service times";
-    public final String PA_TYPE_ARRIVAL_RATE = "Arrival rate";
+    public final String PA_TYPE_ARRIVAL_RATE = "Arrival rates";
     public final String PA_TYPE_SEED = "Seed";
     public final int MAX_STEP_NUMBER = 1000;
 
