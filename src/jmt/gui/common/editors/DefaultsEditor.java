@@ -328,12 +328,12 @@ public class DefaultsEditor extends JDialog{
         addInputRouting("Routing Strategy", "stationRoutingStrategy", station_panel);
         stationpanelnum++;
         
-        // Drop rule
-        addInputDropRule("Drop Rule", "dropRule", station_panel);
-        stationpanelnum++;
-
         // Fork Blocking
         addInputInfSpinner("Fork Blocking","forkBlock", station_panel, 1, -1);
+        stationpanelnum++;
+        
+        // Drop rule
+        addInputDropRule("Drop Rule", "dropRule", station_panel);
         stationpanelnum++;
 
         // Number of jobs created for each fork link
