@@ -44,6 +44,7 @@ public class QuickHTMLViewer extends JMTFrame{
     public QuickHTMLViewer(URL url){
         this.centerWindow(640, 480);
         HtmlPanel html = new HtmlPanel(url);
+        html.setAntiAliasing(true);
         JScrollPane jsp = new JScrollPane(html,
                                           JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
                                           JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);

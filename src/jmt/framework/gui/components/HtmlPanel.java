@@ -17,6 +17,9 @@
   */
 package jmt.framework.gui.components;
 
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.io.IOException;
 import java.net.URL;
 
@@ -39,6 +42,7 @@ import jmt.framework.net.BareBonesBrowserLaunch;
  * @version 1.0
  */
 public class HtmlPanel extends JEditorPane {
+    private boolean antiAliasing;
     /**
      * Builds a new HtmlPanel
      */
@@ -77,6 +81,7 @@ public class HtmlPanel extends JEditorPane {
      * Initialize this component
      */
     private void init() {
+        antiAliasing = false;
         // By default disable editing
         setEditable(false);
         setContentType("text/html");
@@ -96,4 +101,37 @@ public class HtmlPanel extends JEditorPane {
             }
         });
     }
+    
+    /**
+     * Tells to use antialiasing to draw html text. Default is false.
+     * @param use true to use antialiasing, false otherwise.
+     */
+    public void setAntiAliasing(boolean use) {
+        this.antiAliasing = use;
+    }
+    
+    /**
+     * Tells if antialiasing is used to draw html text. Default is false.
+     * @return true if antialiasing is used.
+     */
+    public boolean isAntiAliasing() {
+        return this.antiAliasing;
+    }
+
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#printComponent(java.awt.Graphics)
+     */
+    protected void paintComponent(Graphics g) {
+        if (antiAliasing) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+            super.paintComponent(g2d);
+        } else {
+            super.paintComponent(g);
+        }
+    }
+    
+    
 }
