@@ -55,6 +55,7 @@ import jmt.framework.gui.listeners.AbstractJMTAction;
 import jmt.framework.gui.listeners.MenuAction;
 import jmt.framework.gui.wizard.Wizard;
 import jmt.framework.gui.wizard.WizardPanel;
+import jmt.gui.common.CommonConstants;
 import jmt.gui.common.panels.AboutDialogFactory;
 import jmt.gui.common.panels.WarningWindow;
 import jmt.gui.common.resources.JMTImageLoader;
@@ -448,7 +449,7 @@ public class JabaWizard extends Wizard {
 
         // Shows warnings if any
         if (retval == ModelLoader.WARNING) {
-            new WarningWindow(modelLoader.getLastWarnings(), this).show();
+            new WarningWindow(modelLoader.getLastWarnings(), this, modelLoader.getInputFileFormat(), CommonConstants.JABA).show();
         }
 		updatePanels();
 	}

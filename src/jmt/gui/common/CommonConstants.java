@@ -151,6 +151,16 @@ public interface CommonConstants {
             "Finite Capacity Region Characteristics" + HTML_FONT_TIT_END
             + HTML_FONT_NORM +"Define number, name, composition, global and class specific constraints for finite capacity regions."
             + HTML_FONT_NOR_END + HTML_END;
+    
+    public final static String CONVERSION_WARNING_DESCRIPTION = HTML_START + HTML_FONT_TITLE +
+    "Conversion performed" + HTML_FONT_TIT_END
+    + HTML_FONT_NORM +"Input model was automatically converted from <b>%PAR1%</b> to <b>%PAR2%</b>. " +
+    "The conversion was completed with the warnings shown below"
+    + HTML_FONT_NOR_END + HTML_END;
+    
+    // String tokens
+    public static final String PAR1 = "%PAR1%";
+    public static final String PAR2 = "%PAR2%";
 
     public static final int MAX_NUMBER_OF_CLASSES = 30;
     public static final int MAX_NUMBER_OF_STATIONS = 50;
@@ -165,4 +175,11 @@ public interface CommonConstants {
     public static final String WARNING_CLASS = "User classes have to be defined first";
     public static final String WARNING_STATIONS = "Stations have to be defined first";
     public static final String WARNING_ROUTING = "Station outgoing connections undefined";
+    
+    // Application names (used for input file format conversion messages)
+    public static final String JMVA = "JMVA";
+    public static final String JSIM = "JSIM";
+    public static final String JABA = "JABA";
+    public static final String JWAT = "JWAT";
+    public static final String SIMENGINE = "Simulation Engine XML data";
 }

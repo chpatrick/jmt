@@ -17,6 +17,7 @@
  */
 package jmt.gui.common.panels;
 
+import jmt.gui.common.CommonConstants;
 import jmt.gui.common.resources.JMTImageLoader;
 
 import javax.swing.*;
@@ -38,6 +39,7 @@ import java.util.Vector;
 public class WarningWindow {
     private JDialog dialog;
     private Vector warnings;
+    private JLabel header;
 
     private static final int BORDER = 20;
 
@@ -47,7 +49,7 @@ public class WarningWindow {
      * @param owner owner of the shown dialog. If it's not a Dialog nor a Frame, created
      * window will not be modal.
      */
-    public WarningWindow(Vector warnings, Window owner) {
+    public WarningWindow(Vector warnings, Window owner, String from, String to) {
         if (owner instanceof Dialog)
             dialog = new JDialog((Dialog)owner, true);
         else if (owner instanceof Frame)
@@ -55,13 +57,13 @@ public class WarningWindow {
         else
             dialog = new JDialog();
         this.warnings = warnings;
-        initDialog();
+        initDialog(from, to);
     }
 
     /**
      * Initialize internal dialog to be shown
      */
-    private void initDialog() {
+    private void initDialog(String from, String to) {
         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         dialog.setTitle("Model conversion terminated with warnings");
         int width = 600, height=450;
@@ -72,8 +74,15 @@ public class WarningWindow {
 
 
         // Creates a main panel with
-        JPanel main = new JPanel (new BorderLayout());
+        JPanel main = new JPanel (new BorderLayout(BORDER/2, BORDER/2));
         main.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
+        
+        // Creates header
+        String text = CommonConstants.CONVERSION_WARNING_DESCRIPTION;
+        text = text.replaceAll(CommonConstants.PAR1, from);
+        text = text.replaceAll(CommonConstants.PAR2, to);
+        header = new JLabel(text);
+        main.add(header, BorderLayout.NORTH);
 
         // Creates a box to show warnings
         ScrollablePanel box = new ScrollablePanel();

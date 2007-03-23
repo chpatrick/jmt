@@ -21,6 +21,7 @@ package jmt.gui.jmodel.controller;
 import jmt.framework.gui.components.JMTMenuBar;
 import jmt.framework.gui.components.JMTToolBar;
 import jmt.framework.gui.listeners.MenuAction;
+import jmt.gui.common.CommonConstants;
 import jmt.gui.common.controller.DispatcherThread;
 import jmt.gui.common.controller.ModelChecker;
 import jmt.gui.common.controller.PADispatcherThread;
@@ -585,7 +586,7 @@ public class Mediator implements GuiInterface {
             showErrorMessage(modelLoader.getFailureMotivation());
         // Shows warnings if any
         if (state == ModelLoader.WARNING) {
-            new WarningWindow(modelLoader.getLastWarnings(), mainWindow).show();
+            new WarningWindow(modelLoader.getLastWarnings(), mainWindow, modelLoader.getInputFileFormat(), CommonConstants.JSIM).show();
         }
 
 
@@ -1706,7 +1707,7 @@ public class Mediator implements GuiInterface {
                 ExactWizard jmva = new ExactWizard(output);
                 // If problems are found, shows warnings
                 if (res.size() > 0)
-                    new WarningWindow(res, jmva).show();
+                    new WarningWindow(res, jmva, CommonConstants.JSIM, CommonConstants.JMVA).show();
 
                 /* Old code to use XSLT transformer (really bugged and unfinished)
 

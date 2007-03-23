@@ -17,6 +17,7 @@
  */
 package jmt.gui.common.xml;
 
+import jmt.gui.common.CommonConstants;
 import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.definitions.ModelConverter;
 import jmt.gui.common.definitions.StoredResultsModel;
@@ -91,6 +92,8 @@ public class ModelLoader {
 
     // Warnings found during last conversion
     protected Vector warnings = new Vector();
+    
+    protected String fileFormat;
 
     protected XMLUtils xmlutils = new XMLUtils();
 
@@ -119,6 +122,13 @@ public class ModelLoader {
      */
     public Vector getLastWarnings() {
         return warnings;
+    }
+    
+    /**
+     * @return the format of opened input file
+     */
+    public String getInputFileFormat() {
+        return fileFormat;
     }
 
 // --- Methods used to load models ------------------------------------------------------------
@@ -154,18 +164,22 @@ public class ModelLoader {
                 switch (getXmlFileType(file.getAbsolutePath())) {
                     case XML_SIM:
                         XMLReader.loadModel(file, (CommonModel) modelData);
+                        fileFormat = CommonConstants.SIMENGINE;
                         break;
                     case XML_ARCHIVE:
                         XMLArchiver.loadModel((CommonModel) modelData, file);
+                        fileFormat = CommonConstants.JSIM;
                         break;
                     case XML_MVA:
                         ExactModel tmp = new ExactModel();
                         tmp.loadDocument(xmlutils.loadXML(file));
                         warnings.addAll(ModelConverter.convertJMVAtoJSIM(tmp, (CommonModel)modelData));
+                        fileFormat = CommonConstants.JMVA;
                         break;
                     case XML_JABA:
                         //TODO implement bridge JABA --> JSIM
                         failureMotivation = FAIL_CONVERSION + "JABA.";
+                        fileFormat = CommonConstants.JABA;
                         return FAILURE;
                     case XML_RES_SIM:
                         srm = new StoredResultsModel();
@@ -173,6 +187,7 @@ public class ModelLoader {
                         ((CommonModel)modelData).setSimulationResults(srm);
                         warnings.add("Loaded file contained simulation results only. Associated queuing network model is not available. " +
                                 "Results can be shown by selecting \"Show Results\" icon.");
+                        fileFormat = CommonConstants.SIMENGINE;
                         break;
                     case XML_RES_GUI:
                         srm = new StoredResultsModel();
@@ -180,6 +195,7 @@ public class ModelLoader {
                         ((CommonModel)modelData).setSimulationResults(srm);
                         warnings.add("Loaded file contained simulation results only. Associated queuing network model is not available. " +
                                 "Results can be shown by selecting \"Show Results\" icon.");
+                        fileFormat = CommonConstants.SIMENGINE;
                         break;
                     default:
                         failureMotivation = FAIL_UNKNOWN;
@@ -193,22 +209,27 @@ public class ModelLoader {
                     case XML_SIM:
                         XMLReader.loadModel(file, tmp);
                         warnings.addAll(ModelConverter.convertJSIMtoJMVA(tmp, (ExactModel)modelData));
+                        fileFormat = CommonConstants.SIMENGINE;
                         break;
                     case XML_ARCHIVE:
                         XMLArchiver.loadModel(tmp, file);
                         warnings.addAll(ModelConverter.convertJSIMtoJMVA(tmp, (ExactModel)modelData));
+                        fileFormat = CommonConstants.JSIM;
                         break;
                     case XML_JABA:
                         //TODO implement bridge JABA --> JMVA
                         failureMotivation = FAIL_CONVERSION + "JABA.";
+                        fileFormat = CommonConstants.JABA;
                         return FAILURE;
                     case XML_MVA:
                         ((ExactModel)modelData).loadDocument(xmlutils.loadXML(file));
+                        fileFormat = CommonConstants.JMVA;
                         break;
                     case XML_RES_SIM:
                     case XML_RES_GUI:
                         // This is silly to be opened in JMVA...
                         failureMotivation = FAIL_CONVERSION + "JSIM or JMODEL.";
+                        fileFormat = CommonConstants.SIMENGINE;
                         return FAILURE;
                     default:
                         failureMotivation = FAIL_UNKNOWN;

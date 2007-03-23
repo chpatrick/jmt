@@ -43,6 +43,7 @@ import jmt.framework.gui.listeners.AbstractJMTAction;
 import jmt.framework.gui.listeners.MenuAction;
 import jmt.framework.gui.wizard.Wizard;
 import jmt.framework.gui.wizard.WizardPanel;
+import jmt.gui.common.CommonConstants;
 import jmt.gui.common.Defaults;
 import jmt.gui.common.controller.DispatcherThread;
 import jmt.gui.common.controller.ModelChecker;
@@ -333,7 +334,7 @@ public class JSIMMain extends Wizard implements GuiInterface{
 
         // Shows warnings if any
         if (state == ModelLoader.WARNING) {
-            new WarningWindow(modelLoader.getLastWarnings(), this).show();
+            new WarningWindow(modelLoader.getLastWarnings(), this, modelLoader.getInputFileFormat(), CommonConstants.JSIM).show();
         }
 
     }
@@ -447,7 +448,7 @@ public class JSIMMain extends Wizard implements GuiInterface{
         ExactWizard jmva = new ExactWizard(output);
         // If problems are found, shows warnings
         if (res.size() > 0)
-            new WarningWindow(res, jmva).show();
+            new WarningWindow(res, jmva, CommonConstants.JSIM, CommonConstants.JMVA).show();
     }
 
     private void randomizeModel(){

@@ -54,6 +54,7 @@ import jmt.framework.gui.listeners.AbstractJMTAction;
 import jmt.framework.gui.listeners.MenuAction;
 import jmt.framework.gui.wizard.Wizard;
 import jmt.framework.gui.wizard.WizardPanel;
+import jmt.gui.common.CommonConstants;
 import jmt.gui.common.definitions.ModelConverter;
 import jmt.gui.common.panels.AboutDialogFactory;
 import jmt.gui.common.panels.WarningWindow;
@@ -448,7 +449,7 @@ public class ExactWizard extends Wizard {
 
         // Shows warnings if any
         if (retval == ModelLoader.WARNING) {
-            new WarningWindow(modelLoader.getLastWarnings(), this).show();
+            new WarningWindow(modelLoader.getLastWarnings(), this, modelLoader.getInputFileFormat(), CommonConstants.JMVA).show();
         }
     }
 
@@ -477,7 +478,7 @@ public class ExactWizard extends Wizard {
         jsim.show();
         // If problems are found, shows warnings
         if (res.size() > 0)
-            new WarningWindow(res, jsim).show();
+            new WarningWindow(res, jsim, CommonConstants.JMVA, CommonConstants.JSIM).show();
 
     }
 
