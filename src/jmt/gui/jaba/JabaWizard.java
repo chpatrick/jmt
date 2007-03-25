@@ -553,8 +553,8 @@ public class JabaWizard extends Wizard {
         //Modify Carlo Gimondi
         
         //Remove when 3 class convex hull Panel will create
-        if(data.getClasses()==3){tabbedPane.setEnabledAt(5, false);}
-        else{tabbedPane.setEnabledAt(5, true);}
+        if(data.getClasses()==3){tabbedPane.setEnabledAt(tabbedPane.getComponentCount()-2, false);}
+        else{tabbedPane.setEnabledAt(tabbedPane.getComponentCount()-2, true);}
         
         tabbedPane.setSelectedIndex(selectTab);
         repaint();
