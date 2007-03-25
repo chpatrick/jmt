@@ -192,7 +192,7 @@ A Fork station is characterized by the forking degree, i.e., the number of
 tasks routed on each one of its outgoing links, and the capacity,
 i.e., the maximum number of jobs that can be served by the station
 simultaneously.
-Therefore, the number of tasks a job is split into is given by the product of 
+Therefore, the number of sibling tasks a job is split into is given by the product of 
 the number of outgoing links from the Fork station times the forking degree.
 Note that a finite station capacity makes sense only when there is a join
 station downstream from the fork station that can recompose the split jobs.
@@ -203,7 +203,7 @@ Both the forking degree and the capacity are section parameters to be
 specified in the model.
 As an example,
 a Fork station with forking degree 1, connected to three Server stations,
-would split a job into 3 tasks (this is a traditional Fork-Join like behavior).
+would split a job into 3 sibling tasks (this is a traditional Fork-Join like behavior).
 If no Join station is connected to any of the three Servers, a warning
 message is displayed since the model could quickly saturate due to the
 extra load (3 more jobs) created in addition to each job entering the Fork
@@ -249,8 +249,8 @@ the corresponding Fork one.
 A Join station has no service time, as it is only used to recombine 
 the tasks a job had been previously split into and then route the job
 to some other station(s). 
-When a task arrives at a join station, it waits until all the other tasks
-of the same original job have arrived. At this time, the original job is
+When a task arrives at a join station, it waits until all its sibling tasks
+have arrived. At this time, the original job is
 recomposed and routed to the next station.
 If a job arrives from a station other than the corresponding Fork, i.e.,
 a job that was not split, it is simply routed to the next station. In this case
