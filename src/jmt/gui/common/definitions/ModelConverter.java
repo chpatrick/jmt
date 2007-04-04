@@ -187,6 +187,7 @@ public class ModelConverter {
         for (int i=0; i<input.getStations(); i++) {
             String name = input.getStationNames()[i];
             int type = input.getStationTypes()[i];
+            int servers = input.getStationServers()[i];
             double[][] serviceTimes = input.getServiceTimes()[i];
             Object key = null;
             switch (type) {
@@ -203,6 +204,7 @@ public class ModelConverter {
                 case ExactModel.STATION_LI:
                     // Load independent
                     key = output.addStation(name, CommonModel.STATION_TYPE_SERVER);
+                    output.setStationNumberOfServers(new Integer(servers), key);
                     // Sets distribution for each class
                     for (int j=0; j<classKeys.length; j++) {
                         Exponential ex = new Exponential();
@@ -214,6 +216,7 @@ public class ModelConverter {
                     // Load dependent - this is single class only, but here
                     // we support multiclass too (future extensions).
                     key = output.addStation(name, CommonModel.STATION_TYPE_SERVER);
+                    output.setStationNumberOfServers(new Integer(servers), key);
                     // Sets distribution for each class
                     for (int j=0; j<classKeys.length; j++) {
                         LDStrategy lds = new LDStrategy();
@@ -381,9 +384,17 @@ public class ModelConverter {
         double[][][] serviceTimes = new double[stationNum][classNum][];
         int[] stationTypes = new int[stationNum];
         String[] stationNames = new String[stationNum];
+        int[] stationServers = new int[stationNum];
         for (int st=0; st<stationNum; st++) {
             Object key = stationKeys.get(st);
             stationNames[st] = input.getStationName(key);
+            Integer serverNum = input.getStationNumberOfServers(key);
+            if (serverNum != null && serverNum.intValue() > 0) {
+                stationServers[st] = serverNum.intValue();
+            } else {
+                stationServers[st] = 1;
+            }//FIXME settare servers...
+            
             if (input.getStationType(key).equals(CommonModel.STATION_TYPE_DELAY))
                 stationTypes[st] = ExactModel.STATION_DELAY;
             else
@@ -430,6 +441,8 @@ public class ModelConverter {
         // Sets extracted values to output
         output.setStationNames(stationNames);
         stationNames = null;
+        output.setStationServers(stationServers);
+        stationServers = null;
         output.setStationTypes(stationTypes);
         stationTypes = null;
         output.setServiceTimes(serviceTimes);

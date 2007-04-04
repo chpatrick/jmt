@@ -75,6 +75,9 @@ public class ExactModel implements ExactConstants {
 	//station types
 	//dim: stationTypes[stations]
 	private int[] stationTypes;
+    //number of servers of each station
+    //dim: stationServers[stations]
+	private int[] stationServers;
 	//class names
 	//dim: classNames[classes]
 	private String[] classNames;
@@ -174,6 +177,7 @@ public class ExactModel implements ExactConstants {
 
 		stationNames = ArrayUtils.copy(e.stationNames);
 		stationTypes = ArrayUtils.copy(e.stationTypes);
+        stationServers = ArrayUtils.copy(e.stationServers);
 
 		classNames = ArrayUtils.copy(e.classNames);
 		classTypes = ArrayUtils.copy(e.classTypes);
@@ -314,6 +318,9 @@ public class ExactModel implements ExactConstants {
 
 		stationTypes = new int[1];
 		stationTypes[0] = STATION_LI;
+        
+        stationServers = new int[1];
+        stationServers[0] = 1;
 
 		classNames = new String[1];
 		classNames[0] = "Class1";
@@ -414,6 +421,26 @@ public class ExactModel implements ExactConstants {
 	public String[] getStationNames() {
 		return stationNames;
 	}
+    
+    /**
+     * @return the number of servers for each station. For delay stations this parameter is unsensed.
+     */
+    public int[] getStationServers() {
+        return stationServers;
+    }
+    
+    /**
+     * sets the number of servers for each station
+     * @param classNames the number of servers of each station
+     * @throws IllegalArgumentException if the array is not of the correct size
+     */
+    public void setStationServers(int[] stationServers) {
+        if (stationServers.length != stations) throw new IllegalArgumentException("stationServers.length != stations");
+        if (!changed) if (Arrays.equals(this.stationServers, stationServers)) return;
+        this.stationServers = stationServers;
+        changed = true;
+    }
+
 
 	/**
 	 * sets the names of the service centers.
@@ -585,6 +612,7 @@ public class ExactModel implements ExactConstants {
 
 		stationNames = ArrayUtils.resize(stationNames, stations, null);
 		stationTypes = ArrayUtils.resize(stationTypes, stations, STATION_LI);
+        stationServers = ArrayUtils.resize(stationServers, stations, 1);
 		ld = calcLD();
 
 		visits = ArrayUtils.resize2(visits, stations, classes, 1.0);
@@ -798,6 +826,7 @@ public class ExactModel implements ExactConstants {
 		stations--;
 		stationNames = ArrayUtils.delete(stationNames, i);
 		stationTypes = ArrayUtils.delete(stationTypes, i);
+        stationServers = ArrayUtils.delete(stationServers, i);
 
 		visits = ArrayUtils.delete2_1(visits, i);
 		serviceTimes = ArrayUtils.delete3_1(serviceTimes, i);
@@ -952,6 +981,7 @@ public class ExactModel implements ExactConstants {
 
                 station_element = root.createElement("listation");
 		        station_element.setAttribute("name", this.stationNames[stationNum]);
+                station_element.setAttribute("servers", String.valueOf(this.stationServers[stationNum]));
 
                 /* create the section for service times */
                 servicetimes_element = station_element.appendChild(root.createElement("servicetimes"));
@@ -1012,6 +1042,7 @@ public class ExactModel implements ExactConstants {
 
                 station_element = root.createElement("ldstation");
 		        station_element.setAttribute("name", this.stationNames[stationNum]);
+                station_element.setAttribute("servers", String.valueOf(this.stationServers[stationNum]));
 
                 /* create the section for service times */
                 servicetimes_element = station_element.appendChild(root.createElement("servicetimes"));
@@ -1045,7 +1076,6 @@ public class ExactModel implements ExactConstants {
             default:
                 station_element = null;
         }//end switch
-
 		return station_element;
 	}
 
@@ -1271,7 +1301,8 @@ public class ExactModel implements ExactConstants {
 
 		stationNames = new String[stations];
 		stationTypes = new int[stations];
-		visits = new double[stations][];
+		stationServers = new int[stations];
+        visits = new double[stations][];
 		serviceTimes = new double[stations][][];
 
         NodeList stationList = stationNode.getChildNodes();
@@ -1293,6 +1324,11 @@ public class ExactModel implements ExactConstants {
 			current = (Element) n;
 			statType = current.getTagName();
 			stationNames[stationNum] = current.getAttribute("name");
+            if (current.hasAttribute("servers")) {
+                stationServers[stationNum] = Integer.parseInt(current.getAttribute("servers"));
+            } else {
+                stationServers[stationNum] = 1;
+            }
 
 			/* make arrays */
 

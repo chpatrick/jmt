@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2006 rel. 3 sp1 (http://www.altova.com) by Marco (Neptuny) -->
 <!-- edited by Bertoli Marco (Politecnico di Milano) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="model">
@@ -109,6 +108,7 @@
 														</xs:element>
 													</xs:sequence>
 													<xs:attribute name="name" type="xs:string" use="required"/>
+													<xs:attribute name="servers" type="xs:integer" use="optional"/>
 												</xs:complexType>
 											</xs:element>
 											<xs:element name="ldstation">
@@ -146,6 +146,7 @@
 														</xs:element>
 													</xs:sequence>
 													<xs:attribute name="name" type="xs:string" use="required"/>
+													<xs:attribute name="servers" type="xs:integer" use="optional"/>
 												</xs:complexType>
 											</xs:element>
 										</xs:choice>
