@@ -171,7 +171,6 @@ public class SolverDispatcher {
 		Solver solver = null;
 
 		//init
-
 		String[] names = model.getStationNames();
 		int[] types = mapStationTypes(model.getStationTypes());
 		double[][] servicetimes = (ArrayUtils.extract13(model.getServiceTimes(), 0));
@@ -180,71 +179,43 @@ public class SolverDispatcher {
 		adjustLD(servicetimes, types);
 		double[] visits = ArrayUtils.extract1(model.getVisits(), 0);
 
-
-		if (model.isClosed()) {
-
-			//single closed
-
-            int pop = model.getMaxpop();
-
-            //NEW
-            //@author Stefano Omini
-
-            //First of all controls that the closed class has population greater than 0.
-            //Otherwise throws a InputDataException
-            if (pop <= 0) {
-                //error: population is not greater than 0.0
-                throw new InputDataException("Population must be greater than zero");
-            }
-
-            //end NEW
-
-			try {
+		try {
+            if (model.isClosed()) {
+                //single closed
+                int pop = model.getMaxpop();
+                //First of all controls that the closed class has population greater than 0.
+                //Otherwise throws a InputDataException
+                if (pop <= 0) {
+                    //error: population is not greater than 0.0
+                    throw new InputDataException("Population must be greater than zero");
+                }
                 solver = new SolverSingleClosedMVA(pop, stations);
-				if (!solver.input(names, types, servicetimes, visits)) {
+                if (!solver.input(names, types, servicetimes, visits)) {
                     fail("Error initializing MVASolver", null);
                 }
-			} catch (SolverException se) {
-				throw se;
-			} catch (Exception e) {
-				fail("Error initializing MVASolver", e);
-			}
-		} else {
+            } else {
+                /* single open */
+                double lambda = (model.getClassData())[0];
+                //First of all controls that the open class has rate greater than 0.
+                //Otherwise throws a InputDataException
+                if (lambda <= 0) {
+                    //error: rate is not greater than 0.0
+                    throw new InputDataException("Arrival rate must be greater than zero");
 
-			/* single open */
-            double lambda = (model.getClassData())[0];
-
-            //First of all controls that the open class has rate greater than 0.
-            //Otherwise throws a InputDataException
-            if (lambda <= 0) {
-                //error: rate is not greater than 0.0
-                throw new InputDataException("Arrival rate must be greater than zero");
-
-            }
-
-
-			try {
-				solver = new SolverSingleOpen(model.getClassData()[0], stations);
-				if (!solver.input(names, types, servicetimes, visits)) fail("Error initializing OpenSolver", null);
-
-                //NEW
-                //@author Stefano Omini
-                //controls processing capacity
-                if (!solver.hasSufficientProcessingCapacity()) {
-                    throw new InputDataException("One or more resources are in saturation. Decrease arrival rates or service demands.");
                 }
-                //end NEW
-            } catch (InputDataException rse) {
-				throw rse;
-			} catch (SolverException se) {
-				throw se;
-			} catch (Exception e) {
-				fail("Error initializing OpenSolver", e);
-			}
-		}
+                solver = new SolverSingleOpen(model.getClassData()[0], stations);
+                if (!solver.input(names, types, servicetimes, visits)) 
+                    fail("Error initializing OpenSolver", null);
+            }
+		} catch (Exception e) {
+            fail("Error initializing SingleClass solver", e);
+        }
+        //controls processing capacity
+        if (!solver.hasSufficientProcessingCapacity()) {
+            throw new InputDataException("One or more resources are in saturation. Decrease arrival rates or service demands.");
+        }
 
 		/* solve */
-
 		solver.solve();
 
 		/* solution */
@@ -261,11 +232,9 @@ public class SolverDispatcher {
 		ArrayUtils.insert1(util, solver.getUtilization(), 0);
 
 		model.setResults(ql, tp, rt, util, iteration);
-
 	}
 
 	private void solveMulti(ExactModel model, int iteration) throws SolverException, InputDataException {
-
         if (model.isLd()) {
             throw new SolverException("Multiclass solver does not support LD stations");
         }
@@ -283,12 +252,8 @@ public class SolverDispatcher {
 
 		SolverMulti solver = null;
 
-
-        //NEW
-        //@author Stefano Omini
         //First of all controls that all classes have population or rate greater than 0.
         //Otherwise throws a InputDataException
-
         for (int c = 0; c < classData.length; c++) {
             if (classData[c] <= 0) {
                 //error: population or rate not greater than 0.0
@@ -307,80 +272,37 @@ public class SolverDispatcher {
 
             }
         }
-
-        //end NEW
-
-
-		/* init */
-
-		if (model.isOpen()) {
-
-			try {
-				solver = new SolverMultiOpen(classes, stations, model.getClassData());
-				if (!solver.input(stationNames, stationTypes, serviceTimes, visits))
+		
+        /* init */
+        try {
+            if (model.isOpen()) {
+                solver = new SolverMultiOpen(classes, stations, model.getClassData());
+                if (!solver.input(stationNames, stationTypes, serviceTimes, visits))
                     fail("Error initializing SolverMultiOpen", null);
+            } else {
+                if (model.isClosed()) {
+                    SolverMultiClosedMVA closedsolver = new SolverMultiClosedMVA(classes, stations);
+                    //ClosedSolverMulti closedsolver = new ClosedSolverMulti(classes,stations,classPop);
+                    if (!closedsolver.input(stationNames, stationTypes, serviceTimes, visits,classPop)) 
+                        fail("Error initializing MVAMultiSolver", null);
+                    solver = closedsolver;
+                } else {
+                    //model is multiclass mixed
+                    int[] classTypes = mapClassTypes(model.getClassTypes());
 
-                //NEW
-                //@author Stefano Omini
-                //controls processing capacity
-                if (!solver.hasSufficientProcessingCapacity()) {
-                    throw new InputDataException("One or more resources are in saturation. Decrease arrival rates or service demands.");
-                }
-                //end NEW
-            } catch (InputDataException rse) {
-				throw rse;
-			} catch (SolverException se) {
-				throw se;
-			} catch (Exception e) {
-				fail("Error initializing SolverMultiOpen", e);
-			}
-		} else {
-
-
-			if (model.isClosed()) {
-
-				try {
-					SolverMultiClosedMVA closedsolver = new SolverMultiClosedMVA(classes, stations);
-					//ClosedSolverMulti closedsolver = new ClosedSolverMulti(classes,stations,classPop);
-					if (!closedsolver.input(stationNames, stationTypes, serviceTimes, visits,classPop)) fail("Error initializing MVAMultiSolver", null);
-					solver = closedsolver;
-				} catch (SolverException se) {
-					throw se;
-				} catch (Exception e) {
-					fail("Error initializing MVAMultiSolver", e);
-				}
-			} else {
-                //model is multiclass mixed
-				int[] classTypes = mapClassTypes(model.getClassTypes());
-
-				try {
-					SolverMultiMixed mixedsolver = new SolverMultiMixed(classes, stations);
-					if (!mixedsolver.input(stationNames, stationTypes, serviceTimes, visits, classData, classTypes)) fail("Error initializing SolverMultiMixed", null);
-
+                    SolverMultiMixed mixedsolver = new SolverMultiMixed(classes, stations);
                     solver = mixedsolver;
-                    //NEW
-                    //@author Stefano Omini
-                    //controls processing capacity
-                    if (!solver.hasSufficientProcessingCapacity()) {
-                        throw new InputDataException("One or more resources are in saturation. Decrease arrival rates or service demands.");
-                    }
-                    //end NEW
-                } catch (InputDataException rse) {
-                    throw rse;
-                } catch (SolverException se) {
-					throw se;
-				} catch (Exception e) {
-					fail("Error initializing SolverMuktiMixed", e);
-				}
-			}
-		}
-
-
-
-
-		solver.solve();
-
-		/* solution */
+                }
+            }
+        } catch (Exception e) {
+            fail("Error initializing Multiclass solver", e);
+        }
+        if (!solver.hasSufficientProcessingCapacity()) {
+            throw new InputDataException("One or more resources are in saturation. Decrease arrival rates or service demands.");
+        }
+        
+        /* solution */
+        solver.solve();
 
         double[][] ql = ArrayUtils.resize2(solver.getQueueLen(), stations, classes, 0);
 
