@@ -18,11 +18,12 @@
   
 package jmt.gui.exact.link;
 
+import jmt.analytical.SolverDispatcher;
 import jmt.common.exception.InputDataException;
 import jmt.common.exception.SolverException;
+import jmt.framework.xml.XMLUtils;
 import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.panels.ProgressWindow;
-import jmt.gui.exact.xml.XMLUtils;
 import org.xml.sax.SAXException;
 
 import java.io.File;

@@ -16,17 +16,17 @@
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
   
-package jmt.gui.exact.link;
+package jmt.analytical;
 
-import jmt.analytical.*;
+import java.io.File;
+
 import jmt.common.exception.InputDataException;
 import jmt.common.exception.SolverException;
 import jmt.framework.data.ArrayUtils;
+import jmt.framework.xml.XMLUtils;
 import jmt.gui.exact.ExactModel;
-import jmt.gui.exact.xml.XMLUtils;
-import org.xml.sax.SAXException;
 
-import java.io.File;
+import org.xml.sax.SAXException;
 
 
 /**

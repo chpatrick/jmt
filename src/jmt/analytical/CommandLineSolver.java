@@ -18,7 +18,6 @@
   
 package jmt.analytical;
 
-import jmt.gui.exact.link.SolverDispatcher;
 
 import java.io.File;
 

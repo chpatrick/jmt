@@ -27,11 +27,11 @@ import jmt.engine.dataAnalysis.TempMeasure;
 import jmt.engine.log.JSimLogger;
 import jmt.engine.simEngine.SimLoader;
 import jmt.engine.simEngine.Simulation;
+import jmt.framework.xml.XMLUtils;
 import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.definitions.ModelConverter;
 import jmt.gui.common.xml.XMLWriter;
 import jmt.gui.exact.ExactModel;
-import jmt.gui.exact.xml.XMLUtils;
 
 import java.io.File;
 import java.io.FileInputStream;

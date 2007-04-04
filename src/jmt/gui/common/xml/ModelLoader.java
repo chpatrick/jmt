@@ -17,12 +17,12 @@
  */
 package jmt.gui.common.xml;
 
+import jmt.framework.xml.XMLUtils;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.definitions.ModelConverter;
 import jmt.gui.common.definitions.StoredResultsModel;
 import jmt.gui.exact.ExactModel;
-import jmt.gui.exact.xml.XMLUtils;
 import jmt.gui.jaba.JabaModel;
 import org.w3c.dom.Document;
 

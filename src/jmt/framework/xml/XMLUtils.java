@@ -16,7 +16,7 @@
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
   
-package jmt.gui.exact.xml;
+package jmt.framework.xml;
 
 import jmt.common.xml.resources.XSDSchemaLoader;
 import org.apache.xerces.parsers.DOMParser;

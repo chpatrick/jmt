@@ -18,7 +18,7 @@
   
 package jmt.gui.exact;
 
-import jmt.gui.exact.link.SolverDispatcher;
+import jmt.analytical.SolverDispatcher;
 
 import java.io.File;
 
