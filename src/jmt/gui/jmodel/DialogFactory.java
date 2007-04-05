@@ -58,7 +58,6 @@ public class DialogFactory {
         dialogFrame.centerWindow(width,height);
         //dialogFrame.setResizable(false);
         dialogFrame.getContentPane().setLayout(new BorderLayout());
-        dialogFrame.setDefaultCloseOperation(JMTDialog.DO_NOTHING_ON_CLOSE);
 
         //Adds button bar
         JPanel buttonbar = new JPanel(new FlowLayout());
@@ -77,7 +76,7 @@ public class DialogFactory {
                         ((WizardPanel)cmp).lostFocus();
                     }
                 }
-                dialogFrame.dispose();
+                dialogFrame.close();
             }
         });
         buttonbar.add(closebutton);
