@@ -135,12 +135,12 @@ public class SolverDispatcher {
 		/* disable all change-checking */
 		model.discardChanges();
 		model.setChanged();
-
+		ModelFESCApproximator fesc = new ModelFESCApproximator(model, iteration);
 		try {
 			if (model.isMultiClass()) {
-				solveMulti(model,iteration);
+				solveMulti(fesc.getModelToBeSolved(),iteration);
 			} else {
-				solveSingle(model, iteration);
+				solveSingle(fesc.getModelToBeSolved(), iteration);
 			}
             // Notify termination of current model solution
             if (listener != null)
@@ -152,6 +152,7 @@ public class SolverDispatcher {
 		} catch (Exception e) {
 			fail("Unhandled exception", e);
         }
+        fesc.processModelAfterSolution();
 	}
 
 	private void fail(String message, Throwable t) throws SolverException {
@@ -241,7 +242,6 @@ public class SolverDispatcher {
 
 		int classes = model.getClasses();
 		int stations = model.getStations();
-		int pop = model.getMaxpop();
 
 		String[] stationNames = model.getStationNames();
 		int[] stationTypes = mapStationTypes(model.getStationTypes());
@@ -282,7 +282,6 @@ public class SolverDispatcher {
             } else {
                 if (model.isClosed()) {
                     SolverMultiClosedMVA closedsolver = new SolverMultiClosedMVA(classes, stations);
-                    //ClosedSolverMulti closedsolver = new ClosedSolverMulti(classes,stations,classPop);
                     if (!closedsolver.input(stationNames, stationTypes, serviceTimes, visits,classPop)) 
                         fail("Error initializing MVAMultiSolver", null);
                     solver = closedsolver;
@@ -291,6 +290,8 @@ public class SolverDispatcher {
                     int[] classTypes = mapClassTypes(model.getClassTypes());
 
                     SolverMultiMixed mixedsolver = new SolverMultiMixed(classes, stations);
+                    if (!mixedsolver.input(stationNames, stationTypes, serviceTimes, visits, classData, classTypes)) 
+                        fail("Error initializing SolverMultiMixed", null);
                     solver = mixedsolver;
                 }
             }

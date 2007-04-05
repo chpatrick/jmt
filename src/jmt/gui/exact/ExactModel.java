@@ -104,25 +104,25 @@ public class ExactModel implements ExactConstants {
 
 	/**
 	 * queue lengths
-	 * dim: queueLen[stations][classes+1][iterations]
+	 * dim: queueLen[stations][classes][iterations]
 	 */
 	private double[][][] queueLen;
 
 	/**
 	 * throughput
-	 * dim: throughput[stations+1][classes+1][iterations]
+	 * dim: throughput[stations][classes][iterations]
 	 */
 	private double[][][] throughput;
 
 	/**
 	 * residence times
-	 * dim: resTime[stations+1][classes+1][iterations]
+	 * dim: resTime[station][classes][iterations]
 	 */
 	private double[][][] resTimes;
 
 	/**
 	 * utilization
-	 * dim: util[stations][classes+1][iterations]
+	 * dim: util[stations][classes][iterations]
 	 */
 	private double[][][] util;
 
@@ -427,6 +427,18 @@ public class ExactModel implements ExactConstants {
      */
     public int[] getStationServers() {
         return stationServers;
+    }
+    
+    /**
+     * @return true if this model contains multiple server for a station.
+     */
+    public boolean isMultipleServers() {
+        for (int i=0; i<stations; i++) {
+            if (stationServers[i] > 1 && stationTypes[i] != ExactConstants.STATION_DELAY) {
+                return true;
+            }
+        }
+        return false;
     }
     
     /**
@@ -2094,7 +2106,8 @@ public class ExactModel implements ExactConstants {
         for (int j=0; j<stations;j++)  {
             // This is useful for LD stations only
             for (int k=0; k<serviceTimes[j][classIndex].length; k++) {
-                if (arrivalRate >= 1.0 / (serviceTimes[j][classIndex][k]*visits[j][classIndex]))
+                if (stationTypes[j] != STATION_DELAY &&
+                    arrivalRate >= 1.0 / ((serviceTimes[j][classIndex][k] / stationServers[j])*visits[j][classIndex]))
                     return true;
             }
         }
