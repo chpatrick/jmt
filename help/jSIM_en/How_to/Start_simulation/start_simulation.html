@@ -1,80 +1,133 @@
 <!doctype HTML public "-//W3C//DTD HTML 4.0 Frameset//EN">
 
+
+
 <html>
 
 
 
 
 
+
+
+
+
+
+
 <head>
+
 <title>Start Simulation</title>
+
 <meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+
 <meta name="generator" content="RoboHelp by eHelp Corporation www.ehelp.com">
+
 <link href="../../default.css" rel="stylesheet" type="text/css">
+
 </head>
+
 <body>
+
 <p class="stile1">Start Simulation</p>
+
+
 
 <p class="stile2">__________</p>
 
+
+
 <p class="stile4">&nbsp;</p>
 
-<p class="stile4">Whenever a model has been defined you are ready to start 
- the simulation.</p>
 
-<p class="stile4">To see more about simulation parameters see <a href="../Create_a_new_model/step_8_-_simulation.htm">here</a>. 
- </p>
 
+<p class="stile4">When a model is complete and the 
+
+<a href="../Create_a_new_model/step_8_-_simulation.htm">Simulation Parameters</a>
+
+have been defined, you can start the simulation clicking the <img src="Images/start2.png" alt="icon" width="21" height="21">  button or 
+  
+selecting &quot;Start Simulation&quot; from the Simulation menu</p>
+<p align="center" class="stile4">  <img src="Images/start1.png" alt="menu" width="412" height="156"></p>
 <blockquote>
-<p class="stile4">If the model contains errors the simulation won't start 
- and an error window will appear, see <a href="../Create_a_new_model/step_8_-_simulation.htm">errors 
- &amp; warnings</a>. </p>
 
-<p class="stile4">After the simulation has started correctly a new window 
- will appear:</p>
+<p class="stile4">If there are errors and/or potentially critical conditions,
+
+error and/or warning messages will appear, see
+
+<a href="../Create_a_new_model/step_8_-_simulation.htm">Errors 
+
+ &amp; warnings</a>. In case of errors, the simulation may not start
+
+and errors must be corrected. In case of warnings, you can still start
+
+the simulation but the results may not be consistent.
+
+</p>
+
+
+
+<p class="stile4">
+
+If another simulation was executed before the current one, JSIM will 
+
+warn you that previous simulation results will be overwritten if you
+
+continue. Click Yes if you do not care about previous results, click
+
+No if you wish to save previous results first and then restart the
+
+simulation.</p>
+<p align="center" class="stile4"><img src="Images/confirm.png" alt="confirm" width="408" height="122"></p>
+<p align="center" class="stile4">&nbsp;</p>
+<p class="stile4">After the simulation has started, the results window appears, with 
+
+partial values. In particular, for each performance index and for 
+
+each station the index has been selected, the current number of
+
+analyzed samples, the current average value and the graph of the latter
+
+are constantly updated.
+
+  <br>
+</p>
+<p class="stile4" style="text-align: center;" Align="center"><img src="Images/running.png" alt="running" width="520" height="325"></p>
+
+
+
+<p>&nbsp;</p>
+
+<p class="stile4">
+
+An hourglass indicates that the computation 
+
+of that index is not finished yet. A checkmark in a green bullet indicates
+
+that the computation of that index has successfully terminated.
+
+In this case, the minimum and maximum average are reported as well.
+
+<br>
+
+At the bottom of the result window are the simulation control buttons,
+
+namely the pause button (double bar), the start button (right pointing
+
+triangle), and the stop button (square). The status bar indicates the
+
+percentage of simulation executed so far, both graphically and numerically.
+
+</p>
+
+
+
+<p>&nbsp;</p>
+
 </blockquote>
 
-<p class="stile4" style="text-align: Center;" Align="center"><img src="Images/sim_window.gif"
-						alt=sim_window
-						x-maintain-ratio=TRUE
-						style="float: none;
-								border-style: none;
-								width: 531px;
-								height: 423px;
-								border-style: none;"
-						width=531
-						height=423
-						border=0> </p>
 
-<p class="stile4">&nbsp;</p>
-
-<blockquote>
-<p class="stile4">Under the windows there are the usual buttons to control 
- the simulation. It's also available a status bar reporting current progress 
- of simulation.</p>
-
-<p class="stile4">&nbsp;</p>
-
-<p class="stile4">In case of errors, at the end of the simulation the green 
- 'V' for every index per station won't appear and either a yellow '?' (question 
- mark) or a red 'X' will take its place.</p>
-
-<p class="stile4">&nbsp;</p>
-
-<p class="stile4">Usually this is due by some semantic error in the model, 
- not a syntactic one. For example if you define a performance index for 
- a station which has no users, the simulation will start but no index will 
- be calculated.</p>
-
-<p class="stile4">In this way the model is syntactically correct (so simulation 
- does start) but semantic is quite unclear (so a question mark or a 'x' 
- will appear in place of simulation results for that index).</p>
-
-<p class="stile4">&nbsp;</p>
-
-<p class="stile4">For more information see <a href="simulation_results.html">simulation 
- results</a> or <a href="error_warning.html">error &amp; warnings</a>.</p>
-</blockquote>
 
 </body>
+
 </html>
+

@@ -317,11 +317,11 @@ public class DefaultsEditor extends JDialog{
         stationpanelnum++;
 
         // Service strategy
-        addInputDistribution("Service Strategy", "stationServiceStrategy", station_panel);
+        addInputDistribution("Service Distribution", "stationServiceStrategy", station_panel);
         stationpanelnum++;
 
         // Delay service strategy
-        addInputDistribution("Delay Service Strategy", "stationDelayServiceStrategy", station_panel);
+        addInputDistribution("Delay Service Distribution", "stationDelayServiceStrategy", station_panel);
         stationpanelnum++;
 
         // Routing strategy
@@ -329,7 +329,7 @@ public class DefaultsEditor extends JDialog{
         stationpanelnum++;
         
         // Fork Blocking
-        addInputInfSpinner("Fork Blocking","forkBlock", station_panel, 1, -1);
+        addInputInfSpinner("Fork Capacity","forkBlock", station_panel, 1, -1);
         stationpanelnum++;
         
         // Drop rule
@@ -337,7 +337,7 @@ public class DefaultsEditor extends JDialog{
         stationpanelnum++;
 
         // Number of jobs created for each fork link
-        addInputSpinner("Fork tasks per link", "forkJobsPerLink", station_panel, 1);
+        addInputSpinner("Fork degree", "forkJobsPerLink", station_panel, 1);
         stationpanelnum++;
 
         SpringUtilities.makeCompactGrid(station_panel,
@@ -352,15 +352,15 @@ public class DefaultsEditor extends JDialog{
         sim_panel.setBorder(new TitledBorder(new EtchedBorder(), "Simulation parameters"));
 
         // Measure Alpha
-        addInput01Spinner("Measure Confidence Interval (0-1)","measureAlpha", sim_panel);
+        addInput01Spinner("Confidence Interval Measure (0-1)","measureAlpha", sim_panel);
         simpanelnum++;
 
         // Measure Precision
-        addInput01Spinner("Measure Max Relative Error (0-1)","measurePrecision", sim_panel);
+        addInput01Spinner("Max Relative Error Measure (0-1)","measurePrecision", sim_panel);
         simpanelnum++;
 
         // Simulation Seed
-        addInputSpinner("Simulation random seed","simulationSeed", sim_panel,1);
+        addInputSpinner("Simulation seed","simulationSeed", sim_panel,1);
         simpanelnum++;
 
         // Maximum duration
@@ -378,7 +378,7 @@ public class DefaultsEditor extends JDialog{
         // Francesco D'Aquino
         // Animation enabled/disabled
         simpanelnum++;
-        this.addInputAnimationSpinner("Number of classes in queue animations","isWithAnimation","representableClasses",sim_panel,1,10);
+        this.addInputAnimationSpinner("Number of classes in queue animation","isWithAnimation","representableClasses",sim_panel,1,10);
         // end Francesco D'Aquino
 
         SpringUtilities.makeCompactGrid(sim_panel,
