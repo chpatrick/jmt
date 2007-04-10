@@ -72,19 +72,17 @@ public final class Processor implements Runnable{
                         System.out.println("I've ended my work!");
                     }
 					nomorework = true;
+                    
 					frame.stopProcessing();
 					break;
 				} 
 			}
 
 		} catch (Exception e) {
+            //TODO sometimes exception are thrown here, when a finite number of steps is chosen.
 			if (DEBUG) {
                 System.out.println("Exception in 'Processor.java': " + e.getLocalizedMessage());
             }
-            //NEW
-            //@author Stefano Omini
-            e.printStackTrace();
-            //end NEW
 		}
 	}
 	
