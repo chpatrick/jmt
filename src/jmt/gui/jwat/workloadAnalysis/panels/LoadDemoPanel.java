@@ -1,3 +1,20 @@
+/**    
+  * Copyright (C) 2007, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+  * (at your option) any later version.
+
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+
+  * You should have received a copy of the GNU General Public License
+  * along with this program; if not, write to the Free Software
+  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  */
 package jmt.gui.jwat.workloadAnalysis.panels;
 
 import java.awt.BorderLayout;
@@ -95,7 +112,7 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 			public void valueChanged(ListSelectionEvent e) {
 				if(!e.getValueIsAdjusting()){
 					if(demos.getSelectedIndex() >=0){
-						//TODO inserire stringhe particolari per demo
+						//TODO insert peculiar strings for demo
 					}else{
 						demos.setSelectedIndex(1);
 					}
@@ -121,9 +138,9 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 		loadDemo.setBackground(Color.RED);
 		loadDemo.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
-					//Chiamata a loader
+					//Calls loader
 					try {
-						Loader.readData(absolutePath + "examples\\Demo1Data.jwat",Loader.loadParameter("Demo1"),new ProgressMonitorShow(LoadDemoPanel.this,"Loading Data...",1000),new InputStatusListener());
+						Loader.readData(absolutePath + "examples/Demo1Data.jwat",Loader.loadParameter("Demo1"),new ProgressMonitorShow(LoadDemoPanel.this,"Loading Data...",1000),new InputStatusListener());
 					} catch (FileNotFoundException ee) {
 						JOptionPane.showMessageDialog(LoadDemoPanel.this,"Loading aborted. File not found.","ABORT!!",JOptionPane.WARNING_MESSAGE);
 					}
@@ -155,7 +172,7 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 			
 		}
 		
-		//Abort caricamento file input
+		//Abort input file loading
 		private void abortEvent(EventFinishAbort e) {
 			JOptionPane.showMessageDialog(LoadDemoPanel.this,e.getMessage(),"LOADING ABORTED!!",JOptionPane.WARNING_MESSAGE);
 			canGoOn=false;
@@ -164,7 +181,7 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 			
 		}
 	
-//		dati caricati
+//		data loaded
 		private void finishedEvent(final EventFinishLoad e) {
 			model.setMatrix(e.getMatrix());
 			((JWatWizard)getParentWizard()).setEnableButton("Next >",true);
