@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2007, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -18,31 +18,30 @@
   
 package jmt.engine.simDispatcher;
 
-import jmt.common.xml.resources.XSDSchemaLoader;
-import org.apache.xerces.parsers.SAXParser;
-import org.apache.xml.utils.DefaultErrorHandler;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-import org.xml.sax.SAXException;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 
+import jmt.common.xml.resources.XSDSchemaLoader;
 
+import org.apache.xerces.parsers.SAXParser;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * @author Stefano
+ * @author Stefano, Bertoli Marco
  * @version 16-dic-2004 14.45.12
- * Mofified by Bertoli Marco
  */
 public class ModelTransformer {
 
@@ -108,7 +107,7 @@ public class ModelTransformer {
             parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
             parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
                     xsdSource);
-            parser.setErrorHandler(new DefaultErrorHandler());
+            parser.setErrorHandler(new DefaultHandler());
 
             //parse source file to validate it
             if (validate)
@@ -126,7 +125,7 @@ public class ModelTransformer {
             parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
             parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
                     xsdDestination);
-            parser.setErrorHandler(new DefaultErrorHandler());
+            parser.setErrorHandler(new DefaultHandler());
 
             //parse destination file to validate it
             if (validate)
