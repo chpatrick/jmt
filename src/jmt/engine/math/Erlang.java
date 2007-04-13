@@ -21,7 +21,7 @@ package jmt.engine.math;
  * <p><b>Name:</b> Erlang</p> 
  * <p><b>Description:</b> 
  * This class provides methods to compute Erlang-B and Erlang-C 
- * formulas with numerically stable algorithm.
+ * formulas with a numerically stable algorithm.
  * </p>
  * <p><b>Date:</b> 13/apr/07
  * <b>Time:</b> 10:43:39</p>
