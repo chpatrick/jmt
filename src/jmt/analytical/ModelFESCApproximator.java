@@ -38,6 +38,7 @@ public class ModelFESCApproximator {
     private ExactModel inputModel, outputModel;
     private int iteration;
     private int[] multipleServerList; // An array with mapping station -> added delay for multiple server handling
+    private boolean multipleServerApproximated;
     
     /**
      * Builds a new Model Approximator basing on given exact model
@@ -72,7 +73,8 @@ public class ModelFESCApproximator {
      */
     private void initApproximation() {
         // Multiserver approximation
-        if (inputModel.isMultipleServers()) {
+        if (inputModel.isMultipleServers() && !inputModel.isOpen()) {
+            multipleServerApproximated = true;
             outputModel = new ExactModel(inputModel);
             // Finds multi-server stations (will be replaced with station + delay)
             multipleServerList = new int[inputModel.getStations()];
@@ -111,6 +113,7 @@ public class ModelFESCApproximator {
             }
             outputModel.resetResults();
         } else {
+            multipleServerApproximated = false;
             outputModel = inputModel;
         }
     }
@@ -120,7 +123,7 @@ public class ModelFESCApproximator {
      */
     private void postProcessApproximation() {
         // Multiserver approximation
-        if (inputModel.isMultipleServers()) {
+        if (multipleServerApproximated) {
             double[][] q = new double[inputModel.getStations()][inputModel.getClasses()];
             double[][] r = new double[inputModel.getStations()][inputModel.getClasses()];
             double[][] u = new double[inputModel.getStations()][inputModel.getClasses()];

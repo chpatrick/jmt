@@ -67,14 +67,16 @@ public abstract class SolverMulti {
 	/** array of types of service centers */
     protected int[] type;
 
-	/** service times for each service station, class, population<br>
+    /** array of number of servers for each service center */
+    protected int[] servers;
+
+    /** service times for each service station, class, population<br>
      * [station] [class] [population] */
     protected double[][][] servTime;
 
 	/** visits for each service station, class<br>
      * [station] [class] */
     protected double[][] visits;
-
 
     /**---------------MODEL SOLUTION------------------------*/
 

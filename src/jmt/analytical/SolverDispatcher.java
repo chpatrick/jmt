@@ -137,7 +137,7 @@ public class SolverDispatcher {
 		model.setChanged();
 		ModelFESCApproximator fesc = new ModelFESCApproximator(model, iteration);
 		try {
-			if (model.isMultiClass()) {
+			if (model.isMultiClass() || model.isOpen()) {
 				solveMulti(fesc.getModelToBeSolved(),iteration);
 			} else {
 				solveSingle(fesc.getModelToBeSolved(), iteration);
@@ -195,6 +195,7 @@ public class SolverDispatcher {
                     fail("Error initializing MVASolver", null);
                 }
             } else {
+                //TODO this is not used any more (multi solver is used instead)
                 /* single open */
                 double lambda = (model.getClassData())[0];
                 //First of all controls that the open class has rate greater than 0.
@@ -276,7 +277,7 @@ public class SolverDispatcher {
         /* init */
         try {
             if (model.isOpen()) {
-                solver = new SolverMultiOpen(classes, stations, model.getClassData());
+                solver = new SolverMultiOpen(classes, stations, model.getClassData(), model.getStationServers());
                 if (!solver.input(stationNames, stationTypes, serviceTimes, visits))
                     fail("Error initializing SolverMultiOpen", null);
             } else {

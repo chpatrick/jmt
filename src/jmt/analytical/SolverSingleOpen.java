@@ -27,7 +27,7 @@ package jmt.analytical;
  * Prentice Hall, 1984<br>
  * </em>
  *
- *
+ * NOT USED
  * @author Federico Granata, Stefano Omini
  *
  */
