@@ -106,7 +106,7 @@ public class SolverMultiOpen extends SolverMulti {
                     //residence time of class i in station j
                     if (servers[j] == 1) {
                         // Single server (distiontion is done for speed purposes only)
-                        residenceTime[j][i] = visits[j][i] * servTime[j][i][0] * (1 + scUtilization[j]);
+                        residenceTime[j][i] = visits[j][i] * servTime[j][i][0] / (1 - scUtilization[j]);
                     } else {
                         // Multiple server (uses Erlang-C)
                         residenceTime[j][i] = visits[j][i] * servTime[j][i][0] * 
