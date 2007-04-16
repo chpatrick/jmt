@@ -20,6 +20,7 @@
 			</solutions>
 		</model>
 	</xsl:template>
+	
 	<xsl:template match="stations/*" mode="printSolutions">
 		<stationresults station="{@name}">
 			<xsl:apply-templates select="../../classes/*" mode="printSolutions">
@@ -29,6 +30,7 @@
 			</xsl:apply-templates>
 		</stationresults>
 	</xsl:template>
+	
 	<xsl:template match="classes/*" mode="printSolutions">
 		<xsl:param name="station"/>
 		<classresults customerclass="{@name}">
@@ -53,15 +55,18 @@
 					<measure measureType="{@measureType}" upperLimit="{@upperLimit}" meanValue="{@meanValue}" lowerLimit="{@lowerLimit}" successful="{@successful}" analyzedSamples="{@analyzedSamples}" discardedSamples="{@discardedSamples}" precision="{@precision}" alfa="{@alfa}" maxSamples="{@maxSamples}"/>
 		</xsl:for-each>
 	</xsl:template>
+	
 	<xsl:template match="blockingRegion" mode="printSolutions_blocking">
 		<regionresults region="{@name}">
 			<xsl:apply-templates select="../parameters/classes/*" mode="printSolutions_blocking">
 				<xsl:with-param name="station">
-					<xsl:value-of select="concat(@name, '_inputStation')"/>
+					<xsl:value-of select="@name"/>
+<!--					<xsl:value-of select="concat(@name, '_inputStation')"/> -->
 				</xsl:with-param>
 			</xsl:apply-templates>
 		</regionresults>
 	</xsl:template>
+	
 	<xsl:template match="classes/*" mode="printSolutions_blocking">
 		<xsl:param name="station"/>
 		<classresults customerclass="{@name}">
@@ -75,6 +80,7 @@
 			</xsl:call-template>
 		</classresults>
 	</xsl:template>
+	
 	<xsl:template name="printSolution_blocking">
 		<xsl:param name="station"/>
 		<xsl:param name="class"/>
