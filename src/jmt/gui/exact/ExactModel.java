@@ -18,6 +18,7 @@
   
 package jmt.gui.exact;
 
+import jmt.analytical.SolverMulti;
 import jmt.framework.data.ArrayUtils;
 
 import org.w3c.dom.Document;
@@ -2051,42 +2052,47 @@ public class ExactModel implements ExactConstants {
      */
     public int checkSaturation() {
         // Checks saturation without what-if analysis
-        for (int i=0; i<classes;i++)
-            if (classTypes[i] == ExactConstants.CLASS_OPEN)
-                if (checkForSaturation(i, classData[i]))
-                    return SATURATION;
-
-        // Now checks saturation for whatif analysis
+        if(checkForSaturation(classData)) {
+            return SATURATION;
+        }
         if (isWhatIf()) {
+            double[] newClassData = (double[]) classData.clone();
             double maxValue = whatIfValues[iterations - 1];
             // Checks if values are inverted
             if (whatIfValues[0] > maxValue)
                 maxValue = whatIfValues[0];
             // Change arrival rate of a single class only
             if (whatIfType.equals(WHAT_IF_ARRIVAL) && whatIfClass >= 0) {
-                if (checkForSaturation(whatIfClass, maxValue))
-                    return SATURATION_WHATIF;
+                newClassData[whatIfClass] = maxValue;
             }
             // Change arrival rate of all open classes
             else if (whatIfType.equals(WHAT_IF_ARRIVAL) && whatIfClass < 0) {
-                for (int i=0; i<classes;i++)
-                    if (classTypes[i] == ExactConstants.CLASS_OPEN)
-                        if (checkForSaturation(i, maxValue * classData[i]))
-                            return SATURATION_WHATIF;
+                for (int i=0; i<classes;i++) {
+                    if (classTypes[i] == ExactConstants.CLASS_OPEN) {
+                        newClassData[i] *= maxValue;
+                    }
+                }
             }
             // Change service demands of a LI station for a single (open) class only
             else if (whatIfType.equals(WHAT_IF_DEMANDS) && whatIfClass >= 0 && classTypes[whatIfClass] == CLASS_OPEN) {
-                if (classData[whatIfClass] >= 1.0 / maxValue)
-                    return SATURATION_WHATIF;
+                // Modify arrival rate as it's the same for utilization check
+                double factor = maxValue / serviceTimes[whatIfClass][whatIfStation][0];
+                newClassData[whatIfClass]*= factor;
             }
             // Change service demands of a LI station for all (open) classes
             else if (whatIfType.equals(WHAT_IF_DEMANDS) && whatIfClass < 0) {
-                for (int i=0; i<classes;i++)
-                    if (classTypes[i] == ExactConstants.CLASS_OPEN)
-                        if (classData[i] >= 1.0 / (maxValue * serviceTimes[whatIfStation][i][0]*visits[whatIfStation][i]))
-                            return SATURATION_WHATIF;
+                for (int i=0; i<classes;i++) {
+                    if (classTypes[i] == ExactConstants.CLASS_OPEN) {
+                        // Modify arrival rate as it's the same for utilization check
+                        newClassData[whatIfClass] *= maxValue;
+                    }
+                }
             }
-
+            
+            // Now checks saturation
+            if(checkForSaturation(newClassData)) {
+                return SATURATION_WHATIF;
+            }
         }
         return NO_SATURATION;
     }
@@ -2096,21 +2102,30 @@ public class ExactModel implements ExactConstants {
     public static final int SATURATION_WHATIF = 2;
 
     /**
-     * Helper method that checks if a class will saturate,
-     * given its index and its arrival rate
-     * @param classIndex index of the class to be checked
-     * @param arrivalRate arrival rate to be checked for saturation
-     * @return true if class saturates, false otherwise
+     * Checks current model for saturation, given arrival rates for customer classes
+     * @param classData arrival rates for customer classes
+     * @return true if model will saturate, false otherwise
      */
-    private boolean checkForSaturation(int classIndex, double arrivalRate) {
-        for (int j=0; j<stations;j++)  {
-            // This is useful for LD stations only
-            for (int k=0; k<serviceTimes[j][classIndex].length; k++) {
-                if (stationTypes[j] != STATION_DELAY &&
-                    arrivalRate >= 1.0 / ((serviceTimes[j][classIndex][k] / stationServers[j])*visits[j][classIndex]))
-                    return true;
+    private boolean checkForSaturation(double[] classData) {
+        for (int i = 0; i < stations; i++) {
+            if (stationTypes[i] == STATION_DELAY) {
+                //delay station: don't check saturation
+                continue;
+            }
+
+            //utiliz is the aggregate utilization for station j
+            double utiliz = 0;
+            for (int j = 0; j < classes; j++) {
+                //consider only open classes
+                if (classTypes[j] == CLASS_OPEN) {
+                    utiliz += classData[j] * visits[i][j] * serviceTimes[i][j][0];
+                }
+            }
+            if (utiliz >= stationServers[i]) {
+                return true;
             }
         }
+        //there are no stations in saturation
         return false;
     }
 //-----------------------------------------------------------------------------------

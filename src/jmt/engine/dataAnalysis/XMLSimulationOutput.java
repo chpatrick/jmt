@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2007, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -18,15 +18,7 @@
   
 package jmt.engine.dataAnalysis;
 
-import jmt.common.exception.NetException;
-import jmt.engine.NodeSections.BlockingQueue;
-import jmt.engine.NodeSections.Queue;
-import jmt.engine.QueueNet.*;
-import jmt.engine.log.JSimLogger;
-import jmt.engine.simEngine.Simulation;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import java.io.File;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -35,7 +27,20 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.File;
+
+import jmt.common.exception.NetException;
+import jmt.engine.NodeSections.BlockingQueue;
+import jmt.engine.QueueNet.BlockingRegion;
+import jmt.engine.QueueNet.JobClass;
+import jmt.engine.QueueNet.NetNode;
+import jmt.engine.QueueNet.NodeSection;
+import jmt.engine.QueueNet.SimConstants;
+import jmt.engine.QueueNet.SimulationOutput;
+import jmt.engine.log.JSimLogger;
+import jmt.engine.simEngine.Simulation;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 
 /**
@@ -381,109 +386,6 @@ public class XMLSimulationOutput extends SimulationOutput {
         }
 
     }
-    /**
-     * Writes the output of the drop measures, when blocking regions have been defined.
-     */
-    public void writeMeasures_queueDroppedJobs() {
-
-        NodeList nodeList = sim.getNetwork().getNodes();
-        NetNode[] nodes = new NetNode[nodeList.size()];
-
-        for (int n = 0; n < nodeList.size(); n++) {
-            nodes[n] = nodeList.get(n);
-        }
-
-        JobClass[] classes = sim.getClasses();
-        int classNumber = classes.length;
-
-        if (nodes != null) {
-            //at least one region has been defined
-
-            for (int n = 0; n < nodes.length; n++) {
-                try {
-                    //retrieves the blocking queue of the input station
-                    NodeSection ns = nodes[n].getSection(NodeSection.INPUT);
-
-                    if (ns instanceof Queue) {
-
-                        if (((Queue) ns).hasInfiniteQueue()) {
-                            //infinite queue, no dropped jobs
-
-                            //skip this station
-                            continue;
-                        }
-
-                        //For each class count dropped jobs
-                        for (int c = 0; c < classNumber; c++) {
-
-                            Element el = doc.createElement("measure");
-                            root.appendChild(el);
-
-                            String node = nodes[n].getName();
-                            String className = classes[c].getName();
-
-                            el.setAttribute("station", node);
-                            el.setAttribute("class", className);
-
-                            //after list auto-refresh has been disabled in class Queue, drop jobs are
-                            //no longer included in NodeSection arrived jobs (while they are still included
-                            //in NetNode arrived jobs)
-
-                            //arrived jobs = jobs arrived and put into queue
-                            //dropped jobs = jobs arrived when the queue was full
-                            //
-                            // then
-                            //
-                            // total jobs = arrived jobs + dropped jobs
-
-                            int notDroppedJobs = ns.getIntSectionProperty(NodeSection.PROPERTY_ID_ARRIVED_JOBS);
-                            int droppedJobs = ((Queue) ns).getDroppedJobPerClass(c);
-
-                            double drop_percentage = (double) droppedJobs / (notDroppedJobs + droppedJobs);
-
-                            el.setAttribute("meanValue", Double.toString(drop_percentage));
-
-                            //System.out.println("Loss probability: " + Double.toString(drop_percentage));
-                            //System.out.println(Double.toString(drop_percentage));
-
-
-                            //always true: it is not a confidence interval but an exact value
-                            boolean success = true;
-                            el.setAttribute("successful", Boolean.toString(success));
-                            el.setAttribute("measureType", "Dropped jobs");
-
-                            //number of analyzed and discarded samples: in this case their meaning is
-                            //received jobs and dropped jobs
-                            el.setAttribute("analyzedSamples", Integer.toString(droppedJobs + notDroppedJobs));
-                            el.setAttribute("discardedSamples", Integer.toString(droppedJobs));
-
-
-                            /*
-                            //analyzer confidence requirements
-                            el.setAttribute("maxSamples", Integer.toString(0));
-                            el.setAttribute("precision", Double.toString(0));
-                            el.setAttribute("alfa", Double.toString(0));
-                            */
-                            logger.debug("Dropped jobs percentage for " + node + "-" + className + ": " + drop_percentage);
-
-                        }
-                    }
-
-                } catch (NetException ne) {
-                    ne.printStackTrace();
-                    return;
-                }
-            }
-
-        }
-
-    }
-
-
-
-
-
-
 
     public File writeAllMeasures() {
         for (int i = 0; i < measureList.length; i++) {

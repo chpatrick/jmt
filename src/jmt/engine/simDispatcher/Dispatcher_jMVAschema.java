@@ -18,6 +18,14 @@
   
 package jmt.engine.simDispatcher;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Vector;
+
 import jmt.common.exception.LoadException;
 import jmt.common.exception.NetException;
 import jmt.engine.QueueNet.NetSystem;
@@ -30,19 +38,14 @@ import jmt.engine.simEngine.Simulation;
 import jmt.framework.xml.XMLUtils;
 import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.definitions.ModelConverter;
+import jmt.gui.common.definitions.SimulationDefinition;
+import jmt.gui.common.xml.XMLConstantNames;
 import jmt.gui.common.xml.XMLWriter;
 import jmt.gui.exact.ExactModel;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Vector;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -426,17 +429,41 @@ public class Dispatcher_jMVAschema {
         Document modelDocument = XMLWriter.getDocument(simModel, outputModel);
         logger.debug("Converted JMVA xml to JSIM one");
         // Adds blocking region informations to model document
-        NodeList blockingList = inputDoc.getElementsByTagName("blockingRegion");
-        // If model has one blocking region only, adds router to it.
+        NodeList blockingList = inputDoc.getElementsByTagName(XMLConstantNames.XML_E_REGION);
+        // If model has one blocking region only, adds router to it (otherwise a job will exit from
+        // region when it's not requested
         if (blockingList.getLength() == 1) {
             Element region = (Element) blockingList.item(0);
-            Element router = inputDoc.createElement("regionNode");
-            router.setAttribute("nodeName","Router");
+            Element router = inputDoc.createElement(XMLConstantNames.XML_E_REGIONNODE);
+            router.setAttribute(XMLConstantNames.XML_A_REGIONNODE_NAME,"Router");
             region.insertBefore(router, region.getFirstChild());
         }
-        
-        for (int i=0; i<blockingList.getLength(); i++)
-            modelDocument.getDocumentElement().appendChild(modelDocument.importNode(blockingList.item(i), true));
+        Element root = modelDocument.getDocumentElement();
+        NodeList preload = root.getElementsByTagName(XMLConstantNames.XML_E_PRELOAD);
+        NodeList measures = root.getElementsByTagName(XMLConstantNames.XML_E_MEASURE);
+        Node lastMeasure = measures.getLength() > 0 ? measures.item(measures.getLength() - 1) : null;
+        for (int i=0; i<blockingList.getLength(); i++) {
+            Element imported = (Element) modelDocument.importNode(blockingList.item(i), true);
+            String name = imported.getAttribute(XMLConstantNames.XML_A_REGION_NAME);
+            if (preload.getLength() > 0) {
+                root.insertBefore(imported, preload.item(0));
+            } else {
+                root.appendChild(imported);
+            }
+            // Adds blocking region measures
+            Element dropRate = (Element) lastMeasure.cloneNode(true);
+            dropRate.setAttribute(XMLConstantNames.XML_A_MEASURE_NODETYPE, XMLConstantNames.NODETYPE_REGION);
+            dropRate.setAttribute(XMLConstantNames.XML_A_MEASURE_STATION, name);
+            dropRate.setAttribute(XMLConstantNames.XML_A_MEASURE_TYPE, SimulationDefinition.MEASURE_DR);
+            // For each class add drop rate measure
+            for (int j=0;j<exact.getClasses(); j++) {
+                Element cloned = (Element) dropRate.cloneNode(true);
+                cloned.setAttribute(XMLConstantNames.XML_A_MEASURE_CLASS, exact.getClassNames()[j]);
+                cloned.setAttribute(XMLConstantNames.XML_A_MEASURE_NAME, exact.getClassNames()[j] + "_" + name + "_Drop Rate");
+                root.insertBefore(cloned, lastMeasure);
+                lastMeasure = cloned;
+            }
+        }
         logger.debug("Added finite capacity regions");
         
         XMLWriter.writeXML(outputModel, modelDocument);
@@ -495,7 +522,7 @@ public class Dispatcher_jMVAschema {
             //Avoid saturation
             if (sim.getAllRegions() == null) {
             	//if there are no regions...
-            	boolean sufficientProcessingCapacity = checkProcessingCapacity();
+            	boolean sufficientProcessingCapacity = inputModel.checkSaturation() == ExactModel.NO_SATURATION;
 
                 if (!sufficientProcessingCapacity) {
                     logger.warn("Current workload causes system saturation. Simulation will not be started.");
@@ -993,10 +1020,20 @@ public class Dispatcher_jMVAschema {
      * @return true if sufficient capacity exists for the given workload, false otherwise
      */
     public boolean checkProcessingCapacity(){
-
-        Dispatcher_Exact disp_exact = new Dispatcher_Exact(modelDefinition);
-        return disp_exact.hasSufficientProcessingCapacity();
-
+        ExactModel exact = new ExactModel();
+        XMLUtils xmlUtils = new XMLUtils();
+        Document inputDoc;
+        try {
+            inputDoc = xmlUtils.loadXML(modelDefinition);
+            exact.loadDocument(inputDoc);
+        } catch (SAXException e1) {
+            logger.error("Cannot parse correctly input JMVA model: " + e1.getMessage());
+            return false;
+        } catch (IOException e1) {
+            logger.error("I/O error opening input JMVA model: " + e1.getMessage());
+            return false;
+        }
+        return exact.checkSaturation() == ExactModel.NO_SATURATION;
     }
     
     /**
