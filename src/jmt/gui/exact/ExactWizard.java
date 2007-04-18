@@ -47,6 +47,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import jmt.common.exception.InputDataException;
 import jmt.common.exception.SolverException;
+import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.components.JMTMenuBar;
 import jmt.framework.gui.components.JMTToolBar;
 import jmt.framework.gui.help.HoverHelp;
@@ -601,13 +602,11 @@ public class ExactWizard extends Wizard {
         }
 
         // Create a new frame.
-        JFrame frame = new JFrame();
+        JMTFrame frame = new JMTFrame();
         // Set it's size.
-        frame.setSize(650,510);
+        frame.centerWindow(650,510);
         // Add the created helpViewer to it.
         frame.getContentPane().add(helpViewer);
-        // Set a default close operation.
-        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         // Make the frame visible.
         frame.setVisible(true);
 
