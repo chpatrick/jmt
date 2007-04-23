@@ -5,6 +5,7 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -15,6 +16,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -26,7 +28,11 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.filechooser.FileFilter;
 
+import jmt.engine.jwat.JwatSession;
+import jmt.engine.jwat.MatrixOsservazioni;
+import jmt.engine.jwat.input.Loader;
 import jmt.engine.jwat.trafficAnalysis.ModelTrafficAnalysis;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
 import jmt.framework.gui.help.HoverHelp;
@@ -66,6 +72,14 @@ public class MainJwatWizard extends JWatWizard {
 	public MainJwatWizard() {
 		initGUI();
 	}
+	
+	private JFileChooser fileSaveF = new JFileChooser("."){
+		{
+			setApproveButtonText("Save");
+			setFileSelectionMode(JFileChooser.FILES_ONLY);	
+		}
+	};
+	
 	/*
 	 * Initializes jWAT start screen GUI
 	 */
@@ -262,6 +276,14 @@ public class MainJwatWizard extends JWatWizard {
 			putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
 		}
 		public void actionPerformed(ActionEvent e) {
+			JwatSession session;
+			if(fileSaveF.showOpenDialog(MainJwatWizard.this) == JFileChooser.APPROVE_OPTION){
+				File fFile = fileSaveF.getSelectedFile ();
+				String fileName=fFile.getAbsolutePath();
+				System.out.println(fileName);
+				session=new JwatSession(fileName.substring(0,fileName.lastIndexOf("\\"))+"\\",fileName.substring(fileName.lastIndexOf("\\")+1));
+				session.saveSession(model.getMatrix());
+			}
 		}
 	};
 	private AbstractAction WL_FILE_OPEN = new AbstractAction("Open...") {
@@ -272,6 +294,23 @@ public class MainJwatWizard extends JWatWizard {
 			putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
 		}
 		public void actionPerformed(ActionEvent e) {
+			if(fileSaveF.showOpenDialog(MainJwatWizard.this) == JFileChooser.APPROVE_OPTION){
+				File fFile = fileSaveF.getSelectedFile ();
+				String fileName=fFile.getAbsolutePath();
+				MatrixOsservazioni m= Loader.loadSession(fileName.substring(0,fileName.lastIndexOf("\\"))+"\\",fileName.substring(fileName.lastIndexOf("\\")+1));
+				
+				try{
+					model.setMatrix(m);
+				}catch(OutOfMemoryError err){
+					JOptionPane.showMessageDialog(MainJwatWizard.this,"Out of Memory error. Try with more memory","Error",JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+				System.out.println("Setting new panel");
+				((InputPanel)tabbedPane.getComponent(1)).setCanGoForward(true);
+				tabbedPane.setSelectedIndex(2);
+			}
+
+			
 		}
 	};
 	private AbstractAction WL_ACTION_SOLVE = new AbstractAction("Clusterize") {
@@ -328,7 +367,7 @@ public class MainJwatWizard extends JWatWizard {
 	private void getWorkloadMenuBar() {
 
 		JMenuBar workloadMenubar = new JMenuBar();
-		JMenuItem[][] menuItems = {	{new JMenuItem(WL_FILE_NEW),new JMenuItem(WL_FILE_SAVE){{setEnabled(false);}},new JMenuItem(WL_FILE_OPEN){{setEnabled(false);}},null, new JMenuItem(WL_EXIT_ACTION)},
+		JMenuItem[][] menuItems = {	{new JMenuItem(WL_FILE_NEW),new JMenuItem(WL_FILE_SAVE),new JMenuItem(WL_FILE_OPEN),null, new JMenuItem(WL_EXIT_ACTION)},
 				{new JMenuItem(WL_ACTION_SOLVE){{setEnabled(false);}}},
 				{new JMenuItem(WL_HELP_SHOWHELP){{setEnabled(true);}},null,new JMenuItem(WL_HELP_CREDITS)}};
 		String[] menuTitles = {"File", "Action", "Help"};

@@ -58,4 +58,9 @@ public class ModelTrafficAnalysis implements JWatModel{
 		for(int i = 0; i < resetModel.size(); i++)
 			((OnResetModel)resetModel.get(i)).modelResetted();
 	}
+
+	public void setMatrix(MatrixOsservazioni matrix) {
+		// TODO Auto-generated method stub
+		
+	}
 }

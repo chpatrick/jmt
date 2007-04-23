@@ -65,6 +65,8 @@ public class VariableNumber implements JWATConstants {
 	private int numOss = 0;
 	/* Indeicates if it is sampled */
 	private boolean sampled = false;
+	/*Mapping della varaibile*/
+	protected VariableMapping mapping = null;
 
 	/**
 	 * Constructor, creates new numerical variable.
@@ -88,10 +90,15 @@ public class VariableNumber implements JWATConstants {
 		for (int i = 0; i < numOss; i++) {
 			originalValue[i] = valObs[i];
 		}
+		mapping=varMapping;
 		obsValue = originalValue;
 		// Initializes remaining parameters
 		varUniStatsTransf.add(new UnivariateStatistics(obsValue, nVar));
 		calculateIntervals();
+	}
+	
+	public VariableMapping getMapping(){
+		return mapping;
 	}
 
 	/**

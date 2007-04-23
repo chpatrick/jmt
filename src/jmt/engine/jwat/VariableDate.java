@@ -22,12 +22,11 @@ import java.util.Date;
 import jmt.engine.jwat.input.VariableMapping;
 
 public class VariableDate extends VariableNumber {
-//	 Utilizzata per mantenere l'associazione ra numero e stringa
-	private VariableMapping stringMap = null;
+	
 	
 	public VariableDate(Observation[] valObs, String vName, int pos, short type, VariableMapping varMapping) {
 		super(valObs, vName, pos, type, varMapping);
-		stringMap = varMapping;
+		mapping = varMapping;
 	}
 	
 	/**
@@ -42,7 +41,7 @@ public class VariableDate extends VariableNumber {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		else
-			return (Date)stringMap.getValue(obsValue[Index].getIndex(nVar));
+			return (Date)mapping.getValue(obsValue[Index].getIndex(nVar));
 	}
 
 	/**
@@ -59,7 +58,7 @@ public class VariableDate extends VariableNumber {
 			throw new ArrayIndexOutOfBoundsException();
 		}
 		else
-			return (Date)stringMap.getValue(obsValue[Index].getIndex(var));
+			return (Date)mapping.getValue(obsValue[Index].getIndex(var));
 	}
 
 }

@@ -937,6 +937,10 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 	public boolean canGoForward() {
 		return canGoOn;
 	}
+	
+	public void setCanGoForward(boolean canGo){
+		canGoOn=canGo;
+	}
 	// TODO controllare con Fuma cosa fare
 	// Chiamata quando dal pannello si torna indietro
 	public boolean canGoBack() {
