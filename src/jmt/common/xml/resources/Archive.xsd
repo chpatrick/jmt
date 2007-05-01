@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XML Spy v4.3 U (http://www.xmlspy.com) by Marco (Politecnico) -->
 <!-- Bertoli Marco (Politecnico) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
-	<xs:import schemaLocation="JModelGUI.xsd"/>
-	<xs:import schemaLocation="SIMmodeldefinition.xsd"/>
-	<xs:import schemaLocation="Results.xsd"/>
-	<xs:import schemaLocation="SIMmodeloutput.xsd"/>
+	<xs:include schemaLocation="JModelGUI.xsd"/>
+	<xs:include schemaLocation="SIMmodeldefinition.xsd"/>
+	<xs:include schemaLocation="Results.xsd"/>
+	<xs:include schemaLocation="SIMmodeloutput.xsd"/>
 	<xs:element name="archive">
 		<xs:annotation>
 			<xs:documentation>Stores simulation parameters for the engine and GUI informations for JMODEL</xs:documentation>
