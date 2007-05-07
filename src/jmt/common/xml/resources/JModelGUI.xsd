@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XML Spy v4.3 U (http://www.xmlspy.com) by Marco (Politecnico) -->
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
 	<xs:element name="jmodel">
 		<xs:annotation>
@@ -28,8 +27,8 @@
 									<xs:documentation>Position where station will be placed on jgraph window</xs:documentation>
 								</xs:annotation>
 								<xs:complexType>
-									<xs:attribute name="x" type="xs:integer" use="required"/>
-									<xs:attribute name="y" type="xs:integer" use="required"/>
+									<xs:attribute name="x" type="xs:double" use="required"/>
+									<xs:attribute name="y" type="xs:double" use="required"/>
 								</xs:complexType>
 							</xs:element>
 						</xs:sequence>
