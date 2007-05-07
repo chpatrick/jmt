@@ -716,6 +716,10 @@ public class XMLWriter implements CommonConstants, XMLConstantNames{
             }
             // Add class constraints
             Iterator classes = model.getClassKeys().iterator();
+            // Add global constraint
+            Element globalConstraint = doc.createElement(XML_E_GLOBALCONSTRAINT);
+            globalConstraint.setAttribute(XML_A_GLOBALCONSTRAINT_MAXJOBS, model.getRegionCustomerConstraint(key).toString());
+            region.appendChild(globalConstraint);
             while (classes.hasNext()) {
                 Object classKey = classes.next();
                 Element classConstraint = doc.createElement(XML_E_CLASSCONSTRAINT);
@@ -723,10 +727,6 @@ public class XMLWriter implements CommonConstants, XMLConstantNames{
                 classConstraint.setAttribute(XML_A_CLASSCONSTRAINT_MAXJOBS, model.getRegionClassCustomerConstraint(key, classKey).toString());
                 region.appendChild(classConstraint);
             }
-            // Add global constraint
-            Element globalConstraint = doc.createElement(XML_E_GLOBALCONSTRAINT);
-            globalConstraint.setAttribute(XML_A_GLOBALCONSTRAINT_MAXJOBS, model.getRegionCustomerConstraint(key).toString());
-            region.appendChild(globalConstraint);
             // Add drop rules
             classes = model.getClassKeys().iterator();
             while (classes.hasNext()) {
