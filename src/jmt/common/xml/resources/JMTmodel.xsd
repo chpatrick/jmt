@@ -226,6 +226,7 @@
 															<xs:attribute name="precision" type="xs:double" use="optional"/>
 															<xs:attribute name="alfa" type="xs:double" use="optional"/>
 															<xs:attribute name="maxSamples" type="xs:int" use="optional"/>
+															<xs:attribute name="nodeType" type="xs:string" use="optional"/>
 														</xs:complexType>
 													</xs:element>
 												</xs:sequence>
@@ -254,6 +255,7 @@
 															<xs:attribute name="precision" type="xs:double" use="optional"/>
 															<xs:attribute name="alfa" type="xs:double" use="optional"/>
 															<xs:attribute name="maxSamples" type="xs:int" use="optional"/>
+															<xs:attribute name="nodeType" type="xs:string" use="optional"/>
 														</xs:complexType>
 													</xs:element>
 												</xs:sequence>

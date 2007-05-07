@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<archive xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="qest06jmt.jmodel" timestamp="Thu Aug 24 20:07:12 CEST 2006" xsi:noNamespaceSchemaLocation="Archive.xsd">
-<sim maxSamples="500000" name="qest06jmt.jmodel" polling="1.0" xsi:noNamespaceSchemaLocation="SIMmodeldefinition.xsd">
+<archive name="casale06qestjmt.jsimg" timestamp="Mon May 07 17:11:13 CEST 2007" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Archive.xsd">
+<sim disableStatisticStop="false" maxSamples="500000" name="casale06qestjmt.jsimg" polling="1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SIMmodeldefinition.xsd">
 <userClass name="Class0" priority="0" referenceSource="Requests" type="open"/>
 <userClass name="Class1" priority="0" referenceSource="Requests" type="open"/>
 <node name="Requests">
@@ -69,8 +69,15 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
+<refClass>Class1</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -129,8 +136,15 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
+<refClass>Class1</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -189,8 +203,15 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
+<refClass>Class1</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -215,8 +236,15 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
+<refClass>Class1</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -275,8 +303,15 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
+<refClass>Class1</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -335,8 +370,15 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
+<refClass>Class1</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -395,8 +437,15 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
+<refClass>Class1</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -428,8 +477,8 @@
 </parameter>
 </section>
 </node>
-<measure alpha="0.01" name="Class0_System Response Time" precision="0.01" referenceNode="" referenceUserClass="Class0" type="System Response Time" verbose="false"/>
-<measure alpha="0.01" name="Class1_System Response Time" precision="0.01" referenceNode="" referenceUserClass="Class1" type="System Response Time" verbose="false"/>
+<measure alpha="0.01" name="Class0_System Response Time" nodeType="station" precision="0.01" referenceNode="" referenceUserClass="Class0" type="System Response Time" verbose="false"/>
+<measure alpha="0.01" name="Class1_System Response Time" nodeType="station" precision="0.01" referenceNode="" referenceUserClass="Class1" type="System Response Time" verbose="false"/>
 <connection source="Requests" target="LoadBalancer"/>
 <connection source="Requests" target="RAID0"/>
 <connection source="Web Server 1" target="Reply"/>
@@ -447,14 +496,14 @@
 <regionNode nodeName="Web Server 2"/>
 <regionNode nodeName="LoadBalancer"/>
 <regionNode nodeName="Web Server 1"/>
+<globalConstraint maxJobs="100"/>
 <classConstraint jobClass="Class0" maxJobsPerClass="-1"/>
 <classConstraint jobClass="Class1" maxJobsPerClass="-1"/>
-<globalConstraint maxJobs="100"/>
 <dropRules dropThisClass="false" jobClass="Class0"/>
 <dropRules dropThisClass="false" jobClass="Class1"/>
 </blockingRegion>
 </sim>
-<jmodel xsi:noNamespaceSchemaLocation="JModelGUI.xsd">
+<jmodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="JModelGUI.xsd">
 <userClass color="#FF0000FF" name="Class0"/>
 <userClass color="#FFFF0000" name="Class1"/>
 <station name="Requests">
