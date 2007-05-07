@@ -244,6 +244,7 @@
     </target>
 	
 	<target name="create_framework" depends="copy_resources" description="builds the framework in a separate JAR">
+        <mkdir dir="${dist}" />
 		<jar destfile="${dist}/${frameworkJarName}">
         	<fileset dir="${class}">
         		<include name="**/framework/**/*"/>
@@ -256,7 +257,7 @@
 		<copy todir="${src}" file="License.txt" />
 		<jar destfile="${dist}/${frameworkSrcJarName}">
         	<fileset dir="${src}">
-        		<include name="**/framework/**/*"/>
+        		<include name="jmt/framework/**/*"/>
         		<include name="License.txt"/>
         	</fileset>
         	<manifest>
@@ -264,6 +265,21 @@
         	</manifest>
 		</jar>
 		<delete file="${src}/License.txt" />
+	</target>
+
+	<target name="create_engine" depends="copy_resources" description="builds the engine in a separate JAR">
+        <mkdir dir="${dist}" />
+		<jar destfile="${dist}/${engineJarName}">
+        	<fileset dir="${class}">
+        		<include name="jmt/common/**/*"/>
+        		<include name="jmt/engine/**/*"/>
+        		<include name="jmt/analytical/**/*"/>
+        		<include name="License.txt"/>
+        	</fileset>
+        	<manifest>
+        	    <attribute name="Built-By" value="${user.name}"/>
+        	</manifest>
+		</jar>
 	</target>
 
 </project>
