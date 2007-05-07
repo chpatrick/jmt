@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shortcuts>
 	<programGroup defaultName="Java Modelling Tools" location="applications"/>
-	<shortcut name="JMT 0.7.1" 
+	<shortcut name="JMT 0.7.2" 
 	target="$INSTALL_PATH/runJMT.vbs" 
 	programGroup="yes" 
 	desktop="yes" 
@@ -40,7 +40,7 @@
 	iconFile="$INSTALL_PATH/manual.ico">
 	</shortcut>
 	
-	<shortcut name="JMT 0.7.1 1Gb Heap"
+	<shortcut name="JMT 0.7.2 1Gb Heap"
 	target="$INSTALL_PATH/runJMTmem.vbs" 
 	programGroup="yes" 
 	desktop="no" 
@@ -53,7 +53,7 @@
 	iconFile="$INSTALL_PATH/jmtMem.ico">
 	</shortcut>
 
-	<shortcut name="Uninstall JMT 0.7.1" 
+	<shortcut name="Uninstall JMT 0.7.2" 
 	target="$INSTALL_PATH/removeJMT.vbs" 
 	programGroup="yes" 
 	desktop="no" 

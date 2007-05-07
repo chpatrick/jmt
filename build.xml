@@ -3,34 +3,8 @@
     <description>
         build jmt project
     </description>
-
-	<!-- Version -->
-	<property name="version" value="0.7.1" />
 	
-    <!-- name of created jar -->
-    <property name="jarName" value="JMT_${version}.jar" />
-    <!-- name of framework jar -->
-    <property name="frameworkJarName" value="JMT_framework_${version}.jar" />
-    <!-- name of framework src & doc jar -->
-    <property name="frameworkSrcJarName" value="JMT_framework_${version}_src.jar" />
-    <!-- name of starting class -->
-    <property name="startScreen" value="jmt/gui/common/startScreen/GraphStartScreen" />
-    <!-- folder with jmt sources -->
-    <property name="src" location="src"/>
-    <!-- folder with icons and installer stuff -->
-    <property name="util" location="build_util"/>
-    <!-- folder where IzPack is installed -->
-    <property name="izpack" location="izPack"/>
-    <!-- location of main jmt folder -->
-    <property name="jmt_base" location="C:/Homes/JMT"/>
-    <!-- folder where compiled classes will be put -->
-    <property name="class" location="class"/>
-    <!-- output folders for various stages -->
-    <property name="dist"  location="${jmt_base}/JMT_dist"/>
-    <property name="out" location="${jmt_base}/JMT_output"/>
-    <property name="installer" location="${jmt_base}/JMT_installer"/>
-
-
+	<property file="build.properties" />
 
     <target name="init" description="initialize build process" >
 
