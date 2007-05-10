@@ -19,11 +19,15 @@
 package jmt.engine.log;
 
 
-import org.apache.log4j.PropertyConfigurator;
-
-import java.io.*;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.io.StringWriter;
 import java.net.URL;
 import java.util.Properties;
+
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 
 
 
@@ -34,57 +38,33 @@ public class JSimLogger implements Serializable {
     public static final String LOG4J_CONF = "log4j.conf";
 
     private transient org.apache.log4j.Logger logger;
-
-    private static final boolean DEBUG = true;
-
     static {
-        URL props;
-        String logProperties = null;
-
-        props = JSimLogger.class.getResource(LOG4J_CONF);
-        logProperties = props.toString();
-
-        try {
-
-            if (logProperties!=null){
-                File logPropertiesFile = new File(logProperties);
-                if (!logPropertiesFile.exists()){
-                    logProperties=null;
-                }
-                else {
-                    PropertyConfigurator.configure(logPropertiesFile.toURL());
-                    if (DEBUG) {
-                        System.out.println("JSimLogger initialized from " + logPropertiesFile.toURL());
-                    }
-                }
+        // Initialize only if somebody didn't already initialize this.
+        if (!LogManager.getCurrentLoggers().hasMoreElements()) {
+            URL props = JSimLogger.class.getResource(LOG4J_CONF);
+            if (props != null) {
+                PropertyConfigurator.configure(props);
+            } else {
+                System.out.println("Cannot find logProperties, using defaults");
+                //set stdout defaults
+                Properties p = new Properties();
+                p.setProperty("log4j.rootLogger","DEBUG, stdout");
+                //p.setProperty("log4j.rootLogger","ALL, stdout");
+                p.setProperty("log4j.appender.stdout","org.apache.log4j.ConsoleAppender");
+                p.setProperty("log4j.appender.stdout.layout","org.apache.log4j.PatternLayout");
+                p.setProperty("log4j.appender.stdout.layout.ConversionPattern","%-5p [%t]- %m (%F:%L)%n");
+                PropertyConfigurator.configure(p);
             }
-        } catch (IOException ioex) {
-            ioex.printStackTrace();
         }
-
-
-        if (logProperties==null){
-            System.out.println("Cannot find logProperties, using defaults");
-            //set stdout defaults
-            Properties p = new Properties();
-            p.setProperty("log4j.rootLogger","DEBUG, stdout");
-            //p.setProperty("log4j.rootLogger","ALL, stdout");
-            p.setProperty("log4j.appender.stdout","org.apache.log4j.ConsoleAppender");
-            p.setProperty("log4j.appender.stdout.layout","org.apache.log4j.PatternLayout");
-            p.setProperty("log4j.appender.stdout.layout.ConversionPattern","%-5p [%t]- %m (%F:%L)%n");
-            PropertyConfigurator.configure(p);
-        }
-
-
     }
 
 
     private JSimLogger() {
-        logger = org.apache.log4j.Logger.getRootLogger();
+        logger = Logger.getRootLogger();
     }
 
     private JSimLogger(String loggerName) {
-        logger = org.apache.log4j.Logger.getLogger(loggerName);
+        logger = Logger.getLogger(loggerName);
     }
 
     public static JSimLogger getRootLogger() {
