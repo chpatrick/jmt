@@ -265,9 +265,9 @@ public class XMLResultsReader implements XMLResultsConstants {
                 numType = SimConstants.SYSTEM_THROUGHPUT;
             else if (tmp.startsWith("customer") && tmp.endsWith("number"))
                 numType = SimConstants.SYSTEM_JOB_NUMBER;
-            else if (type.startsWith("drop") && type.endsWith("rate"))
+            else if (tmp.startsWith("drop") && tmp.endsWith("rate"))
                 numType = SimConstants.DROP_RATE;
-            else if (type.startsWith("system") && type.endsWith("rate"))
+            else if (tmp.startsWith("system") && tmp.endsWith("rate"))
                 numType = SimConstants.SYSTEM_DROP_RATE;
             
             // Adds loaded informations into model data structure
