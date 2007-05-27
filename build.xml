@@ -39,7 +39,7 @@
         </copy>
     	
     	<!-- Copy License and Readme to class folder -->
-    	<copy file="license\LICENSE_jmt.txt" tofile="${class}/License.txt"/>
+    	<copy file="license\License_JMT.txt" tofile="${class}/License.txt"/>
     	<copy file="README.txt" todir="${class}"/>
 
     </target>
@@ -166,7 +166,7 @@
         </sync>
 
         <!-- copy jmt license file -->
-        <copy file="license\LICENSE_jmt.txt" todir="${out}" />
+        <copy file="license\License_JMT.txt" todir="${out}" />
 
 
         <!-- Create examples directory -->
