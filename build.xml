@@ -1,4 +1,4 @@
-<project name="JMT" default="create_installer" basedir=".">
+<project name="JMT" default="create_jar" basedir=".">
 
     <description>
         build jmt project
