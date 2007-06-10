@@ -29,6 +29,10 @@ same average service demands.
 \item[Station :] or service center, it represents a system resource.
 Customers arrive at the station and then, if necessary, wait in
 queue, receive service from server then depart.
+\item[Bottleneck Station :] a station with the highest utilization
+\item[Potential Bottleneck Station :] a station that can become bottleneck for some feasible network population
+\item[Dominated Stations :] a station P is dominated if exist al least a station Q whose demand for each classes of custumer are highest or equal (but at least one highest) than those of P.
+\item[Masked-off Stations :] a station that is not a Potential Bottleneck or a Dominated station.A Masked-off station may exhibit the largest queue-lungth and hence the highest response time.
 \item[Workload Intensity ($\lambda$ or $N$) :] rate at which customers of a
 given class arrive at the system.  Each class has its own workload
 intensity. If a class is closed the constant \emph{number of
@@ -38,6 +42,7 @@ system is requested.
 \item[Population Mix ($\beta_i$) :] the ratio between \emph{number of
 customers} of closed class $i$ and the total number of customers in
 the system: $\beta_i = N_i / \sum_k N_k$
+\item[Saturarion Sector :] a interval of Population Mix in witch one, two ore more stations are both bottleneck.
 \item[Service Time ($S_k$):] average time of service required at
 each visit to resource $k$; it is computed as the ratio of the busy
 time to the number of system completions. It is an alternatively way
