@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2007, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -18,52 +18,77 @@
   
 package jmt.jmarkov;
 
-import com.jgoodies.looks.Options;
-
-import jmt.framework.gui.controller.Manager;
-import jmt.gui.common.panels.AboutDialogFactory;
-import jmt.jmarkov.Graphics.*;
-import jmt.jmarkov.Graphics.constants.DrawBig;
-import jmt.jmarkov.Graphics.constants.DrawConstrains;
-import jmt.jmarkov.Graphics.constants.DrawNormal;
-import jmt.jmarkov.Graphics.constants.DrawSmall;
-import jmt.jmarkov.Queues.*;
-import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
-import jmt.jmarkov.utils.Formatter;
-
-import javax.help.HelpSet;
-import javax.help.JHelp;
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.Dictionary;
-import java.util.Enumeration;
+
+import javax.help.HelpSet;
+import javax.help.JHelp;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JColorChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
+import javax.swing.JTabbedPane;
+import javax.swing.UIManager;
+import javax.swing.WindowConstants;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import jmt.framework.gui.components.JMTFrame;
+import jmt.framework.gui.controller.Manager;
+import jmt.gui.common.panels.AboutDialogFactory;
+import jmt.jmarkov.Graphics.JobsDrawer;
+import jmt.jmarkov.Graphics.Notifier;
+import jmt.jmarkov.Graphics.QueueDrawer;
+import jmt.jmarkov.Graphics.StatiDrawer;
+import jmt.jmarkov.Graphics.TANotifier;
+import jmt.jmarkov.Graphics.constants.DrawBig;
+import jmt.jmarkov.Graphics.constants.DrawConstrains;
+import jmt.jmarkov.Graphics.constants.DrawNormal;
+import jmt.jmarkov.Graphics.constants.DrawSmall;
+import jmt.jmarkov.Queues.Arrivals;
+import jmt.jmarkov.Queues.MM1Logic;
+import jmt.jmarkov.Queues.MM1dLogic;
+import jmt.jmarkov.Queues.Processor;
+import jmt.jmarkov.Queues.QueueStack;
+import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
+import jmt.jmarkov.utils.Formatter;
+
+import com.jgoodies.looks.Options;
 
 
-public class MMQueues extends JFrame implements Runnable {
+public class MMQueues extends JMTFrame implements Runnable {
 
-    //NEW
-    //@author Stefano Omini
-    // introduced DEBUG var to skip System.out.println() calls in final release
     private static final boolean DEBUG = false;
-    //end NEW
 
     private JLabel accelerationL;
-    private BoundedRangeModel brm;
-    private TitledBorder tb;
     private boolean nonErgodic;
     private Dimension initSize = new Dimension(800, 600);
     private double U; //Utilizzo [%]
     private double Q; //Numero medio di jobs
     private int buffer;
-    private double timemultiplier = 1.0;
     private JPanel sPanel;
     private JPanel lambdaPanel;
     private JSlider sS;
@@ -74,9 +99,6 @@ public class MMQueues extends JFrame implements Runnable {
     private QueueDrawer queueDrawer;
     private StatiDrawer statiDrawer;
     private JobsDrawer jobsDrawer;
-    private JEditorPane helpEP;
-    private JComboBox topicCB;
-    private JPanel helpP;
     private JTabbedPane outputTabP;
     private JScrollPane txtScroll;
     private TANotifier outputTA;
@@ -84,10 +106,7 @@ public class MMQueues extends JFrame implements Runnable {
     public JButton stopB;
     private JPanel buttonsP;
     private JButton playB;
-    private JTextField utilizationT;
-    private JTextField mediaJobsT;
     private JPanel resultsP;
-    private JPanel SimulationValuesP;
     public  JFrame mf;
     private JPanel outputP;
     private JPanel parametersP;
@@ -112,15 +131,7 @@ public class MMQueues extends JFrame implements Runnable {
     private String
         sStrS = "Avg. Service Time (S): ",
         sStrE = " s",
-
-        //OLD
-        //lambdaStrS = "Avg. Arrival Time (l): ",
-        //NEW
-        //@author Stefano Omini
-        //lambda is an arrival RATE, not an arrival TIME !
         lambdaStrS = "Avg. Arrival Rate (l): ",
-        //end NEW
-
         lambdaStrE = " job/s",
         nStrS = "Avg. Queue Lenght (Q): ",
         nStrE = " jobs",
@@ -150,50 +161,17 @@ public class MMQueues extends JFrame implements Runnable {
 
     //help
     private JMenu helpMenu;
-    private JMenuItem helpMenuItem;
 
     //queue
     private JMenu queueMenu;
     private JRadioButtonMenuItem MM1Item, MM1dItem, gradientItem;
-    private JMenuItem exitMenuItem;
     //settings
     private JMenu settingsMenu;
         //colors
         private JMenu colorsMenu;
-        private JMenuItem queueColorItem;
-        private JMenuItem queueFillColorItem;
-        private JMenuItem statusColorItem;
-        private JMenuItem statusFillColorItem;
 
         //size
         private JMenu sizeMenu;
-        private JMenuItem drawSmallItem;
-        private JMenuItem drawNormalItem;
-        private JMenuItem drawBigItem;
-
-        //l&f
-        private JMenu plafMenu;
-        private static String[] plafURIA = {"com.jgoodies.looks.plastic.Plastic3DLookAndFeel",
-                                            "com.digitprop.tonic.TonicLookAndFeel",
-                                     "com.incors.plaf.kunststoff.KunststoffLookAndFeel",
-                                     "com.jgoodies.looks.plastic.PlasticXPLookAndFeel",
-                                     "com.oyoaha.swing.plaf.oyoaha.OyoahaLookAndFeel",
-                                     "com.shfarr.ui.plaf.fh.FhLookAndFeel",
-                                     "com.stefankrause.xplookandfeel.XPLookAndFeel",
-                                     "net.beeger.squareness.SquarenessLookAndFeel",
-                                     "net.sourceforge.mlf.metouia.MetouiaLookAndFeel"};
-        private static String[] plafName = {"Plastic",
-                                            "Tonic",
-                                     "Kunststoff",
-                                     "PlasticXP",
-                                     "Oyoaha",
-                                     "FH",
-                                     "XP",
-                                     "Squareness",
-                                     "Metouia"};
-        private JMenuItem[] plafItem = new JMenuItem[plafName.length];
-        private int plafcounter = 0;
-
     //Queues data:
     MM1Logic ql = new MM1Logic(0.0,0.0);
     QueueStack qs;
@@ -217,7 +195,6 @@ public class MMQueues extends JFrame implements Runnable {
 
 // Simulation data panel
             simulationP = new JPanel();
-            SimulationValuesP = new JPanel();
             parametersP = new JPanel();
             lambdaPanel = new JPanel();
             lambdaL = new JLabel();
@@ -226,9 +203,7 @@ public class MMQueues extends JFrame implements Runnable {
             sS = new JSlider();
             resultsP = new JPanel();
             mediaJobsL = new JLabel();
-            mediaJobsT = new JTextField();
             utilizationL = new JLabel();
-            utilizationT = new JTextField();
             mediaJobsL = new JLabel();
             thrL = new JLabel();
             responseL = new JLabel();
@@ -264,7 +239,7 @@ public class MMQueues extends JFrame implements Runnable {
            accelerationS.setPaintTicks(true);
            accelerationS.setPaintLabels(true);
            Dictionary ad = accelerationS.getLabelTable();
-           Enumeration k = ad.keys();
+           ad.keys();
            ad.put(new Integer(1), new JLabel("real time"));
            ad.put(new Integer(51), new JLabel("faster"));
            ad.put(new Integer(100), new JLabel("fastest"));
@@ -388,8 +363,8 @@ public class MMQueues extends JFrame implements Runnable {
            buffL.setFont(dCst.getNormalGUIFont());
            buffPanel.add(buffL);
            buffS.setValue(BUFF_I);
-           buffS.setMaximum(20);
-           buffS.setMinimum(0);
+           buffS.setMaximum(30);
+           buffS.setMinimum(1);
            buffS.setMajorTickSpacing(5);
            buffS.setMinorTickSpacing(1);
            buffS.setPaintLabels(true);
@@ -669,7 +644,7 @@ public class MMQueues extends JFrame implements Runnable {
                 }
             };
 
-            helpMenuItem = helpMenu.add(helpAction);
+            helpMenu.add(helpAction);
             //end NEW
 
             //NEW Bertoli Marco
@@ -731,6 +706,7 @@ public class MMQueues extends JFrame implements Runnable {
         queueDrawer.setMaxJobs(buffer);
         statiDrawer.setMaxJobs(buffer);
         buffL.setText(bufStrS + buffS.getValue() + bufStrE);
+        updateFields();
     }
 
     protected void showQueue(int queueType) {
@@ -765,10 +741,6 @@ public class MMQueues extends JFrame implements Runnable {
     }
 
     public static void main(String[] args) {
-        int i = 0;
-        configureUI(plafURIA[i]);
-        if (DEBUG)
-            System.out.println(plafName[i]);
         showGUI();
     }
 
@@ -797,7 +769,7 @@ public class MMQueues extends JFrame implements Runnable {
             jobsDialog.pack();
             jobsDialog.setLocationRelativeTo(mf);
             jobsDialog.setVisible(true);
-            qs = new QueueStack(jobsDialog.getValidatedValue());
+            qs = new QueueStack(ql.getMaxStates());
             queueDrawer.setMediaJobs((int) Q);
             queueDrawer.setTotalJobs(jobsDialog.getValidatedValue());
             jobsDrawer.setTotalJobs(jobsDialog.getValidatedValue());

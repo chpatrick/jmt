@@ -68,8 +68,10 @@ public final class Arrivals implements Runnable {
 						Thread.sleep(1000);
 						getInterarrivalTime();} 
 					Thread.sleep(at);
-					notifyGraphics("");
-					addToQueue();
+                    if (q.size() < ql.getMaxStates() || ql.getMaxStates() == 0) {
+                        notifyGraphics("");
+                        addToQueue();
+                    }
 				}
 				else break;
 			}

@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2007, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,6 @@
  */
 package jmt.jmarkov.Queues;
 
-import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
-
-import java.util.Random;
 
 
 /**
@@ -38,8 +35,6 @@ public class MM1dLogic extends MM1Logic {
 	
 	private int max;
 	
-	private Random rnd;
-
 	/**
 	 * Inizializza la coda  
 	 * @param lambda rappresenta la media del <i>processo di Poisson</i> che regola gli arrivi <b>[job/s]</b>
@@ -55,8 +50,8 @@ public class MM1dLogic extends MM1Logic {
 	/* (non-Javadoc)
 	 * @see Queues.QueueLogic#getStatusProbability(int)
 	 */
-	public double getStatusProbability(int status) throws NonErgodicException{
-		double u = utilization();
+	public double getStatusProbability(int status) {
+		double u = lambda * s;
 		if ((status > max) && (max > 0)) return 0.0;
 		return ((1.0 - u)/(1.0 - Math.pow(u, max + 1)) * (Math.pow(u, status)));
 	}
@@ -72,11 +67,9 @@ public class MM1dLogic extends MM1Logic {
 			this.max = max;
 		}
 		
-	public double mediaJobs() throws NonErgodicException{
-		double u = utilization();
-		return ((u / (1 - u)) - 
-				(Math.pow(u, max + 1) * (max + 1)) / (1 - Math.pow(u, max + 1)));
-		
+	public double mediaJobs() {
+        double p = lambda * s;
+        return p / (1 - Math.pow(p, max+1)) * ((1-Math.pow(p, max))/(1 - p) - max * Math.pow(p, max));
 	}
 	
 	public static double getNi(double Ui, double buffer){
@@ -85,6 +78,30 @@ public class MM1dLogic extends MM1Logic {
 				(Math.pow(Ui, buffer + 1)) / (1 - Math.pow(Ui, buffer + 1)));
 		return Double.MAX_VALUE;
 	}
+    
+    public double pb() {
+        double p = lambda * s;
+        return ((1-p) * Math.pow(p, max)) / (1 - Math.pow(p, max+1));
+    }
+
+
+    public double responseTime() {
+        return lambda * (1 - pb()) * s;
+    }
+
+
+    public double throughput() {
+        double p = lambda * s;
+        return lambda * (1 - Math.pow(p, max)) / (1 - Math.pow(p, max+1));
+    }
+
+
+    public double utilization() {
+        double p = lambda * s;
+        return p * (1 - Math.pow(p, max)) / (1 - Math.pow(p, max+1));
+    }
+    
+    
 
 
 }

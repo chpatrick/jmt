@@ -49,23 +49,23 @@ public class MM1Logic implements QueueLogic {
     //end NEW
 
 
-	private double mult = 1.0;
+	protected double mult = 1.0;
 
 	/**
 	 * media degli arrivi [job/ms]
 	 */
-	private double lambda;
+    protected double lambda;
 
 	/**
 	 * media dei tempi di esecuzione [ms]
 	 */
-	private double s;
+    protected double s;
 	
 	/**
 	 * Utilizzo della coda [job]
 	 */
 	
-	private Random rnd;
+    protected Random rnd;
 
 	/**
 	 * Inizializza la coda  
@@ -163,7 +163,7 @@ public class MM1Logic implements QueueLogic {
 	/* (non-Javadoc)
 	 * @see Queues.QueueLogic#getMaxStates()
 	 */
-	public int getMaxStates() throws InfiniteBufferException {
+	public int getMaxStates() {
 		return 0;
 	}
 
