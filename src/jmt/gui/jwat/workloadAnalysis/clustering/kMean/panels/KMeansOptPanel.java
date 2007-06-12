@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
@@ -43,7 +44,7 @@ public class KMeansOptPanel extends JPanel implements CommonConstants{
 	//"Specify the maximum number of iterations for the algorithm" + HTML_FONT_NOR_END + HTML_END;
 	private final String KMEANS_DESCRIPTION = HTML_START
 		+ HTML_FONT_TITLE + "k-Means Clustering" + HTML_FONT_TIT_END + HTML_FONT_NORM
-		+ "Specify maximum number of clusters and maximum number of iterations" + HTML_FONT_NOR_END
+		+ "Specify maximum number of clusters and maximum number of iterations that the algorithm has to perform" + HTML_FONT_NOR_END
 		+ HTML_END;
 	private final String KMEANS_CLUSTER_OPT = HTML_START + HTML_FONT_NORM
 	+ "Select maximum number of clusters that the algorithm has to produce." + HTML_FONT_NOR_END
@@ -52,8 +53,8 @@ public class KMeansOptPanel extends JPanel implements CommonConstants{
 	+ "Select maximum number of iterations that the algorithm has to perform to find solutions." + HTML_FONT_NOR_END
 	+ HTML_END;
 	private final String KMEANS_OPTIONS_DESCRIPTION = HTML_START
-	+ HTML_FONT_TITLE + "Transformations" + HTML_FONT_TIT_END + HTML_FONT_NORM
-	+ "Specify the transformation to apply<p>" +
+	+ HTML_FONT_NORM
+	+ "Transformation to apply<p>" +
 	  "to selected variables considered<p>" +
 	  "by the algorithm." + HTML_FONT_NOR_END
 	+ HTML_END;
@@ -79,12 +80,30 @@ public class KMeansOptPanel extends JPanel implements CommonConstants{
 	
 	private void initPanel(){
 		this.setLayout(new BorderLayout(10,60));
-		//UPDATE 13 Nov 2006
+
 		JPanel northPanel = new JPanel(new BorderLayout());
 		northPanel.add(Box.createHorizontalStrut(5),BorderLayout.EAST);
 		northPanel.add(new JLabel(KMEANS_DESCRIPTION),BorderLayout.CENTER);
 		this.add(northPanel,BorderLayout.NORTH);
 		
+		JPanel leftPanel = new JPanel(new BorderLayout());
+		this.add(leftPanel,BorderLayout.WEST);
+		
+		JPanel clustNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		clustNorth.add(new JLabel("number of clusters:   "));
+		numOfClust = new JSpinner(new SpinnerNumberModel(3,2,37,1));
+		clustNorth.add(numOfClust);
+		leftPanel.add(clustNorth,BorderLayout.NORTH);
+		
+		JPanel iterNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		iterNorth.add(new JLabel("number of iterations: "));
+		numOfIter = new JSpinner(new SpinnerNumberModel(4,2,50,1));
+		iterNorth.add(numOfIter);
+		leftPanel.add(iterNorth,BorderLayout.SOUTH);
+		
+		JPanel centralPanel = new JPanel(new BorderLayout());
+		
+		/*
 		JPanel centralPanel = new JPanel(new BorderLayout());
 		//NORTH Panel options
 		JPanel northCPanel = new JPanel(new GridLayout(1,2));
@@ -114,6 +133,7 @@ public class KMeansOptPanel extends JPanel implements CommonConstants{
 		northCPanel.add(iterationOpt);
 		
 		centralPanel.add(northCPanel,BorderLayout.NORTH);
+		*/
 		
 		JPanel transf = new JPanel(new BorderLayout());		//Terzo panel
 		transf.setBorder(new TitledBorder(new TitledBorder(
@@ -135,7 +155,7 @@ public class KMeansOptPanel extends JPanel implements CommonConstants{
 		
 		centralPanel.add(transf,BorderLayout.SOUTH);
 		
-		this.add(centralPanel,BorderLayout.CENTER);
+		this.add(centralPanel,BorderLayout.SOUTH);
 		/*
 		JPanel center = new JPanel(new GridLayout(3,1));
 		

@@ -242,12 +242,12 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 		{ putValue(Action.SHORT_DESCRIPTION, "Load data from file"); }
 		// Adds a new row to inputTable and update varchooser comboBox used to show list of variables on which can be applied a filter
 		public void actionPerformed(ActionEvent arg0) {
-			if (!((JWatVariableInputTableModel) inputTable.getModel()).checkInfos()) {
-				JOptionPane.showMessageDialog(InputPanel.this,"Some fileds of variable table are not correctly setted or are left blank");
-				return;
-			}
 			if(nameFile == null){
 				JOptionPane.showMessageDialog(InputPanel.this,"You have no selected any input file, please select one and then retry");
+				return;
+			}
+			if (!((JWatVariableInputTableModel) inputTable.getModel()).checkInfos()) {
+				JOptionPane.showMessageDialog(InputPanel.this,"Format file not choose or some fileds of variable table are not correctly setted or are left blank");
 				return;
 			}
 			//Controllo che sia selezionata la sola variabile data, una e una sola
@@ -406,7 +406,7 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 		initGUI();
 	}
 	
-	private JSpinner epochs = new JSpinner(new SpinnerNumberModel(10,10,50,1));
+	//private JSpinner epochs = new JSpinner(new SpinnerNumberModel(10,10,50,1));
 	
 	/**
 	 * Initialize GUI
@@ -468,16 +468,16 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 		inputTabSP.setPreferredSize(new Dimension(550, 400));		
 		t.add(inputTabSP,BorderLayout.CENTER);
 		
-		JPanel epochOption = new JPanel(new BorderLayout());
+		//JPanel epochOption = new JPanel(new BorderLayout());
 		//epochOption.add(new JLabel("Select maximum number of epochs for results: "),BorderLayout.CENTER);
-		JPanel flowTemp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		epochs.setPreferredSize(new Dimension(70,40));
+		//JPanel flowTemp = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		//epochs.setPreferredSize(new Dimension(70,40));
 		//epochs.setFont(new Font(epochs.getFont().getName(),epochs.getFont().getStyle(),epochs.getFont().getSize()+4));
-		flowTemp.add(new JLabel("<html><body><h3>Select the maximum number of epochs: </h3></body></html> "));
-		flowTemp.add(epochs);
-		epochOption.add(flowTemp,BorderLayout.EAST);
+		//flowTemp.add(new JLabel("<html><body><h3>Select the maximum number of epochs: </h3></body></html> "));
+		//flowTemp.add(epochs);
+		//epochOption.add(flowTemp,BorderLayout.EAST);
 		
-		t.add(epochOption,BorderLayout.SOUTH);
+		//t.add(epochOption,BorderLayout.SOUTH);
 		
 		componentsPanel.add(t, BorderLayout.CENTER);
 		//componentsPanel.add(inputTabSP, BorderLayout.CENTER);
@@ -1010,7 +1010,8 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 					
 					dialog.dispose();
 					try{
-						model.setParameters(e.getMatrix(), ((Integer)epochs.getValue()).intValue());
+						model.setMatrix(e.getMatrix());
+						//model.setParameters(e.getMatrix(), ((Integer)epochs.getValue()).intValue());
 					}catch(OutOfMemoryError err){
 						JOptionPane.showMessageDialog(InputPanel.this,"Out of Memory error. Try with more memory","Error",JOptionPane.ERROR_MESSAGE);
 						loadOnRun = false;

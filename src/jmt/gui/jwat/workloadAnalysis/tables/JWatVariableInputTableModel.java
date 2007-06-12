@@ -12,12 +12,12 @@ import jmt.engine.jwat.input.Parameter;
 public class JWatVariableInputTableModel extends AbstractTableModel {
 	// Names of columns contained in table. Columns containing buttons have
 	// empty names
-	protected String[] columnNames = new String[] { "Name", "Type", "Select",
+	protected String[] columnNames = new String[] { "Select", "Name", "Type", 
 			"Comment", "Sep.", "Perl5 Reg. Exp.","Def.","Rep.","" };
 
 	// Class declarations for this table's columns.
-	protected Class[] colClasses = new Class[] { String.class, JComboBox.class,
-			Boolean.class, String.class, String.class, String.class,
+	protected Class[] colClasses = new Class[] { Boolean.class, String.class, JComboBox.class,
+			 String.class, String.class, String.class,
 			 String.class, String.class,JButton.class };
 
 	/*protected Class[] colClasses = new Class[] { String.class, JComboBox.class,
@@ -84,11 +84,11 @@ public class JWatVariableInputTableModel extends AbstractTableModel {
 	public Object getValueAt(int row, int col) {
 		if (row < names.size()) {
 			switch (col) {
-			case 0:
-				return names.get(row);
 			case 1:
-				return types.get(row);
+				return names.get(row);
 			case 2:
+				return types.get(row);
+			case 0:
 				return selected.get(row);
 			case 3:
 				return comments.get(row);
@@ -110,13 +110,13 @@ public class JWatVariableInputTableModel extends AbstractTableModel {
 	public void setValueAt(Object value, int r, int c) {
 		if (r < names.size()) {
 			switch (c) {
-			case 0:
+			case 1:
 				names.set(r, value);
 				break;
-			case 1:
+			case 2:
 				types.set(r, value);
 				break;
-			case 2:
+			case 0:
 				selected.set(r, value);
 				break;
 			case 3:

@@ -106,7 +106,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants,Common
         
         /** Pannello variables details **/
         JPanel due = new JPanel(new BorderLayout(0,0));
-        due.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Variable within a cluster"));
+        due.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Distribution of the variable values among the clusters"));
         //combo variabili
         JPanel var = new JPanel(new BorderLayout(5,0));
         chartVars= setPie2(0);
@@ -143,7 +143,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants,Common
 				return getDefaultRenderer(String.class);
 			}
 		};
-		tableClusters.setSelectionBackground(new Color(181,189,214));
+		tableClusters.setSelectionBackground(new Color(83,126,126));
 		tableClusters.setSelectionForeground(Color.BLACK);
 		tableClusters.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableClusters.setFont(new Font(tableClusters.getFont().getName(),tableClusters.getFont().getStyle(),tableClusters.getFont().getSize()+1));
@@ -168,7 +168,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants,Common
 				return getDefaultRenderer(String.class);
 			}
 		};
-		tableVars.setSelectionBackground(new Color(181,189,214));
+		tableVars.setSelectionBackground(new Color(83,126,126));
 		tableVars.setSelectionForeground(Color.BLACK);
 		tableVars.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		tableVars.setFont(new Font(tableVars.getFont().getName(),tableVars.getFont().getStyle(),tableVars.getFont().getSize()+1));
@@ -205,7 +205,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants,Common
 		*/
 		listVars = new JList(model.getMatrix().getVariableNames());
 		
-		listVars.setSelectionBackground(new Color(181,189,214));
+		listVars.setSelectionBackground(new Color(83,126,126));
 		listVars.setSelectionForeground(Color.BLACK);
 		
 		JScrollPane s = new JScrollPane(listVars,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

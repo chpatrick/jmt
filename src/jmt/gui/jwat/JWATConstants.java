@@ -47,7 +47,8 @@ public interface JWATConstants {
 	public static final int WORKLOAD_INFOCLUSTERING_PANEL = 4;
 	
 	public static final int TRAFFIC_INPUT_PANEL = 1;
-	public static final int TRAFFIC_TEXTUAL_PANEL = 2;
-	public static final int TRAFFIC_GRAPH_PANEL = 3;
-	public static final int TRAFFIC_GRAPHARRIVAL_PANEL = 4;
+	public static final int TRAFFIC_EPOCH_PANEL = 2;
+	public static final int TRAFFIC_TEXTUAL_PANEL = 3;
+	public static final int TRAFFIC_GRAPH_PANEL = 4;
+	public static final int TRAFFIC_GRAPHARRIVAL_PANEL = 5;
 }

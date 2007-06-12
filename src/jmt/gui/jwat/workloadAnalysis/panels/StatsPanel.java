@@ -197,7 +197,7 @@ public class StatsPanel extends WizardPanel implements CommonConstants,JWATConst
 			+ "if you undo a sampling it completely resets the sample."
 			+ HTML_FONT_NOR_END + HTML_END;
 
-	public final static String TRANSF_BORDER_TEXT = "Apply to: ";
+	public final static String TRANSF_BORDER_TEXT = "Variable: ";
 
 	public final static String TRANSF_LABEL_APPLIED = "Transformations applied to variable ";
 	
@@ -507,12 +507,12 @@ public class StatsPanel extends WizardPanel implements CommonConstants,JWATConst
 		if(varsList == null){
 			varsList = new JList();
 			
-			varsList.setSelectionBackground(new Color(181,189,214));
+			varsList.setSelectionBackground(new Color(83,126,126));
 			varsList.setSelectionForeground(Color.BLACK);
 			
 			varsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			Font f = varsList.getFont();
-			varsList.setPreferredSize(new Dimension(160, 400));
+			//varsList.setPreferredSize(new Dimension(160, 400));
 			varsList.setMaximumSize(new Dimension(160, 400));
 			varsList.setFont(new Font(f.getFontName(), f.getStyle(), f
 					.getSize() + 2));
@@ -585,11 +585,11 @@ public class StatsPanel extends WizardPanel implements CommonConstants,JWATConst
 		if(samplingList == null){
 			samplingList = new JList(samplingNames);
 			
-			samplingList.setSelectionBackground(new Color(181,189,214));
+			samplingList.setSelectionBackground(new Color(83,126,126));
 			samplingList.setSelectionForeground(Color.BLACK);
 			
 			samplingList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			samplingList.setPreferredSize(new Dimension(160, 400));
+			//samplingList.setPreferredSize(new Dimension(160, 400));
 			Font f = samplingList.getFont();
 			samplingList.setFont(new Font(f.getFontName(), f.getStyle(), f
 					.getSize() + 2));

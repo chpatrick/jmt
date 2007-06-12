@@ -127,7 +127,7 @@ public class FuzzyInfoClustering extends JPanel implements CommonConstants,JWATC
 	}
 	private JScrollPane getUpperTable(){
 		clusteringFinalTable = new JTable(new clustDetModel(infos.numElem,infos.percent));
-		clusteringFinalTable.setSelectionBackground(new Color(181,189,214));
+		clusteringFinalTable.setSelectionBackground(new Color(83,126,126));
 		clusteringFinalTable.setSelectionForeground(Color.BLACK);
 		clusteringFinalTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		return new JScrollPane(clusteringFinalTable,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);

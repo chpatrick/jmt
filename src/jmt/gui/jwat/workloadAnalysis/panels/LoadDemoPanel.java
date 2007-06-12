@@ -55,8 +55,8 @@ import jmt.gui.jwat.MainJwatWizard;
 public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATConstants{
 	public static String absolutePath = "./";
 	private String demoDescription="<HTML>"+
-	"<b>Type of demo:</b> Workload analysis demo<p>" +
-	"<b>Description:</b> This demo has been extracted from an Apache log file selecting only some significative variables<p>"+
+	"<b>Type of demo:</b> Workload analysis <p>" +
+	"<b>Description:</b> This demo has been extracted from an Apache log file selecting only some variables<p>"+
 	"<b># observations:</b> This demo has 37614 observations <p>" +
 	"<b># variables:</b> Each observation is characterized by four variables<p>" +
 	"<b>Variables description:</b><p>" +
@@ -68,13 +68,13 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 	"<TR><TD>Bytes transferred</TD><TD>The number of bytes transferred</TD><TD>Numeric</TD></TR>" +
 	"</TABLE></HTML>";
 	private String useDescription="<HTML>"+
-	"<b>How to perform a demo</b><p><p>" +
-	"<b>STEP 1:</b> Select demo file from the list then click 'Load demo'.<p><p>" +
-	"<b>STEP 2:</b> Look at statistics panels then click next.<p><p>" +
-	"<b>STEP 3:</b> Select clustering algorithm choose the options (it is recommanded to select (value-min)/(max-min) transformation) of clustering then click 'solve'.<p><p>" +
-	"<b>STEP 4:</b> Look at statistics results (using back button you can return to STEP 3 to apply different clustering).<p><p>" +
+	"<b>STEP 1:</b> Choose demo file from the list then click 'Load demo'.<p><p>" +
+	"<b>STEP 2:</b> Analyze the statistics panels then click next.<p><p>" +
+	"<b>STEP 3:</b> Choose clustering algorithm, choose the options ( we suggest to select the (value-min)/(max-min) transformation) of clustering then click 'solve'.<p><p>" +
+	"<b>STEP 4:</b> Analyze the cluster results (using back button you can return to STEP 3 and apply different clustering algorithm).<p><p>" +
  	"</HTML>";
 
+	private static final String TEMP_DEMO_NAME_WA = "Demo_WA";
 	private JButton loadDemo;
 	private boolean canGoOn;
 	private ModelWorkloadAnalysis model;
@@ -102,32 +102,33 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 		JPanel grid = new JPanel(new GridLayout(2,1,5,5));
 		
 		JPanel upper = new JPanel(new BorderLayout(10,10));
-		demos = new JList(new String[]{"Demo1"});
+		demos = new JList(new String[]{TEMP_DEMO_NAME_WA});
 		Font f = demos.getFont();
 		demos.setFont(new Font(f.getFontName(), f.getStyle(), f
 				.getSize() + 2));
-		demos.setPreferredSize(new Dimension(150,200));
+		//demos.setPreferredSize(new Dimension(150,200));
+		demos.setFixedCellWidth(150);
 		demos.addListSelectionListener(new ListSelectionListener(){
-
+	
 			public void valueChanged(ListSelectionEvent e) {
 				if(!e.getValueIsAdjusting()){
 					if(demos.getSelectedIndex() >=0){
 						//TODO insert peculiar strings for demo
 					}else{
-						demos.setSelectedIndex(1);
+						demos.setSelectedIndex(0);
 					}
 				}
 			}
 			
 		});
-		demos.setSelectedIndex(1);
+		demos.setSelectedIndex(0);
 		demoDesc = new JLabel(demoDescription);
 		upper.add(new JScrollPane(demos),BorderLayout.WEST);
 		upper.add(new JScrollPane(demoDesc),BorderLayout.CENTER);
 		demoDesc.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Demo description"));
 		
 		useDesc = new JLabel(useDescription);
-		useDesc.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "How to description"));
+		useDesc.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "How to execute a demo"));
 		
 		grid.add(upper);
 		grid.add(new JScrollPane(useDesc));
@@ -140,7 +141,7 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 			public void actionPerformed(ActionEvent e) {
 					//Calls loader
 					try {
-						Loader.readData(absolutePath + "examples/Demo1Data.jwat",Loader.loadParameter("Demo1"),new ProgressMonitorShow(LoadDemoPanel.this,"Loading Data...",1000),new InputStatusListener());
+						Loader.readData(absolutePath + "examples/"+ TEMP_DEMO_NAME_WA+"Data.jwat",Loader.loadParameter(TEMP_DEMO_NAME_WA),new ProgressMonitorShow(LoadDemoPanel.this,"Loading Data...",1000),new InputStatusListener());
 					} catch (FileNotFoundException ee) {
 						JOptionPane.showMessageDialog(LoadDemoPanel.this,"Loading aborted. File not found.","ABORT!!",JOptionPane.WARNING_MESSAGE);
 					}
@@ -152,10 +153,6 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 		south.add(loadDemo);
 		this.add(grid,BorderLayout.CENTER);
 		this.add(south,BorderLayout.SOUTH);
-	}
-
-	public boolean canGoForward() {
-		return canGoOn;
 	}
 
 	private class InputStatusListener implements ProgressStatusListener
@@ -194,4 +191,23 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 	public void lostFocus(){
 		parent.setLastPanel(WORKLOAD_INPUT_PANEL);
 	}
+	/********** WIZARD MANAGEMENT FUNCTIONS **********/
+	// TODO controllare validita dei dati forniti nel pannello e creazione e passaggio informazioni al modello per il prossimo panello
+	// Chiamata prima di passare al prossimo pannello
+	public boolean canGoForward() {
+		return canGoOn;
 	}
+	
+	public void setCanGoForward(boolean canGo){
+		canGoOn=canGo;
+	}
+	// TODO controllare con Fuma cosa fare
+	// Chiamata quando dal pannello si torna indietro
+	public boolean canGoBack() {
+		if (JOptionPane.showConfirmDialog(this,"Are you sure want to go back to start screen ?",
+				"Back operation", JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE) == JOptionPane.NO_OPTION) return false;
+		//Reset della finestra principale
+		parent.resetScreen();
+		return true;
+	}
+}

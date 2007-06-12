@@ -189,7 +189,7 @@ public class JWatStartScreen extends JFrame {
         private Color rollover;
         public Rollover() {
             normal = new JButton().getBackground();
-            rollover = new Color(181,189,214);
+            rollover = new Color(83,126,126);
         }
         /**
          * Invoked when the mouse enters a component.

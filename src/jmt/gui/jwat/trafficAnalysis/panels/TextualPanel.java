@@ -79,7 +79,6 @@ public class TextualPanel extends WizardPanel implements JWATConstants{
         this.burstwizard = burstwizard;
         ((ModelTrafficAnalysis)this.burstwizard.getModel()).addSetParamsListener(new OnSetParamtersListener(){
 			public void ParamsSetted() {
-				System.err.println("Textual Panel reset");
 				burstengine = ((ModelTrafficAnalysis)TextualPanel.this.burstwizard.getModel()).getEngine();
 				TextualPanel.this.removeAll();
 				initComponents();

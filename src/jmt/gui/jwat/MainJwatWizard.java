@@ -1,6 +1,7 @@
 package jmt.gui.jwat;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -28,7 +29,6 @@ import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.filechooser.FileFilter;
 
 import jmt.engine.jwat.JwatSession;
 import jmt.engine.jwat.MatrixOsservazioni;
@@ -39,6 +39,7 @@ import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.panels.AboutDialogFactory;
 import jmt.gui.common.resources.JMTImageLoader;
+import jmt.gui.jwat.trafficAnalysis.panels.EpochPanel;
 import jmt.gui.jwat.trafficAnalysis.panels.GraphArrivalPanel;
 import jmt.gui.jwat.trafficAnalysis.panels.GraphPanel;
 import jmt.gui.jwat.trafficAnalysis.panels.TextualPanel;
@@ -52,6 +53,9 @@ public class MainJwatWizard extends JWatWizard {
 	//jWAT tool icons
 	private String IMG_JWATICON = "JWATIcon";
 	//private JToolBar toolBar = null;
+	private static final String TITLE = "jWAT";
+	private static final String WORK_LOAD_TITLE = "Workload Analysis";
+	private static final String BURSTINESS_TITLE = "Burstiness Analysis";
 	private JPanel menus = null;
 	private JMenuBar mMenuBar = null;
 	
@@ -85,8 +89,8 @@ public class MainJwatWizard extends JWatWizard {
 	 */
 	private void initGUI(){
 		this.setIconImage(JMTImageLoader.loadImage(IMG_JWATICON).getImage());
-		this.setResizable(false);
-		this.setTitle("jWAT");
+		//this.setResizable(false);
+		this.setTitle(TITLE);
 		this.setSize(800,600);
 		centerWindow();
 		menus = new JPanel(new BorderLayout());
@@ -99,18 +103,26 @@ public class MainJwatWizard extends JWatWizard {
 	
 	// Set correct enviornement for traffic analysis
 	public void setTrafficEnv(){
+		this.setTitle(TITLE + " - " + BURSTINESS_TITLE);
 		//Initializes correct model
 		model = new ModelTrafficAnalysis();
 		//Creates and adds all necessary panels to jWAT main screen
 		WizardPanel p = new jmt.gui.jwat.trafficAnalysis.panels.InputPanel(this);
 		JWatPanels.add(p);
 		this.addPanel(p);
+		
+		p = new EpochPanel(this);
+		JWatPanels.add(p);
+		this.addPanel(p);
+		
 		p = new TextualPanel(this);
 		JWatPanels.add(p);
 		this.addPanel(p);
+		
 		p = new GraphPanel(this);
 		JWatPanels.add(p);
 		this.addPanel(p);
+		
 		p = new GraphArrivalPanel(this);
 		JWatPanels.add(p);
 		this.addPanel(p);
@@ -125,6 +137,7 @@ public class MainJwatWizard extends JWatWizard {
 	
 	//Adds all necessary panes concernig with Workload analysis
 	public void setWorkloadEnv(String mode){
+		this.setTitle(TITLE + " - " + WORK_LOAD_TITLE);
 		model = new ModelWorkloadAnalysis(this);
 		WizardPanel p;
 		if(mode.equals("load"))	p = new InputPanel(this);

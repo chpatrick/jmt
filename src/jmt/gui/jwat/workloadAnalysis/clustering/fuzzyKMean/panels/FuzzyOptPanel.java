@@ -25,7 +25,6 @@ import jmt.engine.jwat.VariableNumber;
 import jmt.engine.jwat.input.ProgressMonitorShow;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.MainFuzzyKMean;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
-import jmt.framework.gui.image.ImageLoader;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.resources.JMTImageLoader;
@@ -41,7 +40,7 @@ public class FuzzyOptPanel extends JPanel implements CommonConstants{
 	"Specify the fuzziness level<p>for the algorithm" + HTML_FONT_NOR_END + HTML_END;
 	private final String FKMEANS_DESCRIPTION = HTML_START
 		+ HTML_FONT_TITLE + "Fuzzy k-Means Clustering" + HTML_FONT_TIT_END + HTML_FONT_NORM
-		+ "Specify maximum number of clusters, iterations and fuzziness" + HTML_FONT_NOR_END
+		+ "Specify maximum number of clusters, iterations and fuzziness that the algorithm has to perform" + HTML_FONT_NOR_END
 		+ HTML_END;
 	private final String FKMEANS_OPTIONS_DESCRIPTION = HTML_START
 		+ HTML_FONT_TITLE + "Transformations" + HTML_FONT_TIT_END + HTML_FONT_NORM
@@ -92,9 +91,22 @@ public class FuzzyOptPanel extends JPanel implements CommonConstants{
 		JPanel centralPanel = new JPanel(new BorderLayout());
 		this.add(centralPanel,BorderLayout.CENTER);
 		//NORTH Panel options
-		JPanel northCPanel = new JPanel(new GridLayout(1,2));
+		JPanel northCPanel = new JPanel(new GridLayout(2,1));
 		
-		JPanel clusterOpt = new JPanel(new BorderLayout());
+		JPanel clustNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		clustNorth.add(new JLabel("number of clusters:    "));
+		numOfClust = new JSpinner(new SpinnerNumberModel(3,2,37,1));
+		clustNorth.add(numOfClust);
+		
+		JPanel iterNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		iterNorth.add(new JLabel("number of iterations: "));
+		numOfIter = new JSpinner(new SpinnerNumberModel(4,2,50,1));
+		iterNorth.add(numOfIter);
+		
+		northCPanel.add(clustNorth);
+		northCPanel.add(iterNorth);
+		
+		/*JPanel clusterOpt = new JPanel(new BorderLayout());
 		clusterOpt.setBorder(new TitledBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED), "Clusters")));
 		
@@ -117,7 +129,7 @@ public class FuzzyOptPanel extends JPanel implements CommonConstants{
 		
 		northCPanel.add(clusterOpt);
 		northCPanel.add(iterationOpt);
-		
+		*/
 		centralPanel.add(northCPanel,BorderLayout.NORTH);
 		
 		JPanel fuzzyPanel = new JPanel(new BorderLayout());

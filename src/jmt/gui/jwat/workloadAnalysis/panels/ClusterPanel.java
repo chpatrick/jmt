@@ -2,12 +2,12 @@ package jmt.gui.jwat.workloadAnalysis.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
@@ -104,28 +104,28 @@ public class ClusterPanel extends WizardPanel implements CommonConstants,JWATCon
 		varpanel.add(new JLabel(HTML_START + HTML_FONT_TITLE + "Variables" + HTML_FONT_TIT_END + HTML_END),BorderLayout.NORTH);
 		varList=new JList();
 		
-		varList.setSelectionBackground(new Color(181,189,214));
+		varList.setSelectionBackground(new Color(83,126,126));
 		varList.setSelectionForeground(Color.BLACK);
 		
 		Font f = varList.getFont();
 		varList.setFont(new Font(f.getFontName(), f.getStyle(), f
 				.getSize() + 2));
 		varList.setBorder(BorderFactory.createLoweredBevelBorder());
-		varList.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		varList.setPreferredSize(new Dimension(140, 380));
+		//varList.getSelectionModel().setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		//varList.setPreferredSize(new Dimension(140, 380));
 		varpanel.add(new JScrollPane(varList,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),BorderLayout.CENTER);
 		/*PANEL LIST CLUSTRING*/
 		cluspanel.add(new JLabel(HTML_START + HTML_FONT_TITLE+ "Clustering" + HTML_FONT_TIT_END + HTML_END),BorderLayout.NORTH);
 		clustList=new JList();
 		
-		clustList.setSelectionBackground(new Color(181,189,214));
+		clustList.setSelectionBackground(new Color(83,126,126));
 		clustList.setSelectionForeground(Color.BLACK);
 		clustList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		
 		clustList.setFont(new Font(f.getFontName(), f.getStyle(), f
 				.getSize() + 2));
 		clustList.setBorder(BorderFactory.createLoweredBevelBorder());
-		clustList.setPreferredSize(new Dimension(140, 380));
+		//clustList.setPreferredSize(new Dimension(140, 380));
 		clustList.setListData(clusteringString);
 		clustList.addListSelectionListener(new listClusterListener());
 		cluspanel.add(new JScrollPane(clustList,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED),BorderLayout.CENTER);
@@ -147,6 +147,7 @@ public class ClusterPanel extends WizardPanel implements CommonConstants,JWATCon
 				MatrixOsservazioni m= model.getMatrix();
 				String[] varLst= m.getVariableNames();
 				varList.setListData(varLst);
+				varList.setSelectionModel(new myListSelectionModel(model.getMatrix().getNumVariables()));
 			}
 
 			public void onResetMatrixObservation() {
@@ -182,7 +183,8 @@ public class ClusterPanel extends WizardPanel implements CommonConstants,JWATCon
 	
 	public int[] getVarSelected()
 	{
-		return varList.getSelectedIndices();
+		return ((myListSelectionModel)varList.getSelectionModel()).getSelected();
+		//return varList.getSelectedIndices();
 	}
 	
 	public boolean canGoForward() {
@@ -251,5 +253,75 @@ public class ClusterPanel extends WizardPanel implements CommonConstants,JWATCon
 	public void lostFocus(){
 		parent.setLastPanel(WORKLOAD_CLUSTERING_PANEL);
 	}
+	private class myListSelectionModel extends DefaultListSelectionModel{
+		boolean[] isSelected;
+		int numSelected;
 
+		public myListSelectionModel(int num)
+		{
+			this.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			isSelected=new boolean[num];
+			numSelected=0;
+		}
+
+		public boolean isSelectedIndex(int index)
+		{
+			//System.out.println("IS");
+			return isSelected[index];
+		}
+
+		public void setSelectionInterval(int index0,int index1)
+		{
+			if(isSelected[index0])
+			{
+				isSelected[index0]=false;
+				numSelected--;
+			}
+			else
+			{
+				numSelected++;
+				isSelected[index0]=true;
+			}
+
+
+			varList.revalidate();
+			varList.repaint();
+		}
+
+
+		public int getIndexSelected(int skip)
+		{
+			int i;
+
+			for(i=0;i<isSelected.length;i++)
+			{
+				if(isSelected[i])
+				{
+					if (skip==0) break;
+					else skip--;
+				}
+			}
+			return i;
+		}
+
+		public int getNumSelected()
+		{
+			return numSelected;
+		}
+
+		public boolean[] getBoolSel()
+		{
+			return isSelected;
+		}
+		public int[] getSelected(){
+			int res[] = new int[numSelected];
+			int pos = 0;
+			for(int i = 0; i < isSelected.length; i++){
+				if (isSelected[i]){
+					res[pos++] = i;
+				}
+			}
+			return res;
+		}
+	}
 }

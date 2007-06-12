@@ -241,12 +241,12 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 		{ putValue(Action.SHORT_DESCRIPTION, "Load data from file"); }
 		// Adds a new row to inputTable and update varchooser comboBox used to show list of variables on which can be applied a filter
 		public void actionPerformed(ActionEvent arg0) {
-			if (!((JWatVariableInputTableModel) inputTable.getModel()).checkInfos()) {
-				JOptionPane.showMessageDialog(InputPanel.this,"Some fileds of variable table are not correctly setted or are left blank");
-				return;
-			}
 			if(nameFile == null){
 				JOptionPane.showMessageDialog(InputPanel.this,"You have no selected any input file, please select one and then retry");
+				return;
+			}
+			if (!((JWatVariableInputTableModel) inputTable.getModel()).checkInfos()) {
+				JOptionPane.showMessageDialog(InputPanel.this,"Format file not choose or some fileds of variable table are not correctly setted or are left blank");
 				return;
 			}
 			if(!loadOnRun){

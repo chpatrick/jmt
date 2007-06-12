@@ -122,7 +122,7 @@ public class JWatMainPanel extends WizardPanel {
         private Color rollover;
         public Rollover() {
             normal = new JButton().getBackground();
-            rollover = new Color(181,189,214);
+            rollover = new Color(83,126,126);
         }
         /**
          * Invoked when the mouse enters a component.
@@ -174,11 +174,6 @@ public class JWatMainPanel extends WizardPanel {
 		makeToolbar();
 		makeMenubar();
 		parent.setEnableButton("Solve", false);
-		parent.setActionButton("Exit", new AbstractAction(){
-			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
-			}
-		});
 		parent.setActionButton("Help", new AbstractAction(){
 			public void actionPerformed(ActionEvent e) {
 				System.err.println("HELP");
@@ -268,5 +263,4 @@ public class JWatMainPanel extends WizardPanel {
     		
     	}
     }
-
 }

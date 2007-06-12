@@ -12,11 +12,20 @@ public class ModelTrafficAnalysis implements JWatModel{
 	private ArrayList resetModel = new ArrayList();
 	private BurstEngine engine = null;
 	
-	public void setParameters(MatrixOsservazioni m,int epochs){
+	public void setMatrix(MatrixOsservazioni m){
 		matrix = m;
+		if (epochs != -1){
+			engine = new BurstEngine(matrix.getVariables()[0],epochs,null);
+			notifySetParams();
+		}
+	}
+	
+	public void setParameters(int epochs){
 		this.epochs = epochs;
-		engine = new BurstEngine(matrix.getVariables()[0],epochs,null);
-		notifySetParams();
+		if (matrix != null){
+			engine = new BurstEngine(matrix.getVariables()[0],epochs,null);
+			notifySetParams();
+		}
 	}
 	
 	public BurstEngine getEngine(){
@@ -43,7 +52,6 @@ public class ModelTrafficAnalysis implements JWatModel{
 	public void resetModel(){
 		matrix = null;
 		notifyResetModel();
-		//Calls listeners for reset model
 	}
 	
 	public void addResetModelListener(OnResetModel listener){
@@ -59,8 +67,4 @@ public class ModelTrafficAnalysis implements JWatModel{
 			((OnResetModel)resetModel.get(i)).modelResetted();
 	}
 
-	public void setMatrix(MatrixOsservazioni matrix) {
-		// TODO Auto-generated method stub
-		
-	}
 }

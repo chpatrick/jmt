@@ -42,6 +42,7 @@ import jmt.engine.jwat.workloadAnalysis.clustering.kMean.KMean;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.ClusterInfoKMean.SCluStat;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
 import jmt.gui.common.CommonConstants;
+import jmt.gui.jwat.ColumnHeaderToolTips;
 import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.workloadAnalysis.clustering.fuzzyKMean.panels.SingleKMeanClusterInfo;
 
@@ -128,21 +129,24 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 			clustInfo = new JTable(new clustTableModel(infos.infoCluster[clustList.getSelectedIndex()].statClust)){
 				{
 					setAutoResizeMode(AUTO_RESIZE_OFF);
-					getColumnModel().getColumn(0).setPreferredWidth(130);
-					getColumnModel().getColumn(1).setPreferredWidth(75);
-					getColumnModel().getColumn(2).setPreferredWidth(30);
+					getColumnModel().getColumn(1).setPreferredWidth(130);
+					getColumnModel().getColumn(2).setPreferredWidth(75);
+					getColumnModel().getColumn(0).setPreferredWidth(30);
+					ColumnHeaderToolTips tips = new ColumnHeaderToolTips();
+			        tips.setToolTip(getColumnModel().getColumn(0), "Considered in the clustering");
 					getColumnModel().getColumn(3).setPreferredWidth(75);
 					getColumnModel().getColumn(4).setPreferredWidth(75);
 					getColumnModel().getColumn(5).setPreferredWidth(75);
+					getTableHeader().addMouseMotionListener(tips);
 				}
 				public TableCellRenderer getCellRenderer(int row, int column) {
-					if (column == 2)
+					if (column == 0)
 						return getDefaultRenderer(Boolean.class);
 					return getDefaultRenderer(String.class);
 				}
 			};
 			//clustInfo.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-			clustInfo.setSelectionBackground(new Color(181,189,214));
+			clustInfo.setSelectionBackground(new Color(83,126,126));
 			clustInfo.setSelectionForeground(Color.BLACK);
 		}
 		
@@ -154,7 +158,7 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 		if(clustList == null){
 			clustList = new JList();
 			
-			clustList.setSelectionBackground(new Color(181,189,214));
+			clustList.setSelectionBackground(new Color(83,126,126));
 			clustList.setSelectionForeground(Color.BLACK);
 			clustList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			clustList.setFont(new Font(clustList.getFont().getName(),clustList.getFont().getStyle(),clustList.getFont().getSize()+1));
@@ -189,7 +193,7 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 	}	
 	
 	private class clustTableModel extends AbstractTableModel{
-		private String[] header={"Name","Center","ISC","Std. Dev.","Kurt.","Skew."};
+		private String[] header={"Sel.","Name","Center","Std. Dev.","Kurt.","Skew."};
 		private SCluStat[] data = null;
 		
 		public clustTableModel(SCluStat[] stats){
@@ -206,17 +210,17 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			if(rowIndex < data.length){
-				if(columnIndex == 0){
+				if(columnIndex == 1){
 					return model.getMatrix().getVariableNames()[rowIndex];
 				}
-				if(columnIndex == 2){
+				if(columnIndex == 0){
 					int[] sel = ((KMean)model.getListOfClustering().get(clustering)).getVarClust();	
 					for(int i = 0; i < sel.length;i++){
 						if(sel[i] == rowIndex) return Boolean.TRUE;
 					}
 					return Boolean.FALSE;
 				}
-				if(columnIndex == 1) return defaultFormat.format(data[rowIndex].dMedia);
+				if(columnIndex == 2) return defaultFormat.format(data[rowIndex].dMedia);
 				if(columnIndex == 3) return defaultFormat.format(data[rowIndex].dStdDv);
 				if(columnIndex == 4) return defaultFormat.format(data[rowIndex].dKurto);
 				if(columnIndex == 5) return defaultFormat.format(data[rowIndex].dSkewn);

@@ -32,7 +32,7 @@ import jmt.gui.jwat.workloadAnalysis.tables.listeners.RowDeleteListener;
 
 public class JWatVariableInputTable extends JTable implements CommonConstants,JWATConstants {
 	/* Set of column dimensions */
-	protected int[] columnSizes = new int[] { 100, 60, 38, 145, 30, 100, 30, 30, 18 };
+	protected int[] columnSizes = new int[] {38, 100, 60,  145, 30, 100, 30, 30, 18 };
 
 	public static final Object[] VarTypes = new Object[] { "Numeric", "String", "Date" };
 	protected JComboBox combobox = new JComboBox(VarTypes);
@@ -81,9 +81,9 @@ public class JWatVariableInputTable extends JTable implements CommonConstants,JW
 		for (int i = 0; i < columnSizes.length && i < getColumnCount(); i++) {
 			this.getColumnModel().getColumn(i)
 					.setPreferredWidth(columnSizes[i]);
-			if (i == 1)
-				this.getColumnModel().getColumn(i).setMaxWidth(columnSizes[i]);
 			if (i == 2)
+				this.getColumnModel().getColumn(i).setMaxWidth(columnSizes[i]);
+			if (i == 0)
 				this.getColumnModel().getColumn(i).setMaxWidth(columnSizes[i]);
 			if (i == columnSizes.length - 1) {
 				// delete button and containing table cells as well, must be square
@@ -96,13 +96,13 @@ public class JWatVariableInputTable extends JTable implements CommonConstants,JW
 	public TableCellRenderer getCellRenderer(int row, int column) {
 		/*if (column == 5)
 			return new ComboBoxCell(regularExpr);*/
-		if (column == 0 || column == 3 || column == 4 || column == 5 || column == 6 || column == 7)
+		if (column == 1 || column == 3 || column == 4 || column == 5 || column == 6 || column == 7)
 			return getDefaultRenderer(String.class);
 		if (column == columnSizes.length-1)
 			return new ButtonCellEditor(delVar);
-		if (column == 2)
+		if (column == 0)
 			return getDefaultRenderer(Boolean.class);
-		if (column == 1)
+		if (column == 2)
 			return new ComboBoxCell(VarTypes);
 		return null;
 	}
@@ -112,7 +112,7 @@ public class JWatVariableInputTable extends JTable implements CommonConstants,JW
 	/*	if (column == 5) {
 			return new DefaultCellEditor(regCombo);
 		}*/
-		if (column == 1) {
+		if (column == 2) {
 			return new DefaultCellEditor(combobox);
 		} else if (column == columnSizes.length - 1) {
 			return new ButtonCellEditor(new JButton(deleteVar));
@@ -231,7 +231,7 @@ public class JWatVariableInputTable extends JTable implements CommonConstants,JW
 				} 
 			}
 		});
-		setSelectionBackground(new Color(181,189,214));
+		setSelectionBackground(new Color(83,126,126));
 		setSelectionForeground(Color.BLACK);
 		installKeyboard();
 		installMouse();

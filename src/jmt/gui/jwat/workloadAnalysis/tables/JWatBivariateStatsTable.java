@@ -8,7 +8,7 @@ import jmt.gui.common.CommonConstants;
 
 public class JWatBivariateStatsTable extends JTable implements CommonConstants{
 	public JWatBivariateStatsTable(){
-		setSelectionBackground(new Color(181,189,214));
+		setSelectionBackground(new Color(83,126,126));
 		setSelectionForeground(Color.BLACK);
 	}
 	// Sets a table model for visualization and editing of data

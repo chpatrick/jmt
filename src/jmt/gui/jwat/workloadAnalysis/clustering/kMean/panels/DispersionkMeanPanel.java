@@ -29,7 +29,7 @@ public class DispersionkMeanPanel extends JPanel {
 		matrix = new DispKMeanMatrix(model,-1);
 		this.add(matrix,BorderLayout.CENTER);
 		matrix.setClustering(clustering,clusters);
-		this.add(new JScrollPane(new myPanel(),JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),BorderLayout.EAST);
+		this.add(new JScrollPane(new myPanel(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),BorderLayout.EAST);
 	}
 	public void setClustering(int cluster){
 		clusters = cluster;

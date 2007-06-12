@@ -128,7 +128,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 		listsPanel.add(Box.createHorizontalStrut(10));
 		
 		JPanel west=new JPanel(new GridLayout(2,1,0,0));
-		west.setPreferredSize(new Dimension(160,400));
+		west.setPreferredSize(new Dimension(200,400));
 		
 		listsPanel.add(west);
 		listsPanel.add(Box.createHorizontalStrut(10));
@@ -194,7 +194,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 			}
 		};
 		clusteringTable.setFont(new Font(clusteringTable.getFont().getName(),clusteringTable.getFont().getStyle(),clusteringTable.getFont().getSize()+1));
-		clusteringTable.setSelectionBackground(new Color(181,189,214));
+		clusteringTable.setSelectionBackground(new Color(83,126,126));
 		clusteringTable.setSelectionForeground(Color.BLACK);
 		clusteringTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		clusteringTable.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -265,7 +265,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 		if(((Clustering)model.getListOfClustering().get(clusteringTable.getSelectedRow())).getClusteringType() == KMEANS){
 			clusterTable = new ClusterTableKMeans(new ClusterTableModelKMeans());
 			clusterTable.setFont(new Font(clusterTable.getFont().getName(),clusterTable.getFont().getStyle(),clusterTable.getFont().getSize()+1));
-			clusterTable.setSelectionBackground(new Color(181,189,214));
+			clusterTable.setSelectionBackground(new Color(83,126,126));
 			clusterTable.setSelectionForeground(Color.BLACK);
 			clusterTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			clusterTable.setBorder(BorderFactory.createLoweredBevelBorder());
@@ -311,7 +311,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 		if(((Clustering)model.getListOfClustering().get(clusteringTable.getSelectedRow())).getClusteringType() == FUZZYK){
 			clusterTable = new ClusterTableFuzzy(new ClusterTableModelFuzzy());
 			clusterTable.setFont(new Font(clusterTable.getFont().getName(),clusterTable.getFont().getStyle(),clusterTable.getFont().getSize()+1));
-			clusterTable.setSelectionBackground(new Color(181,189,214));
+			clusterTable.setSelectionBackground(new Color(83,126,126));
 			clusterTable.setSelectionForeground(Color.BLACK);
 			clusterTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			clusterTable.setBorder(BorderFactory.createLoweredBevelBorder());
