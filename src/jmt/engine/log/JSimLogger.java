@@ -130,6 +130,11 @@ public class JSimLogger implements Serializable {
         return logger.isDebugEnabled();
 
     }
+    
+    public boolean isInfoEnabled() {
+        return logger.isInfoEnabled();
+    }
+    
 
  }
 
