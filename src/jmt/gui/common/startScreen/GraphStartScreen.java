@@ -52,7 +52,7 @@ public class GraphStartScreen extends JMTFrame{
     private static final int BUTTONSIZE = 25;
     private static URL imageURL = GraphStartScreen.class.getResource(IMAGE);
     private static final int FONT_SIZE = 4;
-    public static final String VERSION = "0.7.2";
+    public static final String VERSION = "0.7.3";
     private static String[] args;
     private JButton introIta, introEng;
 
