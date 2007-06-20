@@ -39,17 +39,12 @@ import jmt.engine.QueueNet.*;
  *
  * @author Francesco Radaelli, Stefano Omini
  * @author Bertoli Marco - Fixed lockup issues with closed class and sinks 13/11/2005
+ * @author Bertoli Marco - Fixed bug with multiserver stations
  */
 public class Router extends OutputSection {
-
+    
 	/** Property Identifier: Routing strategy.*/
 	public static final int PROPERTY_ID_ROUTING_STRATEGY = 0x0101;
-	/** Property Identifier: Busy.*/
-	public static final int PROPERTY_ID_BUSY = 0x0102;
-
-    //busy is true when a router has just sent a job and is waiting for an ack
-    private boolean busy;
-
 	private RoutingStrategy routingStrategies[];
 
 
@@ -77,12 +72,9 @@ public class Router extends OutputSection {
 
 
     //-------------------ZERO SERVICE TIME PROPERTIES------------------------------//
-    //@author Stefano Omini
-
     //for each class, true if that class has a service time equal to zero and therefore
     //must be "tunnelled"
     private boolean hasZeroServiceTime[] = null;
-
     //-------------------end ZERO SERVICE TIME PROPERTIES--------------------------//
 
 
@@ -92,49 +84,26 @@ public class Router extends OutputSection {
 	 */
 	public Router(RoutingStrategy routingStrategies[]) {
 		super();
-		busy = false;
 		this.routingStrategies = routingStrategies;
 
-        //NEW
-        //@author Stefano Omini
         borderRouter = false;
         myBlockingRegion = null;
         regionInputStation = null;
-        //end NEW
-
-        //NEW
-        //@author Stefano Omini
-        //log = NetSystem.getLog();
-        //end NEW
 	}
 
-
-    //NEW
-    //@author Stefano Omini
 
     /** Creates a new instance of blocking region border Router.
 	 * @param routingStrategies Routing strategies, one for each class.
 	 */
 	public Router(RoutingStrategy routingStrategies[], BlockingRegion blockReg) {
 		super();
-		busy = false;
 		this.routingStrategies = routingStrategies;
 
         borderRouter = true;
         myBlockingRegion = blockReg;
         regionInputStation = myBlockingRegion.getInputStation();
-
-        //NEW
-        //@author Stefano Omini
-        //log = NetSystem.getLog();
-        //end NEW
 	}
 
-    //end NEW
-
-
-    //NEW
-    //@author Stefano Omini
     /**
      * Tells whether this router is a border router of a blocking region.
      * @return true if this router is a border router of a blocking region.
@@ -168,24 +137,12 @@ public class Router extends OutputSection {
         return;
     }
 
-    //end NEW
-
-
     public Object getObject(int id, JobClass jobClass) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_ROUTING_STRATEGY:
 				return routingStrategies[jobClass.getId()];
 			default:
 				return super.getObject(id);
-		}
-	}
-
-	public boolean isEnabled(int id) throws jmt.common.exception.NetException {
-		switch (id) {
-			case PROPERTY_ID_BUSY:
-				return busy;
-			default:
-				return super.isEnabled(id);
 		}
 	}
 
@@ -197,10 +154,7 @@ public class Router extends OutputSection {
 
                 Job job = message.getJob();
 
-                //NEW
-                //@author Stefano Omini
-
-                //TODO: questa parte eventualmente potrebbe essere messa nella version overridden di NodeLinked
+                //TODO: this part should be placed in the overridden version of NodeLinked
                 //at the first execution checks which classes have service time always equal to zero
                 if (hasZeroServiceTime == null) {
                     int numberOfClasses = this.getJobClasses().size();
@@ -237,110 +191,53 @@ public class Router extends OutputSection {
                     }
                 }
 
-                //checks if this job has been tunnelled
-                //tunnelled jobs can be forwarded even if router is already busy
-                //no acks must be sent backward for tunnelled jobs
-                boolean tunnelledJob = hasZeroServiceTime[job.getJobClass().getId()];
-
-                //end NEW
-
-
                 //EVENT_JOB
                 //if the router is not busy, an output node is chosen using
                 //the routing strategy and a message containing the job is sent to it.
-                //The router becomes busy, waiting for the ack.
-                //
-                //Otherwise if the router is busy, message is not processed
 
-				// if not busy sends the job
+                JobClass jobClass = job.getJobClass();
 
-                //OLD
-                //if (!busy) {
+                //choose the outNode using the corresponding routing strategy
+                NetNode outNode;
 
-                //NEW
-                //@author Stefano Omini
-                if (!busy || tunnelledJob) {
-                //end NEW
+                outNode = routingStrategies[jobClass.getId()]
+                                            .getOutNode(getOwnerNode().getOutputNodes(), jobClass);
 
-                    JobClass jobClass = job.getJobClass();
+                // Bertoli Marco: sanity checks with closed classes and sinks were moved inside
+                // routing strategies
 
-                    //choose the outNode using the corresponding routing strategy
-                    NetNode outNode;
-
-                    outNode = routingStrategies[jobClass.getId()]
-                            .getOutNode(getOwnerNode().getOutputNodes(), jobClass);
-
-                    // Bertoli Marco: sanity checks with closed classes and sinks were moved inside
-                    // routing strategies
-
-                    if (outNode == null)
-						return MSG_NOT_PROCESSED;
-
-
-                    //send the job to all nodes identified by the strategy
-					send(job, 0.0, outNode);
-
-                    //busy becomes true (if job isn't tunnelled:
-                    //the router is waiting for the ack)
-
-                    //OLD
-                    //busy = true;
-
-                    //NEW
-                    //@author Stefano Omini
-                    if (!tunnelledJob) {
-                        //busy = true only for non-tunnelled jobs
-                        busy = true;
-                    }
-                    //end NEW
-
-
-					//log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
-
-
-                    //NEW
-                    //@author Stefano Omini
-
-                    //Border router behaviour (used in case of blocking region)
-                    if (isBorderRouter()) {
-                        //the owner node of this router is inside the region: if the outNode is outside
-                        //the region, it means that one job has left the blocking region so the region
-                        //input station (its blocking router) must receive a particular message
-                        if (!myBlockingRegion.belongsToRegion(outNode)) {
-
-                            //the first time finds the input station
-                            if (regionInputStation == null) {
-                                regionInputStation = myBlockingRegion.getInputStation();
-                            }
-
-                            myBlockingRegion.decreaseOccupation(jobClass);
-
-                            send(NetEvent.EVENT_JOB_OUT_OF_REGION, null, 0.0, NodeSection.INPUT, regionInputStation);
-                        }
-                    }
-                    //end NEW
-
-                    return MSG_PROCESSED;
-				}
-				// otherwise the job will be lost
-				else
-					//TODO: attenzione: se ho a valle una coda finita, perde i messaggi
-                    //arrivano altri job mentre il router è ancora busy, quindi non processa il messaggio
-                    //non si potrebbe bloccare l'invio di altri job??
+                if (outNode == null)
                     return MSG_NOT_PROCESSED;
 
 
-            case NetEvent.EVENT_ACK:
+                //send the job to all nodes identified by the strategy
+                send(job, 0.0, outNode);
 
+                //Border router behaviour (used in case of blocking region)
+                if (isBorderRouter()) {
+                    //the owner node of this router is inside the region: if the outNode is outside
+                    //the region, it means that one job has left the blocking region so the region
+                    //input station (its blocking router) must receive a particular message
+                    if (!myBlockingRegion.belongsToRegion(outNode)) {
+
+                        //the first time finds the input station
+                        if (regionInputStation == null) {
+                            regionInputStation = myBlockingRegion.getInputStation();
+                        }
+
+                        myBlockingRegion.decreaseOccupation(jobClass);
+
+                        send(NetEvent.EVENT_JOB_OUT_OF_REGION, null, 0.0, NodeSection.INPUT, regionInputStation);
+                    }
+                }
+                return MSG_PROCESSED;
+
+
+            case NetEvent.EVENT_ACK:
                 //EVENT_ACK
                 //
-                //If the router is not busy (is not waiting for the ack for a routed job)
-                //message is no processed.
-                //Otherwise an ack is sent back to the service section and busy becomes false.
+                //An ack is sent back to the service section.
                 //
-
-                //NEW
-                //@author Stefano Omini
 
                 //first controls if the ack is relative to a tunnelled job
                 int jobClassIndex = message.getJob().getJobClass().getId();
@@ -351,18 +248,8 @@ public class Router extends OutputSection {
                     return MSG_PROCESSED;
                 }
 
-                //end NEW
-
-				if (!busy)
-					return MSG_NOT_PROCESSED;
-				else {
-					sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
-
-                    //log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
-
-                    busy = false;
-				}
-				break;
+                sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
+                break;
 
             default:
 				return MSG_NOT_PROCESSED;

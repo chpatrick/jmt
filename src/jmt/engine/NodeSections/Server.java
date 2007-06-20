@@ -47,8 +47,6 @@ public class Server extends ServiceSection {
 
 	private int busyCounter, numberOfServers;
 
-	//private JobInfoList tempJobsList;
-
 	private ServiceStrategy serviceStrategy[];
 
 
@@ -146,7 +144,6 @@ public class Server extends ServiceSection {
 		//	tempJobsList = new JobInfoList(getJobClasses().size(), true);
 	}
 
-    /*
     protected int process(NetMessage message) throws jmt.common.exception.NetException {
 		int c;
 		Job job;
@@ -159,208 +156,22 @@ public class Server extends ServiceSection {
                 //If there are no jobs in the service section, message is not processed.
                 //Otherwise an ack is sent backward to the input section and
                 //the counter of jobs in service is decreased.
-
-				if (busyCounter == 0) {
+                
+                
+                //FIXME something is not working
+				
+                
+                if (busyCounter == 0) {
 					//it wasn't waiting for any job
                     return NodeSection.MSG_NOT_PROCESSED;
-                }
-
-                // Sends a request to the input section
-				sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
-
-                //log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
-
-                busyCounter--;
-				break;
-
-            case NetEvent.EVENT_JOB:
-
-                //EVENT_JOB
-                //If the message has been sent by the server itself and if the
-                //job is single visit, then the job is forwarded. Otherwise, if
-                //the job is multi visit the number of visits done and requested
-                //is checked through a JobVisitsInfo object (created during the
-                //first visit). If all visits have been completed, the job is
-                //forwarded, otherwise it's sent backward to input section
-                //for further visits.
-                //
-                //If the message has been sent by another section, the server, if
-                //is not completely busy, sends to itself a message containing the
-                //job and with delay equal to the service time calculated using
-                //the service strategy.
-                //The counter of jobs in service is increased and, if further service
-                //capacity is left, an ack is sent to the input section.
-
-				// Gets the job from the message
-				job = message.getJob();
-
-
-                //----ZERO SERVICE TIME: properties setup-----//
-                //NEW
-                //@author Stefano Omini
-
-                //first of all check if this job must be tunnelled (because the
-                //corresponding jobClass has a zero service time distribution)
-                if (job.TunnelThisJob()) {
-                    //the job must be immediately forwarded to output section
-
-                    job.setTunnelThisJob(false);
-                    sendForward(job, 0.0);
-
-                    //log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
-
-                    return MSG_PROCESSED;
-
-                    //the job forwarded is not a "normal" job, but a job whose class has a
-                    //zero service time strategy
-                    //in this case do not send any ack backward, otherwise other jobs
-                    //would be sent by the queue (even if the server is already busy!!)
-
-                    //WARNING: the service section won't receive from
-                    //the output section any ack for the tunnelled job
-                }
-
-                //end NEW
-
-                //----end ZERO SERVICE TIME properties setup-----//
-
-
-				if (isMine(message)) {
-                    // this job has been just served (the message has been sent by the server itself)
-                    if (numberOfVisitsPerClass == null) {
-                        // If the served job was not multi-visit forwards the job
-						sendForward(job, 0.0);
-
-                        //log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
-					} else {
-
-                        //multivisits job
-
-						// Gets job class
-						c = job.getJobClass().getId();
-
-                        //find the JobVisitsInfo object related to this job
-						JobVisitsInfo jobInfo = (JobVisitsInfo) tempJobsList.lookFor(job);
-
-						if (jobInfo.getNumberOfVisits() < numberOfVisitsPerClass[c]) {
-                             // If the number of visits of the job is less than
-						    // the number of visists required sends the job back
-						    // to the input section
-
-                            //NEW
-                            //@author Stefano Omini
-
-                            //in the multivisit case, residence time should be updated for each visit
-                            //and not only for the last one.
-                            //the time property of JobInfo object shouldn't be reset (it will be reset
-                            //while arriving at the queue for the next visit)
-
-                            //this is not the last visit, an update residence time should be done!! then resets time
-                            //the arrive time to be used is the one contained in the list of the node
-                            //and not the one contained in this service section
-
-                            //jobInfoList of the owner node
-                            JobInfoList node_jobInfoList = this.getOwnerNode().getJobInfoList();
-                            //find the jobInfo corresponding to this job
-                            JobInfo node_jobInfo = node_jobInfoList.lookFor(job);
-
-                            //update residence time measure
-                            node_jobInfoList.updateResidenceTime_visits(node_jobInfo);
-                            //reset arrive time in the node (the jobInfo arrive time is set only when the job is
-                            //added for the first time to the node)
-                            node_jobInfo.resetArriveTime();
-
-
-                            //end NEW
-
-                            //send job back to the queue
-							sendBackward(job, 0.0);
-
-						} else {
-                            //all visits completed
-                            tempJobsList.remove(jobInfo);
-							sendForward(job, 0.0);
-
-                            //log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
-						}
-
-					}
-
-
+                } else if (busyCounter == 1) {
+                    // Sends a request to the input section
+                    sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
+                    busyCounter--;
                 } else {
-                    //message received from another node section: if the server is not completely busy,
-                    //it sends itself a message with this job
-					if (busyCounter < numberOfServers) {
-
-                        //NEW
-                        //@author Stefano Omini
-                        if (numberOfVisitsPerClass != null){
-                            JobVisitsInfo jobInfo = (JobVisitsInfo) tempJobsList.lookFor(job);
-                            if (jobInfo == null) {
-                                //it's the first visit
-                                jobInfo = new JobVisitsInfo(job, 0);
-                                tempJobsList.add(jobInfo);
-                            }
-                            //increments number of visits
-                            jobInfo.addVisit();
-                        }
-                        //end NEW
-
-                        // Gets the class of the job
-						c = job.getJobClass().getId();
-
-                        // Auto-sends the job with delay equal to "serviceTime"
-                        serviceTime = serviceStrategy[c].wait(this);
-                        // Calculates the service time of job
-                        sendMe(job, serviceTime);
-
-
-                        busyCounter++;
-						if (busyCounter < numberOfServers) {
-							// Sends a request to the input section
-							sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
-
-                            //log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
-						}
-					} else
-                        //server is busy
-						return NodeSection.MSG_NOT_PROCESSED;
-				}
-				break;
-
-            default:
-				return MSG_NOT_PROCESSED;
-		}
-		return MSG_PROCESSED;
-	}
-    */
-
-
-
-    protected int process(NetMessage message) throws jmt.common.exception.NetException {
-		int c;
-		Job job;
-		double serviceTime;
-		switch (message.getEvent()) {
-
-            case NetEvent.EVENT_ACK:
-
-                //EVENT_ACK
-                //If there are no jobs in the service section, message is not processed.
-                //Otherwise an ack is sent backward to the input section and
-                //the counter of jobs in service is decreased.
-
-				if (busyCounter == 0) {
-					//it wasn't waiting for any job
-                    return NodeSection.MSG_NOT_PROCESSED;
+                    // Avoid ACK as we already sent ack
+                    busyCounter--;
                 }
-
-                // Sends a request to the input section
-				sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
-
-                //log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
-
-                busyCounter--;
 				break;
 
             case NetEvent.EVENT_JOB:
@@ -381,9 +192,6 @@ public class Server extends ServiceSection {
 
 
                 //----ZERO SERVICE TIME: properties setup-----//
-                //NEW
-                //@author Stefano Omini
-
                 //first of all check if this job must be tunnelled (because the
                 //corresponding jobClass has a zero service time distribution)
                 if (job.TunnelThisJob()) {
@@ -402,9 +210,6 @@ public class Server extends ServiceSection {
                     //WARNING: the service section won't receive from
                     //the output section any ack for the tunnelled job
                 }
-
-                //end NEW
-
                 //----end ZERO SERVICE TIME properties setup-----//
 
 
@@ -425,7 +230,8 @@ public class Server extends ServiceSection {
 
                         busyCounter++;
 						if (busyCounter < numberOfServers) {
-							// Sends a request to the input section
+							// Sends an ACK to the input section (remember not to propagate
+                            // this ack again when computation is finished)
 							sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
                         }
 					} else
