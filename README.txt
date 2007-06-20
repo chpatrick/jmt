@@ -66,9 +66,9 @@ Compiling instructions
    http://java.sun.com/j2se/ and Apache ANT that can be found at http://ant.apache.org/ .
 
 - To create an installer you need IzPack that can be downloaded at  http://www.izforge.com/izpack/ and
-   configure the appropriate path in build.xml file.
+   configure the appropriate path in "build.properties" file.
 
-- Simply open build.xml with ANT and select desidered target to build JMT from sources
+- Simply open "build.xml" with ANT and select desidered target to build JMT from sources
 
 
 License
