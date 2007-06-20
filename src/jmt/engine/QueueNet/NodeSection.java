@@ -20,6 +20,7 @@ package jmt.engine.QueueNet;
 
 import jmt.engine.dataAnalysis.InverseMeasure;
 import jmt.engine.dataAnalysis.Measure;
+import jmt.engine.log.JSimLogger;
 import jmt.engine.random.Parameter;
 
 /**
@@ -89,7 +90,7 @@ public abstract class NodeSection {
 
 	protected JobInfoList jobsList;
 
-    //protected NetLog log;
+    protected JSimLogger logger = JSimLogger.getLogger(this.getClass());
 
 	private boolean auto; //auto refresh of the jobsList attribute.
 

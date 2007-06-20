@@ -21,6 +21,7 @@ package jmt.engine.QueueNet;
 import jmt.engine.NodeSections.Queue;
 import jmt.engine.dataAnalysis.InverseMeasure;
 import jmt.engine.dataAnalysis.Measure;
+import jmt.engine.log.JSimLogger;
 import jmt.engine.simEngine.SimEntity;
 import jmt.engine.simEngine.SimEvent;
 import jmt.engine.simEngine.SimSystem;
@@ -66,6 +67,8 @@ public class NetNode extends SimEntity {
 	/** Property ID: throughput */
 	public static final int PROPERTY_ID_THROUGHPUT = 0x0006;
     private BlockingRegion region; // This is set only if this station is input station of a blocking region
+    /** A logger */
+    protected JSimLogger logger = JSimLogger.getLogger(this.getClass()); 
 
 	/**
      * The QueueNetwork which this NetNode belong to.
@@ -587,8 +590,15 @@ public class NetNode extends SimEntity {
             default:
 				;
 		}
-
+		// This situation should be avoided as it is probably an error.
         if (processed == NodeSection.MSG_NOT_PROCESSED) {
+            String src = message.getSource().getName() + ":" + message.getSourceSection();
+            String dst = message.getDestination().getName() + ":" + message.getDestinationSection();
+            String job = "";
+            if (message.getJob() != null) {
+                job = " Attached job with id: " + message.getJob().getId() + " class: "+message.getJob().getJobClass().getName();
+            }
+            logger.warn(NetSystem.getTime() + " - Message " + message.getEvent() + " from " + src + " to " + dst + " not processed." + job);
         }
 
 	}
