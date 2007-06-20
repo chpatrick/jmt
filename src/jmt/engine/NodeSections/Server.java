@@ -26,7 +26,7 @@ import jmt.engine.QueueNet.*;
  * Every class has a specific distribution and a own set of statistical
  * parameters.
  * A server service remains busy while processing one or more jobs.
- * @author  Francesco Radaelli, Stefano Omini
+ * @author  Francesco Radaelli, Stefano Omini, Bertoli Marco
  */
 public class Server extends ServiceSection {
 
