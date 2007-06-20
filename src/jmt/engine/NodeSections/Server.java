@@ -42,7 +42,7 @@ public class Server extends ServiceSection {
 	public static final int PROPERTY_ID_SERVICE_STRATEGY = 0x0104;
 
 
-    //TODO: o si usano per correggere i response time (R=r*v) oppure toglierle!!
+    //TODO: use this to correct residence times (R=r*v) or remove them!!
 	private int numberOfVisitsPerClass[];
 
 	private int busyCounter, numberOfServers;
@@ -156,11 +156,6 @@ public class Server extends ServiceSection {
                 //If there are no jobs in the service section, message is not processed.
                 //Otherwise an ack is sent backward to the input section and
                 //the counter of jobs in service is decreased.
-                
-                
-                //FIXME something is not working
-				
-                
                 if (busyCounter == 0) {
 					//it wasn't waiting for any job
                     return NodeSection.MSG_NOT_PROCESSED;
