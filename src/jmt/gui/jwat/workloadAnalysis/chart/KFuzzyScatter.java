@@ -49,6 +49,7 @@ import javax.swing.JPopupMenu;
 import jmt.engine.jwat.TimeConsumingWorker;
 import jmt.engine.jwat.VariableNumber;
 import jmt.engine.jwat.input.ProgressMonitorShow;
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.ClusteringInfosFuzzy;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.FuzzyKMean;
 import jmt.engine.jwat.workloadAnalysis.utils.ChangeVariableListener;
@@ -81,6 +82,7 @@ public class KFuzzyScatter extends JPanel{
 	private boolean zoomming = false;		//Indica che si sta operando una selezione di zoom In
 	private int xStart,yStart,xEnd,yEnd;	//Posizione di inizio e fine della selezione di zoom
 	private ModelWorkloadAnalysis model;	//Modello contenente i valori da plottare
+	private WorkloadAnalysisSession session;	//Modello contenente i valori da plottare
 	
 	private int curClust = 1;
 	
@@ -99,7 +101,7 @@ public class KFuzzyScatter extends JPanel{
 	private short[] c1;
 	//private double err;
 	
-	public KFuzzyScatter(int x,int y,ModelWorkloadAnalysis model,JFrame f,int clustering,int clust/*,double err*/){ //Passare il numero del clustering
+	public KFuzzyScatter(int x,int y,WorkloadAnalysisSession model,JFrame f,int clustering,int clust/*,double err*/){ //Passare il numero del clustering
 		super();
 		parent = f;
 		//this.err = err;
@@ -112,7 +114,8 @@ public class KFuzzyScatter extends JPanel{
 		c1 = ((ClusteringInfosFuzzy)((FuzzyKMean)(model.getListOfClustering().get(clustering))).getClusteringInfos(curClust)).getAssignment();
 		xVar = x;
 		yVar = y;
-		this.model = model;
+		this.model = (ModelWorkloadAnalysis)model.getDataModel();
+		this.session=model;
 		this.model.addOnChangeVariableValue(new ChangeVariableListener(){
 			public void onChangeVariableValues() {
 				first = true;

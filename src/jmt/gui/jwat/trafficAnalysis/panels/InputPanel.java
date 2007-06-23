@@ -60,6 +60,7 @@ import jmt.engine.jwat.input.Loader;
 import jmt.engine.jwat.input.Parameter;
 import jmt.engine.jwat.input.ProgressMonitorShow;
 import jmt.engine.jwat.trafficAnalysis.ModelTrafficAnalysis;
+import jmt.engine.jwat.trafficAnalysis.TrafficAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.utils.FormatFileReader;
 import jmt.engine.jwat.workloadAnalysis.utils.FormatFileWriter;
 import jmt.engine.jwat.workloadAnalysis.utils.SteppedComboBox;
@@ -122,6 +123,7 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 	private JWatVariableInputTable inputTable = null;
 	// Reference to main startscreen
 	private ModelTrafficAnalysis model = null;
+	private TrafficAnalysisSession session = null;
 	// Reference to Wizard 
 	private MainJwatWizard parent;
 	/** References to subpanels and objects used in these panels **/
@@ -402,6 +404,7 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 	public InputPanel(MainJwatWizard parent) {
 		this.parent = parent;
 		model = (ModelTrafficAnalysis) parent.getModel();
+		session= (TrafficAnalysisSession) parent.getSession();
 		help = parent.getHelp();
 		initGUI();
 	}
@@ -1010,8 +1013,8 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 					
 					dialog.dispose();
 					try{
-						model.setMatrix(e.getMatrix());
-						//model.setParameters(e.getMatrix(), ((Integer)epochs.getValue()).intValue());
+
+						session.setMatrix(e.getSession());
 					}catch(OutOfMemoryError err){
 						JOptionPane.showMessageDialog(InputPanel.this,"Out of Memory error. Try with more memory","Error",JOptionPane.ERROR_MESSAGE);
 						loadOnRun = false;
@@ -1086,7 +1089,7 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 		if(model.getMatrix() != null){
 			if(JOptionPane.showConfirmDialog(this,"This operation resets all data. Continue ?",
 					"WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
-	    		model.resetModel();
+	    		session.resetSession();
 	    		resetOnNew();
 	    		((JWatWizard)getParentWizard()).setEnableButton("Solve",false);
 			}else{

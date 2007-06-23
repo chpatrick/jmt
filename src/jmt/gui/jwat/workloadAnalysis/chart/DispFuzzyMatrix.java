@@ -38,6 +38,7 @@ import javax.swing.JScrollPane;
 import jmt.engine.jwat.TimeConsumingWorker;
 import jmt.engine.jwat.VariableNumber;
 import jmt.engine.jwat.input.ProgressMonitorShow;
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.ClusteringInfosFuzzy;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.FuzzyKMean;
 import jmt.engine.jwat.workloadAnalysis.utils.JWatWorkloadManager;
@@ -49,6 +50,8 @@ import org.freehep.util.export.ExportDialog;
 
 public class DispFuzzyMatrix extends JScrollPane {
 	private ModelWorkloadAnalysis model;
+	private WorkloadAnalysisSession session;
+	
 	private DispersionPanel panel;
 	
 	public DispFuzzyMatrix(){
@@ -58,10 +61,11 @@ public class DispFuzzyMatrix extends JScrollPane {
 		this.setViewportView(panel);
 	}
 	
-	public DispFuzzyMatrix(ModelWorkloadAnalysis m,int clustering){
+	public DispFuzzyMatrix(WorkloadAnalysisSession m,int clustering){
 		/* Richiamo il costruttore della classe JScorllPanel impostando le barre di scorrimento solo se necessarie */
 		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		this.model= m;
+		this.model= (ModelWorkloadAnalysis)m.getDataModel();
+		session=m;
 		/* Settaggio delle proprieta' del pannello di scroll */
 		this.setPreferredSize(new Dimension(420,420));
 		/* Creazione e aggiunta del Pannello di visualizzazione della matrice di dispersione */
@@ -163,7 +167,7 @@ public class DispFuzzyMatrix extends JScrollPane {
 								}
 							});
 							f.setSize(640,690);
-							KFuzzyScatter s = new KFuzzyScatter(e.getX() / WIDTH_TOT,e.getY() / HEIGHT_TOT,model,f,clustering,curClust/*,fuzzyN*/);
+							KFuzzyScatter s = new KFuzzyScatter(e.getX() / WIDTH_TOT,e.getY() / HEIGHT_TOT,session,f,clustering,curClust/*,fuzzyN*/);
 							
 							f.setTitle("Scatter Plot " + model.getMatrix().getVariables()[e.getX() / WIDTH_TOT].getName() + " - " + 
 									model.getMatrix().getVariables()[e.getY() / HEIGHT_TOT].getName() );
@@ -205,8 +209,8 @@ public class DispFuzzyMatrix extends JScrollPane {
 								
 								initShow(10000 * (Elenco.length * Elenco.length));
 								
-								short[] c1 = ((ClusteringInfosFuzzy)((FuzzyKMean)(model.getListOfClustering().get(clustering))).getClusteringInfos(curClust)).getAssignment();
-								int[] v = ((FuzzyKMean)(model.getListOfClustering().get(clustering))).getVarClust();
+								short[] c1 = ((ClusteringInfosFuzzy)((FuzzyKMean)(session.getListOfClustering().get(clustering))).getClusteringInfos(curClust)).getAssignment();
+								int[] v = ((FuzzyKMean)(session.getListOfClustering().get(clustering))).getVarClust();
 								int l = 0;
 								// Disegno dei grafici
 								for(int row=0;row<Elenco.length;row++)

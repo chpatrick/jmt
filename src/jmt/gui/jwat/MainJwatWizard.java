@@ -5,7 +5,10 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -17,6 +20,7 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -32,8 +36,17 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import jmt.engine.jwat.JwatSession;
 import jmt.engine.jwat.MatrixOsservazioni;
+import jmt.engine.jwat.ProgressStatusListener;
+import jmt.engine.jwat.input.EventFinishAbort;
+import jmt.engine.jwat.input.EventFinishLoad;
+import jmt.engine.jwat.input.EventSessionLoaded;
+import jmt.engine.jwat.input.EventStatus;
 import jmt.engine.jwat.input.Loader;
+import jmt.engine.jwat.input.ProgressMonitorShow;
+import jmt.engine.jwat.input.ProgressShow;
 import jmt.engine.jwat.trafficAnalysis.ModelTrafficAnalysis;
+import jmt.engine.jwat.trafficAnalysis.TrafficAnalysisSession;
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.WizardPanel;
@@ -59,10 +72,11 @@ public class MainJwatWizard extends JWatWizard {
 	private JPanel menus = null;
 	private JMenuBar mMenuBar = null;
 	
-	private JWatModel model = null;
+	//private JWatModel model = null;
+	private JwatSession session = null;
 	
 	//Last panel visited, used to control correct next step
-	private int lastPanel = 0;
+	private int lastPanel = 0,currentPanel=0;
 	
 	private HoverHelp help = null;
 	// List of panels create for Workload Analysis tool
@@ -104,8 +118,8 @@ public class MainJwatWizard extends JWatWizard {
 	// Set correct enviornement for traffic analysis
 	public void setTrafficEnv(){
 		this.setTitle(TITLE + " - " + BURSTINESS_TITLE);
-		//Initializes correct model
-		model = new ModelTrafficAnalysis();
+		session=new TrafficAnalysisSession();
+		
 		//Creates and adds all necessary panels to jWAT main screen
 		WizardPanel p = new jmt.gui.jwat.trafficAnalysis.panels.InputPanel(this);
 		JWatPanels.add(p);
@@ -138,7 +152,7 @@ public class MainJwatWizard extends JWatWizard {
 	//Adds all necessary panes concernig with Workload analysis
 	public void setWorkloadEnv(String mode){
 		this.setTitle(TITLE + " - " + WORK_LOAD_TITLE);
-		model = new ModelWorkloadAnalysis(this);
+		session=new WorkloadAnalysisSession();		
 		WizardPanel p;
 		if(mode.equals("load"))	p = new InputPanel(this);
 		else p = new LoadDemoPanel(this);
@@ -195,8 +209,18 @@ public class MainJwatWizard extends JWatWizard {
 	public void setLastPanel(int panel){
 		lastPanel = panel;
 	}
+	public void setCurrentPanel(int panel){
+		currentPanel = panel;
+	}
 	public JWatModel getModel(){
-		return model;
+		JWatModel mode=null;
+		if(session!=null){
+			mode=session.getDataModel();
+		}
+		return mode;
+	}
+	public JwatSession getSession(){
+		return session;
 	}
 	/*
 	 * 
@@ -271,7 +295,7 @@ public class MainJwatWizard extends JWatWizard {
 			if(JOptionPane.showConfirmDialog(MainJwatWizard.this,"This operation will reset data. Continue?","Warning",JOptionPane.YES_NO_OPTION) 
 					== JOptionPane.YES_OPTION){
 				//Reset model and set first panel
-				model.resetModel();
+				session.resetSession();
 				tabbedPane.setSelectedIndex(1);
 				try{
 					((InputPanel)tabbedPane.getComponentAt(1)).resetOnNew();
@@ -294,8 +318,7 @@ public class MainJwatWizard extends JWatWizard {
 				File fFile = fileSaveF.getSelectedFile ();
 				String fileName=fFile.getAbsolutePath();
 				System.out.println(fileName);
-				session=new JwatSession(fileName.substring(0,fileName.lastIndexOf("\\"))+"\\",fileName.substring(fileName.lastIndexOf("\\")+1));
-				session.saveSession(model.getMatrix());
+				MainJwatWizard.this.session.saveSession(fileName.substring(0,fileName.lastIndexOf("\\"))+"\\",fileName.substring(fileName.lastIndexOf("\\")+1),JwatSession.WORKLOAD_SAVE);
 			}
 		}
 	};
@@ -308,24 +331,82 @@ public class MainJwatWizard extends JWatWizard {
 		}
 		public void actionPerformed(ActionEvent e) {
 			if(fileSaveF.showOpenDialog(MainJwatWizard.this) == JFileChooser.APPROVE_OPTION){
+				if(currentPanel!=JWATConstants.WORKLOAD_INPUT_PANEL){
+					tabbedPane.setSelectedIndex(JWATConstants.WORKLOAD_INPUT_PANEL);
+				}
 				File fFile = fileSaveF.getSelectedFile ();
 				String fileName=fFile.getAbsolutePath();
-				MatrixOsservazioni m= Loader.loadSession(fileName.substring(0,fileName.lastIndexOf("\\"))+"\\",fileName.substring(fileName.lastIndexOf("\\")+1));
-				
-				try{
-					model.setMatrix(m);
-				}catch(OutOfMemoryError err){
-					JOptionPane.showMessageDialog(MainJwatWizard.this,"Out of Memory error. Try with more memory","Error",JOptionPane.ERROR_MESSAGE);
-					return;
-				}
-				System.out.println("Setting new panel");
-				((InputPanel)tabbedPane.getComponent(1)).setCanGoForward(true);
-				tabbedPane.setSelectedIndex(2);
+				Loader.loadSession(fileName,new ProgressMonitorShow(tabbedPane.getComponent(currentPanel),"Loading Session...",1000),new SessionStatusListener(),session);
 			}
 
 			
 		}
 	};
+	
+	private class SessionStatusListener implements ProgressStatusListener{
+		public void statusEvent(EventStatus e) {
+			switch(e.getType()){
+				case EventStatus.ABORT_EVENT:	abortEvent((EventFinishAbort)e);
+					break;
+				case EventStatus.DONE_EVENT:	finishedEvent((EventSessionLoaded)e);
+					break;
+			}
+		}
+		//Abort caricamento file input
+		private void abortEvent(EventFinishAbort e) {
+			JWatWizard wizard=(JWatWizard)((WizardPanel)tabbedPane.getComponent(currentPanel)).getParentWizard();
+			JOptionPane.showMessageDialog(tabbedPane.getComponent(currentPanel),e.getMessage(),"LOADING ABORTED!!",JOptionPane.WARNING_MESSAGE);
+			((InputPanel)tabbedPane.getComponent(JWATConstants.WORKLOAD_INPUT_PANEL)).setCanGoForward(false);
+			wizard.setEnableButton("Next >",false);
+			wizard.setEnableButton("Solve",false);
+		}
+		//dati caricati
+		private void finishedEvent(final EventSessionLoaded e) {
+			JButton[] optBtn=new JButton[2];
+			JOptionPane pane;
+			((InputPanel)tabbedPane.getComponent(JWATConstants.WORKLOAD_INPUT_PANEL)).setCanGoForward(false);
+			JWatWizard wizard=(JWatWizard)((WizardPanel)tabbedPane.getComponent(currentPanel)).getParentWizard();
+			
+			optBtn[0]=new JButton("Continue");
+			optBtn[1]=new JButton("Cancel");
+			
+			pane = new JOptionPane("Load session done: ",JOptionPane.QUESTION_MESSAGE,JOptionPane.DEFAULT_OPTION,null,optBtn,null);
+			final JDialog dialog= pane.createDialog(wizard, "Loading Complete");
+			pane.selectInitialValue();
+			
+			optBtn[0].addActionListener(new ActionListener(){
+				
+				public void actionPerformed(ActionEvent ev) {
+					JwatSession newSession=e.getSession();
+					dialog.dispose();
+					JWatWizard wizard=(JWatWizard)((WizardPanel)tabbedPane.getComponent(currentPanel)).getParentWizard();
+					session.copySession(newSession);
+					wizard.setEnableButton("Next >",true);
+					wizard.setEnableButton("Solve",false);
+					((InputPanel)tabbedPane.getComponent(JWATConstants.WORKLOAD_INPUT_PANEL)).setCanGoForward(true);
+					wizard.showNextPanel();
+					
+				}
+			});
+			
+			optBtn[1].addActionListener(new ActionListener(){
+				
+				public void actionPerformed(ActionEvent ev) {
+					JWatWizard wizard=(JWatWizard)((WizardPanel)tabbedPane.getComponent(currentPanel)).getParentWizard();
+					dialog.dispose();
+					((InputPanel)tabbedPane.getComponent(JWATConstants.WORKLOAD_INPUT_PANEL)).setCanGoForward(true);
+					System.gc();
+					wizard.setEnableButton("Next >",false);
+					wizard.setEnableButton("Solve",false);
+				}
+				
+			});
+			
+			dialog.show();
+		}	
+	}
+	
+	
 	private AbstractAction WL_ACTION_SOLVE = new AbstractAction("Clusterize") {
 		{
 			putValue(Action.SHORT_DESCRIPTION, "Clusterize");
@@ -535,7 +616,7 @@ public class MainJwatWizard extends JWatWizard {
     	if(JOptionPane.showConfirmDialog(MainJwatWizard.this,"This operation will reset data. Continue?","Warning",JOptionPane.YES_NO_OPTION) 
 				== JOptionPane.YES_OPTION){
 			//Reset model and set first panel
-			model.resetModel();
+			session.resetSession();
 			tabbedPane.setSelectedIndex(1);
 			try{
 				((jmt.gui.jwat.trafficAnalysis.panels.InputPanel)tabbedPane.getComponentAt(1)).resetOnNew();

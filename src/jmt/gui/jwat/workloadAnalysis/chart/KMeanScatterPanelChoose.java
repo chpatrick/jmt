@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
 
 /**
@@ -22,6 +23,8 @@ public class KMeanScatterPanelChoose extends JPanel {
 	private JComboBox varXCombo;
 	private JComboBox varYCombo;
 	private ModelWorkloadAnalysis model;
+	private WorkloadAnalysisSession session;
+	
 	private int clustering;
 	private int clust;
 	
@@ -29,18 +32,19 @@ public class KMeanScatterPanelChoose extends JPanel {
 		public void actionPerformed(ActionEvent e) {
 			JFrame f = new JFrame();
 			f.setSize(600,620);
-			KMeanScatter s = new KMeanScatter(varXCombo.getSelectedIndex(),varYCombo.getSelectedIndex(),KMeanScatterPanelChoose.this.model,f,clustering,clust);
+			KMeanScatter s = new KMeanScatter(varXCombo.getSelectedIndex(),varYCombo.getSelectedIndex(),KMeanScatterPanelChoose.this.session,f,clustering,clust);
 			f.setContentPane(s);
 			f.setVisible(true);
 		}
 	};
 	
-	public KMeanScatterPanelChoose(ModelWorkloadAnalysis m){
+	public KMeanScatterPanelChoose(WorkloadAnalysisSession m){
 		super(new BorderLayout());		
 		setBorder(new TitledBorder(new EtchedBorder(
 				EtchedBorder.LOWERED), "Scatter Clustering"));
 		
-		model = m;
+		model = (ModelWorkloadAnalysis)m.getDataModel();
+		this.session=m;
 		
 		varXCombo = new JComboBox(model.getMatrix().getVariableNames());
 		varYCombo = new JComboBox(model.getMatrix().getVariableNames());

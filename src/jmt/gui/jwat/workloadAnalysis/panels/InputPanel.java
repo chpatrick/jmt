@@ -991,7 +991,7 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 					
 					dialog.dispose();
 					try{
-						model.setMatrix(e.getMatrix());
+						model.setMatrix(e.getSession());
 					}catch(OutOfMemoryError err){
 						JOptionPane.showMessageDialog(InputPanel.this,"Out of Memory error. Try with more memory","Error",JOptionPane.ERROR_MESSAGE);
 						loadOnRun = false;
@@ -1064,6 +1064,7 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 	public void gotFocus(){
 		// Chiedere a utente se cancellare tutto
 		if(model.getMatrix() != null){
+			System.out.println("MODEL");
 			if(JOptionPane.showConfirmDialog(this,"This operation resets all data. Continue ?",
 					"WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
 	    		model.resetModel();
@@ -1075,6 +1076,7 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 		}else{
 			((JWatWizard)getParentWizard()).setEnableButton("Solve",false);
 		}
+		parent.setCurrentPanel(WORKLOAD_INPUT_PANEL);
 	}
 	
 	public void lostFocus(){

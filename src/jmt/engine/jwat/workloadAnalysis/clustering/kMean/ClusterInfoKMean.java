@@ -23,16 +23,13 @@ public class ClusterInfoKMean {
 		public double	dMinOs;		//Valore Minimo
 		public double	dMaxOs;		//Valore Massimo
 		
+		//Temp variables
 		public double	dSomma;		//Somma dei valori per ogni variabile	v[1]
 		public double	dSQuad;		//Somma dei quadrati					v[2]
 		public double	dSTerz;		//Somma delle terze potenze				v[3]
 		public double	dSQuar;		//Somma delle quarte potenze			v[4]
-		public double	dPerc5;		//Usato per i percentili				v[5]
-		public double	dPerc6;		//Usato per i percentili				v[6]
-		public double	dPerc7;		//Usato per i percentili				v[7]
 	}
 
-	public String clus_log;		// log dei valori del Cluster
 	public double[] percVar;// percentuale di ogni variabile sul totale della variabile
 	public SCluStat[] statClust;
 	public int	 numOss;

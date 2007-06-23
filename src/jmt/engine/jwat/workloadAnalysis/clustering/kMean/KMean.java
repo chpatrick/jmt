@@ -18,7 +18,12 @@ public class KMean implements Clustering,JWATConstants{
 		this.varSel=varSel;
 		results=new ClusteringInfosKMean[numClust];
 		clustAssign=new short[numClust][];
-		//clusterAssignemnt= new Vector();
+	}
+	
+	public KMean(ClusteringInfosKMean[] res,int[] varSel,short clustAssign[][]){
+		this.varSel=varSel;
+		results=res;
+		this.clustAssign=clustAssign;
 	}
 	
 	public String getName() {

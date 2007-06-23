@@ -40,6 +40,7 @@ import jmt.engine.jwat.trafficAnalysis.BurstEngine;
 import jmt.engine.jwat.trafficAnalysis.ModelTrafficAnalysis;
 import jmt.engine.jwat.trafficAnalysis.OnResetModel;
 import jmt.engine.jwat.trafficAnalysis.OnSetParamtersListener;
+import jmt.engine.jwat.trafficAnalysis.TrafficAnalysisSession;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.MainJwatWizard;
@@ -91,10 +92,10 @@ public class GraphPanel extends WizardPanel implements JWATConstants{
      */
     public GraphPanel(MainJwatWizard ew) {
         this.ew=ew;
-        ((ModelTrafficAnalysis)ew.getModel()).addSetParamsListener(new OnSetParamtersListener(){
+        ((TrafficAnalysisSession)ew.getSession()).addSetParamsListener(new OnSetParamtersListener(){
 			public void ParamsSetted() {
 				System.err.println("Graph Panel reset");
-				engine = ((ModelTrafficAnalysis)GraphPanel.this.ew.getModel()).getEngine();
+				engine = ((TrafficAnalysisSession)GraphPanel.this.ew.getSession()).getEngine();
 				GraphPanel.this.removeAll();
 				initGraphics();
 				setTable();

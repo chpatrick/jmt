@@ -30,6 +30,7 @@ import javax.swing.border.TitledBorder;
 
 import jmt.engine.jwat.Observation;
 import jmt.engine.jwat.VariableNumber;
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.ClusteringInfosFuzzy;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.FuzzyKMean;
 import jmt.engine.jwat.workloadAnalysis.utils.JWatWorkloadManager;
@@ -43,6 +44,8 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 	private JButton saveInfo;
 	private JTextArea infoCluster;
 	private ModelWorkloadAnalysis model;
+	private WorkloadAnalysisSession session;
+	
 	private JComboBox xVar;
 	private JComboBox yVar;
 	private SingleScatter panel;
@@ -51,8 +54,9 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 	private int clustering;
 	private boolean redraw = true;
 	
-	public FuzzyClusterDetails(ModelWorkloadAnalysis m,int clustering,int cluster){
-		this.model = m;
+	public FuzzyClusterDetails(WorkloadAnalysisSession m,int clustering,int cluster){
+		this.model = (ModelWorkloadAnalysis)m.getDataModel();
+		this.session=session;
 		this.clustering = clustering;
 		this.cluster = cluster;
 		initPanel();
@@ -83,7 +87,7 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 				if(ret==JOptionPane.YES_OPTION){
 					Observation[] o = model.getMatrix().getVariables()[0].getCurObs();
 					String s = "";
-					short[] c1 = ((ClusteringInfosFuzzy)((FuzzyKMean)model.getListOfClustering().get(clustering)).getClusteringInfos(cluster-2)).getAssignment();
+					short[] c1 = ((ClusteringInfosFuzzy)((FuzzyKMean)session.getListOfClustering().get(clustering)).getClusteringInfos(cluster-2)).getAssignment();
 					for(int i = 0 ; i < o.length;i++){
 						if(c1[o[i].getID()-1] == match){
 							s += o[i].toString() + "\n";
@@ -184,7 +188,7 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 						f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						f.setContentPane(new FuzzyKSingleClusterScatter(xVar.getSelectedIndex(),
 								yVar.getSelectedIndex(),
-								model,
+								session,
 								f,
 								clustering,
 								cluster-2,
@@ -227,7 +231,7 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 				VariableNumber x = model.getMatrix().getVariables()[xVar.getSelectedIndex()];
 				VariableNumber y = model.getMatrix().getVariables()[yVar.getSelectedIndex()];
 				int row = yVar.getSelectedIndex();
-				short[] c1 = ((ClusteringInfosFuzzy)((FuzzyKMean)model.getListOfClustering().get(clustering)).getClusteringInfos(cluster-2)).getAssignment();
+				short[] c1 = ((ClusteringInfosFuzzy)((FuzzyKMean)session.getListOfClustering().get(clustering)).getClusteringInfos(cluster-2)).getAssignment();
 				g2.setColor(Color.WHITE);
 				g2.fillRect(1,1,WIDTH-1,HEIGHT-1);
 				//Calcolo del passo del grafico

@@ -29,66 +29,24 @@ import jmt.gui.jwat.MainJwatWizard;
 public class ModelWorkloadAnalysis implements JWatModel{
 	// Matrice delle osservazioni
 	private MatrixOsservazioni matrix = null;
-	// Finestra di partenza
-	private MainJwatWizard parent = null;
 	// vector of the listener on set matrix
 	private Vector listenerOnMatrixChange = null; //<SetMatrixListener> 
 	// vector of the listener on change variable ( transformations )
 	private Vector listenerOnChangeVariable = null; //<ChangeVariableListener> 
-	// vector containing the results of one or more clustering operations
-	private Vector clusterOperation=null; //<Clustering> 
-	// vector of the listener on adding clustering or deleting
-	private Vector listenerOnModifyClustering = null;
-
 
 	/**
 	 * @param par
 	 */
-	public ModelWorkloadAnalysis(MainJwatWizard par){
-		parent = par;
+	public ModelWorkloadAnalysis(){
 		listenerOnMatrixChange = new Vector();
 		listenerOnChangeVariable = new Vector();
-		clusterOperation=new Vector();
-		listenerOnModifyClustering = new Vector();
 	}
-	
-	public Vector getListOfClustering()
-	{
-		return clusterOperation;
-	}
-	
-	public void addClustering(Clustering clust)
-	{
-		clusterOperation.add(clust);
-		fireNotifyOnModifiedClustering();
-	}
-
-	public void removeClustering(int pos){
-		if(pos < clusterOperation.size()){
-			clusterOperation.remove(pos);
-			fireNotifyOnModifiedClustering();
-			System.err.println(Runtime.getRuntime().freeMemory());
-			System.gc();
-			System.err.println(Runtime.getRuntime().freeMemory());
-		}
-	}
-	
-	public void removeAllClustering(){
-		clusterOperation.removeAllElements();
-		fireNotifyOnModifiedClustering();
-	}
-
+		
 	/**
 	 * @return
 	 */
 	public MatrixOsservazioni getMatrix() {
 		return matrix;
-	}
-	/**
-	 * @return
-	 */
-	public MainJwatWizard getParent() {
-		return parent;
 	}
 	/**
 	 * @param matrix
@@ -110,14 +68,6 @@ public class ModelWorkloadAnalysis implements JWatModel{
 	 */
 	public void addOnChangeVariableValue(ChangeVariableListener listener){
 		if(!listenerOnChangeVariable.contains(listener)) listenerOnChangeVariable.add(listener);
-	}
-	
-	/**
-	 * 
-	 * @param listener
-	 */
-	public void addOnAddOrDeleteClustering(ModifiedClustering listener){
-		listenerOnModifyClustering.add(listener);
 	}
 	/**
 	 * 
@@ -141,11 +91,6 @@ public class ModelWorkloadAnalysis implements JWatModel{
 			((SetMatrixListener) listenerOnMatrixChange.get(i)).onResetMatrixObservation();
 		}
 	}
-	private void fireNotifyOnModifiedClustering(){
-		for(int i = 0; i < listenerOnModifyClustering.size(); i++){
-			((ModifiedClustering) listenerOnModifyClustering.get(i)).onModifiedClustering();
-		}
-	}
 	public void doTransformationOnVariable(int varSel,short type) throws TrasformException{
 		matrix.applyTransformation(varSel,type);
 		setTransformation();
@@ -166,7 +111,6 @@ public class ModelWorkloadAnalysis implements JWatModel{
 	//UPDATE 28/10/2006: +spostamento operazioni di trasformazione e sampling in matrixOsservazioni
 	public void resetModel(){
 		matrix = null;
-		clusterOperation.removeAllElements();
 		fireNotifyOnResetMatrixObservation();
 	}
 }

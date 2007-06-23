@@ -253,7 +253,7 @@ public class JWatMainPanel extends WizardPanel {
     	if (parent.getModel() != null && parent.getModel().getMatrix() != null){
 			if(JOptionPane.showConfirmDialog(this,"This operation resets all data. Continue ?",
 					"WARNING",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
-	    		parent.getModel().resetModel();
+	    		parent.getSession().resetSession();
 	    		parent.resetScreen();
 	    		((JWatWizard)getParentWizard()).setEnableButton("Solve",false);
 			}else{

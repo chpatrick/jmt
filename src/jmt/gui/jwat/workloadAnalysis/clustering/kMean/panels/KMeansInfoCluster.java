@@ -37,6 +37,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.ClusteringInfosKMean;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.KMean;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.ClusterInfoKMean.SCluStat;
@@ -53,6 +54,7 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 	private ClusteringInfosKMean infos = null;
 	private int numClusters = 0;
 	private ModelWorkloadAnalysis model = null;
+	private WorkloadAnalysisSession session = null;
 	
 	private static final String PANEL_TITLE = HTML_START
 		+ HTML_FONT_TITLE + "Cluster Information" + HTML_FONT_TIT_END + HTML_FONT_NORM
@@ -71,8 +73,9 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 	
 	private int clustering;
 	
-	public KMeansInfoCluster(ClusteringInfosKMean info,int i,ModelWorkloadAnalysis m,int clustering){
-		model = m;
+	public KMeansInfoCluster(ClusteringInfosKMean info,int i,WorkloadAnalysisSession m,int clustering){
+		model = (ModelWorkloadAnalysis)m.getDataModel();
+		session = m;
 		infos = info;
 		numClusters = i;
 		this.clustering = clustering;
@@ -98,7 +101,7 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 		
 		setLayout(new GridLayout(2,1));
 		add(mainPanel);
-		clustDet =new SingleKMeanClusterInfo(model,clustering,numClusters);
+		clustDet =new SingleKMeanClusterInfo(session,clustering,numClusters);
 		add(clustDet);
 		
 		//Stringa informativa
@@ -214,7 +217,7 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 					return model.getMatrix().getVariableNames()[rowIndex];
 				}
 				if(columnIndex == 0){
-					int[] sel = ((KMean)model.getListOfClustering().get(clustering)).getVarClust();	
+					int[] sel = ((KMean)session.getListOfClustering().get(clustering)).getVarClust();	
 					for(int i = 0; i < sel.length;i++){
 						if(sel[i] == rowIndex) return Boolean.TRUE;
 					}

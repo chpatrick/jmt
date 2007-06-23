@@ -1,5 +1,6 @@
 package jmt.engine.jwat.input;
 
+import jmt.engine.jwat.JwatSession;
 import jmt.engine.jwat.MatrixOsservazioni;
 
 public class EventFinishLoad implements EventStatus {
@@ -15,7 +16,7 @@ public class EventFinishLoad implements EventStatus {
 		this.valToRead=valToRead;
 	}
 	
-	public MatrixOsservazioni getMatrix()
+	public MatrixOsservazioni getSession()
 	{
 		return m;
 	}

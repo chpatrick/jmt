@@ -32,6 +32,7 @@ import javax.swing.JPopupMenu;
 import jmt.engine.jwat.TimeConsumingWorker;
 import jmt.engine.jwat.VariableNumber;
 import jmt.engine.jwat.input.ProgressMonitorShow;
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.KMean;
 import jmt.engine.jwat.workloadAnalysis.utils.ChangeVariableListener;
 import jmt.engine.jwat.workloadAnalysis.utils.JavaWatColor;
@@ -63,6 +64,7 @@ public class KMeanSingleClusterScatter extends JPanel {
 	private boolean zoomming = false;		//Indica che si sta operando una selezione di zoom In
 	private int xStart,yStart,xEnd,yEnd;	//Posizione di inizio e fine della selezione di zoom
 	private ModelWorkloadAnalysis model;	//Modello contenente i valori da plottare
+	private WorkloadAnalysisSession session;	//Modello contenente i valori da plottare
 	
 	//private Vector currClustering; 
 	private int curClust = 1;
@@ -81,7 +83,7 @@ public class KMeanSingleClusterScatter extends JPanel {
 	private short[][] c1;
 	private int match;
 	
-	public KMeanSingleClusterScatter(int x,int y,ModelWorkloadAnalysis model,JFrame f,int clustering,int clust,int match){ //Passare il numero del clustering
+	public KMeanSingleClusterScatter(int x,int y,WorkloadAnalysisSession model,JFrame f,int clustering,int clust,int match){ //Passare il numero del clustering
 		super();
 		parent = f;
 		graph = new BufferedImage(WIDTH+1,HEIGHT+1,BufferedImage.TYPE_INT_RGB);
@@ -94,7 +96,8 @@ public class KMeanSingleClusterScatter extends JPanel {
 		c1 = ((KMean)(model.getListOfClustering().get(clustering))).getAsseg();
 		xVar = x;
 		yVar = y;
-		this.model = model;
+		this.model = (ModelWorkloadAnalysis)model.getDataModel();
+		this.session=model;
 		this.model.addOnChangeVariableValue(new ChangeVariableListener(){
 			public void onChangeVariableValues() {
 				first = true;

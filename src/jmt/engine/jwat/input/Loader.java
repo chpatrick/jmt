@@ -24,6 +24,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import javax.imageio.stream.FileImageInputStream;
 import javax.xml.parsers.DocumentBuilder;
@@ -32,8 +36,10 @@ import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import jmt.engine.jwat.JwatSession;
 import jmt.engine.jwat.MatrixOsservazioni;
 import jmt.engine.jwat.Observation;
 import jmt.engine.jwat.ProgressStatusListener;
@@ -131,108 +137,17 @@ public class Loader implements JWATConstants{
 	 * 
 	 * @param filePath
 	 */
-	public static MatrixOsservazioni loadSession(String xmlfilePath,String xmlfileName)
+	public static void loadSession(String fileName,ProgressShow prShow,ProgressStatusListener pStatusList,JwatSession session)
 	{
-		Observation[] valori;
-		String[] selName;
-		int[] selType;
-		double[] valLst;
-		int numObs,numVar,i,j,id;
-		MatrixOsservazioni m=null;
-		VariableMapping[] map;
-		DOMParser domP;
-		NodeList tmpNodeLst;
-		Node tmpNode;
-		String tmpVal,file;
-		
-		DataInputStream dis;
-		System.out.println("PATH " + xmlfilePath);
-		System.out.println("NAME " + xmlfileName);
-		try {
-			//load xml file
-			domP=new DOMParser();
-			domP.parse(xmlfilePath+xmlfileName);
-			Document doc=domP.getDocument();
-			//parse variables
-			tmpNodeLst=doc.getElementsByTagName("Variables");
-			tmpNode=tmpNodeLst.item(0);
-			tmpVal=tmpNode.getAttributes().getNamedItem("num").getNodeValue();
-			numVar=Integer.parseInt(tmpVal);
-			selName=new String[numVar];
-			selType=new int[numVar];
-			
-			tmpNodeLst=tmpNode.getChildNodes();
-			System.out.println(tmpNodeLst.getLength());
-			j=0;
-			for(i=0;i<tmpNodeLst.getLength();i++){
-				tmpNode=tmpNodeLst.item(i);
-				if(tmpNode.getNodeType()==Node.ELEMENT_NODE){
-					System.out.println("ELEMENTO " + tmpNode.getNodeValue());
-					tmpVal=tmpNode.getAttributes().getNamedItem("name").getNodeValue();
-					selName[j]=tmpVal;
-					tmpVal=tmpNode.getAttributes().getNamedItem("type").getNodeValue();
-					selType[j]=Integer.parseInt(tmpVal);
-					j++;
-				}
-			}
-			
-			//parse data
-			tmpNodeLst=doc.getElementsByTagName("Data");
-			tmpNode=tmpNodeLst.item(0);
-			tmpVal=tmpNode.getAttributes().getNamedItem("size").getNodeValue();
-			numObs=Integer.parseInt(tmpVal);
-			file=tmpNode.getAttributes().getNamedItem("filename").getNodeValue();
-			
-			valori=new Observation[numObs];
-			map=new VariableMapping[numVar];
-			valLst=new double[numVar];
-			
-			System.out.println("Reading varaibles mapping");
-			for(j=0;j<numVar;j++){
-				if(selType[j]==VariableNumber.DATE) map[j]=new DataMapping();
-				if(selType[j]==VariableNumber.NUMERIC) map[j]=null;
-				if(selType[j]==VariableNumber.STRING) map[j]=loadVarMapping(xmlfilePath,selName[j]);
-				System.out.println(selName[j] + " " + selType[j]);
-			}
-			
-			//load data file
-			dis = new DataInputStream(new FileInputStream(xmlfilePath+file));
-			
-			for(i=0;i<numObs;i++){
-				id=dis.read();				
-				for(j=0;j<numVar;j++){
-					valLst[j]=dis.readDouble();
-				}
-				valori[i]=new Observation(valLst,id);
-			}
-			System.out.println("Create matrix");
-			m=new MatrixOsservazioni(valori,selName,selType,map);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		try{
+			SessionLoader sLoader=new SessionLoader(fileName,prShow);
+			sLoader.addStatusListener(pStatusList);
+			sLoader.start();
+		}catch(FileNotFoundException e){
+			pStatusList.statusEvent(new EventFinishAbort("Loading aborted. File not found."));
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			pStatusList.statusEvent(new EventFinishAbort("Loading aborted. File not found."));
 		}
-		
-		return m;
 	}	
 	
-	private static StringMapping loadVarMapping(String path,String varName) throws IOException{
-		DataInputStream dis=new DataInputStream(new FileInputStream(path + varName+"_Map.bin"));
-		
-		StringMapping map=new StringMapping();  
-		double val;
-		String str;
-		int numEl=dis.read();
-		
-		for(int i=0;i<numEl;i++){
-			val=dis.readDouble();
-			str=dis.readUTF();
-			map.addNewMapping(val, str);
-		}
-		
-		return map;
-	}
 }

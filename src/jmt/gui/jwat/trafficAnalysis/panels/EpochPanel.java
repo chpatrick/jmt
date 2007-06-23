@@ -16,6 +16,7 @@ import javax.swing.SpinnerNumberModel;
 
 import jmt.engine.jwat.trafficAnalysis.ModelTrafficAnalysis;
 import jmt.engine.jwat.trafficAnalysis.OnResetModel;
+import jmt.engine.jwat.trafficAnalysis.TrafficAnalysisSession;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.JWatWizard;
@@ -26,12 +27,15 @@ public class EpochPanel extends WizardPanel implements JWATConstants{
 	private MainJwatWizard burstwizard = null;
 	private JSpinner epochs = null;
 	private ModelTrafficAnalysis model = null;
+	private TrafficAnalysisSession session = null;
 	private boolean canGoOn = false;
 	
 	public EpochPanel(MainJwatWizard burstwizard){
         super();        
         this.burstwizard = burstwizard;
         model = (ModelTrafficAnalysis) burstwizard.getModel();
+        session= (TrafficAnalysisSession) burstwizard.getSession();
+        	
         initComponents();
 		((ModelTrafficAnalysis)this.burstwizard.getModel()).addResetModelListener(new OnResetModel(){
         	public void modelResetted() {
@@ -66,7 +70,7 @@ public class EpochPanel extends WizardPanel implements JWATConstants{
 
 	private Action setEpoch = new AbstractAction("Set epoch"){
 		public void actionPerformed(ActionEvent e) {
-			model.setParameters(((Integer)epochs.getValue()).intValue());
+			session.setParameters(((Integer)epochs.getValue()).intValue());
 			((JWatWizard)getParentWizard()).setEnableButton("Next >",true);
 			((JWatWizard)getParentWizard()).setEnableButton("Solve",false);
 			canGoOn=true;

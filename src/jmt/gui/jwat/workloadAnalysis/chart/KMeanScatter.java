@@ -32,6 +32,7 @@ import javax.swing.JPopupMenu;
 import jmt.engine.jwat.TimeConsumingWorker;
 import jmt.engine.jwat.VariableNumber;
 import jmt.engine.jwat.input.ProgressMonitorShow;
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.KMean;
 import jmt.engine.jwat.workloadAnalysis.utils.ChangeVariableListener;
 import jmt.engine.jwat.workloadAnalysis.utils.JavaWatColor;
@@ -63,6 +64,7 @@ public class KMeanScatter extends JPanel{
 	private boolean zoomming = false;		//Indica che si sta operando una selezione di zoom In
 	private int xStart,yStart,xEnd,yEnd;	//Posizione di inizio e fine della selezione di zoom
 	private ModelWorkloadAnalysis model;	//Modello contenente i valori da plottare
+	private WorkloadAnalysisSession session;	//Modello contenente i valori da plottare
 	
 	//private Vector currClustering; 
 	private int curClust = 1;
@@ -80,7 +82,7 @@ public class KMeanScatter extends JPanel{
 	private int clustering;
 	private short[][] c1;
 	
-	public KMeanScatter(int x,int y,ModelWorkloadAnalysis model,JFrame f,int clustering,int clust){ //Passare il numero del clustering
+	public KMeanScatter(int x,int y,WorkloadAnalysisSession session,JFrame f,int clustering,int clust){ //Passare il numero del clustering
 		super();
 		parent = f;
 		graph = new BufferedImage(WIDTH+1,HEIGHT+1,BufferedImage.TYPE_INT_RGB);
@@ -89,10 +91,11 @@ public class KMeanScatter extends JPanel{
 		curClust = clust;
 		this.clustering = clustering;
 		//currClustering = (Vector)((KMean)(model.getListOfClustering().get(clustering))).getClusteringAssignment().get(curClust);
-		c1 = ((KMean)(model.getListOfClustering().get(clustering))).getAsseg();
+		c1 = ((KMean)(session.getListOfClustering().get(clustering))).getAsseg();
 		xVar = x;
 		yVar = y;
-		this.model = model;
+		this.model = (ModelWorkloadAnalysis)session.getDataModel();
+		this.session=session;
 		this.model.addOnChangeVariableValue(new ChangeVariableListener(){
 			public void onChangeVariableValues() {
 				first = true;
@@ -116,7 +119,7 @@ public class KMeanScatter extends JPanel{
 		addMouseMotionListener(p);
 		
 		//Aggiunta menuItem del popup
-		for(int i = 1 ; i < ((KMean)model.getListOfClustering().get(clustering)).getNumCluster(); i++){
+		for(int i = 1 ; i < ((KMean)session.getListOfClustering().get(clustering)).getNumCluster(); i++){
 			JMenuItem m = new JMenuItem((i+1)+" clusters");
 			m.addActionListener(new KMScatterMenuChoose(i));
 			popup.clusters.add(m);		

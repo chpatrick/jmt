@@ -63,6 +63,7 @@ import jmt.engine.jwat.filters.IntervalFilter;
 import jmt.engine.jwat.filters.RandomFilter;
 import jmt.engine.jwat.filters.TrimmingBetweenFilter;
 import jmt.engine.jwat.filters.TrimmingFilter;
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.exceptions.TrasformException;
 import jmt.engine.jwat.workloadAnalysis.utils.ChangeVariableListener;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
@@ -209,6 +210,7 @@ public class StatsPanel extends WizardPanel implements CommonConstants,JWATConst
 	private JWatBivariateStatsTableModel modelBivariate;
 	
 	private ModelWorkloadAnalysis model = null;
+	private WorkloadAnalysisSession session = null;
 	
 	// Add apply transformatio Action
 	protected AbstractAction applyTranformation = new AbstractAction("Apply transformation") {
@@ -300,6 +302,7 @@ public class StatsPanel extends WizardPanel implements CommonConstants,JWATConst
 	public StatsPanel(MainJwatWizard parent) {
 		this.parent = parent;
 		model = (ModelWorkloadAnalysis) parent.getModel();
+		session  = (WorkloadAnalysisSession) parent.getSession();
 		help = parent.getHelp();
 		model.addOnSetMatrixObservationListener(new SetMatrixListener(){
 			public void onSetMatrixObservation() {
@@ -415,9 +418,9 @@ public class StatsPanel extends WizardPanel implements CommonConstants,JWATConst
 	//UPDATE DB 20/10/2006
 	protected AbstractAction EXECUTE_SAMPLING = new AbstractAction("Do Sampling"){
 		public void actionPerformed(ActionEvent e) {
-			if(model.getListOfClustering().size() > 0){ 
+			if(session.getListOfClustering().size() > 0){ 
 				if(JOptionPane.showConfirmDialog(StatsPanel.this,"If you apply this sampling all clustering will be deleted. Do you want to continue?","Warning",JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
-					model.removeAllClustering();
+					session.removeAllClustering();
 				}else{
 					return ;
 				}
@@ -476,13 +479,13 @@ public class StatsPanel extends WizardPanel implements CommonConstants,JWATConst
 	};
 	protected AbstractAction UNDO_SAMPLING = new AbstractAction("Undo Sampling"){
 		public void actionPerformed(ActionEvent e) {
-			if(model.getListOfClustering().size() >= 0){
+			if(session.getListOfClustering().size() >= 0){
 				if(JOptionPane.showConfirmDialog(StatsPanel.this.getParentWizard(),
 						"This operation will reset all clusterings done. Continue ?",
 						"WARNING",
 						JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION){
 					model.undoSamplingOnVariable(varsList.getSelectedIndex());
-					model.removeAllClustering();
+					session.removeAllClustering();
 					undoSam.setEnabled(false);
 					isSampled = false;
 				}else{
@@ -937,6 +940,7 @@ public class StatsPanel extends WizardPanel implements CommonConstants,JWATConst
 
 	public void gotFocus() {
 		((JWatWizard)getParentWizard()).setEnableButton("Solve",false);
+		parent.setCurrentPanel(WORKLOAD_INPUT_PANEL);
 	}
 
 	private SmallPlotDistGraph plo;

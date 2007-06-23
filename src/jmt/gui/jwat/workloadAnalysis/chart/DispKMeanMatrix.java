@@ -21,6 +21,7 @@ import javax.swing.JScrollPane;
 import jmt.engine.jwat.TimeConsumingWorker;
 import jmt.engine.jwat.VariableNumber;
 import jmt.engine.jwat.input.ProgressMonitorShow;
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.KMean;
 import jmt.engine.jwat.workloadAnalysis.utils.JWatWorkloadManager;
 import jmt.engine.jwat.workloadAnalysis.utils.JavaWatColor;
@@ -31,6 +32,8 @@ import org.freehep.util.export.ExportDialog;
 //UPDATE 02/11/2006:	+visualizzazione variabile clusterizzata
 public class DispKMeanMatrix extends JScrollPane{
 	private ModelWorkloadAnalysis model;
+	private WorkloadAnalysisSession session;
+	
 	private DispersionPanel panel;
 	
 	public DispKMeanMatrix(){
@@ -40,10 +43,11 @@ public class DispKMeanMatrix extends JScrollPane{
 		this.setViewportView(panel);
 	}
 	
-	public DispKMeanMatrix(ModelWorkloadAnalysis m,int clustering){
+	public DispKMeanMatrix(WorkloadAnalysisSession session,int clustering){
 		/* Richiamo il costruttore della classe JScorllPanel impostando le barre di scorrimento solo se necessarie */
 		super(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		this.model= m;
+		this.model= (ModelWorkloadAnalysis)session.getDataModel();
+		this.session=session;
 		/* Settaggio delle proprieta' del pannello di scroll */
 		this.setPreferredSize(new Dimension(420,420));
 		/* Creazione e aggiunta del Pannello di visualizzazione della matrice di dispersione */
@@ -133,7 +137,7 @@ public class DispKMeanMatrix extends JScrollPane{
 								}
 							});
 							f.setSize(640,690);
-							KMeanScatter s = new KMeanScatter(e.getX() / WIDTH_TOT,e.getY() / HEIGHT_TOT,model,f,clustering,curClust);
+							KMeanScatter s = new KMeanScatter(e.getX() / WIDTH_TOT,e.getY() / HEIGHT_TOT,session,f,clustering,curClust);
 							f.setTitle("Scatter Plot " + model.getMatrix().getVariables()[e.getX() / WIDTH_TOT].getName() + " - " + 
 									model.getMatrix().getVariables()[e.getY() / HEIGHT_TOT].getName() );
 							f.setContentPane(s);
@@ -171,8 +175,8 @@ public class DispKMeanMatrix extends JScrollPane{
 							
 							initShow(10000 * (Elenco.length * Elenco.length));
 							
-							short[][] c1 = ((KMean)(model.getListOfClustering().get(clustering))).getAsseg();
-							int[] v = ((KMean)(model.getListOfClustering().get(clustering))).getVarClust();
+							short[][] c1 = ((KMean)(session.getListOfClustering().get(clustering))).getAsseg();
+							int[] v = ((KMean)(session.getListOfClustering().get(clustering))).getVarClust();
 							int l = 0;
 							// Disegno dei grafici
 							for(int row=0;row<Elenco.length;row++)
@@ -234,6 +238,7 @@ public class DispKMeanMatrix extends JScrollPane{
 							g.fillRect(0,0,300,100);
 							g.setColor(Color.BLACK);
 							g.drawString("With this data the graphic cannot be create",50,50);
+							e.printStackTrace();
 						}
 						updateInfos(10000 * (Elenco.length * Elenco.length)+1,"End",false);
 						return null;

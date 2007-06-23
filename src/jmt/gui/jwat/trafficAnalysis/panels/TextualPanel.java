@@ -39,6 +39,7 @@ import jmt.engine.jwat.trafficAnalysis.BurstEngine;
 import jmt.engine.jwat.trafficAnalysis.ModelTrafficAnalysis;
 import jmt.engine.jwat.trafficAnalysis.OnResetModel;
 import jmt.engine.jwat.trafficAnalysis.OnSetParamtersListener;
+import jmt.engine.jwat.trafficAnalysis.TrafficAnalysisSession;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.MainJwatWizard;
@@ -77,9 +78,9 @@ public class TextualPanel extends WizardPanel implements JWATConstants{
     public TextualPanel(MainJwatWizard burstwizard){
         super();        
         this.burstwizard = burstwizard;
-        ((ModelTrafficAnalysis)this.burstwizard.getModel()).addSetParamsListener(new OnSetParamtersListener(){
+        ((TrafficAnalysisSession)this.burstwizard.getSession()).addSetParamsListener(new OnSetParamtersListener(){
 			public void ParamsSetted() {
-				burstengine = ((ModelTrafficAnalysis)TextualPanel.this.burstwizard.getModel()).getEngine();
+				burstengine = ((TrafficAnalysisSession)TextualPanel.this.burstwizard.getSession()).getEngine();
 				TextualPanel.this.removeAll();
 				initComponents();
 			}

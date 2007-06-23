@@ -6,4 +6,5 @@ public interface Clustering {
 	public String getName();
 	public ClusteringInfos getClusteringInfos(int numCluster);
 	public int getClusteringType();	//UPDATE 03/11/06
+	public int[] getVarClust();
 }

@@ -23,6 +23,7 @@ import jmt.engine.jwat.MatrixOsservazioni;
 import jmt.engine.jwat.ProgressStatusListener;
 import jmt.engine.jwat.input.EventFinishAbort;
 import jmt.engine.jwat.input.EventStatus;
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.EventClusteringDone;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
 import jmt.engine.jwat.workloadAnalysis.utils.SetMatrixListener;
@@ -49,6 +50,7 @@ public class ClusterPanel extends WizardPanel implements CommonConstants,JWATCon
 	private JList clustList;
 	
 	private ModelWorkloadAnalysis model = null;
+	private WorkloadAnalysisSession session = null;
 	
 	private boolean canGoOn;
 	
@@ -59,6 +61,7 @@ public class ClusterPanel extends WizardPanel implements CommonConstants,JWATCon
 	{
 		this.parent = parent;
 		this.model=(ModelWorkloadAnalysis) parent.getModel();
+		this.session=(WorkloadAnalysisSession) parent.getSession();
 		this.help = parent.getHelp();
 		canGoOn=false;
 		initPanel();
@@ -166,13 +169,13 @@ public class ClusterPanel extends WizardPanel implements CommonConstants,JWATCon
 				optClustering.add(new KMeansOptPanel(ClusterPanel.this,new loadListener(),model),BorderLayout.CENTER);
 				optClustering.revalidate();
 				optClustering.repaint();
-				if(model.getListOfClustering().size() == 0) canGoOn = false;
+				if(session.getListOfClustering().size() == 0) canGoOn = false;
 				break;
 				case 1:	optClustering.removeAll();
 				optClustering.add(new FuzzyOptPanel(ClusterPanel.this,new loadListener(),model),BorderLayout.CENTER);
 				optClustering.revalidate();
 				optClustering.repaint();
-				if(model.getListOfClustering().size() == 0) canGoOn = false;
+				if(session.getListOfClustering().size() == 0) canGoOn = false;
 				break;
 				default:
 				clustList.setSelectedIndex(0);
@@ -196,7 +199,8 @@ public class ClusterPanel extends WizardPanel implements CommonConstants,JWATCon
 		clustList.clearSelection();
 		if(pos != -1) clustList.setSelectedIndex(pos);
 		else clustList.setSelectedIndex(0);
-		if(model.getListOfClustering().size() > 0) canGoOn = true;
+		if(session.getListOfClustering().size() > 0) canGoOn = true;
+		parent.setCurrentPanel(WORKLOAD_INPUT_PANEL);
 	}
 	
 	private class loadListener implements ProgressStatusListener{
@@ -215,7 +219,7 @@ public class ClusterPanel extends WizardPanel implements CommonConstants,JWATCon
 		private void abortEvent(EventFinishAbort e) {
 			JOptionPane.showMessageDialog(ClusterPanel.this,e.getMessage(),"CLUSTERING ABORTED!!",JOptionPane.WARNING_MESSAGE);
 			canGoOn=false;
-			if(model.getListOfClustering().size() == 0) ((JWatWizard)getParentWizard()).setEnableButton("Next >",false);
+			if(session.getListOfClustering().size() == 0) ((JWatWizard)getParentWizard()).setEnableButton("Next >",false);
 			else ((JWatWizard)getParentWizard()).setEnableButton("Next >",true);
 			((JWatWizard)getParentWizard()).setEnableButton("Solve",true);
 		}
@@ -224,7 +228,7 @@ public class ClusterPanel extends WizardPanel implements CommonConstants,JWATCon
 		private void finishedEvent(EventClusteringDone e) {
 		//	int confirm=JOptionPane.showConfirmDialog(ClusterPanel.this,"Clustering completed, continue?","CLUSTERING COMPLETED!!",JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE);
 		//	if (confirm==JOptionPane.YES_OPTION){
-				model.addClustering(e.getClustering());
+				session.addClustering(e.getClustering());
 				((JWatWizard)getParentWizard()).setEnableButton("Next >",true);
 				((JWatWizard)getParentWizard()).setEnableButton("Solve",false);
 				canGoOn=true;

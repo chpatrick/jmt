@@ -11,22 +11,19 @@ import java.awt.image.BufferedImage;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.utils.JavaWatColor;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
 import jmt.gui.jwat.workloadAnalysis.chart.DispKMeanMatrix;
 
 public class DispersionkMeanPanel extends JPanel {
-	private ModelWorkloadAnalysis model;
-	private int clustering;
 	private int clusters;
 	private DispKMeanMatrix matrix;
 	private boolean redraw = true;
-	public DispersionkMeanPanel(ModelWorkloadAnalysis model,int clustering,int clusters){
+	public DispersionkMeanPanel(WorkloadAnalysisSession session,int clustering,int clusters){
 		this.setLayout(new BorderLayout());
-		this.model = model;
-		this.clustering = clustering;
 		this.clusters = clusters;
-		matrix = new DispKMeanMatrix(model,-1);
+		matrix = new DispKMeanMatrix(session,-1);
 		this.add(matrix,BorderLayout.CENTER);
 		matrix.setClustering(clustering,clusters);
 		this.add(new JScrollPane(new myPanel(),JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER),BorderLayout.EAST);

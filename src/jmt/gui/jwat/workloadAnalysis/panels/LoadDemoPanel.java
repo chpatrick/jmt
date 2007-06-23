@@ -180,7 +180,7 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 	
 //		data loaded
 		private void finishedEvent(final EventFinishLoad e) {
-			model.setMatrix(e.getMatrix());
+			model.setMatrix(e.getSession());
 			((JWatWizard)getParentWizard()).setEnableButton("Next >",true);
 			((JWatWizard)getParentWizard()).setEnableButton("Solve",false);
 			canGoOn=true;

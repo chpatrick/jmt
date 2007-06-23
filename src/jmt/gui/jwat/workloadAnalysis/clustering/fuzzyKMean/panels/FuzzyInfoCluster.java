@@ -37,6 +37,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.ClusteringInfosFuzzy;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.FuzzyKMean;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.ClusterInfoFuzzy.SFCluStat;
@@ -52,6 +53,7 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants,JWATCons
 	private ClusteringInfosFuzzy infos = null;
 	private int numClusters = 0;
 	private ModelWorkloadAnalysis model = null;
+	private WorkloadAnalysisSession session = null;
 	
 	private static final String PANEL_TITLE = HTML_START
 	+ HTML_FONT_TITLE + "Cluster Information" + HTML_FONT_TIT_END + HTML_FONT_NORM
@@ -69,8 +71,9 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants,JWATCons
 	private int clustering;
 	private FuzzyClusterDetails clustDet;
 	
-	public FuzzyInfoCluster(ClusteringInfosFuzzy info,int i,ModelWorkloadAnalysis m,int clustering){
-		model = m;
+	public FuzzyInfoCluster(ClusteringInfosFuzzy info,int i,WorkloadAnalysisSession session,int clustering){
+		model = (ModelWorkloadAnalysis)session.getDataModel();
+		this.session=session;
 		infos = info;
 		numClusters = i;
 		this.clustering = clustering;
@@ -96,7 +99,7 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants,JWATCons
 		
 		setLayout(new GridLayout(2,1));
 		add(mainPanel);
-		clustDet =new FuzzyClusterDetails(model,clustering,numClusters);
+		clustDet =new FuzzyClusterDetails(session,clustering,numClusters);
 		add(clustDet);
 		
 		//Stringa informativa
@@ -218,7 +221,7 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants,JWATCons
 					return model.getMatrix().getVariableNames()[rowIndex];
 				}
 				if(columnIndex == 0){
-					int[] sel = ((FuzzyKMean)model.getListOfClustering().get(clustering)).getVarClust();	
+					int[] sel = ((FuzzyKMean)session.getListOfClustering().get(clustering)).getVarClust();	
 					for(int i = 0; i < sel.length;i++){
 						if(sel[i] == rowIndex) return Boolean.TRUE;
 					}

@@ -30,6 +30,7 @@ import javax.swing.border.TitledBorder;
 
 import jmt.engine.jwat.Observation;
 import jmt.engine.jwat.VariableNumber;
+import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.KMean;
 import jmt.engine.jwat.workloadAnalysis.utils.JWatWorkloadManager;
 import jmt.engine.jwat.workloadAnalysis.utils.JavaWatColor;
@@ -42,6 +43,8 @@ public class SingleKMeanClusterInfo extends JPanel implements CommonConstants{
 	private JButton saveInfo;
 	private JTextArea infoCluster;
 	private ModelWorkloadAnalysis model;
+	private WorkloadAnalysisSession session;
+	
 	private JComboBox xVar;
 	private JComboBox yVar;
 	private SingleScatter panel;
@@ -50,8 +53,9 @@ public class SingleKMeanClusterInfo extends JPanel implements CommonConstants{
 	private int clustering;
 	private boolean redraw = true;
 	
-	public SingleKMeanClusterInfo(ModelWorkloadAnalysis m,int clustering,int cluster){
-		this.model = m;
+	public SingleKMeanClusterInfo(WorkloadAnalysisSession m,int clustering,int cluster){
+		this.model = (ModelWorkloadAnalysis)m.getDataModel();
+		this.session=m;
 		this.clustering = clustering;
 		this.cluster = cluster;
 		initPanel();
@@ -82,7 +86,7 @@ public class SingleKMeanClusterInfo extends JPanel implements CommonConstants{
 				if(ret==JOptionPane.YES_OPTION){
 					Observation[] o = model.getMatrix().getVariables()[0].getCurObs();
 					String s = "";
-					short[] c1 = ((KMean)model.getListOfClustering().get(clustering)).getAsseg()[cluster-1];
+					short[] c1 = ((KMean)session.getListOfClustering().get(clustering)).getAsseg()[cluster-1];
 					for(int i = 0 ; i < o.length;i++){
 						if(c1[o[i].getID()-1] == match){
 							s += o[i].toString() + "\n";
@@ -183,7 +187,7 @@ public class SingleKMeanClusterInfo extends JPanel implements CommonConstants{
 						f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 						f.setContentPane(new KMeanSingleClusterScatter(xVar.getSelectedIndex(),
 								yVar.getSelectedIndex(),
-								model,
+								session,
 								f,
 								clustering,
 								cluster-1,
@@ -226,7 +230,7 @@ public class SingleKMeanClusterInfo extends JPanel implements CommonConstants{
 				VariableNumber x = model.getMatrix().getVariables()[xVar.getSelectedIndex()];
 				VariableNumber y = model.getMatrix().getVariables()[yVar.getSelectedIndex()];
 				int row = yVar.getSelectedIndex();
-				short[] c1 = ((KMean)model.getListOfClustering().get(clustering)).getAsseg()[cluster-1];
+				short[] c1 = ((KMean)session.getListOfClustering().get(clustering)).getAsseg()[cluster-1];
 				g2.setColor(Color.WHITE);
 				g2.fillRect(1,1,WIDTH-1,HEIGHT-1);
 				//Calcolo del passo del grafico
