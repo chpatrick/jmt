@@ -25,6 +25,7 @@ import jmt.engine.QueueNet.QueueNetwork;
 import jmt.engine.dataAnalysis.Measure;
 import jmt.engine.dataAnalysis.TempMeasure;
 import jmt.engine.log.JSimLogger;
+import jmt.engine.random.engine.RandomEngine;
 import jmt.engine.simEngine.SimLoader;
 import jmt.engine.simEngine.Simulation;
 
@@ -173,16 +174,18 @@ public class Dispatcher_jSIMschema {
             //xml model definition
             sim.setXmlSimModelDefPath(simModelDefinitionPath);
 
-            if (!automaticSeed) {
-                //if automaticSeed == false, then a user defined seed is present
-                sim.setRandomEngineSeed(simulationSeed);
-                sim.initialize();
-
-                logger.debug("jSIM correctly initialized with simulation seed = " + simulationSeed);
-            } else {
-                sim.initialize();
-                logger.debug("jSIM correctly initialized");
+            if (automaticSeed) {
+                // Generate only positive integers (to facilitate replay in the gui)
+                simulationSeed = RandomEngine.makeDefault().nextInt();
+                if (simulationSeed < 0) {
+                    simulationSeed = - simulationSeed;
+                }
             }
+
+            sim.setRandomEngineSeed(simulationSeed);
+            sim.initialize();
+
+            logger.debug("jSIM correctly initialized with simulation seed = " + simulationSeed);
 
             //find QueueNetwork reference
             net = sim.getNetwork();
