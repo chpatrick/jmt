@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<archive name="Load_Balancing_Single_Class.jmodel" timestamp="Fri Mar 10 10:29:26 CET 2006" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Archive.xsd">
-<sim maxSamples="500000" name="Load_Balancing_Single_Class.jmodel" polling="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SIMmodeldefinition.xsd">
+<archive name="Load_Balancing_Single_Class.jsimg" timestamp="Tue Jul 10 08:45:14 CEST 2007" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Archive.xsd">
+<sim disableStatisticStop="false" maxSamples="500000" name="Load_Balancing_Single_Class.jsimg" polling="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="SIMmodeldefinition.xsd">
 <userClass name="Class0" priority="0" referenceSource="Source" type="open"/>
 <node name="Source">
 <section className="RandomSource">
@@ -29,8 +29,11 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -78,8 +81,11 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -127,8 +133,11 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -176,8 +185,11 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -225,8 +237,11 @@
 <parameter classPath="java.lang.Integer" name="size">
 <value>-1</value>
 </parameter>
-<parameter classPath="java.lang.Boolean" name="drop">
-<value>false</value>
+<parameter array="true" classPath="java.lang.String" name="dropStrategies">
+<refClass>Class0</refClass>
+<subParameter classPath="java.lang.String" name="dropStrategy">
+<value>drop</value>
+</subParameter>
 </parameter>
 <parameter classPath="jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy" name="FCFSstrategy"/>
 <parameter array="true" classPath="jmt.engine.NetStrategies.QueuePutStrategy" name="NetStrategy">
@@ -272,12 +287,12 @@
 <node name="Sink">
 <section className="JobSink"/>
 </node>
-<measure alpha="0.05" name="Server0_Class0_Response Time" precision="0.05" referenceNode="Server0" referenceUserClass="Class0" type="Response Time" verbose="false"/>
-<measure alpha="0.05" name="Server1_Class0_Response Time" precision="0.05" referenceNode="Server1" referenceUserClass="Class0" type="Response Time" verbose="false"/>
-<measure alpha="0.05" name="Server2_Class0_Response Time" precision="0.05" referenceNode="Server2" referenceUserClass="Class0" type="Response Time" verbose="false"/>
-<measure alpha="0.05" name="Server3_Class0_Response Time" precision="0.05" referenceNode="Server3" referenceUserClass="Class0" type="Response Time" verbose="false"/>
-<measure alpha="0.05" name="Server4_Class0_Response Time" precision="0.05" referenceNode="Server4" referenceUserClass="Class0" type="Response Time" verbose="false"/>
-<measure alpha="0.05" name="Class0_System Response Time" precision="0.05" referenceNode="" referenceUserClass="Class0" type="System Response Time" verbose="false"/>
+<measure alpha="0.05" name="Server0_Class0_Response Time" nodeType="station" precision="0.05" referenceNode="Server0" referenceUserClass="Class0" type="Response Time" verbose="false"/>
+<measure alpha="0.05" name="Server1_Class0_Response Time" nodeType="station" precision="0.05" referenceNode="Server1" referenceUserClass="Class0" type="Response Time" verbose="false"/>
+<measure alpha="0.05" name="Server2_Class0_Response Time" nodeType="station" precision="0.05" referenceNode="Server2" referenceUserClass="Class0" type="Response Time" verbose="false"/>
+<measure alpha="0.05" name="Server3_Class0_Response Time" nodeType="station" precision="0.05" referenceNode="Server3" referenceUserClass="Class0" type="Response Time" verbose="false"/>
+<measure alpha="0.05" name="Server4_Class0_Response Time" nodeType="station" precision="0.05" referenceNode="Server4" referenceUserClass="Class0" type="Response Time" verbose="false"/>
+<measure alpha="0.05" name="Class0_System Response Time" nodeType="station" precision="0.05" referenceNode="" referenceUserClass="Class0" type="System Response Time" verbose="false"/>
 <connection source="Source" target="Server0"/>
 <connection source="Source" target="Server1"/>
 <connection source="Source" target="Server2"/>
@@ -292,88 +307,105 @@
 <jmodel xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="JModelGUI.xsd">
 <userClass color="#FF0000FF" name="Class0"/>
 <station name="Source">
-<position x="49" y="223"/>
+<position x="49.0" y="223.0"/>
 </station>
 <station name="Server0">
-<position x="300" y="59"/>
+<position x="300.0" y="59.0"/>
 </station>
 <station name="Server1">
-<position x="300" y="140"/>
+<position x="300.0" y="140.0"/>
 </station>
 <station name="Server2">
-<position x="300" y="220"/>
+<position x="300.0" y="220.0"/>
 </station>
 <station name="Server3">
-<position x="300" y="299"/>
+<position x="300.0" y="299.0"/>
 </station>
 <station name="Server4">
-<position x="300" y="380"/>
+<position x="300.0" y="380.0"/>
 </station>
 <station name="Sink">
-<position x="589" y="223"/>
+<position x="589.0" y="223.0"/>
 </station>
 </jmodel>
 <results pollingInterval="2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Results.xsd">
-<measure alpha="0.95" analyzedSamples="40960" finalValue="1.0202561627286324" name="Server0_Class0_Response Time" precision="0.05" referenceClass="Class0" referenceStation="Server0" state="1" type="4">
-<sample meanValue="1.0694553798097821"/>
-<sample meanValue="1.0278141057682486"/>
-<sample meanValue="0.9926010662045562"/>
-<sample lowerBound="0.7809164491456688" meanValue="0.9224242072012174" upperBound="1.063931965256766"/>
-<sample lowerBound="0.8754140096137996" meanValue="0.9706451027062077" upperBound="1.0658761957986158"/>
-<sample lowerBound="0.9406784541643015" meanValue="1.0025850317843308" upperBound="1.06449160940436"/>
-<sample lowerBound="0.9406784541643015" meanValue="1.0025850317843308" upperBound="1.06449160940436"/>
-<sample lowerBound="0.9406784541643015" meanValue="1.0025850317843308" upperBound="1.06449160940436"/>
-<sample lowerBound="0.9746375464952572" meanValue="1.0202561627286324" upperBound="1.0658747789620076"/>
+<measure alpha="0.95" analyzedSamples="46080" finalValue="1.0453518014571734" name="Server0_Class0_Response Time" nodeType="station" precision="0.05" referenceClass="Class0" referenceStation="Server0" state="1" type="4">
+<sample meanValue="0.9075823935476663"/>
+<sample meanValue="1.0080287672954094"/>
+<sample lowerBound="0.8001891795645457" meanValue="0.9944657431327705" upperBound="1.1887423067009952"/>
+<sample lowerBound="0.8001891795645457" meanValue="0.9944657431327705" upperBound="1.1887423067009952"/>
+<sample lowerBound="0.8001891795645457" meanValue="0.9944657431327705" upperBound="1.1887423067009952"/>
+<sample lowerBound="0.8421736482604412" meanValue="0.9567898087687232" upperBound="1.0714059692770053"/>
+<sample lowerBound="0.8421736482604412" meanValue="0.9567898087687232" upperBound="1.0714059692770053"/>
+<sample lowerBound="0.8421736482604412" meanValue="0.9567898087687232" upperBound="1.0714059692770053"/>
+<sample lowerBound="0.964485918616238" meanValue="1.0579705244572641" upperBound="1.1514551302982903"/>
+<sample lowerBound="0.964485918616238" meanValue="1.0579705244572641" upperBound="1.1514551302982903"/>
+<sample lowerBound="0.964485918616238" meanValue="1.0579705244572641" upperBound="1.1514551302982903"/>
+<sample lowerBound="0.9940908025294266" meanValue="1.0453518014571734" upperBound="1.0966128003849203"/>
 </measure>
-<measure alpha="0.95" analyzedSamples="35840" finalValue="0.9666109173651951" name="Server1_Class0_Response Time" precision="0.05" referenceClass="Class0" referenceStation="Server1" state="1" type="4">
-<sample meanValue="1.0261116700585973"/>
-<sample lowerBound="0.848934428109921" meanValue="0.9652771780553908" upperBound="1.0816199280008607"/>
-<sample lowerBound="0.848934428109921" meanValue="0.9652771780553908" upperBound="1.0816199280008607"/>
-<sample lowerBound="0.848934428109921" meanValue="0.9652771780553908" upperBound="1.0816199280008607"/>
-<sample lowerBound="0.9235069356708157" meanValue="1.0213006990753297" upperBound="1.1190944624798438"/>
-<sample lowerBound="0.9481950720569718" meanValue="1.0190726239246266" upperBound="1.0899501757922814"/>
-<sample lowerBound="0.9481950720569718" meanValue="1.0190726239246266" upperBound="1.0899501757922814"/>
-<sample lowerBound="0.9223511440429848" meanValue="0.9666109173651951" upperBound="1.0108706906874054"/>
+<measure alpha="0.95" analyzedSamples="28160" finalValue="0.975501384436434" name="Server1_Class0_Response Time" nodeType="station" precision="0.05" referenceClass="Class0" referenceStation="Server1" state="1" type="4">
+<sample meanValue="0.8179301866018744"/>
+<sample meanValue="1.0483634043800707"/>
+<sample meanValue="1.0388761251788707"/>
+<sample lowerBound="0.9059905760806793" meanValue="1.0235743580858783" upperBound="1.1411581400910773"/>
+<sample lowerBound="0.9059905760806793" meanValue="1.0235743580858783" upperBound="1.1411581400910773"/>
+<sample lowerBound="0.9059905760806793" meanValue="1.0235743580858783" upperBound="1.1411581400910773"/>
+<sample lowerBound="0.9059905760806793" meanValue="1.0235743580858783" upperBound="1.1411581400910773"/>
+<sample lowerBound="0.9239382429014631" meanValue="0.9912803179014842" upperBound="1.0586223929015053"/>
+<sample lowerBound="0.9239382429014631" meanValue="0.9912803179014842" upperBound="1.0586223929015053"/>
+<sample lowerBound="0.9354458353472891" meanValue="0.975501384436434" upperBound="1.015556933525579"/>
 </measure>
-<measure alpha="0.95" analyzedSamples="30720" finalValue="1.0199505168674996" name="Server2_Class0_Response Time" precision="0.05" referenceClass="Class0" referenceStation="Server2" state="1" type="4">
-<sample meanValue="0.9750666822123544"/>
-<sample lowerBound="0.7601576081725226" meanValue="0.9878854280855782" upperBound="1.215613247998634"/>
-<sample lowerBound="0.7601576081725226" meanValue="0.9878854280855782" upperBound="1.215613247998634"/>
-<sample lowerBound="0.7601576081725226" meanValue="0.9878854280855782" upperBound="1.215613247998634"/>
-<sample lowerBound="0.9485348651509302" meanValue="1.0286569361539588" upperBound="1.1087790071569874"/>
-<sample lowerBound="0.9485348651509302" meanValue="1.0286569361539588" upperBound="1.1087790071569874"/>
-<sample lowerBound="0.984786066507296" meanValue="1.0199505168674996" upperBound="1.0551149672277031"/>
+<measure alpha="0.95" analyzedSamples="56320" finalValue="1.0063550462496633" name="Server2_Class0_Response Time" nodeType="station" precision="0.05" referenceClass="Class0" referenceStation="Server2" state="1" type="4">
+<sample meanValue="0.9498869174148495"/>
+<sample lowerBound="0.6484432100925229" meanValue="0.8105037265445593" upperBound="0.9725642429965956"/>
+<sample lowerBound="0.8856168177067911" meanValue="1.0848931145192993" upperBound="1.2841694113318074"/>
+<sample lowerBound="0.8856168177067911" meanValue="1.0848931145192993" upperBound="1.2841694113318074"/>
+<sample lowerBound="0.8856168177067911" meanValue="1.0848931145192993" upperBound="1.2841694113318074"/>
+<sample lowerBound="0.8856168177067911" meanValue="1.0848931145192993" upperBound="1.2841694113318074"/>
+<sample lowerBound="0.9076741740809102" meanValue="0.9873330478220266" upperBound="1.066991921563143"/>
+<sample lowerBound="0.9076741740809102" meanValue="0.9873330478220266" upperBound="1.066991921563143"/>
+<sample lowerBound="0.962273993377322" meanValue="1.0275228379326606" upperBound="1.0927716824879994"/>
+<sample lowerBound="0.962273993377322" meanValue="1.0275228379326606" upperBound="1.0927716824879994"/>
+<sample lowerBound="0.962273993377322" meanValue="1.0275228379326606" upperBound="1.0927716824879994"/>
+<sample lowerBound="0.962273993377322" meanValue="1.0275228379326606" upperBound="1.0927716824879994"/>
+<sample lowerBound="0.9714354907035503" meanValue="1.0063550462496633" upperBound="1.0412746017957764"/>
 </measure>
-<measure alpha="0.95" analyzedSamples="61440" finalValue="1.0114959463646145" name="Server3_Class0_Response Time" precision="0.05" referenceClass="Class0" referenceStation="Server3" state="1" type="4">
-<sample meanValue="1.04750441329673"/>
-<sample lowerBound="0.8384172521653978" meanValue="1.010825153875983" upperBound="1.1832330555865682"/>
-<sample lowerBound="0.8384172521653978" meanValue="1.010825153875983" upperBound="1.1832330555865682"/>
-<sample lowerBound="0.8384172521653978" meanValue="1.010825153875983" upperBound="1.1832330555865682"/>
-<sample lowerBound="0.933742511938386" meanValue="1.0046952210844173" upperBound="1.0756479302304487"/>
-<sample lowerBound="0.933742511938386" meanValue="1.0046952210844173" upperBound="1.0756479302304487"/>
-<sample lowerBound="0.9372783832378844" meanValue="0.9909731313531259" upperBound="1.0446678794683675"/>
-<sample lowerBound="0.9372783832378844" meanValue="0.9909731313531259" upperBound="1.0446678794683675"/>
-<sample lowerBound="0.9372783832378844" meanValue="0.9909731313531259" upperBound="1.0446678794683675"/>
-<sample lowerBound="0.9372783832378844" meanValue="0.9909731313531259" upperBound="1.0446678794683675"/>
-<sample lowerBound="0.9786059812283138" meanValue="1.0114959463646145" upperBound="1.044385911500915"/>
+<measure alpha="0.95" analyzedSamples="29440" finalValue="1.0408028965681422" name="Server3_Class0_Response Time" nodeType="station" precision="0.05" referenceClass="Class0" referenceStation="Server3" state="1" type="4">
+<sample meanValue="0.9254865012458419"/>
+<sample meanValue="1.0510187142350462"/>
+<sample meanValue="1.002760560472521"/>
+<sample meanValue="1.0197255654412412"/>
+<sample meanValue="1.0037774673200501"/>
+<sample meanValue="1.0217432333528031"/>
+<sample lowerBound="0.9711789667735664" meanValue="1.0320371555220034" upperBound="1.0928953442704403"/>
+<sample lowerBound="0.9711789667735664" meanValue="1.0320371555220034" upperBound="1.0928953442704403"/>
+<sample lowerBound="0.9711789667735664" meanValue="1.0320371555220034" upperBound="1.0928953442704403"/>
+<sample lowerBound="0.99062043289654" meanValue="1.0408028965681422" upperBound="1.0909853602397444"/>
 </measure>
-<measure alpha="0.95" analyzedSamples="46080" finalValue="1.0180515283935356" name="Server4_Class0_Response Time" precision="0.05" referenceClass="Class0" referenceStation="Server4" state="1" type="4">
-<sample meanValue="0.9916368617134996"/>
-<sample meanValue="0.9867079772201948"/>
-<sample meanValue="0.9955443233133244"/>
-<sample lowerBound="0.8043362979881858" meanValue="0.9385184875033892" upperBound="1.0727006770185925"/>
-<sample lowerBound="0.8961665890072967" meanValue="0.9944153269380738" upperBound="1.0926640648688508"/>
-<sample lowerBound="0.9397540928881639" meanValue="0.9945958211099413" upperBound="1.0494375493317185"/>
-<sample lowerBound="0.9397540928881639" meanValue="0.9945958211099413" upperBound="1.0494375493317185"/>
-<sample lowerBound="0.9397540928881639" meanValue="0.9945958211099413" upperBound="1.0494375493317185"/>
-<sample lowerBound="0.9786849161369053" meanValue="1.0180515283935356" upperBound="1.057418140650166"/>
+<measure alpha="0.95" analyzedSamples="61440" finalValue="0.9998543392373973" name="Server4_Class0_Response Time" nodeType="station" precision="0.05" referenceClass="Class0" referenceStation="Server4" state="1" type="4">
+<sample meanValue="0.9700040582339499"/>
+<sample lowerBound="0.6582878655263904" meanValue="0.9125706881128395" upperBound="1.1668535106992886"/>
+<sample lowerBound="0.6582878655263904" meanValue="0.9125706881128395" upperBound="1.1668535106992886"/>
+<sample lowerBound="0.8034640694163784" meanValue="0.9897790396220406" upperBound="1.1760940098277028"/>
+<sample lowerBound="0.8034640694163784" meanValue="0.9897790396220406" upperBound="1.1760940098277028"/>
+<sample lowerBound="0.8034640694163784" meanValue="0.9897790396220406" upperBound="1.1760940098277028"/>
+<sample lowerBound="0.8034640694163784" meanValue="0.9897790396220406" upperBound="1.1760940098277028"/>
+<sample lowerBound="0.8760187968433445" meanValue="0.9752609480435657" upperBound="1.0745030992437867"/>
+<sample lowerBound="0.8760187968433445" meanValue="0.9752609480435657" upperBound="1.0745030992437867"/>
+<sample lowerBound="0.9104134050269223" meanValue="0.9785977593164118" upperBound="1.0467821136059012"/>
+<sample lowerBound="0.9104134050269223" meanValue="0.9785977593164118" upperBound="1.0467821136059012"/>
+<sample lowerBound="0.9104134050269223" meanValue="0.9785977593164118" upperBound="1.0467821136059012"/>
+<sample lowerBound="0.9104134050269223" meanValue="0.9785977593164118" upperBound="1.0467821136059012"/>
+<sample lowerBound="0.9592810090951728" meanValue="0.9998543392373973" upperBound="1.0404276693796217"/>
 </measure>
-<measure alpha="0.95" analyzedSamples="46080" finalValue="1.0187398869501467" name="Class0_System Response Time" precision="0.05" referenceClass="Class0" referenceStation="" state="1" type="7">
-<sample meanValue="1.0387597749333468"/>
-<sample meanValue="0.9959136052308676"/>
-<sample meanValue="1.00062356291271"/>
-<sample lowerBound="0.9291713334101729" meanValue="0.9782365459979815" upperBound="1.02730175858579"/>
-<sample lowerBound="0.9752965504376598" meanValue="1.0187398869501467" upperBound="1.0621832234626336"/>
+<measure alpha="0.95" analyzedSamples="66560" finalValue="0.994708129520441" name="Class0_System Response Time" nodeType="station" precision="0.05" referenceClass="Class0" referenceStation="" state="1" type="8">
+<sample meanValue="0.9136468044311206"/>
+<sample lowerBound="0.8513184645918356" meanValue="0.960640481362881" upperBound="1.0699624981339266"/>
+<sample lowerBound="0.9507581333401889" meanValue="1.0149936844596839" upperBound="1.0792292355791788"/>
+<sample lowerBound="0.9507581333401889" meanValue="1.0149936844596839" upperBound="1.0792292355791788"/>
+<sample lowerBound="0.9507581333401889" meanValue="1.0149936844596839" upperBound="1.0792292355791788"/>
+<sample lowerBound="0.9507581333401889" meanValue="1.0149936844596839" upperBound="1.0792292355791788"/>
+<sample lowerBound="0.956129791485273" meanValue="0.994708129520441" upperBound="1.033286467555609"/>
 </measure>
 </results>
 </archive>
