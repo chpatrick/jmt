@@ -87,6 +87,15 @@ public abstract class RandomEngine {
 	 * (including Integer.MIN_VALUE and  Integer.MAX_VALUE)
 	 */
 	public abstract int nextInt();
+	
+	/**
+     *Returns a 64 bit uniformly distributed random number in the closed interval
+     * [Long.MIN_VALUE,Long.MAX_VALUE]
+     * (including Long.MIN_VALUE and  Long.MAX_VALUE)
+     */
+    public abstract long nextLong64();
+
+	
 
 	/**
 	 * Returns a 32 bit uniformly distributed random number in the open unit
