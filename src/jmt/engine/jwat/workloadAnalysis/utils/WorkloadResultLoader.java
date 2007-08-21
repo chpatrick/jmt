@@ -47,15 +47,12 @@ public class WorkloadResultLoader implements ResultLoader {
 			if(tmpNode.getNodeType()==Node.ELEMENT_NODE){
 				algo=tmpNode.getAttributes().getNamedItem("algo").getNodeValue();
 				System.out.println("TIPO " + algo);
-				i++;
 				
 				name=tmpNode.getAttributes().getNamedItem("name").getNodeValue();
 				System.out.println("NOME " + name);
-				i++;
 				
 				numCluster=tmpNode.getAttributes().getNamedItem("numcluster").getNodeValue();
 				System.out.println("NUMCLUSTER " + numCluster);
-				i++;
 
 				varSel=tmpNode.getAttributes().getNamedItem("varsel").getNodeValue();
 				System.out.println("VARSEL " + varSel);
