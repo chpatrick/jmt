@@ -29,10 +29,20 @@
 \usepackage{listings}
 \usepackage[dvipdfm]{hyperref}
 \usepackage{tocbibind}
-\hypersetup{ pdftitle={Java Modelling Tools users manual},
-pdfauthor={Marco Bertoli}, bookmarksopen=true, bookmarksnumbered,
-pdfstartview={FitH}, urlcolor=cyan, citebordercolor=000,
-linkbordercolor=000, pdfhighlight=/n, }
+\usepackage{multicol}
+\usepackage{xcolor}
+\hypersetup{ 
+	pdftitle={Java Modelling Tools users manual},
+	pdfauthor={Marco Bertoli}, 
+	bookmarksopen=true, 
+	bookmarksnumbered=true,
+	colorlinks=true,
+	pdfstartview=FitH, 
+	urlcolor=cyan, 
+	citecolor=black,
+	linkcolor=black, 
+	pdfhighlight=/N,
+}
 
 
 % Change default margins
@@ -95,7 +105,7 @@ Politecnico di Milano - Italy
 
 \vspace{\stretch{0.1}}
 \noindent\hspace*{\centeroffset}\makebox[0pt][l]{\begin{minipage}{\textwidth}
-\flushright Version~0.3, \today
+\flushright Version~0.4, \today
 \end{minipage}}
 
 
@@ -104,7 +114,7 @@ Politecnico di Milano - Italy
 
 \pagebreak
 \begin{small}
-  Copyright \copyright 2006 Performance Evaluation Lab - Dipartimento
+  Copyright \copyright 2007 Performance Evaluation Lab - Dipartimento
   di Elettronica e Informazione - Politecnico di Milano.
   All rights reserved.
 
@@ -134,8 +144,9 @@ Politecnico di Milano - Italy
 % Imports manuals
 \input{introduction_users.tex}
 \input{jmva_users.tex}
-\input{jsim_users.tex}
+%\input{jsim_users.tex}
 \input{jaba_users.tex}
+\input{jwat_users.tex}
 \appendix
 \input{glossary.tex}
 
