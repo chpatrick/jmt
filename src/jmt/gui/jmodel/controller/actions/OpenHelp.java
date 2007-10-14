@@ -46,5 +46,6 @@ public class OpenHelp extends AbstractJmodelAction {
 	 * Invoked when an action occurs.
 	 */
 	public void actionPerformed(ActionEvent e) {
+		mediator.showHelp();
 	}
 }

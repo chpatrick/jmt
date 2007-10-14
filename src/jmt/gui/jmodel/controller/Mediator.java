@@ -18,8 +18,7 @@
 
 package jmt.gui.jmodel.controller;
 
-import jmt.framework.gui.components.JMTMenuBar;
-import jmt.framework.gui.components.JMTToolBar;
+import jmt.framework.gui.components.*;
 import jmt.framework.gui.listeners.MenuAction;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.controller.DispatcherThread;
@@ -50,7 +49,10 @@ import jmt.gui.jmodel.panels.jmodelClassesPanel;
 import org.jgraph.JGraph;
 import org.jgraph.graph.*;
 
+import javax.help.HelpSet;
+import javax.help.JHelp;
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
@@ -58,6 +60,7 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
+import java.net.URL;
 import java.util.*;
 import java.util.List;
 
@@ -2024,6 +2027,35 @@ public class Mediator implements GuiInterface {
      */
     public Rectangle2D getCellDimension(JmtCell cell) {
         return GraphConstants.getBounds(cell.getAttributes());
+    }
+    
+    public void showHelp() {
+        JHelp helpViewer = null;
+        try {
+            // Get the classloader of this class.
+            ClassLoader cl = this.getClass().getClassLoader();
+            // Use the findHelpSet method of HelpSet to create a URL referencing the helpset file.
+            URL url = HelpSet.findHelpSet(cl, "help/jMODEL_en/JSIMgraph.hs");
+            // Create a new JHelp object with a new HelpSet.
+            helpViewer = new JHelp(new HelpSet(cl, url));
+
+            // Set the initial entry point in the table of contents.
+            //helpViewer.setCurrentID("");
+        } catch (Exception e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(mainWindow, "Sorry, jSIMgraph help is not available",
+                    "Help not found", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        // Create a new frame.
+        JMTFrame frame = new JMTFrame();
+        // Set it's size.
+        frame.centerWindow(800,600);
+        // Add the created helpViewer to it.
+        frame.getContentPane().add(helpViewer);
+        // Make the frame visible.
+        frame.setVisible(true);
     }
 
 // --- Methods to handle blocking regions - Bertoli Marco -------------------------------------
