@@ -18,22 +18,24 @@
   
 package jmt.gui.common.xml;
 
+import java.awt.Color;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Vector;
+
+import javax.swing.JOptionPane;
+
 import jmt.gui.common.definitions.ClassDefinition;
 import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.definitions.StationDefinition;
 import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
 import jmt.gui.jmodel.definitions.JMODELModel;
+import jmt.gui.jmodel.definitions.JMTPoint;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.Point2D;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.Vector;
 
 /**
  * <p>Title: Gui XML Reader</p>
@@ -133,6 +135,7 @@ public class GuiXMLReader implements GuiXMLConstants {
         Element station, position;
         String name;
         double x,y;
+        boolean rotate = false;
         // For each stored Station
         for (int i=0; i<stations.getLength(); i++) {
             station = (Element) stations.item(i);
@@ -140,8 +143,10 @@ public class GuiXMLReader implements GuiXMLConstants {
             position = (Element) station.getElementsByTagName(XML_E_POSITION).item(0);
             x = Double.parseDouble(position.getAttribute(XML_A_POSITION_X));
             y = Double.parseDouble(position.getAttribute(XML_A_POSITION_Y));
+            if (position.hasAttribute(XML_A_POSITION_ROTATE))
+                rotate = Boolean.TRUE.toString().equalsIgnoreCase(position.getAttribute(XML_A_POSITION_ROTATE));
             if (names.containsKey(name))
-                model.setStationPosition(names.get(name), new Point2D.Double(x,y));
+                model.setStationPosition(names.get(name), new JMTPoint(x,y, rotate));
             else
                 System.out.println("Error - Found position info for station '"+
                         name +

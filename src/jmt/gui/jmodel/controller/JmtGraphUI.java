@@ -124,13 +124,17 @@ public class JmtGraphUI extends BasicGraphUI {
                 mediator.enableCutAction(true);
                 mediator.enableDeleteAction(true);
                 mediator.enableAddBlockingRegion(!cannotAddBlockingRegion);
-            }
-            else {
+ 
+//            	Giuseppe De Cicco & Fabio Granara
+                mediator.enableRotateAction(true);
+                mediator.enableSetRight(true);
+ 
+            }else {
                 mediator.enableCopyAction(false);
                 mediator.enableCutAction(false);
                 mediator.enableDeleteAction(false);
                 mediator.enableAddBlockingRegion(false);
-            }
+                }
             if (foundConnection)
                 mediator.enableDeleteAction(true);
             // End new --- Bertoli Marco ---
@@ -179,6 +183,7 @@ public class JmtGraphUI extends BasicGraphUI {
      * Update the handle using createHandle.
      */
     public void updateHandle() {
+//    	System.out.println("UPDATEHANDLE IN JMTGRAPHUI");
         if (graphLayoutCache != null) {
             Object[] cells = graph.getSelectionCells();
             if (cells != null && cells.length > 0)

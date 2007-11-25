@@ -19,6 +19,7 @@
 package jmt.gui.jmodel.JGraphMod;
 import jmt.gui.jmodel.controller.Mediator;
 import jmt.gui.jmodel.definitions.JmodelStationDefinition;
+import jmt.gui.common.resources.JMTImageLoader;
 
 import javax.swing.*;
 import java.awt.*;
@@ -171,7 +172,8 @@ public class CellFactory {
         ImageIcon icon = null;
         // Using reflection to access to public ICON field on given class
         try {
-            icon = (ImageIcon) (Class.forName(path + className)).getField("ICON").get(null);
+            String iconName = (String) (Class.forName(path + className)).getField("ICON").get(null);
+            icon = JMTImageLoader.loadImage(iconName);
         } catch (IllegalAccessException e) {
             System.out.println("Error: A security manager has blocked reflection...");
             e.printStackTrace();

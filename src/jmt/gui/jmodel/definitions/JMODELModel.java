@@ -383,7 +383,7 @@ public class JMODELModel extends CommonModel
      * @param key key of search for target station
      * @param position position where target station is placed
      */
-    public void setStationPosition(Object key, Point2D position) {
+    public void setStationPosition(Object key, JMTPoint position) {
         stationPositions.put(key, position);
     }
 
@@ -394,8 +394,8 @@ public class JMODELModel extends CommonModel
      * @param key key of search for target station
      * @return position where target station has to be placed
      */
-    public Point2D getStationPosition(Object key) {
-        return (Point2D) stationPositions.get(key);
+    public JMTPoint getStationPosition(Object key) {
+        return (JMTPoint) stationPositions.get(key);
     }
 
     /**

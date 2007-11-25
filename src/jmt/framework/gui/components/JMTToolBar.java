@@ -17,22 +17,12 @@
   */
 package jmt.framework.gui.components;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-
-import javax.swing.AbstractButton;
-import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
-
 import jmt.framework.gui.image.ImageLoader;
 import jmt.framework.gui.listeners.AbstractJMTAction;
 import jmt.framework.gui.listeners.SelectedActionButtonChangeListener;
+
+import javax.swing.*;
+import java.util.*;
 
 /**
  * <p><b>Name:</b> JMTToolbar</p> 
@@ -243,14 +233,14 @@ public class JMTToolBar extends JToolBar {
         }
         return null;
     }
-    
+
     /* (non-Javadoc)
      * @see javax.swing.JToolBar#addSeparator()
      */
     public void addSeparator() {
         add(new CustomSeparator());
     }
-    
+
     /**
      * Returns a button group
      * @param group identifier of button group
@@ -259,7 +249,7 @@ public class JMTToolBar extends JToolBar {
     public JMTButtonGroup getButtonGroup(int group) {
         return (JMTButtonGroup) buttonGroups.get(new Integer(group));
     }
-    
+
     /**
      * Returns a button, given its name
      * @param action action of the button to be returned
@@ -272,7 +262,7 @@ public class JMTToolBar extends JToolBar {
         else
             return null;
     }
-    
+
     /**
      * Enables or disables every button of a button group
      * @param group group to be enabled or disabled
@@ -284,7 +274,7 @@ public class JMTToolBar extends JToolBar {
             bGroup.setEnabled(value);
         }
     }
-    
+
     /**
      * Clears selection of a button group
      * @param group group to be deselected
@@ -295,8 +285,8 @@ public class JMTToolBar extends JToolBar {
             bGroup.clearSelection();
         }
     }
-    
-    
+
+
     /**
      * Clicks a given button
      * @param action action of the button to be clicked
@@ -306,7 +296,7 @@ public class JMTToolBar extends JToolBar {
         if (button != null)
             button.doClick();
     }
-    
+
     /**
      * Returns all buttons inside this toolbar
      * @return a set with all buttons
@@ -319,7 +309,7 @@ public class JMTToolBar extends JToolBar {
         }
         return set;
     }
-    
+
     /**
      * Enables or disables all buttons of this toolbar
      * @param enable true to enable every button, false to disable them
@@ -330,9 +320,9 @@ public class JMTToolBar extends JToolBar {
             action.setEnabled(enable);
         }
     }
-    
+
     /**
-     * Populates this toolbar reading all properties from specified actions. null values 
+     * Populates this toolbar reading all properties from specified actions. null values
      * are used to add a separator.
      * @param abstractJMTactions a collection of AbstractJMTAction with all actions to be added
      * @return an ArrayList with all added objects (each element is instanceof AbstractButton)
@@ -350,9 +340,9 @@ public class JMTToolBar extends JToolBar {
         }
         return ret;
     }
-    
+
     /**
-     * Populates this toolbar reading all properties from specified actions. null values 
+     * Populates this toolbar reading all properties from specified actions. null values
      * are used to add a separator.
      * @param abstractJMTactions an array of AbstractJMTAction with all actions to be added
      * @return an ArrayList with all added objects (each element is instanceof AbstractButton)

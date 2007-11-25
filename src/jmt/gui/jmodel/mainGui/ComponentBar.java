@@ -35,6 +35,8 @@ import java.lang.reflect.Field;
  * @author Bertoli Marco
  *         Date: 4-giu-2005
  *         Time: 14.13.55
+ * 
+ * Modified by Giuseppe De Cicco & Fabio Granara
  */
 public class ComponentBar extends JMTToolBar {
     public ComponentBar (Mediator m) {
@@ -52,6 +54,12 @@ public class ComponentBar extends JMTToolBar {
         addGenericButton(m.getSetConnect());
         // Blocking region button
         addGenericButton(m.getAddBlockingRegion());
+        
+        addSeparator();
+        // Rotate button 
+        addGenericButton(m.getRotate());
+        // Set right button
+        addGenericButton(m.getSetRight());
 
         // Disables all components button
         enableButtons(false);
@@ -94,5 +102,4 @@ public class ComponentBar extends JMTToolBar {
             tmp[i] = stationNames[i];
         return tmp;
     }
-
 }

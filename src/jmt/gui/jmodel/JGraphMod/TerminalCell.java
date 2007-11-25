@@ -39,8 +39,7 @@ public class TerminalCell extends JmtCell {
     public static final boolean canBePlaced = false;
 
     // Do not change this as it is accessed by reflection to forecast new cell dimensions (Bertoli Marco)
-	public static final ImageIcon ICON = Mediator.advanced ?
-	        JMTImageLoader.loadImage("bc") : JMTImageLoader.loadImage("terminal");
+	public static final String ICON = Mediator.advanced ? "bc" : "terminal";
 
 	/**
 	 * Creates a graph cell and initializes it with the specified user object.
@@ -102,5 +101,15 @@ public class TerminalCell extends JmtCell {
     public boolean generateOrDestroyJobs() {
         return true;
     }
+
+    /**
+     * Returns the name of the icon of this cell
+     *
+     * @return the name of the icon of this cell
+     */
+    public String getIcon() {
+        return ICON;
+    }
+   
 
 }

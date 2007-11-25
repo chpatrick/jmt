@@ -18,28 +18,35 @@
   
 package jmt.gui.common.xml;
 
-import jmt.gui.common.definitions.CommonModel;
-import jmt.gui.common.definitions.parametric.ParametricAnalysisChecker;
-import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
-import jmt.gui.common.definitions.parametric.ParametricAnalysisModelFactory;
-import jmt.gui.jmodel.definitions.JMODELModel;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import javax.swing.*;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
+
+import javax.swing.JOptionPane;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.Result;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import jmt.gui.common.definitions.CommonModel;
+import jmt.gui.common.definitions.parametric.ParametricAnalysisChecker;
+import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
+import jmt.gui.common.definitions.parametric.ParametricAnalysisModelFactory;
+import jmt.gui.jmodel.definitions.JMODELModel;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * <p>Title: Gui XML Writer</p>
@@ -177,6 +184,8 @@ public class GuiXMLWriter implements GuiXMLConstants {
                     String.valueOf(model.getStationPosition(stationKey).getX()));
             position.setAttribute(XML_A_POSITION_Y,
                     String.valueOf(model.getStationPosition(stationKey).getY()));
+            position.setAttribute(XML_A_POSITION_ROTATE,
+                    String.valueOf(model.getStationPosition(stationKey).isRotate()));
             station.appendChild(position);
             guiNode.appendChild(station);
         }

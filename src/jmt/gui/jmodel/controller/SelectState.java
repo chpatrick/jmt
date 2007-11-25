@@ -19,13 +19,25 @@
 package jmt.gui.jmodel.controller;
 
 import org.jgraph.graph.CellView;
+import org.jgraph.graph.DefaultEdge;
+import org.jgraph.graph.DefaultGraphCell;
+import org.jgraph.graph.DefaultPort;
+import org.jgraph.graph.EdgeView;
+import org.jgraph.graph.GraphConstants;
+import org.jgraph.graph.GraphLayoutCache;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.List;
 
 import jmt.gui.jmodel.JGraphMod.BlockingRegion;
+import jmt.gui.jmodel.JGraphMod.JmtCell;
+import jmt.gui.jmodel.JGraphMod.JmtEdge;
+import jmt.gui.jmodel.JGraphMod.JmtEdgeView;
+import jmt.gui.jmodel.JGraphMod.JmtJGraph;
 
 /**
  * Handles all the events when the user is in the select mode
@@ -41,7 +53,20 @@ import jmt.gui.jmodel.JGraphMod.BlockingRegion;
  */
 public class SelectState extends UIStateDefault {
 
+	 private Object[] cells=null;
+//		rappresentano l angolo altro-sinistro di ogni cella selezionata
+	 private Integer[] Xmin=null;
+     private Integer[] Ymin= null;
+//		rappresentano l angolo basso-destro di ogni cella selezionata
+     private Integer[] Xmax=null;
+     private Integer[] Ymax= null;
+     
+     
+     private boolean moved=false;
+     private JmtJGraph graphtmp=null;
+   
     protected GraphMouseListner ml;//refernce to mouse listner
+	
 
     /** Creates the select state
      *
@@ -62,20 +87,22 @@ public class SelectState extends UIStateDefault {
      */
     public void handlePress(MouseEvent e) {
         ml.setHandler(null);
+        
         if (!e.isConsumed() && mediator.isGraphEnabled()) {
             mediator.graphRequestFocus();
             int s = mediator.getTolerance();
             Rectangle2D r = mediator.fromScreen(
                     new Rectangle(e.getX() - s, e.getY() - s, 2 * s, 2 * s));
             Point2D point = mediator.fromScreen(new Point(e.getPoint()));
-            if (!(ml.getFocus() != null && ml.getFocus().intersects(mediator.getGraph(), r))) {
+            if (!(ml.getFocus() != null&& ml.getFocus().intersects(mediator.getGraph(), r))) {
                 ml.setFocus(null);
             }
             // Avoid toggling of selection between inner components and blocking region
             CellView next = mediator.getNextViewAt(ml.getFocus(), point.getX(), point.getY());
-            if (!(ml.getFocus() != null &&
-                    next.getCell() instanceof BlockingRegion))
+            if(next!=null && next.getCell()!=null){
+            if (!(ml.getFocus() != null && next.getCell() instanceof BlockingRegion))
                 ml.setCell(next);
+            }
             if (ml.getFocus() == null)
                 ml.setFocus(ml.getCell());
 
@@ -113,7 +140,7 @@ public class SelectState extends UIStateDefault {
                     }
                 }
             }
-
+            
             //Marquee Selection
             if (!e.isConsumed()
                     && (!mediator.isToggleSelectionEvent(e)
@@ -125,9 +152,11 @@ public class SelectState extends UIStateDefault {
             }
         }
 
+        
     }
 
     public void handleMove(MouseEvent e) {
+
         if (ml.getPreviousCursor() == null)
             ml.setPreviousCursor(mediator.getGraphCursor());
         if (mediator.isGraphEnabled()) {
@@ -139,11 +168,15 @@ public class SelectState extends UIStateDefault {
                 mediator.setGraphCursor(ml.getPreviousCursor());
                 ml.setPreviousCursor(null);
             }
+            
         }
+       
         e.consume();
     }
 
     public void handleDrag(MouseEvent e) {
+
+    	mediator.setIsReleased(false);
         mediator.autoscroll(e.getPoint());
         if (ml.getHandler() != null && ml.getHandler() == ml.getMarquee())
             ml.getMarquee().mouseDragged(e);
@@ -159,13 +192,70 @@ public class SelectState extends UIStateDefault {
         }
         if (ml.getHandle() != null && ml.getHandler() == ml.getHandle()) {
             // BERTOLI MARCO - Added to avoid dragging of unselected elements (caused bugs)
-            if (mediator.getGraph().getSelectionCells().length > 0)
-                ml.getHandle().mouseDragged(e);
+            if (mediator.getGraph().getSelectionCells().length > 0){
+            	ml.getHandle().mouseDragged(e);
+                Xmin=null;
+            	Ymin=null;
+            	Xmax=null;
+            	Ymax=null;
+            	graphtmp=(JmtJGraph) mediator.getGraph();
+                cells=graphtmp.getSelectionCells();
+                Xmin= new Integer[cells.length];
+                Ymin= new Integer[cells.length];
+                Xmax= new Integer[cells.length];
+                Ymax= new Integer[cells.length];
+                //System.out.println("Numero di cell  in drag: " + cells.length);
+                if(cells.length>0){
+                	for(int i=0; i<cells.length;i++){
+                		if(cells[i] instanceof JmtCell){
+                		Rectangle2D rett=GraphConstants.getBounds(((JmtCell)cells[i]).getAttributes());
+//                		rappresentano l angolo altro-sinistro di ogni cella selezionata
+                		Xmin[i]=new Integer((int) rett.getMinX());
+                		Ymin[i]=new Integer((int) rett.getMinY());
+                		Xmax[i]=new Integer((int) rett.getMaxX());
+                		Ymax[i]=new Integer((int) rett.getMaxY());
+                		moved=true;
+                		}
+                		if(cells[i] instanceof BlockingRegion){
+                			CellView groupview =(graphtmp.getGraphLayoutCache()).getMapping(cells[i], false);
+                			Rectangle2D rett2=groupview.getBounds();
+                			
+                			Object[] celgru=new Object[1];
+                			celgru[0]=cells[i];
+                			//celle presenti nel blocking region incluse port e regione
+                			
+//                			Object[] celless=graphtmp.getDescendants(celgru);
+                			//System.out.println("Numero di celle in gruppo: "+ celless.length);
+                			
+                    		if(rett2!=null){
+                    			//System.out.println("Dentro DRAG mi restituisce un rettangolo se è di tipoBLockingRegion");
+                    			Xmin[i]=new Integer((int) rett2.getMinX());
+                        		Ymin[i]=new Integer((int) rett2.getMinY());
+//                        		Xmax[i]=new Integer((int) rett2.getMaxX());
+//                        		Ymax[i]=new Integer((int) rett2.getMaxY());
+                        		//System.out.println("Valori: "+ X[i]+", "+Y[i]);
+                        		moved=true;
+                    		}
+                  	
+                    		
+                			
+                    		}
+                	}
+                }
+            }
         }
-    }
+       
+        	
+        	
+        }
+    
+    
 
-
+//	Heavely modified by Giuseppe De Cicco & Fabio Granara
     public void handleRelease(MouseEvent e) {
+    	mediator.setIsReleased(true);
+
+    	
         try {
             if (e != null && !e.isConsumed()) {
                 if (ml.getHandler() == ml.getMarquee() && ml.getMarquee() != null)
@@ -179,9 +269,22 @@ public class SelectState extends UIStateDefault {
 
                 }
 
+                
+                
                 // Puts selected cells in good place to avoid overlapping
-                mediator.putSelectedCellsInGoodPlace();
-
+                if(moved && Xmin.length>0 && Ymin.length>0){
+//                	System.out.println("chiamata in select state");
+                	mediator.putSelectedCellsInGoodPlace(cells,Xmin,Ymin);
+                	
+                	mediator.avoidOverlappingCell(cells);
+                	
+                	Xmin=null;
+                	Ymin=null;
+                	moved=false;
+                	 
+                	
+                }
+                
                 if (!e.isConsumed() && ml.getCell() != null) {
                     Object tmp = ml.getCell().getCell();
                     boolean wasSelected = mediator.isCellSelected(tmp);
@@ -192,15 +295,18 @@ public class SelectState extends UIStateDefault {
                 // Notify mediator that object can have been placed inside or
                 // ouside a blocking region
                 mediator.handlesBlockingRegionDrag();
+ 
             }
         } finally {
             ml.setHandler(null);
             ml.setCell(null);
-        }
-
+           
+      }
+   
     }
 
     public void handleEnter(MouseEvent e) {
-        mediator.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+            mediator.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
     }
+  
 }

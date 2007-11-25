@@ -40,6 +40,7 @@ public interface GuiXMLConstants {
     public static final String XML_E_POSITION = "position";
     public static final String XML_A_POSITION_X = "x";
     public static final String XML_A_POSITION_Y = "y";
+    public static final String XML_A_POSITION_ROTATE = "rotate";
 
     public static final String XML_E_PARAMETRIC = "parametric";
     public static final String XML_A_PARAMETRIC_CLASSPATH = "classPath";
