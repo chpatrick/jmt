@@ -232,8 +232,8 @@ public class Sectors2DPanel extends JPanel {
 
         // Axis Label
         g2.setColor(Color.GRAY);
-        g2.drawString(classNames[0] + " %", (float)(getX(1)+2*AMARGIN+5),(float)getY(0)+15);
-        g2.drawString(classNames[1] + " %",(float)getX(0)+AMARGIN,(float)(getY(1)-2*AMARGIN+5));
+        g2.drawString(classNames[1] + " %", (float)(getX(1)+2*AMARGIN+5),(float)getY(0)+15);
+        g2.drawString(classNames[0] + " %",(float)getX(0)+AMARGIN,(float)(getY(1)-2*AMARGIN+5));
         g2.setColor(BLACK);
 
         // Arrows on axis
