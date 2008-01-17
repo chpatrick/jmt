@@ -268,7 +268,8 @@ public class MainJwatWizard extends JWatWizard {
 			//helpViewer.setCurrentID("");
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Sorry, jWAT help is not available",
+			JOptionPane.showMessageDialog(this, "Sorry, JWAT help is not available yet, " +
+					"but you can see the JWAT users manual installed with the application",
 					"Help not found", JOptionPane.ERROR_MESSAGE);
 			return;
 		}	
