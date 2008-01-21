@@ -380,20 +380,22 @@ public class PainterConvex2D {
     	int fontSize=7+pointSize;
     	Font f = new Font("Arial",Font.PLAIN,fontSize);
     	g.setFont(f);
-    	double x =(p.getX()-tran_x)/scale;
-    	double y =(-p.getY()+tran_y)/scale;
+    	double x =Math.max((p.getX()-tran_x)/scale,0);
+    	double y =Math.max((-p.getY()+tran_y)/scale,0);
+    	double X = (x*scale)+tran_x;
+    	double Y = -((y*scale)-tran_y);
     	
-    	g.drawString("("+format2Dec.format(x)+", "+format2Dec.format(y)+")",(int)(p.getX()-(fontSize*3)), (int)p.getY()-5-pointSize);	
+    	g.drawString("("+format2Dec.format(x)+", "+format2Dec.format(y)+")",(int)(X-(fontSize*3)), (int)Y-5-pointSize);	
 			 
     	
-    	g.drawOval((int)p.getX()-((int)((size/2))),(int)p.getY()-((int)((size/2))), size, size);
+    	g.drawOval((int)X-((int)((size/2))),(int)Y-((int)((size/2))), size, size);
     	
     	g.setColor(Color.gray);
     	Composite oldComp = g.getComposite();
 		Composite alphaComp = AlphaComposite.getInstance(
                 AlphaComposite.SRC_OVER, 0.3f);
 		g.setComposite(alphaComp);
-	   	g.fillOval((int)p.getX()-((int)((size/2))),(int)p.getY()-((int)((size/2))), size, size);
+	   	g.fillOval((int)X-((int)((size/2))),(int)Y-((int)((size/2))), size, size);
 	   	g.setComposite(oldComp);
     	
     	
@@ -640,10 +642,10 @@ public class PainterConvex2D {
 	    	int x = (int)p.getX();
 	    	int y = (int)p.getY();
 	    	
-	    	//Risize x and y if they are too big or too small
-	    	if(x<tran_x){x=tran_x;}
+	    	//Resize x and y if they are too big or too small
+	    	if(x<tran_x){Math.max(x=tran_x,0);}
 	    	if(x>(tran_x+(int)(maxValue*scale))){x=(tran_x+(int)(maxValue*scale));}
-	    	if(y>tran_y){y=tran_y;}
+	    	if(y>tran_y){Math.max(y=tran_y,0);}
 	    	if(y<(tran_y-(int)(maxValue*scale))){y=(tran_y-(int)(maxValue*scale));}
 	    	return new Point(x,y);
 	    }
@@ -653,9 +655,16 @@ public class PainterConvex2D {
 	     * @param XonScreen The x of the point on screen
 	     * @return The true x point
 	     */
-	    public double getTrueX(double XonScreen)
+	    public double getTrueX(double XonScreen)	    
 	    {
-	    	return (((XonScreen-tran_x))/scale);
+	    	double x = (((XonScreen-tran_x))/scale);
+	    	
+	    	if(x<0){
+	    		return 0;
+	    	}
+	    	else{
+	    		return x;
+	    	}
 	    }
 	    
 	    /**
@@ -665,7 +674,13 @@ public class PainterConvex2D {
 	     */
 	    public double getTrueY(double YonScreen)
 	    {
-	    	return (((tran_y-YonScreen))/scale);
+	    	double y = (((tran_y-YonScreen))/scale);
+	    	
+	    	if(y<0){
+	    		return 0;
+	    	}else{
+	    		return y;
+	    	}
 	    }
 	    
 	    /**
@@ -687,10 +702,10 @@ public class PainterConvex2D {
 	     public boolean selectLine(DPoint p1, DPoint p2,Point point)
 	     {
 	    	 Polygon p = new Polygon();
-	    	 p.addPoint((int)((p1.getX()*scale)+tran_x-((pointSize+1)/scale)), (int)((tran_y-(p1.getY()*scale)+((pointSize+1)/scale))));
-	    	 p.addPoint((int)((p1.getX()*scale)+tran_x+((pointSize+1)/scale)), (int)((tran_y-(p1.getY()*scale)-((pointSize+1)/scale))));
-	    	 p.addPoint((int)((p2.getX()*scale)+tran_x+((pointSize+1)/scale)), (int)((tran_y-(p2.getY()*scale)-((pointSize+1)/scale))));
-	    	 p.addPoint((int)((p2.getX()*scale)+tran_x-((pointSize+1)/scale)), (int)((tran_y-(p2.getY()*scale)+((pointSize+1)/scale))));
+	    	 p.addPoint((int)((p1.getX()*scale)+tran_x-((pointSize+1))), (int)((tran_y-(p1.getY()*scale)+((pointSize+1)))));
+	    	 p.addPoint((int)((p1.getX()*scale)+tran_x+((pointSize+1))), (int)((tran_y-(p1.getY()*scale)-((pointSize+1)))));
+	    	 p.addPoint((int)((p2.getX()*scale)+tran_x+((pointSize+1))), (int)((tran_y-(p2.getY()*scale)-((pointSize+1)))));
+	    	 p.addPoint((int)((p2.getX()*scale)+tran_x-((pointSize+1))), (int)((tran_y-(p2.getY()*scale)+((pointSize+1)))));
 	    	 
 	    	 if(p.contains(point))
 	    	 {
@@ -706,7 +721,7 @@ public class PainterConvex2D {
 	      * @param ifPoint A generic point
 	      * @return If the point on screen and a generic point are the same
 	      */
-	     public boolean theSame(Point mousePoint, DPoint ifPoint)
+	     public boolean theSame(Point mousePoint, DPoint ifPoint,int more)
 	     {
 	    	 double max=Math.max(ifPoint.getX(),ifPoint.getY());
 	    	 double error=1;
@@ -715,10 +730,10 @@ public class PainterConvex2D {
 	    	 
 	    	 error=error/scale;
 	    	 
-	    	 double minX = (getTrueX(mousePoint.getX())-error-(((getPointSize())/getScale())/2));
-		     double maxX = (getTrueX(mousePoint.getX())+error+(((getPointSize())/getScale())/2));
-		     double minY = (getTrueY(mousePoint.getY())-error-(((getPointSize())/getScale())/2));
-		     double maxY = (getTrueY(mousePoint.getY())+error+(((getPointSize())/getScale())/2));	    	 
+	    	 double minX = (getTrueX(mousePoint.getX())-error-(((getPointSize()+more)/getScale())/2));
+		     double maxX = (getTrueX(mousePoint.getX())+error+(((getPointSize()+more)/getScale())/2));
+		     double minY = (getTrueY(mousePoint.getY())-error-(((getPointSize()+more)/getScale())/2));
+		     double maxY = (getTrueY(mousePoint.getY())+error+(((getPointSize()+more)/getScale())/2));	    	 
 	    	 
 		     if((minX<=ifPoint.getX())&&(maxX>ifPoint.getX())&&(minY<=ifPoint.getY())&&(maxY>ifPoint.getY()))
 		     {

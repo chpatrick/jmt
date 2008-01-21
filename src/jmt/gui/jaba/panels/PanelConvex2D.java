@@ -70,11 +70,13 @@ import jmt.gui.jaba.JabaWizard;
 		private boolean dragging;
 		
 		private boolean selPoint;
+		private boolean canLine;
 		private DPoint selDPoint;
 	    
 	    
 	    public PanelConvex2D(JabaModel data,JabaWizard mainWin)
 	    {
+	    	this.canLine=true;
 	    	this.mainWin=mainWin;
 	    	this.s3d=data.getResults();
 	    	this.data = data;
@@ -176,11 +178,12 @@ import jmt.gui.jaba.JabaWizard;
 	    public void mousePressed(MouseEvent e) 
 	    {
 	    	dragging=false;
+	    	canLine=true;
 	    	mouseButtonPress=e.getButton();
 	    	beginPoint=painter.insidePoint(e.getPoint());
 	    	
 	    	
-	    	//If the cursor is on a poit and the left button is press
+	    	//If the cursor is on a point and the left button is press
 	    	//the point is select
 	    	DPoint p;
 	    	if(e.getButton()==1){
@@ -190,10 +193,11 @@ import jmt.gui.jaba.JabaWizard;
 	    		{
 	    			p=(DPoint)dominants.get(i);
 	    			p.setSelect(false);
-	    			if(painter.theSame(dragPoint, p))
+	    			if(painter.theSame(dragPoint, p, 1))
 	    			{
 	    				p.setSelect(true);
 	    				selPoint=true;
+	    				canLine=false;
 	    				selDPoint=p;
 	    			}
 	    		}
@@ -205,10 +209,11 @@ import jmt.gui.jaba.JabaWizard;
 	    		{
 	    			p=(DPoint)dominates.get(i);
 	    			p.setSelect(false);
-	    			if(painter.theSame(dragPoint, p))
+	    			if(painter.theSame(dragPoint, p, 0))
 	    			{
 	    				p.setSelect(true);
 	    				selPoint=true;
+	    				canLine=false;
 	    				selDPoint=p;
 	    				//Select the dominants
 	    				for(int k=0;k<dominants.size();k++)
@@ -236,7 +241,7 @@ import jmt.gui.jaba.JabaWizard;
 	    public void mouseReleased(MouseEvent e) 
 	    {
 	    	
-	    	//Wwhen the mouse is released and no point in select
+	    	//When the mouse is released and no point in select
 	    	mouseButtonPress=e.getButton();
 	    	Point dPoint = painter.insidePoint(dragPoint);
 	    	Point bPoint = painter.insidePoint(beginPoint);
@@ -282,11 +287,12 @@ import jmt.gui.jaba.JabaWizard;
 	    	}
 	    	dragging=false;
 	    	selPoint=false;
+	    	
 	    }
 	    
 	    
 	    /*
-	     * If the cursor enter after it exited while tha point was dragging
+	     * If the cursor enter after it exited while that point was dragging
 	     * the cursor have to change
 	     */
 	    public void mouseEntered(MouseEvent e) 
@@ -369,11 +375,20 @@ import jmt.gui.jaba.JabaWizard;
 	    	}
 
 	    	//If the click is on a line of the convex hull this is selected
+	    	
+	    	if((e.getClickCount()==1)&&(canLine))
+	    	{
+	    		selectLine(e.getPoint());
+	    	}else
+	    	{
+	    		lineP1 = null;
+	    		lineP2 = null;	    	
+	    	}
 	    	if(e.getClickCount()==1)
 	    	{
-	    		selectLine(beginPoint);
-	    		repaint();
+	    		repaint();	    		
 	    	}
+	    	
 	    }
 	    
 	    
@@ -385,7 +400,6 @@ import jmt.gui.jaba.JabaWizard;
 	    private void selectLine(Point point)
 	    {
 	        Vector convex = engine.getAllConvex();
-	    	
 	    	for(int k=0;k<convex.size()-1;k++){
 	    		if(painter.selectLine((DPoint)convex.get(k), (DPoint)convex.get(k+1), point))
 	    		{
@@ -395,7 +409,8 @@ import jmt.gui.jaba.JabaWizard;
 	    		}
 	    	}
 	    	lineP1 = null;
-			lineP2 = null;
+			lineP2 = null;	    	
+
 	    }
 	  
 	    
@@ -421,19 +436,33 @@ import jmt.gui.jaba.JabaWizard;
 	    	selPoint=false;
 	    	dragPoint= e.getPoint();
 	    	
-	    	Vector point = engine.getPoints();
+	    	Vector point = engine.getDominants();
 	    	DPoint p;
 	    	
 	    	//If the mouse pass over a point, the mouse change
     		for(int i=0;i<point.size();i++)
     		{
     			p=(DPoint)point.get(i);
-    			if(painter.theSame(e.getPoint(), p))
+    			if(painter.theSame(e.getPoint(), p, 2))
     			{
     				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); 
     				return;
     			}
     		}
+    		
+	    	point = engine.getDominates();
+	    	
+	    	//If the mouse pass over a point, the mouse change
+    		for(int i=0;i<point.size();i++)
+    		{
+    			p=(DPoint)point.get(i);
+    			if(painter.theSame(e.getPoint(), p, 0))
+    			{
+    				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR)); 
+    				return;
+    			}
+    		}    		
+    		
     		
     		
     		//If the cursor pass over a saturation sector the mouse change

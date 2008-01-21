@@ -15,26 +15,25 @@ package jmt.engine.jaba;
 import java.awt.*;
 
 public class newPoint extends Point {
-   private java.lang.Math mm;
 
    public newPoint(int nx, int ny){
       super(nx, ny);
    } 
    public double length() {
-      return Math.sqrt(x*x + y*y);
+      return Math.sqrt(Math.pow(getX(),2) + Math.pow(getY(),2));
    } 
    public int classify(newPoint p0, newPoint p1) {
 
-     newPoint a = new newPoint(p1.x-p0.x, p1.y-p0.y);
-     newPoint b = new newPoint(x - p0.x, y - p0.y);
+     newPoint a = new newPoint((int)(p1.getX()-p0.getX()), (int)(p1.getY()-p0.getY()));
+     newPoint b = new newPoint((int)(getX() - p0.getX()), (int)(getY() - p0.getY()));
      
-     double sa = a.x * b.y - b.x * a.y;
+     double sa = a.getX() * b.getY() - b.getX() * a.getY();
 
      if (sa > 0.0)
         return 0;  // LEFT
      if (sa < 0.0)
         return 1;  // RIGHT
-     if ((a.x * b.x < 0.0) || (a.y * b.y < 0.0))
+     if ((a.getX() * b.getX() < 0.0) || (a.getY() * b.getY() < 0.0))
         return 2;  // BEHIND
      if (a.length() < b.length())
         return 3;  // BEYOND
