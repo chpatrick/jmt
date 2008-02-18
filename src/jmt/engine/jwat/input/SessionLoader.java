@@ -44,7 +44,7 @@ public class SessionLoader extends TimeConsumingWorker {
 	
 	public SessionLoader(String fileName,ProgressShow prg) throws IOException{
 		super(prg);
-		System.out.println("NAME " + fileName);
+		//System.out.println("NAME " + fileName);
 		zf=new ZipFile(fileName);
 		file=fileName.substring(fileName.lastIndexOf(File.separator)+1,fileName.lastIndexOf("."));
 		zis=zf.getInputStream(new ZipEntry(file+JwatSession.XMLext));
@@ -74,10 +74,9 @@ public class SessionLoader extends TimeConsumingWorker {
 		String curType;
 		DataInputStream dis;
 		
-		
 		//Extracting zipped files in temp dir
 		updateInfos(1,"Reading XML file",false);
-		System.out.println("Entry " + file+JwatSession.XMLext);
+		//System.out.println("Entry " + file+JwatSession.XMLext);
 
 		//load xml file
 		domP=new DOMParser();
@@ -102,18 +101,18 @@ public class SessionLoader extends TimeConsumingWorker {
 		selType=new int[numVar];
 
 		tmpNodeLst=tmpNode.getChildNodes();
-		System.out.println(tmpNodeLst.getLength());
+		//System.out.println(tmpNodeLst.getLength());
 		j=0;
 		updateInfos(2,"Reading Variables",false);
 		for(i=0;i<tmpNodeLst.getLength();i++){
 			tmpNode=tmpNodeLst.item(i);
-			System.out.println("VARIABLES:");
+			//System.out.println("VARIABLES:");
 			if(tmpNode.getNodeType()==Node.ELEMENT_NODE){
 				tmpVal=tmpNode.getAttributes().getNamedItem("name").getNodeValue();
-				System.out.println("NOME " + tmpVal);
+				//System.out.println("NOME " + tmpVal);
 				selName[j]=tmpVal;
 				tmpVal=tmpNode.getAttributes().getNamedItem("type").getNodeValue();
-				System.out.println("TIPO " + tmpVal);
+				//System.out.println("TIPO " + tmpVal);
 				selType[j]=Integer.parseInt(tmpVal);
 				j++;
 			}
@@ -133,18 +132,18 @@ public class SessionLoader extends TimeConsumingWorker {
 		map=new VariableMapping[numVar];
 		valLst=new double[numVar];
 
-		System.out.println("Reading varaibles mapping");
+		//System.out.println("Reading varaibles mapping");
 		updateInfos(3,"Reading Mapping",false);
 		for(j=0;j<numVar;j++){
 			if(selType[j]==VariableNumber.DATE) map[j]=new DataMapping();
 			if(selType[j]==VariableNumber.NUMERIC) map[j]=null;
 			if(selType[j]==VariableNumber.STRING) map[j]=loadVarMapping(zf,selName[j]);
-			System.out.println(selName[j] + " " + selType[j]);
+			//System.out.println(selName[j] + " " + selType[j]);
 		}
 
 		//load data file
 		zis=zf.getInputStream(new ZipEntry(file));
-		System.out.println("Entry " + file);
+		//System.out.println("Entry " + file);
 		dis = new DataInputStream(zis);
 
 		for(i=0;i<numObs;i++){
@@ -154,7 +153,7 @@ public class SessionLoader extends TimeConsumingWorker {
 			}
 			valori[i]=new Observation(valLst,id);
 		}
-		System.out.println("Create matrix");
+		//System.out.println("Create matrix");
 		updateInfos(5,"Create matrix",false);
 		m=new MatrixOsservazioni(valori,selName,selType,map);
 		session.getDataModel().setMatrix(m);
@@ -164,14 +163,14 @@ public class SessionLoader extends TimeConsumingWorker {
 	
 	protected int loadDataResult(NodeList resultNodeList,JwatSession session) throws IOException{
 		updateInfos(6,"Load Results",false);
-		System.out.println("Loading results");
+		//System.out.println("Loading results");
 		return res.loadResult(zf,resultNodeList,session);
 	}
 	
 	private StringMapping loadVarMapping(ZipFile zf,String varName) throws IOException{
 		
 		InputStream zis=zf.getInputStream(new ZipEntry(varName+"_Map"+JwatSession.BINext));
-		System.out.println("Entry " + varName+"_Map"+JwatSession.BINext);
+		//System.out.println("Entry " + varName+"_Map"+JwatSession.BINext);
 		DataInputStream dis=new DataInputStream(zis);
 		
 		StringMapping map=new StringMapping();  
@@ -193,14 +192,14 @@ public class SessionLoader extends TimeConsumingWorker {
 		JwatSession session=null;
 		JWatModel model;
 		String fullName=zf.getName();
-		System.out.println(fullName+" "+File.separator);
+		//System.out.println(fullName+" "+File.separator);
 		String path= fullName.substring(0,fullName.lastIndexOf(File.separator));
-		System.out.println(path);
+		//System.out.println(path);
 		String fname= fullName.substring(fullName.lastIndexOf(File.separator)+1);
-		System.out.println(fname);
+		//System.out.println(fname);
 		
 		FileWriter w=null;
-		System.out.println("Start loading");
+		//System.out.println("Start loading");
 		try {
 			initShow(7);
 			session=new WorkloadAnalysisSession(new ModelWorkloadAnalysis(),path,fname);

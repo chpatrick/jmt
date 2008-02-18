@@ -16,8 +16,8 @@ public class FuzzyKMean implements Clustering {
 	public FuzzyKMean (int numClust,int[] varSel){
 		maxClust = numClust;
 		this.varSel = varSel;
-		assign = new double[numClust][][];
-		results = new ClusteringInfosFuzzy[numClust];
+		assign = new double[numClust-1][][];
+		results = new ClusteringInfosFuzzy[numClust-1];
 	}
 
 	public String getName() {

@@ -980,7 +980,7 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 			optBtn[0]=new JButton("Continue");
 			optBtn[1]=new JButton("Show Log");
 			optBtn[2]=new JButton("Cancel");
-			
+					
 			pane = new JOptionPane("# observations processed: "+ e.valToRead()+"\n# correct observations "+ e.valReaded()+ "\nTo see errors press Show Log",JOptionPane.QUESTION_MESSAGE,JOptionPane.DEFAULT_OPTION,null,optBtn,null);
 			final JDialog dialog= pane.createDialog(InputPanel.this.getParentWizard(), "Loading Complete");
 			pane.selectInitialValue();
@@ -1042,7 +1042,11 @@ public class InputPanel extends WizardPanel implements CommonConstants,JWATConst
 				}
 				
 			});
-			
+
+			if(e.valReaded()==e.valToRead()){
+				optBtn[1].setEnabled(false);	
+			}
+
 			dialog.show();
 		}	
 	}

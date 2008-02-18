@@ -18,6 +18,8 @@ import jmt.engine.jwat.MatrixOsservazioni;
 import jmt.engine.jwat.input.ResultLoader;
 import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.Clustering;
+import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.ClusterInfoFuzzy;
+import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.ClusteringInfosFuzzy;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.FuzzyKMean;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.ClusterInfoKMean;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.ClusteringInfosKMean;
@@ -43,19 +45,19 @@ public class WorkloadResultLoader implements ResultLoader {
 		
 		for(i=0;i<resultNodeList.getLength();i++){
 			tmpNode=resultNodeList.item(i);
-			System.out.println("Clustering:");
+			//System.out.println("Clustering:");
 			if(tmpNode.getNodeType()==Node.ELEMENT_NODE){
 				algo=tmpNode.getAttributes().getNamedItem("algo").getNodeValue();
-				System.out.println("TIPO " + algo);
+				//System.out.println("TIPO " + algo);
 				
 				name=tmpNode.getAttributes().getNamedItem("name").getNodeValue();
-				System.out.println("NOME " + name);
+				//System.out.println("NOME " + name);
 				
 				numCluster=tmpNode.getAttributes().getNamedItem("numcluster").getNodeValue();
-				System.out.println("NUMCLUSTER " + numCluster);
+				//System.out.println("NUMCLUSTER " + numCluster);
 
 				varSel=tmpNode.getAttributes().getNamedItem("varsel").getNodeValue();
-				System.out.println("VARSEL " + varSel);
+				//System.out.println("VARSEL " + varSel);
 
 				varSelLst=parseVarsSel(varSel);
 				switch (Integer.parseInt(algo)) {
@@ -63,7 +65,7 @@ public class WorkloadResultLoader implements ResultLoader {
 					tmpClust=loadKmeanResult(Integer.parseInt(numCluster),varSelLst,name+"_"+nclustLoaded+JwatSession.BINext,zf);
 					break;
 				case JWATConstants.FUZZYK:
-					tmpClust=loadFuzzyResult(Integer.parseInt(numCluster),varSelLst,name+"_"+nclustLoaded+"."+JwatSession.BINext);
+					tmpClust=loadFuzzyResult(Integer.parseInt(numCluster),varSelLst,name+"_"+nclustLoaded+JwatSession.BINext,zf);
 					break;
 
 				default:
@@ -104,7 +106,7 @@ public class WorkloadResultLoader implements ResultLoader {
 		curInfo=new ClusteringInfosKMean[numCluster];
 		asseg=new short[numCluster][numoss];
 		
-		System.out.println("Loading kMeans Results "+fileName);
+		//System.out.println("Loading kMeans Results "+fileName);
 		for(i=0;i<numCluster;i++){
 			curNumCluster=dis.readInt();
 			curInfo[i]=new ClusteringInfosKMean(curNumCluster-1,numvars);
@@ -134,9 +136,68 @@ public class WorkloadResultLoader implements ResultLoader {
 		return new KMean(curInfo,varSelLst,asseg);
 	}
 	
-	private FuzzyKMean loadFuzzyResult(int numCluster,int varSelLst[],String fileName){
-		FuzzyKMean tmpRes=null;
-		return tmpRes;
+	private FuzzyKMean loadFuzzyResult(int numCluster,int varSelLst[],String fileName,ZipFile zf) throws IOException{
+		ClusteringInfosFuzzy curInfo[];
+		int i,j,k;
+		int curNumCluster;
+		MatrixOsservazioni m=waSession.getDataModel().getMatrix();
+		int numvars=m.getNumVariables();
+		int numoss=m.getNumOfObs();
+		DataInputStream dis=new DataInputStream(zf.getInputStream(new ZipEntry(fileName)));
+		double asseg[][];
+		double entropy[];
+		double error;
+		ClusterInfoFuzzy infoCluster[];
+		FuzzyKMean fkm=new FuzzyKMean(numCluster+1,varSelLst);
+
+		//init result vector
+		curInfo=new ClusteringInfosFuzzy[numCluster];
+		entropy=new double[numCluster];
+		
+		//System.out.println("Loading Fuzzy kMeans Results "+fileName);
+		for(i=0;i<numCluster;i++){
+			curNumCluster=dis.readInt();
+			entropy[i]=dis.readDouble();
+			error=dis.readDouble();
+			infoCluster=new ClusterInfoFuzzy[curNumCluster];
+			if(error!=-1){
+				for(k=0;k<curNumCluster;k++){
+					infoCluster[k]=new ClusterInfoFuzzy(numvars);
+					infoCluster[k].numOss=dis.readInt();
+					for(j=0;j<numvars;j++){
+						infoCluster[k].percVar[j]=dis.readDouble();
+						infoCluster[k].statClust[j].iNotZr=dis.readInt();
+						infoCluster[k].statClust[j].dMedia=dis.readDouble();
+						infoCluster[k].statClust[j].dStdEr=dis.readDouble();
+						infoCluster[k].statClust[j].dStdDv=dis.readDouble();
+						infoCluster[k].statClust[j].dVarnz=dis.readDouble();
+						infoCluster[k].statClust[j].dKurto=dis.readDouble();
+						infoCluster[k].statClust[j].dSkewn=dis.readDouble();
+						infoCluster[k].statClust[j].dRange=dis.readDouble();
+						infoCluster[k].statClust[j].dMaxOs=dis.readDouble();
+						infoCluster[k].statClust[j].dMinOs=dis.readDouble();
+					}
+				}
+			}
+			int nel;
+			asseg=new double[curNumCluster][numoss];
+			for(k=0;k<curNumCluster;k++){
+				//nel=dis.readInt();
+				for(j=0;j<numoss;j++){
+					asseg[k][j]=dis.readDouble();
+				}
+			}		
+			
+			fkm.setAssign(i, asseg);
+			curInfo[i]=(ClusteringInfosFuzzy)fkm.getClusteringInfos(i);
+			curInfo[i].infoCluster=infoCluster;
+			curInfo[i].setError(m, error);
+			
+			
+		}
+		
+		fkm.setEntropy(entropy);
+		return fkm;
 	}
 
 }

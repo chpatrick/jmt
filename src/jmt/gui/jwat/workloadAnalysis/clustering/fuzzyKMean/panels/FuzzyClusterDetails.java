@@ -56,7 +56,7 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 	
 	public FuzzyClusterDetails(WorkloadAnalysisSession m,int clustering,int cluster){
 		this.model = (ModelWorkloadAnalysis)m.getDataModel();
-		this.session=session;
+		this.session=m;
 		this.clustering = clustering;
 		this.cluster = cluster;
 		initPanel();

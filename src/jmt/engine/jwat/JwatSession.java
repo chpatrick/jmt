@@ -32,7 +32,7 @@ public abstract class JwatSession {
 	protected JWatModel model = null;
 	
 	public static String XMLext=".xml";
-	public static String ZIPext=".zip";
+	public static String ZIPext=".jwat";
 	public static String BINext=".bin";
 	public static String ROOT="JWat_Save";
 	public static String WORKLOAD_SAVE="Workload Analysis";
@@ -59,8 +59,8 @@ public abstract class JwatSession {
 		MatrixOsservazioni matrix=model.getMatrix();
 		this.filepath=filepath;	
 		this.filename=filename;
-		System.out.println("PATH " + filepath);
-		System.out.println("NAME " + filename);
+		//System.out.println("PATH " + filepath);
+		//System.out.println("NAME " + filename);
 		DocumentBuilderFactory dbf= DocumentBuilderFactory.newInstance();
 		try {
 			ZipOutputStream zos= new ZipOutputStream((new FileOutputStream(filepath+filename+ZIPext)));
@@ -128,7 +128,7 @@ public abstract class JwatSession {
 	}
 	
 	private void saveMatrixData(Observation[] obs, VariableNumber[] var,ZipOutputStream zos){
-		System.out.println("Saving matrix");
+		//System.out.println("Saving matrix");
 		try {
 			int i,j;
 			int size;
@@ -151,14 +151,14 @@ public abstract class JwatSession {
 			dos.flush();
 			zos.closeEntry();
 			
-			System.out.println("Save done");
+			//System.out.println("Save done");
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
 	private void saveVarMapping(VariableNumber  var,ZipOutputStream zos) throws IOException{
-		System.out.println("VAR "+ filepath + var.getName()+"_Map"+BINext);
+		//System.out.println("VAR "+ filepath + var.getName()+"_Map"+BINext);
 		
 		zos.putNextEntry(new ZipEntry(var.getName()+"_Map"+BINext));
 		DataOutputStream dos=new DataOutputStream(zos);

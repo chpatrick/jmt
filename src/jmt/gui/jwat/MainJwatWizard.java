@@ -98,6 +98,13 @@ public class MainJwatWizard extends JWatWizard {
 		}
 	};
 	
+	private JFileChooser fileOpenF = new JFileChooser("."){
+		{
+			setApproveButtonText("Open");
+			setFileSelectionMode(JFileChooser.FILES_ONLY);	
+		}
+	};
+	
 	/*
 	 * Initializes jWAT start screen GUI
 	 */
@@ -331,11 +338,11 @@ public class MainJwatWizard extends JWatWizard {
 			putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
 		}
 		public void actionPerformed(ActionEvent e) {
-			if(fileSaveF.showOpenDialog(MainJwatWizard.this) == JFileChooser.APPROVE_OPTION){
+			if(fileOpenF.showOpenDialog(MainJwatWizard.this) == JFileChooser.APPROVE_OPTION){
 				if(currentPanel!=JWATConstants.WORKLOAD_INPUT_PANEL){
 					tabbedPane.setSelectedIndex(JWATConstants.WORKLOAD_INPUT_PANEL);
 				}
-				File fFile = fileSaveF.getSelectedFile ();
+				File fFile = fileOpenF.getSelectedFile ();
 				String fileName=fFile.getAbsolutePath();
 				Loader.loadSession(fileName,new ProgressMonitorShow(tabbedPane.getComponent(currentPanel),"Loading Session...",1000),new SessionStatusListener(),session);
 			}

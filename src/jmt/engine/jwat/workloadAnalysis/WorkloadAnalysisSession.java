@@ -12,7 +12,10 @@ import org.w3c.dom.Element;
 
 import jmt.engine.jwat.JwatSession;
 import jmt.engine.jwat.workloadAnalysis.clustering.Clustering;
+import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.ClusterInfoFuzzy;
+import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.ClusteringInfosFuzzy;
 import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.FuzzyKMean;
+import jmt.engine.jwat.workloadAnalysis.clustering.fuzzyKMean.ClusterInfoFuzzy.SFCluStat;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.ClusterInfoKMean;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.ClusteringInfosKMean;
 import jmt.engine.jwat.workloadAnalysis.clustering.kMean.KMean;
@@ -152,6 +155,7 @@ public class WorkloadAnalysisSession extends JwatSession {
 					dos.writeDouble(curClustInfo[j].statClust[k].dMaxOs);
 				}
 			}
+			
 			//Write clustering assignment
 			for(k=0;k<clustAssign[i].length;k++){
 				dos.writeShort(clustAssign[i][k]);
@@ -159,8 +163,54 @@ public class WorkloadAnalysisSession extends JwatSession {
 		}
 	}
 	
-	private void saveFuzzyData(ZipOutputStream zos,FuzzyKMean clustering){
+	private void saveFuzzyData(ZipOutputStream zos,FuzzyKMean clustering) throws IOException{
+		int i,j,k,s;
+		ClusteringInfosFuzzy curInfo;
+		ClusterInfoFuzzy curClustInfo[];
+		double clustAssign[][];
+		double entropy[];
+		DataOutputStream dos=new DataOutputStream(zos);
 		
+		
+		for(i=0;i<clustering.getNumCluster();i++){
+			curInfo=(ClusteringInfosFuzzy)clustering.getClusteringInfos(i);
+			dos.writeInt(curInfo.getNumClusters());
+			dos.writeDouble(clustering.getEntropy()[i]);
+			dos.writeDouble(curInfo.getError());
+			if(curInfo.getError()!=-1){
+				curClustInfo=curInfo.infoCluster;
+				//Write clusters infos
+				for(j=0;j<curInfo.getNumClusters();j++){
+						dos.writeInt(curInfo.numElem[j]);
+						for(k=0;k<model.getMatrix().getNumVariables();k++){
+							dos.writeDouble(curClustInfo[j].percVar[k]);
+							dos.writeInt(curClustInfo[j].statClust[k].iNotZr);
+							dos.writeDouble(curClustInfo[j].statClust[k].dMedia);
+							dos.writeDouble(curClustInfo[j].statClust[k].dStdEr);
+							dos.writeDouble(curClustInfo[j].statClust[k].dStdDv);
+							dos.writeDouble(curClustInfo[j].statClust[k].dVarnz);
+							dos.writeDouble(curClustInfo[j].statClust[k].dKurto);
+							dos.writeDouble(curClustInfo[j].statClust[k].dSkewn);
+							dos.writeDouble(curClustInfo[j].statClust[k].dRange);
+							dos.writeDouble(curClustInfo[j].statClust[k].dMinOs);
+							dos.writeDouble(curClustInfo[j].statClust[k].dMaxOs);
+						}
+				}
+			}
+			clustAssign=clustering.getAssignment(i);
+			//Write clustering assignment
+			for(k=0;k<curInfo.getNumClusters();k++){
+				//dos.writeInt(clustAssign[i].length);
+				for(j=0;j<clustAssign[k].length;j++){
+					dos.writeDouble(clustAssign[k][j]);
+				}
+			}
+			
+		}
+		
+		
+		
+			
 	}
 
 	public void saveResultsFile(Document doc, Element root, ZipOutputStream zos) throws IOException {

@@ -9,6 +9,7 @@ public class ClusterInfoFuzzy {
 		}
 		percVar = new double[numVars];
 	}
+	
 	public class 	SFCluStat{
 		
 		public int 	iNotZr;		//Numero delle Osservazioni diverse da Zero
