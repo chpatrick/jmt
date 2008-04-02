@@ -6,7 +6,7 @@ Version=4
 MainFile=JMT_users_Manual.tex
 UseBibTeX=1
 UseMakeIndex=1
-ActiveProfile=DVI => PDF
+ActiveProfile=LaTeX => DVI
 ProjectLanguage=en
 ProjectDialect=US
 
