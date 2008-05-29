@@ -41,6 +41,7 @@ public class Gamma extends Distribution{
                 "Gamma distribution");
         hasMean = true;
         hasC = true;
+        isNestable = true;
     }
 
     /**

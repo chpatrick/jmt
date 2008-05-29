@@ -19,7 +19,6 @@
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-import jmt.engine.random.engine.RandomEngine;
 
 
 /**
@@ -32,7 +31,7 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Fabrizio Frontera - ffrontera@yahoo.it
  */
 
-public class HyperExp extends Distribution {
+public class HyperExp extends AbstractDistribution implements Distribution {
 
 
 	protected Exponential expDistr;
@@ -43,7 +42,6 @@ public class HyperExp extends Distribution {
 	 *
 	 */
 	public HyperExp() {
-		engine = RandomEngine.makeDefault();
 		expDistr = new Exponential();
 	}
 

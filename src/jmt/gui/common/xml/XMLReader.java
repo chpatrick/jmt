@@ -79,7 +79,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
     protected static final String queueGetLCFS = "jmt.engine.NetStrategies.QueueGetStrategies.LCFSstrategy";
     protected static final String queuePut = "jmt.engine.NetStrategies.QueuePutStrategy";
     protected static final String serviceStrategy = "jmt.engine.NetStrategies.ServiceStrategy";
-
+    protected static final String distributionContainer = "jmt.engine.random.DistributionContainer";
 
     /**
      * Restore a model saved in an XML file, given the name of the file. If specified file
@@ -667,14 +667,15 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
             return strategy;
         }
         else {
-            // Service time strategy
-            NodeList distribution = serviceTimeStrategy.getElementsByTagName(XML_E_SUBPARAMETER);
-            // If distribution is not set, returns null
-            if (distribution.getLength() == 0)
+            
+        	//use the parseParameterArray function to return only DIRECT subparameters
+            Vector distribution = parseParameterArray(serviceTimeStrategy);
+        	if (distribution.size() == 0)
                 return null;
-            return parseDistribution((Element)distribution.item(0), (Element)distribution.item(1));
+            return parseDistribution((Element)distribution.get(0), (Element)distribution.get(1));
         }
     }
+        
 
     /**
      * Parses a distribution, given its distribution and distributionPar nodes
@@ -684,22 +685,47 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
      */
     protected static Distribution parseDistribution(Element distr, Element distrPar) {
         String classname = distr.getAttribute(XML_A_SUBPARAMETER_CLASSPATH);
-        NodeList parameters = (distrPar).getElementsByTagName(XML_E_SUBPARAMETER);
+        
+        //get the subparameter which are directly passed to the distribution
+        Vector distributionParameters = parseParameterArray(distr);
+        //add the subparameters which are passed to the distribution parameter
+        distributionParameters.addAll(parseParameterArray(distrPar));
+    
         // Gets correct instance of distribution
         Distribution dist = (Distribution)((Distribution)engineToGuiDistr.get(classname)).clone();
         Element currpar;
-        String param_name, param_value;
-        for (int i=0; i<parameters.getLength(); i++) {
-            currpar = (Element)parameters.item(i);
+        String param_name;
+        for (int i=0; i<distributionParameters.size(); i++) {
+        	
+        	currpar = (Element) distributionParameters.get(i);
+        	
+        	
             param_name = currpar.getAttribute(XML_A_SUBPARAMETER_NAME);
-            param_value = findText(currpar.getElementsByTagName(XML_E_SUBPARAMETER_VALUE).item(0));
-            // Sets param_name value to param_value content. Distribution object will do String parsing
-            // according to expected parameter class.
-            dist.getParameter(param_name).setValue(param_value);
+            //if current parameter is a nested Distribution
+            if(currpar.getAttribute(XML_A_SUBPARAMETER_CLASSPATH).equals(distributionContainer)){
+            	
+            	//parse the currentparameter to get DIRECT subparameters
+            	Vector nestedDistr = parseParameterArray(currpar);
+                // If distribution is not set, returns null
+            	Object param_value = null;
+            	if (nestedDistr.size() == 0){
+                    param_value = null;
+            	}else{
+            		//parse the nested distribution
+            		param_value =  parseDistribution((Element)nestedDistr.get(0), (Element)nestedDistr.get(1));
+            		dist.getParameter(param_name).setValue(param_value);
+            	}
+         	
+            }else{
+            	String param_value = findText(currpar.getElementsByTagName(XML_E_SUBPARAMETER_VALUE).item(0));
+            	dist.getParameter(param_name).setValue(param_value);
+            }
+            
             dist.updateCM(); // Updates values of c and mean
         }
         return dist;
     }
+    
 
     /**
      * Returns the type of a station, reconstructing it from section names. This method must be

@@ -19,7 +19,6 @@
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-import jmt.engine.random.engine.RandomEngine;
 
 
 /**
@@ -37,12 +36,11 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Modified by Stefano Omini, 7/5/2004
  */
 
-public class Uniform extends Distribution {
+public class Uniform extends AbstractDistribution implements Distribution {
 
 
 	/**
-	 * This is the constructor. It creates a new uniform distribution which
-	 *  is defined from is pdf:
+	 * A new uniform distribution is defined from is pdf:
 	 * <pre>              1
 	 * pdf(x) = -----------
 	 *            max-min</pre>
@@ -50,10 +48,6 @@ public class Uniform extends Distribution {
 	 * max must be greater than min. If x is not betwen min and max, pdf(x)=0.
 	 *
 	 */
-
-	public Uniform() {
-		engine = RandomEngine.makeDefault();
-	}
 
 	/**
 	 * it returns the pdf of the distribution.

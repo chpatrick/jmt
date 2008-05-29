@@ -41,6 +41,7 @@ public class Uniform extends Distribution{
                 "Uniform distribution");
         hasC = true;
         hasMean = true;
+        isNestable = true;
         this.setValueChecker(new ValueChecker() {
             public boolean checkValue(Object value) {
                 Distribution d = (Distribution) value;

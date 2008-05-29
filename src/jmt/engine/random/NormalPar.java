@@ -35,7 +35,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-public class NormalPar extends Parameter {
+public class NormalPar extends AbstractParameter implements Parameter {
 
 
 	private double standardDeviation;

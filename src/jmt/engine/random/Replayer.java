@@ -28,7 +28,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  * @author Modified by Stefano Omini, 12/5/2004
 
  */
-public class Replayer extends Distribution {
+public class Replayer extends AbstractDistribution implements Distribution {
 
 	/**
 	 *  Constructs a new distribution with standard random engine.

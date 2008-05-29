@@ -24,7 +24,7 @@ import javax.swing.*;
 
 /**
  * <p>Title: Hyperexponential Distribution</p>
- * <p>Description: Hyperexponential distribution data structure n° 1. This one has parameters
+ * <p>Description: Hyperexponential distribution data structure nï¿½ 1. This one has parameters
  * (p, lambda1, lambda2)</p>
  * 
  * @author Bertoli Marco
@@ -42,6 +42,7 @@ public class Hyperexponential extends Distribution{
                 "Hyperexponential distribution");
         hasC = true;
         hasMean = true;
+        isNestable = true;
     }
 
     /**

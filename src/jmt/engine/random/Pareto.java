@@ -19,7 +19,6 @@
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-import jmt.engine.random.engine.RandomEngine;
 
 
 /**
@@ -33,7 +32,7 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Modified by Stefano Omini, 7/5/2004
  */
 
-public class Pareto extends Distribution {
+public class Pareto extends AbstractDistribution implements Distribution {
 
 
 	/**
@@ -43,9 +42,7 @@ public class Pareto extends Distribution {
 	 * pdf(x) = alpha * k       *  x</pre>
 	 * with alpha gtz and k gtz and less or equal to x
 	 */
-
 	public Pareto() {
-		engine = RandomEngine.makeDefault();
 	}
 
 	/**

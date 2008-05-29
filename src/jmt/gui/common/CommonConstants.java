@@ -64,6 +64,7 @@ public interface CommonConstants {
     public final static String DISTRIBUTION_PARETO = "Pareto";
     public final static String DISTRIBUTION_ERLANG = "Erlang";
     public final static String DISTRIBUTION_HYPEREXPONENTIAL = "Hyperexponential";
+    public final static String DISTRIBUTION_BURST = "Burst";
     //public final static String DISTRIBUTION_MAP= "MAP";
     //public final static String DISTRIBUTION_MMPP2= "MMPP2";    
     public final static String DISTRIBUTION_GAMMA = "Gamma";

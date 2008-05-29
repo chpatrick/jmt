@@ -34,7 +34,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  * Edited by Bertoli Marco 2005: Inverted max and min to have classical position
  */
 
-public class UniformPar extends Parameter {
+public class UniformPar extends AbstractParameter implements Parameter {
 
 	private double max;
 	private double min;

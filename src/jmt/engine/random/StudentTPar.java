@@ -32,7 +32,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-public class StudentTPar extends Parameter {
+public class StudentTPar extends AbstractParameter implements Parameter {
 
 	private double freedom;
 

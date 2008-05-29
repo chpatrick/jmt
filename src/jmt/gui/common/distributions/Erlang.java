@@ -41,6 +41,7 @@ public class Erlang extends Distribution {
                 "Erlang distribution");
         hasMean = true;
         hasC = true;
+        isNestable = true;
     }
 
     /**

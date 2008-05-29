@@ -33,7 +33,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-public class ExponentialPar extends Parameter {
+public class ExponentialPar extends AbstractParameter implements Parameter {
 
 	private double lambda;
 

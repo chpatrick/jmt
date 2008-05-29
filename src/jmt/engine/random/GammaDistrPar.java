@@ -33,7 +33,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-public class GammaDistrPar extends Parameter {
+public class GammaDistrPar extends AbstractParameter implements Parameter {
 
 	private double alpha;
 	private double lambda;

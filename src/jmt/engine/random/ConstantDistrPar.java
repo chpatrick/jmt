@@ -32,7 +32,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-public class ConstantDistrPar extends Parameter {
+public class ConstantDistrPar extends AbstractParameter implements Parameter {
 
 	private double t;
 

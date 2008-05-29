@@ -49,6 +49,7 @@ public class MMPP2 extends Distribution{
                "jmt.engine.random.MMPP2Par",
                "MMPP(2)");
        hasMean = false;
+       isNestable = true;
    }
 
    /**

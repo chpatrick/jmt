@@ -21,7 +21,6 @@ package jmt.engine.random;
 import jmt.common.exception.IncorrectDistributionParameterException;
 import jmt.engine.math.Probability;
 import jmt.engine.math.Sfun;
-import jmt.engine.random.engine.RandomEngine;
 
 /**
  *
@@ -34,21 +33,19 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Modified by Stefano Omini, 7/5/2004
  */
 
-public class GammaDistr extends Distribution {
+public class GammaDistr extends AbstractDistribution implements Distribution {
 
 	/**
-	 * This is the constructor. It creates a new gamma distribution
-	 *
-	 * the gamma distribution is defined from is pdf:
+	 * This is the constructor. It creates a new gamma distribution which
+	 * is defined from is pdf:
 	 * <pre>              (alpha-1)    (-x/beta)
 	 * pdf(x) = k * x          * e</pre>
 	 * with k = 1/(g(alpha) * b^a where g() is the "eulero" function
 	 *
 	 */
-
 	public GammaDistr() {
-		engine = RandomEngine.makeDefault();
 	}
+
 
 	/**
 	 * it returns the pdf of the distribution.

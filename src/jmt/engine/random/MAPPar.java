@@ -34,7 +34,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
 */
 
 
-public class MAPPar extends Parameter {
+public class MAPPar extends AbstractParameter implements Parameter {
 
 	private double mean;
 	private double var;

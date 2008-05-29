@@ -21,7 +21,6 @@ package jmt.engine.random;
 import jmt.common.exception.IncorrectDistributionParameterException;
 import jmt.engine.math.Arithmetic;
 import jmt.engine.math.Probability;
-import jmt.engine.random.engine.RandomEngine;
 
 
 /**
@@ -36,7 +35,7 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Modified by Stefano Omini, 7/5/2004
  */
 
-public class Poisson extends Distribution {
+public class Poisson extends AbstractDistribution implements Distribution {
 
 	// precomputed and cached values (for performance only)
 	// cache for < SWITCH_MEAN
@@ -70,7 +69,6 @@ public class Poisson extends Distribution {
 	 */
 
 	public Poisson() {
-		engine = RandomEngine.makeDefault();
 	}
 
 	private static double f(int k, double l_nu, double c_pm) {

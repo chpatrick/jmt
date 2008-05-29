@@ -32,7 +32,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-public class PoissonPar extends Parameter {
+public class PoissonPar extends AbstractParameter implements Parameter {
 
 	private double mean;
 

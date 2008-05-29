@@ -21,7 +21,6 @@ package jmt.engine.random;
 import jmt.common.exception.IncorrectDistributionParameterException;
 import jmt.engine.math.Arithmetic;
 import jmt.engine.math.Gamma;
-import jmt.engine.random.engine.RandomEngine;
 
 
 /**
@@ -34,20 +33,18 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Modified by Stefano Omini, 7/5/2004
  */
 
-public class Erlang extends Distribution {
+public class Erlang extends AbstractDistribution implements Distribution {
 
 	/**
-	 * This is the constructor. It creates a new empty erlang.
-	 * The erlang distribution is defined from is pdf:
+	 * This is the constructor. It creates a new erlang distribution which
+	 * is defined from is pdf:
 	 * <pre>           (alpha^r)       (r-1)     (-alpha*x)
 	 * pdf(x) = -------------  * x       * e
 	 *           gammaFun(r)</pre>
 	 * where r is the "shape" parameter, alpha is the "scale" parameter and
 	 * gammaFun is the "Eulero" function.
 	 */
-
 	public Erlang() {
-		engine = RandomEngine.makeDefault();
 	}
 
 	/**

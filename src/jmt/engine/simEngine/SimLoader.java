@@ -825,7 +825,12 @@ public class SimLoader {
 				}
 				//gets the right constructor
 				Constructor constr = getConstructor(c, paramClasses);
-				return constr.newInstance(initargs);
+				Object o = constr.newInstance(initargs);
+				if(o instanceof NetNode && o instanceof Distribution) {
+					sim.addDistrNetNode((NetNode)o);
+				}
+				
+				return o;
 			}
 		} catch (ClassNotFoundException e) {
 			throw new LoadException("class of subparameter not found", e);			

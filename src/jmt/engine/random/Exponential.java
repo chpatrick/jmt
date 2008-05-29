@@ -19,7 +19,6 @@
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-import jmt.engine.random.engine.RandomEngine;
 
 
 /**
@@ -33,18 +32,17 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Modified by Stefano Omini, 7/5/2004
  */
 
-public class Exponential extends Distribution {
+public class Exponential extends AbstractDistribution implements Distribution {
 
 	/**
-	 * This is the constructor. It creates a new exponential which is defined
-	 * from is pdf:
+	 * This is the constructor. It creates a new exponential distribution
+	 * which is defined from is pdf:
 	 * <pre>                  (-lambda*x)
 	 * pdf(x)= lambda * e</pre>
 	 * with lambda gtz, if x is gtz.
 	 * 0 if x<0.
 	 */
 	public Exponential() {
-		engine = RandomEngine.makeDefault();
 	}
 
 	/**

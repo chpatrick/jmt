@@ -19,7 +19,6 @@
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-import jmt.engine.random.engine.RandomEngine;
 
 
 /**
@@ -32,13 +31,12 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Fabrizio Frontera - ffrontera@yahoo.it
  */
 
-public class Empirical extends Distribution {
+public class Empirical extends AbstractDistribution implements Distribution {
 
 	/**
 	 * This is the constructor. It creates a new empirical distribution.
 	 */
 	public Empirical() {
-		engine = RandomEngine.makeDefault();
 	}
 
 	/**

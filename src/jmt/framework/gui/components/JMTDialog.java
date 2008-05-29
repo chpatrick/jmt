@@ -130,11 +130,27 @@ public class JMTDialog extends JDialog {
      * @param height height of the window
      */
     public void centerWindow(int width, int height) {
+    	centerWindowWithOffset(width,height,0,0);
+    }
+    
+    /**
+     * Sets size of this window and centers it on the page taking into account
+     * the specified offset from the center
+     * @param width width of the window
+     * @param height height of the window
+     * @param xOffsetFromCenter the offset from the center on the x coordinate
+     * @param yOffsetFromCenter the offset from the center on the y coordinate
+     */
+    public void centerWindowWithOffset(int width, int height, int xOffsetFromCenter, int yOffsetFromCenter) {
         Toolkit tk=Toolkit.getDefaultToolkit();
         //gets dimensions of the screen to center window.
         int xOffset = ((int)tk.getScreenSize().getWidth()-width)/2,
             yOffset = ((int)tk.getScreenSize().getHeight()-height)/2;
-
+        
+        //add the offset from the center
+        xOffset += xOffsetFromCenter;
+        yOffset += yOffsetFromCenter;
+        
         setBounds(xOffset, yOffset, width, height);
     }
     

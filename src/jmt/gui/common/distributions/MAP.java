@@ -49,6 +49,7 @@ public class MAP extends Distribution{
                "jmt.engine.random.MAPPar",
                "MAP");
        hasMean = false;
+       isNestable = true;
    }
 
    /**

@@ -22,17 +22,24 @@ import jmt.framework.gui.components.JMTDialog;
 import jmt.framework.gui.image.ImagePanel;
 import jmt.framework.gui.layouts.SpringUtilities;
 import jmt.framework.gui.listeners.KeyFocusAdapter;
+import jmt.gui.common.distributions.Burst;
 import jmt.gui.common.distributions.Distribution;
 import jmt.gui.common.distributions.Exponential;
 
+
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
+import java.util.Set;
+import java.util.Vector;
 
 /**
  * <p>Title: Distributions' Editor</p>
@@ -47,12 +54,18 @@ import java.util.Locale;
 public class DistributionsEditor extends JMTDialog {
     // Internal data structure
     protected Distribution initial, current, target;
+    
+    protected boolean recursive;
 
     /**
      * This variable will be initialized only once.
      * It will contains every distribution that can be inserted
      */
     protected static HashMap distributions;
+    
+    protected static HashMap allowedNestedDistributions;
+    
+    
 
     // Constants
     protected static final int BORDERSIZE = 20;
@@ -62,25 +75,56 @@ public class DistributionsEditor extends JMTDialog {
     protected ImagePanel iconpanel = new ImagePanel();
     protected JPanel param_panel = new JPanel(new SpringLayout());
     protected JPanel mean_c_panel = new JPanel(new SpringLayout());
+   
 
+    protected JPanel scrolledPanel;
+    
+    //Names and display keys for labels
+    protected static final String PROBABILITY = "Probability:";
+    protected static final String PROBABILITY_INTERVAL_A = "probability_interval_A";
+    protected static final String PROBABILITY_INTERVAL_B = "probability_interval_B";
+    protected static final String VALUE_DISTRIBUTION = "Value Distribution:";
+    protected static final String INTERVAL_LENGTH_DISTRIBUTION = "Interval-Length Distribution:";
+    protected static final String INTERVAL_A_LABEL = "Interval type A";
+    protected static final String INTERVAL_B_LABEL = "Interval type B";
+    
+    
+	protected JPanel[] intervalPanels;
+    
+    
 // --- Static methods ------------------------------------------------------------------------------
     /**
      * Returns a new instance of DistributionsEditor, given parent container (used to find
-     * top level Dialog or Frame to create this dialog as modal)
+     * top level Dialog or Frame to create this dialog as modal). The container is instantiated as not recursive 
      * @param parent any type of container contained in a Frame or Dialog
      * @param initial initial distribution to be set
      * @return new instance of DistributionsEditor
      */
     public static DistributionsEditor getInstance(Container parent, Distribution initial) {
+    	return getInstance(parent, initial, false);
+    }
+    
+    /**
+     * Returns a new instance of DistributionsEditor, given parent container (used to find
+     * top level Dialog or Frame to create this dialog as modal)
+     * @param parent any type of container contained in a Frame or Dialog
+     * @param initial initial distribution to be set
+     * @param recursive indicated if the DistributionEditor is used to select a nested distribution
+     * @return new instance of DistributionsEditor
+     */
+    public static DistributionsEditor getInstance(Container parent, Distribution initial, boolean recursive) {
         // Finds top level Dialog or Frame to invoke correct costructor
         while (!(parent instanceof Frame || parent instanceof Dialog))
             parent = parent.getParent();
 
         if (parent instanceof Frame)
-            return new DistributionsEditor((Frame)parent, initial);
+            return new DistributionsEditor((Frame)parent, initial, recursive);
         else
-            return new DistributionsEditor((Dialog)parent, initial);
+            return new DistributionsEditor((Dialog)parent, initial, recursive);
     }
+    
+    
+    
 
     /**
      * Uses reflection to return an HashMap of distributions. Search's key is distribution name and
@@ -94,6 +138,21 @@ public class DistributionsEditor extends JMTDialog {
             tmp.put(all[i].getName(), all[i].getClass());
         return tmp;
     }
+    
+    /**
+     * Uses reflection to return an HashMap of distributions which are allowed to be nested. 
+     * Search's key is distribution name and
+     * value is the Class of found distribution
+     * @return found nestable distributions
+     */
+    protected static HashMap findNestedDistributions() {
+        Distribution[] all = Distribution.findNestableDistributions();
+        HashMap tmp = new HashMap();
+        for (int i=0; i<all.length; i++)
+            tmp.put(all[i].getName(), all[i].getClass());
+        return tmp;
+    }
+    
 // -------------------------------------------------------------------------------------------------
 
 // --- Method to collect results -------------------------------------------------------------------
@@ -113,8 +172,9 @@ public class DistributionsEditor extends JMTDialog {
      * @param owner owner Dialog for this dialog.
      * @param initial Reference to initial distribution to be shown
      */
-    public DistributionsEditor (Dialog owner, Distribution initial) {
+    public DistributionsEditor (Dialog owner, Distribution initial, boolean recursive) {
         super(owner, true);
+        this.recursive = recursive;
         initData(initial);
         initComponents();
     }
@@ -125,8 +185,9 @@ public class DistributionsEditor extends JMTDialog {
      * @param owner owner Frame for this dialog.
      * @param initial Reference to initial distribution to be shown
      */
-    public DistributionsEditor (Frame owner, Distribution initial) {
+    public DistributionsEditor (Frame owner, Distribution initial, boolean recursive) {
         super(owner, true);
+        this.recursive = recursive;
         initData(initial);
         initComponents();
     }
@@ -211,7 +272,11 @@ public class DistributionsEditor extends JMTDialog {
     protected ItemListener change_listener = new ItemListener() {
         public void itemStateChanged(ItemEvent e) {
             try {
-                current = (Distribution)((Class) distributions.get(e.getItem())).newInstance();
+            	if(recursive){
+            		current = (Distribution)((Class) allowedNestedDistributions.get(e.getItem())).newInstance();
+            	}else{
+            		current = (Distribution)((Class) distributions.get(e.getItem())).newInstance();
+            	}
                 refreshView();
             } catch (InstantiationException ex) {
                 System.out.println("Error: Error instantiating selected Distribution");
@@ -222,6 +287,71 @@ public class DistributionsEditor extends JMTDialog {
             }
         }
     };
+    
+    
+    /**
+     * Listener used for Burst-Distribution only. Updates the two probability parameters seen by the user
+     * Parameters are set when one of the parameter JTextField loses focus or ENTER key is pressed.
+     */
+	protected class ProbabilityAdapter extends KeyFocusAdapter{
+		protected void updateValues(ComponentEvent e) {
+//			Get the textfield
+            JTextField sourcefield = (JTextField) e.getSource();
+            try{
+            	// Get the probability entered in the textfield
+            	Double probability = new Double(Double.parseDouble(sourcefield.getText()));
+            	//Probability has to be smaller or equal than 1 (otherwise don't update value)
+            	if(probability.doubleValue() <= 1.0){
+            		//If the probability was entered into the probability field of interval B
+            		//then the probability parameter in the distribution has to be set to 1-enteredProbability
+            		if(sourcefield.getName().equals(PROBABILITY_INTERVAL_B)){
+            			probability = new Double(1-probability.doubleValue());
+            			
+            		}
+            		//set the parameter
+            		current.getParameter(0).setValue(probability);
+            	}
+            }catch(NumberFormatException ex){
+            	//If user enters a value that is not a number -> reset value back to the value before
+            }
+           
+            refreshValues();
+			
+		}
+		
+	}
+	
+	/**
+	 * This class is currently only used for Burst distributions since the other distributions do not
+	 * contain any nested distributions as parameters
+	 * Action performed when user clicks on Edit-Button at a Distribution Parameter
+	 * Opens a new Distribution Editor to change and edit distribution parameters
+	 * @author Peter Parapatics
+	 *
+	 */
+	protected class EditButtonAction extends AbstractAction{
+		private int key;
+
+		public EditButtonAction(int key){
+			super("Edit");
+			this.key = key;
+		}
+		
+		public void actionPerformed(ActionEvent e){
+			 DistributionsEditor editor = DistributionsEditor.getInstance(
+						getParent(), (Distribution) current.getParameter(key).getValue(), true);
+				// Sets editor window title
+				editor.setTitle("Editing " + current.getParameter(key).getDescription());
+				// Shows editor window
+				editor.show();
+				// Sets new Distribution to selected class
+				
+				current.getParameter(key).setValue(editor.getResult());
+
+				
+				refreshValues();
+		 }
+	};
 // -------------------------------------------------------------------------------------------------
 
 // --- Initialize data structure and layout --------------------------------------------------------
@@ -240,6 +370,10 @@ public class DistributionsEditor extends JMTDialog {
         // If distributions is not already set, sets it!
         if (distributions == null)
             distributions = findDistributions();
+        
+        if(allowedNestedDistributions == null && recursive)
+        	allowedNestedDistributions = findNestedDistributions();
+        
     }
 
     /**
@@ -248,10 +382,14 @@ public class DistributionsEditor extends JMTDialog {
     protected void initComponents() {
         // Sets default title, close operation and dimensions
         this.setTitle("Editing Distribution...");
-        int width = 320, height=400;
+        int width = 320, height=600;
 
         // Centers this dialog on the screen
-        this.centerWindow(width, height);
+        if(recursive){
+        	this.centerWindowWithOffset(width, height, 50, 50);
+        }else{
+        	this.centerWindow(width, height);
+        }
 
         // Creates a main panel and adds margins to it
         JPanel mainpanel = new JPanel(new BorderLayout());
@@ -269,10 +407,10 @@ public class DistributionsEditor extends JMTDialog {
         subpanel.add(distr_panel, BorderLayout.NORTH);
 
         // Creates scrolledpanel that holds param_panel and mean_c_panel
-        JPanel scrolledpanel = new JPanel(new GridLayout(2,1));
-        subpanel.add(new JScrollPane(scrolledpanel), BorderLayout.CENTER);
-        scrolledpanel.add(param_panel);
-        scrolledpanel.add(mean_c_panel);
+        scrolledPanel =  new JPanel(new GridLayout(2,1));
+        subpanel.add(new JScrollPane(scrolledPanel), BorderLayout.CENTER);
+        scrolledPanel.add(param_panel);
+        scrolledPanel.add(mean_c_panel);
         mean_c_panel.setBorder(BorderFactory.createMatteBorder(1,0,0,0,Color.gray));
 
         // Adds bottom_panel to contentpane
@@ -289,7 +427,18 @@ public class DistributionsEditor extends JMTDialog {
 
         // Adds distribution chooser
         distr_panel.add(new JLabel("Selected Distribution: "), BorderLayout.WEST);
-        Object[] distributionNames = distributions.keySet().toArray();
+        
+        
+        
+        Set distributionNameSet;
+        if(recursive){
+          distributionNameSet = allowedNestedDistributions.keySet();
+        }else{
+          distributionNameSet = distributions.keySet();
+        	
+        }
+       
+        Object[] distributionNames = distributionNameSet.toArray();
         Arrays.sort(distributionNames); // Sorts alphabetically distribution names
         choser = new JComboBox(distributionNames);
         choser.setToolTipText("Choose distribution type");
@@ -310,125 +459,316 @@ public class DistributionsEditor extends JMTDialog {
     }
 // -------------------------------------------------------------------------------------------------
 
-// --- Shows current distribution ------------------------------------------------------------------
+// --- Shows current distribution ------------------------------------------------------------------ 
     protected void refreshView() {
         if (current != null) {
-            // Flushes param_panel
+            
+        	// Flushes param_panel
             param_panel.removeAll();
             mean_c_panel.removeAll();
+            scrolledPanel.removeAll();
+            intervalPanels = null;
             // Shows image
+            iconpanel.removeAll();
             iconpanel.setImage(current.getImage());
-            // Maximum width (used to line up elements of both panels)
-            int maxwidth = new JLabel("mean:", JLabel.TRAILING).getMinimumSize().width;
+            
+            if(current instanceof Burst){
+            	
+    			//Flushes param_panel
+                intervalPanels = new JPanel[2];
+        		intervalPanels[0] = new JPanel();
+        		intervalPanels[1] = new JPanel();
+    			
+                
+                IntervalRenderer rend = new IntervalRenderer();
+                
+                rend.addInterval(INTERVAL_A_LABEL, intervalPanels[0]);
+                rend.addProbability(intervalPanels[0], true);
+                rend.addDistribution(INTERVAL_LENGTH_DISTRIBUTION,1, intervalPanels[0]);
+                rend.addDistribution(VALUE_DISTRIBUTION,2, intervalPanels[0]);
+                
+                rend.addInterval(INTERVAL_B_LABEL, intervalPanels[1]);
+                rend.addProbability(intervalPanels[1], false);
+                rend.addDistribution(INTERVAL_LENGTH_DISTRIBUTION,3, intervalPanels[1]);
+                rend.addDistribution(VALUE_DISTRIBUTION,4, intervalPanels[1]);
+                
+                
+            }else{
+            	
+//            	 Maximum width (used to line up elements of both panels)
+                int maxwidth = new JLabel("mean:", JLabel.TRAILING).getMinimumSize().width;
 
-            // Shows this distribution's parameters on param_panel
-            JLabel label;
-            JTextField textfield;
-            for (int i=0; i<current.getNumberOfParameters(); i++) {
-                // Creates the label
-                label = new JLabel(current.getParameter(i).getDescription() + ":", JLabel.TRAILING);
-                // Corrects maxwidth if needed
-                if (maxwidth < label.getMinimumSize().width)
-                    maxwidth = label.getMinimumSize().width;
-                param_panel.add(label, new SpringLayout.Constraints(Spring.constant(0), Spring.constant(0),
-                        Spring.constant(maxwidth), Spring.constant(label.getMinimumSize().height)));
-                // Creates the fextfield used to input values
-                textfield = new JTextField(5);
-                textfield.setMaximumSize(new Dimension(textfield.getMaximumSize().width,
-                                                    textfield.getMinimumSize().height));
-                label.setLabelFor(textfield);
-                textfield.setName(Integer.toString(i));
-                textfield.addFocusListener(parameterListener);
-                textfield.addKeyListener(parameterListener);
-                param_panel.add(textfield);
-            }
-            SpringUtilities.makeCompactGrid(param_panel,
-                                            current.getNumberOfParameters(), 2, //rows, cols
-                                            6, 6,                               //initX, initY
-                                            6, 6);                              //xPad, yPad
-
-            // Now shows mean and c (if applicable) on mean_c_panel
-            if (current.hasC() || current.hasMean()) {
-                int rows = 0;
-                mean_c_panel.setVisible(true);
-                // Builds mean section
-                if (current.hasMean()) {
-                    rows++;
-                    // Creates the label
-                    label = new JLabel("mean:", JLabel.TRAILING);
-                    mean_c_panel.add(label, new SpringLayout.Constraints(Spring.constant(0), Spring.constant(0),
-                        Spring.constant(maxwidth), Spring.constant(label.getMinimumSize().height)));
-                    // Creates the fextfield used to input mean values
+                // Shows this distribution's parameters on param_panel
+                JLabel label;
+                JTextField textfield;
+                scrolledPanel.add(param_panel);
+                for (int i=0; i<current.getNumberOfParameters(); i++) {
+                	// Creates the label
+                    label = new JLabel(current.getParameter(i).getDescription() + ":", JLabel.TRAILING);
+                    // Corrects maxwidth if needed
+                    if (maxwidth < label.getMinimumSize().width)
+                        maxwidth = label.getMinimumSize().width;
+                    param_panel.add(label, new SpringLayout.Constraints(Spring.constant(0), Spring.constant(0),
+                            Spring.constant(maxwidth), Spring.constant(label.getMinimumSize().height)));
+                    // Creates the fextfield used to input values
                     textfield = new JTextField(5);
                     textfield.setMaximumSize(new Dimension(textfield.getMaximumSize().width,
                                                         textfield.getMinimumSize().height));
                     label.setLabelFor(textfield);
-                    textfield.setName("mean");
-                    textfield.addFocusListener(cmListener);
-                    textfield.addKeyListener(cmListener);
-                    mean_c_panel.add(textfield);
+                    textfield.setName(Integer.toString(i));
+                    textfield.addFocusListener(parameterListener);
+                    textfield.addKeyListener(parameterListener);
+                    param_panel.add(textfield);
                 }
-
-                // Builds c section
-                if (current.hasC()) {
-                    rows++;
-                    // Creates the label
-                    label = new JLabel("c:", JLabel.TRAILING);
-                    mean_c_panel.add(label, new SpringLayout.Constraints(Spring.constant(0), Spring.constant(0),
-                        Spring.constant(maxwidth), Spring.constant(label.getMinimumSize().height)));
-                    // Creates the fextfield used to input mean values
-                    textfield = new JTextField(5);
-                    textfield.setMaximumSize(new Dimension(textfield.getMaximumSize().width,
-                                                        textfield.getMinimumSize().height));
-                    label.setLabelFor(textfield);
-                    textfield.setName("c");
-                    textfield.addFocusListener(cmListener);
-                    textfield.addKeyListener(cmListener);
-                    mean_c_panel.add(textfield);
-                }
-                SpringUtilities.makeCompactGrid(mean_c_panel,
-                                                rows, 2,                            //rows, cols
+                SpringUtilities.makeCompactGrid(param_panel,
+                                                current.getNumberOfParameters(), 2, //rows, cols
                                                 6, 6,                               //initX, initY
                                                 6, 6);                              //xPad, yPad
+
+                // Now shows mean and c (if applicable) on mean_c_panel
+                if (current.hasC() || current.hasMean()) {
+                	
+                	scrolledPanel.add(mean_c_panel);
+                	int rows = 0;
+                    mean_c_panel.setVisible(true);
+                    // Builds mean section
+                    if (current.hasMean()) {
+                        rows++;
+                        // Creates the label
+                        label = new JLabel("mean:", JLabel.TRAILING);
+                        mean_c_panel.add(label, new SpringLayout.Constraints(Spring.constant(0), Spring.constant(0),
+                            Spring.constant(maxwidth), Spring.constant(label.getMinimumSize().height)));
+                        // Creates the fextfield used to input mean values
+                        textfield = new JTextField(5);
+                        textfield.setMaximumSize(new Dimension(textfield.getMaximumSize().width,
+                                                            textfield.getMinimumSize().height));
+                        label.setLabelFor(textfield);
+                        textfield.setName("mean");
+                        textfield.addFocusListener(cmListener);
+                        textfield.addKeyListener(cmListener);
+                        mean_c_panel.add(textfield);
+                    }
+
+                    // Builds c section
+                    if (current.hasC()) {
+                        rows++;
+                        // Creates the label
+                        label = new JLabel("c:", JLabel.TRAILING);
+                        mean_c_panel.add(label, new SpringLayout.Constraints(Spring.constant(0), Spring.constant(0),
+                            Spring.constant(maxwidth), Spring.constant(label.getMinimumSize().height)));
+                        // Creates the fextfield used to input mean values
+                        textfield = new JTextField(5);
+                        textfield.setMaximumSize(new Dimension(textfield.getMaximumSize().width,
+                                                            textfield.getMinimumSize().height));
+                        label.setLabelFor(textfield);
+                        textfield.setName("c");
+                        textfield.addFocusListener(cmListener);
+                        textfield.addKeyListener(cmListener);
+                        mean_c_panel.add(textfield);
+                    }
+                    SpringUtilities.makeCompactGrid(mean_c_panel,
+                                                    rows, 2,                            //rows, cols
+                                                    6, 6,                               //initX, initY
+                                                    6, 6);                              //xPad, yPad
+                }
+                else{
+                    mean_c_panel.setVisible(false);
+                }
+            	
             }
-            else
-                mean_c_panel.setVisible(false);
-            // Sets text for values
+            
             refreshValues();
-            param_panel.getParent().repaint();
+            
+            
+            scrolledPanel.repaint();
+            
+            
         }
     }
 
     protected void refreshValues() {
-        // refresh all values into param_panel
-        Component[] components = param_panel.getComponents();
-        // Formatter to show only 12 decimal digits to avoid machine-epsilon problems
-        DecimalFormat df = new DecimalFormat("#.############");
-        df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
-        int num;
-        for (int i=0; i<components.length; i++) {
-            if (components[i] instanceof JTextField) {
-                num = Integer.parseInt(components[i].getName());
-                Object value = current.getParameter(num).getValue();
-                if (value instanceof Double) {
-                    double val = ((Double) value).doubleValue();
-                    ((JTextField)components[i]).setText(df.format(val));
-                }
-                else
-                    ((JTextField)components[i]).setText(value.toString());
-            }
-        }
-        // refresh all values into mean_c_panel
-        components = mean_c_panel.getComponents();
-        for (int i=0; i<components.length; i++) {
-            // Shows only first 10 decimal digits
-            if (components[i] instanceof JTextField && components[i].getName().equals("mean")) {
-                ((JTextField)components[i]).setText(df.format(current.getMean()));
-            } else if (components[i] instanceof JTextField && components[i].getName().equals("c")) {
-                ((JTextField)components[i]).setText(df.format(current.getC()));
-            }
-        }
-        param_panel.getParent().repaint();
+		
+		DecimalFormat df = new DecimalFormat("#.############");
+		df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
+
+		Vector components = new Vector();
+
+		if (intervalPanels != null) {
+			components.addAll(Arrays.asList(intervalPanels[0].getComponents()));
+			components.addAll(Arrays.asList(intervalPanels[1].getComponents()));
+		} else {
+			components.addAll(Arrays.asList(param_panel.getComponents()));
+		}
+
+		Iterator it = components.iterator();
+
+		while (it.hasNext()) {
+			Component comp = (Component) it.next();
+
+			if (comp instanceof JTextField) {
+				Object value = null;
+				if (comp.getName().equals(PROBABILITY_INTERVAL_B)) {
+					Double prob = (Double) current.getParameter(0).getValue();
+					value = new Double(1 - prob.doubleValue());
+				} else if (comp.getName().equals(PROBABILITY_INTERVAL_A)) {
+					value = current.getParameter(0).getValue();
+				} else {
+					int num = Integer.parseInt(comp.getName());
+					value = current.getParameter(num).getValue();
+				}
+				if(value != null){
+					if (value instanceof Double) {
+						double val = ((Double) value).doubleValue();
+						((JTextField) comp).setText(df.format(val));
+					} else
+						((JTextField) comp).setText(value.toString());
+				}
+			}
+		}
+
+		// refresh all values into mean_c_panel
+		Component[] componentArray = mean_c_panel.getComponents();
+		for (int i = 0; i < componentArray.length; i++) {
+			// Shows only first 10 decimal digits
+			if (componentArray[i] instanceof JTextField
+					&& componentArray[i].getName().equals("mean")) {
+				((JTextField) componentArray[i]).setText(df.format(current
+						.getMean()));
+			} else if (componentArray[i] instanceof JTextField
+					&& componentArray[i].getName().equals("c")) {
+				((JTextField) componentArray[i]).setText(df.format(current
+						.getC()));
+			}
+		}
+		
+		scrolledPanel.repaint();
+
+	}
+	
+    /**
+     * Class encapsulation methods to render an interval
+     * @author Peter Parapatics
+     * 			Date: 12-dec-2007
+     *
+     */
+    protected class IntervalRenderer{
+	    
+    	/**
+    	 * Renders the border and the position of the given panel and adds it to the scrolled panel
+    	 * @param name The name of the Interval
+    	 * @param panel The panel which will contain the interval
+    	 */
+    	protected void addInterval(String name, JPanel panel) {
+			GridBagLayout gridbag = new GridBagLayout();
+			
+			//Use gridbag layout
+			panel.setLayout(gridbag);
+	
+			//Set black border around the interval.
+			//The name of the interval is displayed on the border
+			panel.setBorder(BorderFactory.createTitledBorder(
+					BorderFactory.createMatteBorder(1, 1, 1, 1, Color.black), name,
+					TitledBorder.DEFAULT_JUSTIFICATION,
+					TitledBorder.DEFAULT_POSITION,
+					new Font("Dialog", Font.BOLD, 12), Color.black));
+	
+			
+			scrolledPanel.add(panel);
+		}
+    	
+    	/**
+    	 * Adds a distribution to the given panel
+    	 * @param name the name to be displayed on the label before the distribution
+    	 * @param key to which parameternumber in the Burst Distribution this nested distribution corresponds
+    	 * @param intervalPanel the panel to which the distribution should be added
+    	 */
+	    protected void addDistribution(String name, int key, JPanel intervalPanel) {
+			JLabel distributionNameLabel = new JLabel(name);
+	
+			//Add the name of the distribution on a single line
+			GridBagConstraints c = new GridBagConstraints();
+			c.insets = new Insets(10, 0, 0, 0); // top padding
+			c.gridwidth = GridBagConstraints.REMAINDER; // end row after this entry
+			c.fill = GridBagConstraints.HORIZONTAL;
+			//how to fill space when enlarging window vertically
+			c.weightx = 1.0;
+			c.weighty = 0.0;
+			//Add the distribution
+			intervalPanel.add(distributionNameLabel, c);
+	
+			//Add the edit button
+			JButton but = new JButton("Edit");
+			but.setAction(new EditButtonAction(key));
+			c.insets = new Insets(0, 0, 0, 0); //No space between Name of distribution and Edit button
+//			don't finish row because also the label for the distribution has to be added
+			c.gridwidth = GridBagConstraints.RELATIVE; 
+			c.fill = GridBagConstraints.HORIZONTAL; // reset to default
+			c.weightx = 0.0; // reset to default
+			c.weighty = 0.0;
+			//Add the button
+			intervalPanel.add(but, c);
+	
+			JTextField distributionValueTextField = new JTextField();
+			//The name of the field is the parameternumber
+			distributionValueTextField.setName(""+key);
+			//If the distribution != null display
+			if(current.getParameter(key).getValue() != null){
+				distributionValueTextField.setText(current.getParameter(key).getValue().toString());
+			}
+			//The value is not editable directly
+			distributionValueTextField.setEditable(false);
+			c.gridwidth = GridBagConstraints.REMAINDER; // end row
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.weightx = 1.0;
+			c.weighty = 1.0;
+			intervalPanel.add(distributionValueTextField, c);
+	
+		}
+	    
+	    /**
+	     * Add a probability to an interval Panel
+	     * If the probability is for interval B the value is displayed as 1-probability
+	     * @param intervalPanel the intervalPanel
+	     * @param intervalA if the probability is for interval A or B
+	     */
+	    protected void addProbability(Container intervalPanel, boolean intervalA) {
+			
+	    	JLabel probLabel = new JLabel(PROBABILITY);
+			JTextField probValue = new JTextField();
+			Double probability = (Double) current.getParameter(0).getValue();
+			
+			//If the interval is interval A display value directly
+			//Otherwise display 1-probability
+			if(intervalA){
+				probValue.setName(PROBABILITY_INTERVAL_A);
+			} else{
+				probability = new Double(1-probability.doubleValue());
+				probValue.setName(PROBABILITY_INTERVAL_B);
+			}
+			probValue.setText(probability.toString());
+			probLabel.setLabelFor(probValue);
+	
+			probValue.addFocusListener(new ProbabilityAdapter());
+			probValue.addKeyListener(new ProbabilityAdapter());
+			
+			GridBagConstraints c = new GridBagConstraints();
+			c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last
+			c.fill = GridBagConstraints.NONE; // reset to default
+			c.weightx = 0.0; // reset to default
+			c.weighty = 1.0;
+			intervalPanel.add(probLabel, c);
+	
+			c.gridwidth = GridBagConstraints.REMAINDER; // end row
+			c.fill = GridBagConstraints.HORIZONTAL;
+			c.weightx = 1.0;
+			c.weighty = 1.0;
+			intervalPanel.add(probValue, c);
+	
+		}
     }
+	
+	
+    
+    
 // -------------------------------------------------------------------------------------------------
 }

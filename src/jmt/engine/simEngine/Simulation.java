@@ -55,6 +55,8 @@ public class Simulation {
     private JobClass[] classes = null;
     //service centers of the system
     private Vector nodes = new Vector();
+	//Burst distributions to register to the event handler
+	private Vector distrNetNodes = new Vector();
     //connections
     private Vector connections = new Vector();
     //measures requested by the simulation
@@ -371,6 +373,11 @@ public class Simulation {
                 else
                     network.addNode(simNode.getNode());
             }
+            
+            //add distribution net nodes to QueueNetwork
+            for(int i = 0; i < distrNetNodes.size(); i++) {
+				network.addNode((NetNode) distrNetNodes.get(i));
+			}
 
             //add all nodes sections
             for (int i = 0; i < nodes.size(); i++) {
@@ -900,6 +907,10 @@ public class Simulation {
 
 
     //end NEW
+    
+    public void addDistrNetNode(NetNode netNode) {
+		distrNetNodes.add(netNode);
+	}
 
 
 
@@ -1075,4 +1086,5 @@ public class Simulation {
     }
 
 }
+
 

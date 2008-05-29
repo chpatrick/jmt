@@ -33,7 +33,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-public class ErlangPar extends Parameter {
+public class ErlangPar extends AbstractParameter implements Parameter {
 
 
 	private double alpha;

@@ -33,19 +33,17 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-public abstract class Parameter implements AutoCheck {
+public interface Parameter extends AutoCheck {
 
 	/**
 	 * check method definition.
 	 * It provide a method for the user to verify if the parameter that he is using
 	 * is correct.
 	 *
-	 * @return boolean indicating wether or not the parameter is right.
+	 * @return boolean indicating whether or not the parameter is right.
 	 *
 	 */
-	public boolean check() {
-		return true;
-	}
+	public boolean check();
 
     /**
      * Sets mean for a given distribution parameter. This method is required to adjust distributions
@@ -54,7 +52,5 @@ public abstract class Parameter implements AutoCheck {
      * @param meanValue new mean value for this distribution
      * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
      */
-    public void setMean(double meanValue) throws IncorrectDistributionParameterException{
-        throw new IncorrectDistributionParameterException("Cannot set mean value for this distribution");
-    }
+    public void setMean(double meanValue) throws IncorrectDistributionParameterException;
 } // end Parameter

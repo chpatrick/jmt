@@ -33,7 +33,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-public class ParetoPar extends Parameter {
+public class ParetoPar extends AbstractParameter implements Parameter {
 
 	private double alpha;
 	private double k;

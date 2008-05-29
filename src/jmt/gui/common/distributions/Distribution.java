@@ -38,6 +38,7 @@ import java.util.Vector;
 public abstract class Distribution implements ServiceStrategy {
     protected static Distribution[] all = null; // Used to store all distributions
     protected static Distribution[] allWithMean = null; // Used to store all distributions with Mean value adjustable
+    protected static Distribution[] nestableDistributions = null; // Used to store nestable distributions
     protected String classpath;
     protected String name;
     protected String parameterClasspath;
@@ -47,6 +48,7 @@ public abstract class Distribution implements ServiceStrategy {
     protected ValueChecker checker;
     protected boolean hasMean, hasC; // Used to provide input parameters with the tuple (mean, C)
     protected double c, mean;
+	protected boolean isNestable;
 
     /**
      * Constructs a new Distribution object. Initialize all internal objects calling abstract
@@ -226,6 +228,14 @@ public abstract class Distribution implements ServiceStrategy {
     protected void setValueChecker(ValueChecker checker) {
         this.checker = checker;
     }
+    
+    /**
+     * returns whether a distribution can be used as nested distribution inside another distribution
+     * @return true if it can be nested. false otherwise
+     */
+    public boolean isNestable(){
+    	return isNestable;
+    }
 
     /**
      * Helper method used to formats given number into string according to default rules.
@@ -306,6 +316,27 @@ public abstract class Distribution implements ServiceStrategy {
             allWithMean[i] = tmp[i];
         return allWithMean;
     }
+    
+    /**
+     * Return an array with an istance of every nestable Distribution. Uses internal
+     * caching to search for distributions only the first time that this method is called.
+     * @return an array with an istance of every nestable Distribution
+     */
+    public static Distribution[] findNestableDistributions() {
+        if (nestableDistributions != null)
+            return nestableDistributions;
+        Distribution[] all = findAll();
+        Distribution[] tmp = new Distribution[all.length];
+        int n = 0;
+        for (int i=0;i<all.length; i++)
+            if (all[i].isNestable())
+                tmp[n++] = all[i];
+        // Now removes empty elements into tmp array
+        nestableDistributions = new Distribution[n];
+        for (int i=0; i<n;i++)
+        	nestableDistributions[i] = tmp[i];
+        return nestableDistributions;
+    }
 
     /**
      * Tells if this distribution is equivalent to an other one
@@ -382,7 +413,8 @@ public abstract class Distribution implements ServiceStrategy {
         protected String name;
         protected String description;
         protected ValueChecker checker;
-
+        protected boolean directParameter;
+        
         /**
          * Construct a new Parameter object. If a custom check on input values is needed, a call
          * to <code>setValueChecker(ValueChecker checker)</code> method must be performed.
@@ -394,18 +426,37 @@ public abstract class Distribution implements ServiceStrategy {
          */
         public Parameter(String name, String description, Class valueClass,
                          Object defaultValue) {
-            this.name = name;
-            this.description = description;
-            this.valueClass = valueClass;
-            this.value = defaultValue;
-            checker = null;
+            this(name,description,valueClass,defaultValue,false);
         }
+        
+        /**
+         * 
+         * Construct a new Parameter object. If a custom check on input values is needed, a call
+         * to <code>setValueChecker(ValueChecker checker)</code> method must be performed.
+         * @param name name of this parameter
+         * @param description brief description of this parameter usage
+         * @param valueClass Class type of value of this parameter
+         * @param defaultValue initial value for this parameter
+         * @param directParameter indicates if this parameter will be added to the distribution of the parameter object when translating it to XML
+         * <code>getParameterClasspath()</code> for more details.
+         */
+        public Parameter(String name, String description, Class valueClass,
+				Object defaultValue, boolean directParameter) {
+			this.name = name;
+			this.description = description;
+			this.valueClass = valueClass;
+			this.value = defaultValue;
+			checker = null;
+			this.directParameter = directParameter;
+		}
 
         /**
-         * Sets a ValueChecker to check if a parameter's value is in the correct range.
-         * If no checks are required don't call this method
-         * @param checker Instance of ValueChecker Interface
-         */
+		 * Sets a ValueChecker to check if a parameter's value is in the correct
+		 * range. If no checks are required don't call this method
+		 * 
+		 * @param checker
+		 *            Instance of ValueChecker Interface
+		 */
         public void setValueChecker(ValueChecker checker) {
             this.checker = checker;
         }
@@ -497,6 +548,14 @@ public abstract class Distribution implements ServiceStrategy {
         public String getName() {
             return name;
         }
+        
+        /**
+         * Returns if this parameter has to be added directly to the distribution when translating it into XML
+         * @return true if the parameter has to be added to the distribution. false otherwise
+         */
+        public boolean isDirectParameter() {
+			return directParameter;
+		}
 
         /**
          * Returns a shallow copy of this Parameter. Note that as nothing can be infered about
@@ -506,7 +565,7 @@ public abstract class Distribution implements ServiceStrategy {
          */
         public Object clone() {
             Parameter tmp = new Parameter(this.name, this.description,
-                    this.valueClass, this.value);
+                    this.valueClass, this.value, this.directParameter);
             tmp.setValueChecker(this.checker);
             return tmp;
         }

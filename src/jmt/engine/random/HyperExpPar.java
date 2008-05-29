@@ -34,7 +34,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  */
 
 
-public class HyperExpPar extends Parameter {
+public class HyperExpPar extends AbstractParameter implements Parameter {
 
 
 	private double mean;

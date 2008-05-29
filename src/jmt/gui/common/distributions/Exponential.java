@@ -40,6 +40,7 @@ public class Exponential extends Distribution {
                 "jmt.engine.random.ExponentialPar",
                 "Exponential distribution");
         hasMean = true;
+        isNestable = true;
     }
 
     /**

@@ -40,6 +40,7 @@ public class Constant extends Distribution{
                 "jmt.engine.random.ConstantDistrPar",
                 "Constant distribution");
         hasMean = true;
+        isNestable = true;
     }
 
     /**

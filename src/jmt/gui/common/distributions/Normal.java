@@ -41,6 +41,7 @@ public class Normal extends Distribution {
                 "Normal distribution");
         hasMean = true;
         hasC = true;
+        isNestable = true;
     }
 
     /**

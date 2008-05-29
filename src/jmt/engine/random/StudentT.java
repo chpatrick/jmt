@@ -21,7 +21,6 @@ package jmt.engine.random;
 import jmt.common.exception.IncorrectDistributionParameterException;
 import jmt.engine.math.Probability;
 import jmt.engine.math.Sfun;
-import jmt.engine.random.engine.RandomEngine;
 
 
 /**
@@ -36,7 +35,7 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Modified by Bertoli Marco, 8/9/2005
  */
 
-public class StudentT extends Distribution {
+public class StudentT extends AbstractDistribution implements Distribution {
 
 
 	/**
@@ -50,7 +49,6 @@ public class StudentT extends Distribution {
 	 */
 
 	public StudentT() {
-		engine = RandomEngine.makeDefault();
 	}
 
 

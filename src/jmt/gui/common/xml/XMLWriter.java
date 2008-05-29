@@ -41,6 +41,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -80,6 +81,8 @@ public class XMLWriter implements CommonConstants, XMLConstantNames{
     public static final String queueputStrategiesSuffix = "QueuePutStrategies.";
     public static final String routingStrategiesSuffix = "RoutingStrategies.";
     public static final String serviceStrategiesSuffix = "ServiceStrategies.";
+    public static final String distributionContainerClasspath = "jmt.engine.random.DistributionContainer";
+    
 
     public static void writeXML(String fileName, CommonModel model){
         writeToResult(new StreamResult(new File(fileName)), model, fileName);
@@ -753,7 +756,8 @@ public class XMLWriter implements CommonConstants, XMLConstantNames{
         public String parameterValue;
         public String parameterArray;
         public XMLParameter[] parameters;
-
+        
+        
         public XMLParameter(String name,
                             String classpath,
                             String refClass,
@@ -771,7 +775,10 @@ public class XMLWriter implements CommonConstants, XMLConstantNames{
             this(name, classpath, refClass, null, parameters, isSubParameter);
             parameterArray = "true";
         }
-
+        
+       
+        
+        
         private XMLParameter(String name,
                              String classpath,
                              String refClass,
@@ -806,6 +813,8 @@ public class XMLWriter implements CommonConstants, XMLConstantNames{
             if(parameterArray!=null && "true".equals(parameterArray)){
                 parameter.setAttribute(XML_A_PARAMETER_ARRAY, parameterArray);
             }
+            
+           
             //adding element refclass for this parameter
             if(parameterRefClass!=null){
                 Element refclass = doc.createElement(XML_E_PARAMETER_REFCLASS);
@@ -867,39 +876,100 @@ public class XMLWriter implements CommonConstants, XMLConstantNames{
          * Returns a Distribution in XMLParameter format without refclass. This is used to write
          * load dependent service section distributions
          * @param distr distribution to be written
-         * @return the two object to rapresent a distribution: distribution and its parameter object
+         * @return the two object to represent a distribution: distribution and its parameter object
          * Author: Bertoli Marco
          */
         static XMLParameter[] getDistributionParameter(Distribution distr) {
-            XMLParameter[] distrXMLPars = new XMLParameter[distr.getNumberOfParameters()];
+        	
+        	// a list of direct parameter -> parameter which must be passed directly to the distribution object
+        	List directParams = new Vector();
+        	// a list of parameters which are passed to the distribution parameter
+            List nonDirectParams = new Vector();
+        	
             Distribution.Parameter distrPar;
-            Object valueObj;
-            for(int i=0; i<distrXMLPars.length; i++){
+            //Object valueObj;
+            
+            //parse over all parameters and add them to the apropriate list
+            for(int i=0; i<distr.getNumberOfParameters(); i++){
                 distrPar = distr.getParameter(i);
-                valueObj = distrPar.getValue();
-                if(valueObj != null){
-                    String value = valueObj.toString();
-                    distrXMLPars[i] = new XMLParameter(
-                            distrPar.getName(), distrPar.getValueClass().getName(),
-                            null, value, true
-                    );
+                if(distrPar.isDirectParameter()){
+                	directParams.add(getParameter(distrPar));
+                }else{
+                	nonDirectParams.add(getParameter(distrPar));
                 }
             }
+            
+            //get an array of the direct parameters
+            XMLParameter[] directPars = new XMLParameter[directParams.size()];
+            for(int i= 0; i<directPars.length; i++){
+            	directPars[i] = (XMLParameter) directParams.get(i);
+            }
+            
+            //get an array of the non direct parameters
+            XMLParameter[] nonDirectPars = new XMLParameter[nonDirectParams.size()];
+            for(int i= 0; i<nonDirectPars.length; i++){
+            	nonDirectPars[i] = (XMLParameter) nonDirectParams.get(i);
+            }
+            
+            //create the distribution parameter with the direct parameters
             XMLParameter[] ret = new XMLParameter[2];
             ret[0] = new XMLParameter(distr.getName(),
-                    distr.getClassPath(), (String)null, (String)null, true
+                    distr.getClassPath(), (String)null, directPars, true
             );
+            //create the distribution parameter with the non direct parameters
             ret[1] = new XMLParameter("distrPar",
-                    distr.getParameterClassPath(), null, distrXMLPars, true
+                    distr.getParameterClassPath(), null, nonDirectPars, true
             );
+            ret[0].parameterArray = "false";
             ret[1].parameterArray = "false";
             return ret;
         }
+        
+        /**
+         * Helper method to extract an XMLParameter from a Distribution parameter
+         * @param distrPar the distribution parameter
+         * @return the created XML Parameter
+         */
+        static XMLParameter getParameter(Distribution.Parameter distrPar) {
+			Object valueObj = distrPar.getValue();
+
+			if (valueObj != null) {
+
+				if (distrPar.getValue() instanceof Distribution) {
+
+					XMLParameter[] distribution = getDistributionParameter((Distribution) valueObj);
+					XMLParameter returnValue = new XMLParameter(distrPar
+							.getName(), distributionContainerClasspath, null,
+							new XMLParameter[] { distribution[0],
+									distribution[1] }, true);
+					/*
+					 * although this parameter contains several others, array
+					 * attribute must be set to "false", as their type are not
+					 * neccessarily equal
+					 */
+					returnValue.parameterArray = "false";
+					return returnValue;
+				} else {
+					String value = valueObj.toString();
+					return new XMLParameter(distrPar.getName(), distrPar
+							.getValueClass().getName(), null, value, true);
+				}
+
+			}
+
+			return null;
     }
+        
+    
+    
+    
+  }
 
 
-    /**This class creates an xml parameter node given a jmt.gui.common.RoutingStrategy
-     * object.*/
+    /**
+	 * This class creates an xml parameter node given a
+	 * jmt.gui.common.RoutingStrategy object.
+	 */
     protected static class RoutingStrategyWriter{
 
         static XMLParameter getRoutingStrategyParameter(RoutingStrategy routingStrat,
@@ -980,4 +1050,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames{
             }
         }*/
     }
+
+
+
 }

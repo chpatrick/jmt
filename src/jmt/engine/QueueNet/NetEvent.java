@@ -50,6 +50,9 @@ public class NetEvent {
     /** Event ID: join ack.*/
 	public static final int EVENT_JOB_OUT_OF_REGION = 0x0040;
 
+	/** Event ID: Distribution change event.*/
+	public static final int EVENT_DISTRIBUTION_CHANGE = 0x0080; 
+
 
 
 }

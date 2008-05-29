@@ -20,7 +20,6 @@ package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
 import jmt.engine.math.Probability;
-import jmt.engine.random.engine.RandomEngine;
 
 
 /**
@@ -35,7 +34,7 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Modified by Bertoli Marco, 8/9/2005
  */
 
-public class Normal extends Distribution {
+public class Normal extends AbstractDistribution implements Distribution {
 
 	protected double cache;        // cache for Box-Mueller algorithm
 	protected boolean cacheFilled; // Box-Mueller
@@ -52,7 +51,6 @@ public class Normal extends Distribution {
 	 */
 
 	public Normal() {
-		engine = RandomEngine.makeDefault();
 	}
 
 	/**

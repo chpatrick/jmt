@@ -50,6 +50,8 @@ public class Replayer extends Distribution{
                     return false;
             }
         });
+        
+        isNestable = true;
     }
 
     /**

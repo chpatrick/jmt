@@ -40,6 +40,7 @@ public class Poisson  extends Distribution{
                 "jmt.engine.random.PoissonPar",
                 "Poisson distribution");
         hasMean = true;
+        isNestable = true;
     }
 
     /**

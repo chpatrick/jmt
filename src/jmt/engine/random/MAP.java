@@ -7,7 +7,6 @@
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-import jmt.engine.random.engine.RandomEngine;
 
 /**
  * @author casale
@@ -15,13 +14,13 @@ import jmt.engine.random.engine.RandomEngine;
  * TODO To change the template for this generated type comment go to
  * Window - Preferences - Java - Code Style - Code Templates
  */
-public class MAP extends Distribution {
+public class MAP extends AbstractDistribution implements Distribution {
+	
 	private int curState;
 	protected Exponential expDistr;
 
-	public MAP(){
+	public MAP() {
 		curState=0;
-		engine = RandomEngine.makeDefault();
 		expDistr = new Exponential();
 	}
 

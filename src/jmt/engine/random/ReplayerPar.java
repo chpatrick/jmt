@@ -35,7 +35,7 @@ import java.io.IOException;
  * Time: 9.40.51
 
  */
-public class ReplayerPar extends Parameter {
+public class ReplayerPar extends AbstractParameter implements Parameter {
 	private String fileName;
 	private FileReader fr;
 	private BufferedReader in;

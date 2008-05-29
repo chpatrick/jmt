@@ -19,7 +19,6 @@
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-import jmt.engine.random.engine.RandomEngine;
 
 
 /**
@@ -33,17 +32,7 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Modified by Stefano Omini, 7/5/2004
  */
 
-public class ConstantDistr extends Distribution {
-
-	/**
-	 * This is the constructor. It creates a new constant distribution which returns
-	 * always the same value.
-	 *
-	 */
-
-	public ConstantDistr() {
-		engine = RandomEngine.makeDefault();
-	}
+public class ConstantDistr extends AbstractDistribution implements Distribution {
 
 	/**
 	 * Returns the pdf of the distribution.

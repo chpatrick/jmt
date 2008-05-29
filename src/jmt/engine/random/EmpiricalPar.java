@@ -32,7 +32,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-public class EmpiricalPar extends Parameter {
+public class EmpiricalPar extends AbstractParameter implements Parameter {
 
 	/** cumulative distribution function*/
     protected double[] cdf;

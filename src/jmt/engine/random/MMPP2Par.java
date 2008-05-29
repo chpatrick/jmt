@@ -33,7 +33,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
 */
 
 
-public class MMPP2Par extends Parameter {
+public class MMPP2Par extends AbstractParameter implements Parameter {
 
 	private double mean;
 	private double var;

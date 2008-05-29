@@ -39,6 +39,7 @@ public class StudentT extends Distribution {
                 "jmt.engine.random.StudentT",
                 "jmt.engine.random.StudentTPar",
                 "Student's t-distribution");
+        isNestable = true;
     }
 
     /**

@@ -41,6 +41,7 @@ public class Pareto extends Distribution{
                 "Pareto distribution");
         hasMean = true;
         hasC = true;
+        isNestable = true;
     }
 
     /**
