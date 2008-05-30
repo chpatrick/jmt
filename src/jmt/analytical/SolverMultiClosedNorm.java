@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * SolverMultiClosedNorm.java
  *
@@ -67,14 +67,17 @@ public class SolverMultiClosedNorm extends SolverMulti {
 		System.arraycopy(population, 0, population, 0, population.length);
 		popMult = new int[classes];
 		popMult[0] = 1;
-		for (int i = 1; i < popMult.length; i++)
+		for (int i = 1; i < popMult.length; i++) {
 			popMult[i] = popMult[i - 1] * (population[i - 1] + 1);
+		}
 
-		for (int i = 0; i < classes; i++)
+		for (int i = 0; i < classes; i++) {
 			maxPop += population[i] + 1;
+		}
 		for (int i = 0; i < stations; i++) {
-			for (int j = 0; j < classes; j++)
+			for (int j = 0; j < classes; j++) {
 				servTime[i][j] = new double[maxPop];
+			}
 		}
 		G = new double[popMult[classes - 1] * (population[classes - 1] + 1)];
 		auxFun = new double[G.length];
@@ -83,37 +86,34 @@ public class SolverMultiClosedNorm extends SolverMulti {
 
 	}
 
-
-    //NEW
-    //@author Stefano Omini
-
-    /**
-     * A system is said to have sufficient capacity to process a given load
-     * <tt>lambda</tt> if no service center is saturated as a result of the combined loads
-     * of all the classes.
-     * <br>
-     * Must be implemented to create a multi class model solver.
-     * <br>
-     * WARNING: This method should be called before solving the system.
-     * @return true if sufficient capacity exists for the given workload, false otherwise
-     *
-     *
-     */
-	public boolean hasSufficientProcessingCapacity() {
-        //only closed class: no saturation
-        return true;
-    }
-
-    //end NEW
-
-
+	//NEW
+	//@author Stefano Omini
 
 	/**
-     *  Solves the system throught the normalization constant algorithm.
-     */
+	 * A system is said to have sufficient capacity to process a given load
+	 * <tt>lambda</tt> if no service center is saturated as a result of the combined loads
+	 * of all the classes.
+	 * <br>
+	 * Must be implemented to create a multi class model solver.
+	 * <br>
+	 * WARNING: This method should be called before solving the system.
+	 * @return true if sufficient capacity exists for the given workload, false otherwise
+	 *
+	 *
+	 */
+	public boolean hasSufficientProcessingCapacity() {
+		//only closed class: no saturation
+		return true;
+	}
+
+	//end NEW
+
+	/**
+	 *  Solves the system throught the normalization constant algorithm.
+	 */
 	public void solve() {
 		long start; // initial time.
-		long end;   // termination time.
+		long end; // termination time.
 		double sum = 0;
 		double quad = 0;
 		double Y = 0;
@@ -130,18 +130,20 @@ public class SolverMultiClosedNorm extends SolverMulti {
 		quad = 0;
 		for (int i = 0; i < stations; i++) {
 			for (int j = 0; j < classes; j++) {
-				if (type[i] == Solver.LI)
+				if (type[i] == Solver.LI) {
 					Y = visits[i][j] * servTime[i][j][0];
-				else // load dependent
+				} else {
 					Y = visits[i][j] * servTime[i][j][1];
+				}
 				sum += Y;
 				quad += Y * Y;
 			}
 		}
 		scalCons = sum / quad;
 		for (int i = 0; i < stations; i++) {
-			for (int j = 0; j < classes; j++)
+			for (int j = 0; j < classes; j++) {
 				visits[i][j] = visits[i][j] * scalCons;
+			}
 		}
 
 		// calculation for the first station
@@ -163,9 +165,10 @@ public class SolverMultiClosedNorm extends SolverMulti {
 				} while ((count < classes) && !flag);
 				sum = 0;
 				for (int j = 0; j < classes; j++) {
-					if (status[j] - 1 >= 0)
+					if (status[j] - 1 >= 0) {
 						sum += visits[0][j] * servTime[0][j][0] * G[i - popMult[j]];
-					//printStatus();//debug command
+						//printStatus();//debug command
+					}
 				}
 				G[i] = sum;
 				//pw.println("G : " + G[i] + " at " + i);//debug command
@@ -203,8 +206,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 			}
 			//pw.println("G : " + G[G.length -1] + " at " + name[0]);
 		}
-		if (stations == 2)
+		if (stations == 2) {
 			System.arraycopy(G, 0, auxFun, 0, G.length);
+		}
 
 		/* all others service center */
 		for (int m = 1; m < stations; m++) {
@@ -223,8 +227,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 					} while ((count < classes) && !flag);
 					sum = 0;
 					for (int j = 0; j < classes; j++) {
-						if (status[j] - 1 >= 0)
+						if (status[j] - 1 >= 0) {
 							sum += visits[m][j] * servTime[m][j][0] * G[i - popMult[j]];
+						}
 					}
 					G[i] = G[i] + sum;
 					//pw.println("G : " + G[i] + " at " + i);
@@ -251,8 +256,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 					} while ((count < classes) && !flag);
 					sum = 0;
 					for (int j = 0; j < classes; j++) {
-						if (status[j] - 1 >= 0)
+						if (status[j] - 1 >= 0) {
 							sum += visits[m][j] * servTime[m][j][totPop] * FM[i - popMult[j]];
+						}
 					}
 					FM[i] = sum;
 					//pw.println("FM : " + FM[i] + " at " + i);
@@ -275,8 +281,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 
 					int[] newStatus = new int[status.length];
 					newStatus[0] = -1;
-					for (int c = 1; c < status.length; c++)
+					for (int c = 1; c < status.length; c++) {
 						newStatus[c] = 0;
+					}
 
 					for (int j = 0; j <= i; j++) {
 						count = 0;
@@ -289,8 +296,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 								flag = false;
 							}
 						} while ((count < classes) && !flag);
-						if (validStatus(newStatus))
+						if (validStatus(newStatus)) {
 							sum += FM[j] * G[i - j];
+						}
 					}
 					G[i] = sum;
 					//pw.println("G : " + G[i] + " at " + i);
@@ -299,8 +307,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 				//pw.println("G : " + G[G.length -1] + " at " + name[m]);
 			}
 
-			if (m == stations - 2)
+			if (m == stations - 2) {
 				System.arraycopy(G, 0, auxFun, 0, G.length);
+			}
 		}
 		pw.println("end solving");
 		end = System.currentTimeMillis();
@@ -311,7 +320,7 @@ public class SolverMultiClosedNorm extends SolverMulti {
 	 */
 	public void indexes() {
 		long start; // initial time.
-		long end;   // termination time.
+		long end; // termination time.
 		int count;
 		boolean flag;
 		double[] FM = new double[G.length];
@@ -384,8 +393,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 					} while ((count < classes) && !flag);
 					sum = 0;
 					for (int cls = 0; cls < classes; cls++) {
-						if (status[cls] - 1 >= 0)
+						if (status[cls] - 1 >= 0) {
 							sum += visits[stations - 1][cls] * servTime[stations - 1][cls][totPop] * FM[i - popMult[cls]];
+						}
 					}
 					FM[i] = sum;
 					//pw.println("FM : " + FM[i] + " at " + i);
@@ -478,8 +488,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 						} while ((count < classes) && !flag);
 						sum = 0;
 						for (int cls = 0; cls < classes; cls++) {
-							if (status[cls] - 1 >= 0)
+							if (status[cls] - 1 >= 0) {
 								sum += visits[i][cls] * servTime[i][cls][totPop] * FM[n - popMult[cls]];
+							}
 						}
 						FM[n] = sum;
 						//pw.println("FM : " + FM[n] + " at " + n);
@@ -519,22 +530,22 @@ public class SolverMultiClosedNorm extends SolverMulti {
 			sysThroughput += clsThroughput[j];
 		}
 		for (int i = 0; i < stations; i++) {
-            scQueueLen[i]=0;
+			scQueueLen[i] = 0;
 			for (int j = 0; j < classes; j++) {
 				scQueueLen[i] += queueLen[i][j];
 				scResidTime[i] += residenceTime[i][j] * clsThroughput[j];
 			}
 			scResidTime[i] /= sysThroughput;
 		}
-		for (int j = 0; j < classes; j++)
+		for (int j = 0; j < classes; j++) {
 			sysResponseTime += population[j] / sysThroughput;
+		}
 		/* Generate output */
 		pw.println("End of parameters calculation.");
 		end = System.currentTimeMillis();
 		pw.println("Time elapsed in milliseconds : " + (end - start));
 		return;
 	}
-
 
 	/** Calculates the auxiliary function needful to calculate marginal
 	 * probabilities
@@ -565,8 +576,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 			} while ((count < classes) && !flag);
 			sum = 0;
 			for (int j = 0; j < classes; j++) {
-				if (status[j] - 1 >= 0)
+				if (status[j] - 1 >= 0) {
 					sum += visits[center][j] * servTime[center][j][totPop] * FM[i - popMult[j]];
+				}
 			}
 			FM[i] = sum;
 			//pw.println("FM : " + FM[i] + " at " + i);
@@ -591,8 +603,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 
 			int[] newStatus = new int[status.length];
 			newStatus[0] = -1;
-			for (int c = 1; c < status.length; c++)
+			for (int c = 1; c < status.length; c++) {
 				newStatus[c] = 0;
+			}
 
 			for (int j = 0; j <= i; j++) {
 				count = 0;
@@ -605,8 +618,9 @@ public class SolverMultiClosedNorm extends SolverMulti {
 						flag = false;
 					}
 				} while ((count < classes) && !flag);
-				if (validStatus(newStatus))
+				if (validStatus(newStatus)) {
 					sum += FM[j] * auxFun[i - j];
+				}
 			}
 			auxFun[i] = G[i] - sum;
 			//pw.println("Auxil Function : " + auxFun[i] + " at " + i);
@@ -649,11 +663,11 @@ public class SolverMultiClosedNorm extends SolverMulti {
 	/*returns true if the status is valid(p.e. population < 0)*/
 	private final boolean validStatus(int[] ns) {
 		for (int i = 0; i < status.length; i++) {
-			if (status[i] - ns[i] < 0)
+			if (status[i] - ns[i] < 0) {
 				return false;
+			}
 		}
 		return true;
 	}
-
 
 }

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.analytical;
 
 /**
@@ -33,18 +33,17 @@ package jmt.analytical;
  */
 public class SolverSingleOpen extends Solver {
 
+	/**
+	 * arrival rate
+	 */
+	protected double lambda;
 
-    /**
-     * arrival rate
-     */
-    protected double lambda;
-
-    /**
-     * Constructor
-     * @param lambda the arrival rate
-     * @param stations the number of stations
-     *
-     */
+	/**
+	 * Constructor
+	 * @param lambda the arrival rate
+	 * @param stations the number of stations
+	 *
+	 */
 
 	public SolverSingleOpen(double lambda, int stations) {
 		this.lambda = lambda;
@@ -52,8 +51,8 @@ public class SolverSingleOpen extends Solver {
 
 		name = new String[stations];
 		type = new int[stations];
-        //the matrix turns into an array, because for SolverSingleOpen LD centers are not allowed
-        servTime = new double[stations][1];
+		//the matrix turns into an array, because for SolverSingleOpen LD centers are not allowed
+		servTime = new double[stations][1];
 		visits = new double[stations];
 
 		throughput = new double[stations];
@@ -64,101 +63,97 @@ public class SolverSingleOpen extends Solver {
 
 	//TODO: bisognerebbe far ritornare un boolean, per coprire il caso di soluzione non possibile (LD)
 
-    //NEW
-    //the old method "solve" has been renamed "solveLI", since LD stations weren't
-    //allowed
-    //a new method "solve" has been introduced to check that no LD stations are contained
-    //in the system.
-    //
-    //@author Stefano Omini
+	//NEW
+	//the old method "solve" has been renamed "solveLI", since LD stations weren't
+	//allowed
+	//a new method "solve" has been introduced to check that no LD stations are contained
+	//in the system.
+	//
+	//@author Stefano Omini
 
-    /**
+	/**
 	 * Solves the system, after checking that the system contains no LD station
-     * (only LI and DELAY stations are allowed).
-     <br>* "input(...)" method must have been called before solving the model!!
+	 * (only LI and DELAY stations are allowed).
+	 <br>* "input(...)" method must have been called before solving the model!!
 	 */
 	public void solve() {
 
-        for (int i = 0; i < stations; i++) {
+		for (int i = 0; i < stations; i++) {
 			//checks if LD stations are present in the system
-            if (type[i] == Solver.LD) {
-                return;
-            }
+			if (type[i] == Solver.LD) {
+				return;
+			}
 		}
 		//no LD stations present: solve the system
-        solveLI();
-        return;
+		solveLI();
+		return;
 	}
 
+	/**
+	 * Solves the system with only LI and DELAY stations.
+	 */
+	public void solveLI() {
+		//initialize system aggregate measures
+		totRespTime = totUser = 0;
 
-    /**
-     * Solves the system with only LI and DELAY stations.
-     */
-    public void solveLI() {
-        //initialize system aggregate measures
-        totRespTime = totUser = 0;
+		for (int i = 0; i < throughput.length; i++) {
+			//station utilization
+			utilization[i] = lambda * visits[i] * servTime[i][0];
 
-        for (int i = 0; i < throughput.length; i++) {
-            //station utilization
-            utilization[i] = lambda * visits[i] * servTime[i][0];
+			//station residence time
+			if (type[i] == Solver.DELAY) {
+				residenceTime[i] = visits[i] * servTime[i][0];
+			} else {
+				residenceTime[i] = visits[i] * servTime[i][0] / (1 - utilization[i]);
+			}
 
-            //station residence time
-            if (type[i] == Solver.DELAY)
-                residenceTime[i] = visits[i] * servTime[i][0];
-            else {
-                residenceTime[i] = visits[i] * servTime[i][0] / (1 - utilization[i]);
-            }
+			//station queue length
+			queueLen[i] = residenceTime[i] * lambda;
 
-            //station queue length
-            queueLen[i] = residenceTime[i] * lambda;
+			//system response time
+			totRespTime += residenceTime[i];
 
-            //system response time
-            totRespTime += residenceTime[i];
+			//average number in system
+			totUser += queueLen[i];
 
-            //average number in system
-            totUser += queueLen[i];
-
-            //station throughput
-            //OLD
-            //throughput[i] = queueLen[i] / residenceTime[i];
-            throughput[i] = lambda * visits[i];
-        }
-        //system throughput
-        totThroughput = lambda;
-    }
-
-    //end NEW
-
-
-    //NEW
-    //@author Stefano Omini
-    //TODO aggiungere controllo su processing capacity
-    /**
-     * A system is said to have sufficient capacity to process a given load
-     * <tt>lambda</tt> if no service center is saturated as a result of such a load.
-     * <br>
-     * WARNING: This method should be called before solving the system.
-     * @return true if sufficient capacity exists for the given workload, false otherwise
-     */
-    public boolean hasSufficientProcessingCapacity(){
-
-        //load lambda must be < 1/Dmax (that is Uj < 1 for all stations)
-        //otherwise the system has no sufficient processing capacity
-
-        for (int j = 0; j < stations; j++) {
-            //utilization for station j
-            //Uj = lambda * Vj * Sj = lambda * Dj
-            double utiliz_j = lambda * visits[j] * servTime[j][0];
-            if (utiliz_j >= 1) {
-                return false;
-            }
+			//station throughput
+			//OLD
+			//throughput[i] = queueLen[i] / residenceTime[i];
+			throughput[i] = lambda * visits[i];
 		}
-        //there are no stations with utilization >= 1
-        return true;
-    }
+		//system throughput
+		totThroughput = lambda;
+	}
 
-    //end NEW
+	//end NEW
 
+	//NEW
+	//@author Stefano Omini
+	//TODO aggiungere controllo su processing capacity
+	/**
+	 * A system is said to have sufficient capacity to process a given load
+	 * <tt>lambda</tt> if no service center is saturated as a result of such a load.
+	 * <br>
+	 * WARNING: This method should be called before solving the system.
+	 * @return true if sufficient capacity exists for the given workload, false otherwise
+	 */
+	public boolean hasSufficientProcessingCapacity() {
 
+		//load lambda must be < 1/Dmax (that is Uj < 1 for all stations)
+		//otherwise the system has no sufficient processing capacity
+
+		for (int j = 0; j < stations; j++) {
+			//utilization for station j
+			//Uj = lambda * Vj * Sj = lambda * Dj
+			double utiliz_j = lambda * visits[j] * servTime[j][0];
+			if (utiliz_j >= 1) {
+				return false;
+			}
+		}
+		//there are no stations with utilization >= 1
+		return true;
+	}
+
+	//end NEW
 
 }

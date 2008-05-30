@@ -15,12 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.analytical;
 
-import jmt.engine.math.Printer;
-
 import java.io.PrintWriter;
+
+import jmt.engine.math.Printer;
 
 /**
  * SolverMulti is an abstract class, which contains the methods
@@ -30,13 +30,12 @@ import java.io.PrintWriter;
  */
 public abstract class SolverMulti {
 
-    /**---------------CONSTANTS DEFINITION------------------------*/
+	/**---------------CONSTANTS DEFINITION------------------------*/
 
-    //NEW
-    //before modifying this class, these constants were imported from single class solver
-    //@author Stefano Omini
-
-    /** constant for Load Dependent service center  */
+	//NEW
+	//before modifying this class, these constants were imported from single class solver
+	//@author Stefano Omini
+	/** constant for Load Dependent service center  */
 	public final static int LD = 0;
 
 	/** constant for Load Independent service center  */
@@ -45,124 +44,121 @@ public abstract class SolverMulti {
 	/** constant for delay center*/
 	public final static int DELAY = 2;
 
-    //end NEW
+	//end NEW
 
-    /** constant for Open Class */
-    public final static int OPEN_CLASS = 0;
+	/** constant for Open Class */
+	public final static int OPEN_CLASS = 0;
 
 	/** constant for Closed Class  */
-    public final static int CLOSED_CLASS = 1;
+	public final static int CLOSED_CLASS = 1;
 
-    /**---------------MODEL DEFINITION------------------------*/
+	/**---------------MODEL DEFINITION------------------------*/
 
 	/** number of service centers */
-    protected int stations = 0;
+	protected int stations = 0;
 
 	/** number of classes  */
-    protected int classes = 0;
+	protected int classes = 0;
 
 	/** array of names of service centers*/
-    protected String[] name;
+	protected String[] name;
 
 	/** array of types of service centers */
-    protected int[] type;
+	protected int[] type;
 
-    /** array of number of servers for each service center */
-    protected int[] servers;
+	/** array of number of servers for each service center */
+	protected int[] servers;
 
-    /** service times for each service station, class, population<br>
-     * [station] [class] [population] */
-    protected double[][][] servTime;
+	/** service times for each service station, class, population<br>
+	 * [station] [class] [population] */
+	protected double[][][] servTime;
 
 	/** visits for each service station, class<br>
-     * [station] [class] */
-    protected double[][] visits;
+	 * [station] [class] */
+	protected double[][] visits;
 
-    /**---------------MODEL SOLUTION------------------------*/
+	/**---------------MODEL SOLUTION------------------------*/
 
 	/** throughput for each service station, class<br>
-     * [station] [class] */
-    protected double[][] throughput;
+	 * [station] [class] */
+	protected double[][] throughput;
 
 	/** utilization for each service station, class<br>
-     * [station] [class] */
-    protected double[][] utilization;
+	 * [station] [class] */
+	protected double[][] utilization;
 
 	/** queue lenght for each service station, class<br>
-     * [station] [class] */
-    protected double[][] queueLen;
+	 * [station] [class] */
+	protected double[][] queueLen;
 
 	/** residence time for each service station, class<br>
-     * [station] [class] */
-    protected double[][] residenceTime;
+	 * [station] [class] */
+	protected double[][] residenceTime;
 
 	/** throughputs of the service centers<br>
-     *  [station] */
-    protected double[] scThroughput;
+	 *  [station] */
+	protected double[] scThroughput;
 
 	/** utilization of the service centers<br>
-     *  [station] */
-    protected double[] scUtilization;
+	 *  [station] */
+	protected double[] scUtilization;
 
 	/** queue lenght of the service centers<br>
-     *  [station] */
-    protected double[] scQueueLen;
+	 *  [station] */
+	protected double[] scQueueLen;
 
 	/** residence time of the service centers<br>
-     *  [station] */
-    protected double[] scResidTime;
+	 *  [station] */
+	protected double[] scResidTime;
 
 	/** response time for each class<br>
-     * [class] */
-    protected double[] clsRespTime;
+	 * [class] */
+	protected double[] clsRespTime;
 
 	/** throughput for each class<br>
-     * [class] */
-    protected double[] clsThroughput;
+	 * [class] */
+	protected double[] clsThroughput;
 
 	/** average number of users for each class<br>
-     * [class] */
-    protected double[] clsNumJobs;
+	 * [class] */
+	protected double[] clsNumJobs;
 
 	/** System response time  */
-    protected double sysResponseTime = 0;
+	protected double sysResponseTime = 0;
 
 	/** System throughput */
-    protected double sysThroughput = 0;
+	protected double sysThroughput = 0;
 
 	/** Number of jobs in the system */
-    protected double sysNumJobs = 0;
-
-
+	protected double sysNumJobs = 0;
 
 	/** Printer writer: print formatted representations of objects to a text-output stream */
-    protected PrintWriter pw = new PrintWriter(System.out, true);
+	protected PrintWriter pw = new PrintWriter(System.out, true);
 
-
-    /**
-     * Creates a multiclasss solver
-     * @param classes number of classes.
-     * @param stations number of stations.
-     */
+	/**
+	 * Creates a multiclasss solver
+	 * @param classes number of classes.
+	 * @param stations number of stations.
+	 */
 	public SolverMulti(int classes, int stations) {
 		this.classes = classes;
 		this.stations = stations;
 		name = new String[stations];
 		type = new int[stations];
 		servTime = new double[stations][classes][];
-        visits = new double[stations][classes];
+		visits = new double[stations][classes];
 
-        throughput = new double[stations][classes];
+		throughput = new double[stations][classes];
 		queueLen = new double[stations][classes];
 		utilization = new double[stations][classes];
 		residenceTime = new double[stations][classes];
 
-        scThroughput = new double[stations];
+		scThroughput = new double[stations];
 		scUtilization = new double[stations];
 		scQueueLen = new double[stations];
 		scResidTime = new double[stations];
 
-        clsRespTime = new double[classes];
+		clsRespTime = new double[classes];
 		clsThroughput = new double[classes];
 		clsNumJobs = new double[classes];
 	}
@@ -176,52 +172,50 @@ public abstract class SolverMulti {
 	 */
 	public boolean input(String[] n, int[] t, double[][][] s, double[][] v) {
 
-        if ((n.length != stations) || (t.length != stations) || (s.length != stations) || (v.length != stations))
+		if ((n.length != stations) || (t.length != stations) || (s.length != stations) || (v.length != stations)) {
 			return false; // wrong input.
+		}
 
-        System.arraycopy(n, 0, name, 0, stations);
+		System.arraycopy(n, 0, name, 0, stations);
 		System.arraycopy(t, 0, type, 0, stations);
 
-        for (int i = 0; i < stations; i++) {
+		for (int i = 0; i < stations; i++) {
 
-            System.arraycopy(v[i], 0, visits[i], 0, classes);
+			System.arraycopy(v[i], 0, visits[i], 0, classes);
 
-            for (int j = 0; j < classes; j++) {
-				if (t[i] != LD)
+			for (int j = 0; j < classes; j++) {
+				if (t[i] != LD) {
 					servTime[i][j] = new double[1];
+				}
 				System.arraycopy(s[i][j], 0, servTime[i][j], 0, s[i][j].length);
 			}
 		}
 		return true;
 	}
 
-
-    /**
-     * Must be implemented to create a multi class model solver.
-     */
+	/**
+	 * Must be implemented to create a multi class model solver.
+	 */
 	public abstract void solve();
 
+	//NEW
+	//@author Stefano Omini
 
-    //NEW
-    //@author Stefano Omini
-
-    /**
-     * A system is said to have sufficient capacity to process a given load
-     * <tt>lambda</tt> if no service center is saturated as a result of the combined loads
-     * of all the classes.
-     * <br>
-     * Must be implemented to create a multi class model solver.
-     * <br>
-     * WARNING: This method should be called before solving the system.
-     * @return true if sufficient capacity exists for the given workload, false otherwise
-     *
-     *
-     */
+	/**
+	 * A system is said to have sufficient capacity to process a given load
+	 * <tt>lambda</tt> if no service center is saturated as a result of the combined loads
+	 * of all the classes.
+	 * <br>
+	 * Must be implemented to create a multi class model solver.
+	 * <br>
+	 * WARNING: This method should be called before solving the system.
+	 * @return true if sufficient capacity exists for the given workload, false otherwise
+	 *
+	 *
+	 */
 	public abstract boolean hasSufficientProcessingCapacity();
 
-    //end NEW
-
-
+	//end NEW
 
 	/** Returns the throughput of the given class for the requested station
 	 *  @param  cent    the number of the service center
@@ -234,7 +228,7 @@ public abstract class SolverMulti {
 
 	/**
 	 * Returns the throughput of each class for each station
-     * @return the throughput[center][class] matrix for the system
+	 * @return the throughput[center][class] matrix for the system
 	 */
 	public double[][] getThroughput() {
 		return throughput;
@@ -250,13 +244,12 @@ public abstract class SolverMulti {
 	}
 
 	/**
-     * Returns the throughput of each class for each station
+	 * Returns the throughput of each class for each station
 	 *  @return the utilization[center][class] matrix for the system
 	 */
 	public double[][] getUtilization() {
 		return utilization;
 	}
-
 
 	/** Returns the queue length of the given class for the requested station
 	 *  @param  cent    the number of the service center
@@ -268,7 +261,7 @@ public abstract class SolverMulti {
 	}
 
 	/**
-     *  Returns the queue lenght of each class for each station
+	 *  Returns the queue lenght of each class for each station
 	 *  @return the queue length [center][class] matrix for the system
 	 */
 	public double[][] getQueueLen() {
@@ -286,7 +279,7 @@ public abstract class SolverMulti {
 
 	/**
 	 * Returns the residence time of each class for each station
-     * @return the residence times[center][class] matrix for the system
+	 * @return the residence times[center][class] matrix for the system
 	 */
 	public double[][] getResTime() {
 		return residenceTime;
@@ -302,7 +295,7 @@ public abstract class SolverMulti {
 
 	/**
 	 * Returns the throughput for each service center
-     * @return the throughput for each service center in the system
+	 * @return the throughput for each service center in the system
 	 */
 	public double[] getAggrThroughput() {
 		return scThroughput;
@@ -318,7 +311,7 @@ public abstract class SolverMulti {
 
 	/**
 	 * Returns the utilization for each service center
-     * @return the utilization for each service center in the system
+	 * @return the utilization for each service center in the system
 	 */
 	public double[] getAggrUtilization() {
 		return scUtilization;
@@ -333,7 +326,7 @@ public abstract class SolverMulti {
 	}
 
 	/**
-     *  Returns the queue length for each service center
+	 *  Returns the queue length for each service center
 	 *  @return the queue length for each service center in the system
 	 */
 	public double[] getAggrQueueLen() {
@@ -349,7 +342,7 @@ public abstract class SolverMulti {
 	}
 
 	/**
-     * Returns the residence time for each service center
+	 * Returns the residence time for each service center
 	 *  @return the residence time for each service center in the system
 	 */
 	public double[] getAggrResTime() {
@@ -366,7 +359,7 @@ public abstract class SolverMulti {
 
 	/**
 	 * Returns the response time of the whole system for each customer class
-     * @return the overall response time for each customer class in the system
+	 * @return the overall response time for each customer class in the system
 	 */
 	public double[] getClsResTime() {
 		return clsRespTime;
@@ -382,12 +375,11 @@ public abstract class SolverMulti {
 
 	/**
 	 * Returns the throughput of the whole system for each customer class
-     * @return the overall throughput for each customer class in the system
+	 * @return the overall throughput for each customer class in the system
 	 */
 	public double[] getClsThroughput() {
 		return clsThroughput;
 	}
-
 
 	/** Returns the response time of the system
 	 *  @return the response time
@@ -420,7 +412,7 @@ public abstract class SolverMulti {
 
 	/*
 
-    OLD
+	OLD
 
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
@@ -433,13 +425,13 @@ public abstract class SolverMulti {
 			for (int j = 0; j < classes; j++) {
 				buf.append("\n\nClass " + j);
 				buf.append("\n- queue length      : " + queueLen[i][j]);
-                buf.append("\n- residence time    : " + residenceTime[i][j]);
-                buf.append("\n- throughput        : " + throughput[i][j]);
+	            buf.append("\n- residence time    : " + residenceTime[i][j]);
+	            buf.append("\n- throughput        : " + throughput[i][j]);
 				buf.append("\n- utilization       : " + utilization[i][j]);
 
 			}
 			buf.append("\n\nAggregate values     : ");
-            buf.append("\n- queue length       : " + scQueueLen[i]);
+	        buf.append("\n- queue length       : " + scQueueLen[i]);
 			buf.append("\n- residence time     : " + scResidTime[i]);
 			buf.append("\n- throughput         : " + scThroughput[i]);
 			buf.append("\n- utilization        : " + scUtilization[i]);
@@ -450,73 +442,72 @@ public abstract class SolverMulti {
 			buf.append("\n- throughput          : " + clsRespTime[j]);
 		}
 		buf.append("\n\n");
-        buf.append("\nSystem Response Time    : " + sysResponseTime);
+	    buf.append("\nSystem Response Time    : " + sysResponseTime);
 		buf.append("\nSystem Throughput       : " + sysThroughput);
-        buf.append("\nSystem users            : " + sysNumJobs);
+	    buf.append("\nSystem users            : " + sysNumJobs);
 		return buf.toString();
 	}
-    */
+	*/
 
+	//NEW
+	//@author Stefano Omini
+	/** creates a string of the principals parameters calculated
+	 *  @return the string
+	 */
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("\n------------------------------------");
+		buf.append("\nAnalysis with MVA Multiclass");
 
-    //NEW
-    //@author Stefano Omini
+		buf.append("\n\n");
+		buf.append("Queue Length (Q)");
+		buf.append("\n------------------------------------\n");
+		for (int m = 0; m < stations; m++) {
+			buf.append("[   ");
+			for (int c = 0; c < classes; c++) {
+				buf.append(Printer.print(queueLen[m][c], 6) + "   ");
+			}
+			buf.append("]\n");
+		}
 
-    /** creates a string of the principals parameters calculated
-     *  @return the string
-     */
-    public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append("\n------------------------------------");
-        buf.append("\nAnalysis with MVA Multiclass");
+		buf.append("\n\n");
+		buf.append("Residence Time (R)");
+		buf.append("\n------------------------------------\n");
+		for (int m = 0; m < stations; m++) {
+			buf.append("[   ");
+			for (int c = 0; c < classes; c++) {
+				buf.append(Printer.print(residenceTime[m][c], 6) + "   ");
+			}
+			buf.append("]\n");
+		}
 
-        buf.append("\n\n");
-        buf.append("Queue Length (Q)");
-        buf.append("\n------------------------------------\n");
-        for (int m = 0; m < stations; m++) {
-            buf.append("[   ");
-            for (int c = 0; c < classes; c++)
-                buf.append(Printer.print(queueLen[m][c], 6) + "   ");
-            buf.append("]\n");
-        }
+		buf.append("\n\n");
+		buf.append("Throughput (X)");
+		buf.append("\n------------------------------------\n");
+		for (int m = 0; m < stations; m++) {
+			buf.append("[   ");
+			for (int c = 0; c < classes; c++) {
+				buf.append(Printer.print(throughput[m][c], 6) + "   ");
+			}
+			buf.append("]\n");
+		}
 
-        buf.append("\n\n");
-        buf.append("Residence Time (R)");
-        buf.append("\n------------------------------------\n");
-        for (int m = 0; m < stations; m++) {
-            buf.append("[   ");
-            for (int c = 0; c < classes; c++)
-                buf.append(Printer.print(residenceTime[m][c], 6) + "   ");
-            buf.append("]\n");
-        }
+		buf.append("\n\n");
+		buf.append("Utilization (U)");
+		buf.append("\n------------------------------------\n");
+		for (int m = 0; m < stations; m++) {
+			buf.append("[   ");
+			for (int c = 0; c < classes; c++) {
+				buf.append(Printer.print(utilization[m][c], 6) + "   ");
+			}
+			buf.append("]\n");
+		}
 
-
-        buf.append("\n\n");
-                buf.append("Throughput (X)");
-                buf.append("\n------------------------------------\n");
-                for (int m = 0; m < stations; m++) {
-                    buf.append("[   ");
-                    for (int c = 0; c < classes; c++)
-                        buf.append(Printer.print(throughput[m][c], 6) + "   ");
-                    buf.append("]\n");
-                }
-
-
-        buf.append("\n\n");
-        buf.append("Utilization (U)");
-        buf.append("\n------------------------------------\n");
-        for (int m = 0; m < stations; m++) {
-            buf.append("[   ");
-            for (int c = 0; c < classes; c++)
-                buf.append(Printer.print(utilization[m][c], 6) + "   ");
-            buf.append("]\n");
-        }
-
-
-        for (int i = 0; i < stations; i++) {
+		for (int i = 0; i < stations; i++) {
 			buf.append("\n\nStation " + i + ": aggregated values");
-            buf.append("\n  throughput       : " + scThroughput[i]);
+			buf.append("\n  throughput       : " + scThroughput[i]);
 			buf.append("\n  utilization      : " + scUtilization[i]);
-            buf.append("\n  queue length     : " + scQueueLen[i]);
+			buf.append("\n  queue length     : " + scQueueLen[i]);
 			buf.append("\n  residence time   : " + scResidTime[i]);
 		}
 		for (int j = 0; j < classes; j++) {
@@ -526,14 +517,13 @@ public abstract class SolverMulti {
 		}
 
 		buf.append("\n\nSystem aggregate values");
-        buf.append("\n  System Response Time    : " + sysResponseTime);
+		buf.append("\n  System Response Time    : " + sysResponseTime);
 		buf.append("\n  System Throughput       : " + sysThroughput);
-        buf.append("\n  System Number of jobs   : " + sysNumJobs);
+		buf.append("\n  System Number of jobs   : " + sysNumJobs);
 
+		return buf.toString();
+	}
 
-        return buf.toString();
-    }
-
-    //end NEW
+	//end NEW
 
 }

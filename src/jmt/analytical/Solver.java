@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.analytical;
 
 import jmt.engine.math.Printer;
@@ -28,10 +28,9 @@ import jmt.engine.math.Printer;
  */
 public abstract class Solver {
 
-    /**--------------CONSTANTS DEFINITION------------------------*/
+	/**--------------CONSTANTS DEFINITION------------------------*/
 
-
-    /** constant for Load Dependent service center  */
+	/** constant for Load Dependent service center  */
 	public final static int LD = 0;
 
 	/** constant for Load Independent service center  */
@@ -40,58 +39,52 @@ public abstract class Solver {
 	/** constant for delay center*/
 	public final static int DELAY = 2;
 
+	/**---------------MODEL DEFINITION------------------------*/
 
-    /**---------------MODEL DEFINITION------------------------*/
-
-    /**number of resources*/
+	/**number of resources*/
 	protected int stations = 0;
 
 	/** array containing the names of the stations  */
-    protected String[] name;
+	protected String[] name;
 
-    /** array containing the types of the stations  */
+	/** array containing the types of the stations  */
 	protected int[] type;
 
 	/** array of array (i.e. matrix) containing the service rates of the service centers
-     * [station] [population]  */
-    protected double[][] servTime;
+	 * [station] [population]  */
+	protected double[][] servTime;
 
-    /** array containing the number of visits to each service center  */
+	/** array containing the number of visits to each service center  */
 	protected double[] visits;
 
+	/**---------------MODEL SOLUTION------------------------*/
 
-    /**---------------MODEL SOLUTION------------------------*/
-
-
-    /** array containing the throughput of each service center  */
-    protected double[] throughput;
+	/** array containing the throughput of each service center  */
+	protected double[] throughput;
 
 	/** array containing the utilization of each service center  */
-    protected double[] utilization;
+	protected double[] utilization;
 
 	/** array containing the queue length of each service center  */
-    protected double[] queueLen;
+	protected double[] queueLen;
 
 	/** array containing the residence time of each service center.
-     * residence time = time spent in queue + time spent in service
-     */
-    protected double[] residenceTime;
+	 * residence time = time spent in queue + time spent in service
+	 */
+	protected double[] residenceTime;
 
 	/**  total throughput */
-    protected double totThroughput = 0;
+	protected double totThroughput = 0;
 
 	/**  total response time */
-    protected double totRespTime = 0;
+	protected double totRespTime = 0;
 
 	/**  total number of users */
-    protected double totUser = 0;
-
-
-
+	protected double totUser = 0;
 
 	/**
-     *  Initializes the solver with the model parameters.
-     *  It must be called before trying to solve the model.
+	 *  Initializes the solver with the model parameters.
+	 *  It must be called before trying to solve the model.
 	 *  @param  n   array of n of service centers.
 	 *  @param  t   array of the types (LD or LI) of service centers.
 	 *  @param  s   matrix of service time of the service centers.
@@ -100,27 +93,28 @@ public abstract class Solver {
 	 */
 	public boolean input(String[] n, int[] t, double[][] s, double[] v) {
 
-        //OLD
-        //if ((n.length > stations) || (t.length > stations) || (s.length > stations) || (v.length > stations))
-        //NEW
-        //@author Stefano Omini
-        if ((n.length != stations) || (t.length != stations) || (s.length != stations) || (v.length != stations))
-            return false; // wrong input.
+		//OLD
+		//if ((n.length > stations) || (t.length > stations) || (s.length > stations) || (v.length > stations))
+		//NEW
+		//@author Stefano Omini
+		if ((n.length != stations) || (t.length != stations) || (s.length != stations) || (v.length != stations)) {
+			return false; // wrong input.
+		}
 		for (int i = 0; i < stations; i++) {
 			name[i] = n[i];
 			type[i] = t[i];
 			visits[i] = v[i];
 			//OLD
-            //if (type[i] != SolverSingleClosedExact.LD) {
-            //NEW
-            if (type[i] != Solver.LD) {
-                //service centre is LI or DELAY
+			//if (type[i] != SolverSingleClosedExact.LD) {
+			//NEW
+			if (type[i] != Solver.LD) {
+				//service centre is LI or DELAY
 				servTime[i][0] = s[i][0];
 			} else {
-                //LD center
-                //the input method is overridden in SolverSingleClosedMVA, where LD
-                //centers are allowed
-                return false;
+				//LD center
+				//the input method is overridden in SolverSingleClosedMVA, where LD
+				//centers are allowed
+				return false;
 			}
 		}
 		return true;
@@ -135,14 +129,14 @@ public abstract class Solver {
 			System.out.println("throughput        : " + throughput[i]);
 			System.out.println("utilization       : " + utilization[i]);
 			System.out.println("mean queue length : " + queueLen[i]);
-            System.out.println();
+			System.out.println();
 		}
 	}
 
 	/*
-    OLD
+	OLD
 
-    public String toString() {
+	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append(getClass().getName());
 		buf.append("\n-------------------------");
@@ -158,54 +152,53 @@ public abstract class Solver {
 		buf.append("\nsystem users : " + totUser);
 		return buf.toString();
 	}
-    */
-    /** generates a string with all the calculated indexes.
+	*/
+	/** generates a string with all the calculated indexes.
 	 * @return the string
 	 */
 
-    public String toString() {
-        StringBuffer buf = new StringBuffer();
-        buf.append("\n------------------------------------");
-        buf.append("\nAnalysis with MVA Singleclass");
+	public String toString() {
+		StringBuffer buf = new StringBuffer();
+		buf.append("\n------------------------------------");
+		buf.append("\nAnalysis with MVA Singleclass");
 
-        buf.append("\n\n");
-        buf.append("Queue Length (Q)");
-        buf.append("\n------------------------------------\n");
-        for (int m = 0; m < stations; m++) {
-            buf.append("[   ");
-            buf.append(Printer.print(queueLen[m], 6));
-            buf.append("   ]\n");
-        }
+		buf.append("\n\n");
+		buf.append("Queue Length (Q)");
+		buf.append("\n------------------------------------\n");
+		for (int m = 0; m < stations; m++) {
+			buf.append("[   ");
+			buf.append(Printer.print(queueLen[m], 6));
+			buf.append("   ]\n");
+		}
 
-        buf.append("\n\n");
-        buf.append("Residence Time (R)");
-        buf.append("\n------------------------------------\n");
-        for (int m = 0; m < stations; m++) {
-            buf.append("[   ");
-            buf.append(Printer.print(residenceTime[m], 6));
-            buf.append("   ]\n");
-        }
+		buf.append("\n\n");
+		buf.append("Residence Time (R)");
+		buf.append("\n------------------------------------\n");
+		for (int m = 0; m < stations; m++) {
+			buf.append("[   ");
+			buf.append(Printer.print(residenceTime[m], 6));
+			buf.append("   ]\n");
+		}
 
-        buf.append("\n\n");
-        buf.append("Throughput (X)");
-        buf.append("\n------------------------------------\n");
-        for (int m = 0; m < stations; m++) {
-            buf.append("[   ");
-            buf.append(Printer.print(throughput[m], 6));
-            buf.append("   ]\n");
-        }
+		buf.append("\n\n");
+		buf.append("Throughput (X)");
+		buf.append("\n------------------------------------\n");
+		for (int m = 0; m < stations; m++) {
+			buf.append("[   ");
+			buf.append(Printer.print(throughput[m], 6));
+			buf.append("   ]\n");
+		}
 
-        buf.append("\n\n");
-        buf.append("Utilization (U)");
-        buf.append("\n------------------------------------\n");
-        for (int m = 0; m < stations; m++) {
-            buf.append("[   ");
-            buf.append(Printer.print(utilization[m], 6));
-            buf.append("   ]\n");
-        }
-        return buf.toString();
-    }
-
+		buf.append("\n\n");
+		buf.append("Utilization (U)");
+		buf.append("\n------------------------------------\n");
+		for (int m = 0; m < stations; m++) {
+			buf.append("[   ");
+			buf.append(Printer.print(utilization[m], 6));
+			buf.append("   ]\n");
+		}
+		return buf.toString();
+	}
 
 	/** returns the throughput of the system
 	 *  @return the throughput
@@ -289,27 +282,23 @@ public abstract class Solver {
 		return totUser;
 	}
 
+	//NEW
+	//@author Stefano Omini
+	/**
+	 * A system is said to have sufficient capacity to process a given load
+	 * <tt>lambda</tt> if no service center is saturated as a result of such a load.
+	 * <br>
+	 * WARNING: This method should be called before solving the system.
+	 * @return true if sufficient capacity exists for the given workload, false otherwise
+	 */
 
-    //NEW
-    //@author Stefano Omini
-    /**
-     * A system is said to have sufficient capacity to process a given load
-     * <tt>lambda</tt> if no service center is saturated as a result of such a load.
-     * <br>
-     * WARNING: This method should be called before solving the system.
-     * @return true if sufficient capacity exists for the given workload, false otherwise
-     */
+	public abstract boolean hasSufficientProcessingCapacity();
 
-    public abstract boolean hasSufficientProcessingCapacity();
-
-    //end NEW
-
-
+	//end NEW
 
 	/**
-     * Must be implemented to create a single class model solver.
-     */
-    public abstract void solve();
-
+	 * Must be implemented to create a single class model solver.
+	 */
+	public abstract void solve();
 
 }

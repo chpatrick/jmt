@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * SolverSingleClosedExact.java
  *
@@ -36,38 +36,37 @@ import java.io.PrintWriter;
 public class SolverSingleClosedExact extends Solver {
 
 	/**
-     * number of customers or jobs in the system
-     */
-    protected int customers = 0;
+	 * number of customers or jobs in the system
+	 */
+	protected int customers = 0;
 
 	/**
-     * normalization constant
-     */
-    protected double[] G;
+	 * normalization constant
+	 */
+	protected double[] G;
 
 	/**
-     * computes the auxiliary function of the system
+	 * computes the auxiliary function of the system
 	 */
 	protected double[] auxFun;
 
-    /* used in dinamic Scaling, now disabled */
-//	private ArrayList scaleFact = new ArrayList();
-
+	/* used in dinamic Scaling, now disabled */
+	//	private ArrayList scaleFact = new ArrayList();
 	/**
-     * Creates a new SolverSingleClosedExact
+	 * Creates a new SolverSingleClosedExact
 	 *  @param  stations number of service centers (stations)
 	 *  @param  customers number of customers
 	 */
-    public SolverSingleClosedExact(int customers, int stations) {
+	public SolverSingleClosedExact(int customers, int stations) {
 
-        this.customers = customers;
+		this.customers = customers;
 		this.stations = stations;
 
 		name = new String[stations];
 		type = new int[stations];
 		//one service time for each possible population (from 1 to customers)
-        //position 0 is used for LI stations
-        servTime = new double[stations][customers + 1];
+		//position 0 is used for LI stations
+		servTime = new double[stations][customers + 1];
 		visits = new double[stations];
 
 		throughput = new double[stations];
@@ -78,19 +77,18 @@ public class SolverSingleClosedExact extends Solver {
 		auxFun = new double[customers + 1];
 	}
 
-
 	/**
-     * Calculates the indexes of interest for the system.<br>
+	 * Calculates the indexes of interest for the system.<br>
 	 *  For a description of the algorithm see:<br>
 	 *  <em>
-     *  S.C. Bruell, G. Balbo,<br>
-     * "Computational Algorithms for closed Queueing Networks",<br>
-     * 1980, Elsevier North Holland
-     * </em>
+	 *  S.C. Bruell, G. Balbo,<br>
+	 * "Computational Algorithms for closed Queueing Networks",<br>
+	 * 1980, Elsevier North Holland
+	 * </em>
 	 */
 	public void indexes() {
 		long start; // initial time.
-		long end;   // termination time.
+		long end; // termination time.
 		double FM = 1;
 		double sum = 0;
 
@@ -109,7 +107,6 @@ public class SolverSingleClosedExact extends Solver {
 				queueLen[stations - 1] = (servTime[stations - 1][0] * visits[stations - 1] * G[j - 1] / G[j]) * (1 + queueLen[stations - 1]);
 			}
 
-
 		} else {//LD station
 			utilization[stations - 1] = 1 - (auxFun[customers] / G[customers]);
 			queueLen[stations - 1] = queueLen[stations - 1] / G[customers];
@@ -123,8 +120,9 @@ public class SolverSingleClosedExact extends Solver {
 			if (type[i] == Solver.LI) {
 				utilization[i] = servTime[i][0] * throughput[i];
 				queueLen[i] = 0;
-				for (int j = 1; j <= customers; j++)
+				for (int j = 1; j <= customers; j++) {
 					queueLen[i] = (servTime[i][0] * visits[i] * G[j - 1] / G[j]) * (1 + queueLen[i]);
+				}
 			} else {//LD station
 				auxFun = calcAuxFunc(i);
 				utilization[i] = 1 - (auxFun[customers] / G[customers]);
@@ -148,7 +146,6 @@ public class SolverSingleClosedExact extends Solver {
 		return;
 	}
 
-
 	/** Calculates the auxiliary function needful to calculate marginal
 	 * probabilities
 	 * @param cent service center for which the auxiliary function is calculated.
@@ -160,14 +157,15 @@ public class SolverSingleClosedExact extends Solver {
 		double[] FM = new double[customers + 1];
 
 		FM[0] = 1;
-		for (int i = 1; i < FM.length; i++)
+		for (int i = 1; i < FM.length; i++) {
 			FM[i] = visits[cent] * FM[i - 1] * servTime[cent][i];
+		}
 
 		temp[0] = 1;
 		for (int i = 1; i <= customers; i++) {
-			if (type[cent] == Solver.LI)
+			if (type[cent] == Solver.LI) {
 				temp[i] = G[customers] - (visits[cent] * servTime[cent][i] * G[customers - 1]);
-			else {
+			} else {
 				sum = 0;
 				for (int k = 1; k <= i; k++) {
 					sum += FM[k] * temp[i - k];
@@ -178,46 +176,40 @@ public class SolverSingleClosedExact extends Solver {
 		return temp;
 	}
 
+	//NEW
+	//@author Stefano Omini
+	/**
+	 * A system is said to have sufficient capacity to process a given load
+	 * <tt>lambda</tt> if no service center is saturated as a result of such a load.
+	 * <br>
+	 * WARNING: This method should be called before solving the system.
+	 * @return true if sufficient capacity exists for the given workload, false otherwise
+	 */
+	public boolean hasSufficientProcessingCapacity() {
+		//closed class: no saturation problem
+		return true;
+	}
 
-
-    //NEW
-    //@author Stefano Omini
-    /**
-     * A system is said to have sufficient capacity to process a given load
-     * <tt>lambda</tt> if no service center is saturated as a result of such a load.
-     * <br>
-     * WARNING: This method should be called before solving the system.
-     * @return true if sufficient capacity exists for the given workload, false otherwise
-     */
-    public boolean hasSufficientProcessingCapacity() {
-        //closed class: no saturation problem
-        return true;
-    }
-
-    //end NEW
-
-
-
-
+	//end NEW
 
 	/**
-     * Solves the system throught the normalization constant algorithm.
+	 * Solves the system throught the normalization constant algorithm.
 	 *  For a description of the algorithm see:
 	 *  <em>
-     *  S.C. Bruell, G. Balbo,<br>
-     * "Computational Algorithms for closed Queueing Networks",<br>
-     * 1980, Elsevier North Holland
-     * </em>
+	 *  S.C. Bruell, G. Balbo,<br>
+	 * "Computational Algorithms for closed Queueing Networks",<br>
+	 * 1980, Elsevier North Holland
+	 * </em>
 	 *
 	 */
-     public void solve() {
+	public void solve() {
 		PrintWriter pw = new PrintWriter(System.out, true);
 		double Y = 0;
 		double[] FM = new double[customers + 1];
 		double temp;
 		double sum = 0;
-//		double MAX = Double.parseDouble("1.0e100");
-//		double MIN = Double.parseDouble("1.0e-100");
+		//		double MAX = Double.parseDouble("1.0e100");
+		//		double MIN = Double.parseDouble("1.0e-100");
 		long start; // used in time elapsed calculating
 		long end; // used in time elapsed calculating
 		int center = 0; // center index
@@ -261,8 +253,9 @@ public class SolverSingleClosedExact extends Solver {
 			if (type[center] == Solver.LD) {
 				FM[0] = 1;
 				Y = visits[center];
-				for (cust = 1; cust < G.length; cust++)
+				for (cust = 1; cust < G.length; cust++) {
 					FM[cust] = FM[cust - 1] * Y * servTime[center][cust];
+				}
 				//FM[cust] = FM[cust - 1] * Y / servTime[center][cust];
 				for (cust = (G.length - 1); cust > 0; cust--) {
 					sum = 0;
@@ -294,7 +287,7 @@ public class SolverSingleClosedExact extends Solver {
 	}
 
 	/**
-    * Static scaling to control magnitude of G. It's not optimal, and in
+	* Static scaling to control magnitude of G. It's not optimal, and in
 	* some situations it does not overcome overflow problem, but generally
 	* it's enough */
 	private void staticScale() {
@@ -306,9 +299,9 @@ public class SolverSingleClosedExact extends Solver {
 		int max = 0;
 
 		for (center = 0; center < stations; center++) {
-			if (type[center] == Solver.LI)
+			if (type[center] == Solver.LI) {
 				Y = (visits[center] * servTime[center][0]);
-			else {// load dependent
+			} else {// load dependent
 				sum = 0;
 				for (cust = 1; cust < servTime[center].length; cust++) {
 					Y = visits[center] * servTime[center][cust];
@@ -321,8 +314,9 @@ public class SolverSingleClosedExact extends Solver {
 				max = center;
 			}
 		}
-		for (int i = 0; i < stations; i++)
+		for (int i = 0; i < stations; i++) {
 			visits[i] = visits[i] / scalCons;
+		}
 		reorder(max);
 	}
 
@@ -340,10 +334,9 @@ public class SolverSingleClosedExact extends Solver {
 		type[0] = type[max];
 		type[max] = t;
 
-//		double v = visits[0];
+		//		double v = visits[0];
 		visits[0] = visits[max];
 		visits[max] = visits[0];
 	}
 
 }
-

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * SolverSingleClosedExactDyn.java
  *
@@ -40,7 +40,6 @@ public class SolverSingleClosedExactDyn extends jmt.analytical.SolverSingleClose
 	public SolverSingleClosedExactDyn(int customers, int stations) {
 		super(customers, stations);
 	}
-
 
 	/** Solves the system
 	 */
@@ -79,17 +78,20 @@ public class SolverSingleClosedExactDyn extends jmt.analytical.SolverSingleClose
 					scalPrec[n] = scalPrec[n - 1] * beta;
 					G[n] /= MAX;
 					Y *= beta;
-					for (int m = 0; m < stations; m++)
+					for (int m = 0; m < stations; m++) {
 						visits[m] *= beta;
+					}
 				} else if (G[n] <= MIN) {
 					beta = Math.pow(MIN, -1.0 / n);
 					scalPrec[n] = scalPrec[n - 1] * beta;
 					G[n] /= MIN;
 					Y *= beta;
-					for (int m = 0; m < stations; m++)
+					for (int m = 0; m < stations; m++) {
 						visits[m] *= beta;
-				} else
+					}
+				} else {
 					scalPrec[n] = scalPrec[n - 1];
+				}
 			}
 			//pw.println("G of center 0 : " + G[customers]);
 		} else if (type[0] == Solver.LD) {
@@ -99,16 +101,19 @@ public class SolverSingleClosedExactDyn extends jmt.analytical.SolverSingleClose
 					beta = Math.pow(MAX, -1.0 / n);
 					scalPrec[n] *= beta;
 					G[n] /= MAX;
-					for (int m = 0; m < stations; m++)
+					for (int m = 0; m < stations; m++) {
 						visits[m] *= beta;
+					}
 				} else if (G[n] <= MIN) {
 					beta = Math.pow(MIN, -1.0 / n);
 					scalPrec[n] *= beta;
 					G[n] /= MIN;
-					for (int m = 0; m < stations; m++)
+					for (int m = 0; m < stations; m++) {
 						visits[m] *= beta;
-				} else
+					}
+				} else {
 					scalPrec[n] = scalPrec[n - 1];
+				}
 			}
 			//pw.println("G of center 0 : " + G[customers]);
 		}
@@ -118,26 +123,30 @@ public class SolverSingleClosedExactDyn extends jmt.analytical.SolverSingleClose
 			if (type[center] == Solver.LI) {
 				Y = visits[center] * servTime[center][0];
 				for (cust = 1; cust < G.length; cust++) {
-					if (scalPrec[cust] == scalCorr[cust - 1])
+					if (scalPrec[cust] == scalCorr[cust - 1]) {
 						G[cust] = G[cust] + Y * G[cust - 1];
-					else
+					} else {
 						G[cust] = G[cust] * Math.pow(scalCorr[cust - 1] / scalPrec[cust], cust) + Y * G[cust - 1];
+					}
 					if (G[cust] >= MAX) {
 						beta = Math.pow(MAX, -1.0 / cust);
 						scalCorr[cust] = scalCorr[cust - 1] * beta;
 						G[cust] /= MAX;
 						Y *= beta;
-						for (int m = 0; m < stations; m++)
+						for (int m = 0; m < stations; m++) {
 							visits[m] *= beta;
+						}
 					} else if (G[cust] <= MIN) {
 						beta = Math.pow(MIN, -1.0 / cust);
 						scalCorr[cust] = scalCorr[cust - 1] * beta;
 						G[cust] /= MIN;
 						Y *= beta;
-						for (int m = 0; m < stations; m++)
+						for (int m = 0; m < stations; m++) {
 							visits[m] *= beta;
-					} else
+						}
+					} else {
 						scalCorr[cust] = scalCorr[cust - 1];
+					}
 				}
 				//pw.println(" G of center " + center + " : " + G[customers]);
 			}
@@ -145,8 +154,9 @@ public class SolverSingleClosedExactDyn extends jmt.analytical.SolverSingleClose
 			if (type[center] == Solver.LD) {
 				FM[0] = 1;
 				Y = visits[center];
-				for (cust = 1; cust < G.length; cust++)
+				for (cust = 1; cust < G.length; cust++) {
 					FM[cust] = FM[cust - 1] * Y * servTime[center][cust];
+				}
 				for (cust = (G.length - 1); cust > 0; cust--) {
 					sum = 0;
 					for (auxCust = 0; auxCust <= cust; auxCust++) {
@@ -178,13 +188,13 @@ public class SolverSingleClosedExactDyn extends jmt.analytical.SolverSingleClose
 
 	/** Calculates the indexes of interest for the system.<br>
 	 *  For a description of the algorithm see:<br>
-     * <em>
+	 * <em>
 	 *  S.C. Bruell, G. Balbo,<br>
-     * "Computational Algorithms for closed Queueing Networks"<br>
-     * 1980, Elsevier North Holland
+	 * "Computational Algorithms for closed Queueing Networks"<br>
+	 * 1980, Elsevier North Holland
 	 */
 	public void indexes() {
-        //TODO: da implementare??
+		//TODO: da implementare??
 	}
 
 }
