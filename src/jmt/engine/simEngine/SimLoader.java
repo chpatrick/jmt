@@ -24,11 +24,14 @@ import jmt.engine.NodeSections.InputSection;
 import jmt.engine.NodeSections.OutputSection;
 import jmt.engine.NodeSections.ServiceSection;
 import jmt.engine.QueueNet.JobClass;
+import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeSection;
 import jmt.engine.QueueNet.SimConstants;
 import jmt.engine.dataAnalysis.InverseMeasure;
 import jmt.engine.dataAnalysis.Measure;
 import jmt.engine.dataAnalysis.SimParameters;
+import jmt.engine.random.Distribution;
+
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
