@@ -90,7 +90,7 @@ import jmt.gui.jsim.definitions.JSIMModel;
  *
  */
 public class ExactWizard extends Wizard {
-
+	private static final String TITLE = "JMVA - PFQN exact solver";
     private final static boolean DEBUG = false;
 
     private ExactModel data;
@@ -251,7 +251,7 @@ public class ExactWizard extends Wizard {
     }
 
     public ExactWizard(ExactModel data) {
-        super("JMVA - PFQN exact solver");
+        super(TITLE);
         setSize(800, 600);
         this.centerWindow();
         setIconImage(JMTImageLoader.loadImageAwt("JMVAIcon"));
@@ -361,6 +361,7 @@ public class ExactWizard extends Wizard {
         if (checkForSave("<html>Save changes before creating a new model?</html>")) return;
         Rectangle bounds = this.getBounds();
         ExactWizard ew = new ExactWizard();
+        updateTile(null);
         ew.setBounds(bounds);
         ew.show();
         this.hide();
@@ -402,6 +403,7 @@ public class ExactWizard extends Wizard {
         switch (retval) {
             case ModelLoader.SUCCESS:
                 data.resetChanged();
+                updateTile(modelLoader.getSelectedFile().getName());
                 break;
             case ModelLoader.FAILURE:
                 JOptionPane.showMessageDialog(this, modelLoader.getFailureMotivation(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -437,6 +439,7 @@ public class ExactWizard extends Wizard {
                     ((ForceUpdatablePanel)serviceDemandsPanel).retrieveData();
                     addPanel(serviceDemandsPanel,2);
                 }
+                updateTile(modelLoader.getSelectedFile().getName());
                 tabbedPane.setSelectedIndex(0);
                 break;
             case ModelLoader.FAILURE:
@@ -756,6 +759,18 @@ public class ExactWizard extends Wizard {
         }
         Locale.setDefault(Locale.ENGLISH);
         new ExactWizard(new ExactModel());
+    }
+    
+    /**
+     * Sets the file name to be shown in the title
+     * @param filename the file name or null to remove it
+     */
+    public void updateTile(String filename) {
+    	if (filename != null) {
+    		setTitle(TITLE + " - " + filename);
+    	} else {
+    		setTitle(TITLE);
+    	}
     }
 
 

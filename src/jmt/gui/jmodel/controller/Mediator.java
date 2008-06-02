@@ -591,6 +591,7 @@ public class Mediator implements GuiInterface {
 		editPAParams.setEnabled(true);
 		takeScreenShot.setEnabled(true);
 		openedArchive = null;
+		mainWindow.updateTitle(null);
 		// Free same resources by forcing a garbage collection
 		System.gc();
 	}
