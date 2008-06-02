@@ -42,15 +42,14 @@ import java.util.Locale;
  * Singleton pattern. no need to create more then 1 main window!
  *
 
- * @author Federico Granata
+ * @author Federico Granata, Bertoli Marco
  * Date: 3-giu-2003
  * Time: 14.09.14
 
- * Modified by Bertoli Marco 7-giu-2005
-
  */
 public class MainWindow extends JMTFrame {
-
+	private static final String TITLE = "JSIMgraph - Advanced queuing network design tool";
+	
 	protected Mediator mediator;// mediator between components of the application
 	protected JMTToolBar toolbar;//main toolbar
 	protected JMTMenuBar menu;//main menu
@@ -67,7 +66,7 @@ public class MainWindow extends JMTFrame {
 	public MainWindow() {
 		super(true);
         this.setIconImage(JMTImageLoader.loadImage("JMODELIcon").getImage());
-		setTitle("JSIMgraph - Advanced queuing network design tool");
+		setTitle(TITLE);
 		mediator = new Mediator(null, this);
 		Mediator.advanced = advanced;
 
@@ -155,5 +154,17 @@ public class MainWindow extends JMTFrame {
 		        && (args[0].equals("trek")))
 			advanced = true;
 		new MainWindow();
+	}
+	
+	/**
+	 * Updates this window title adding the file name
+	 * @param filename the file name or null to remove it.
+	 */
+	public void updateTitle(String filename) {
+		if (filename != null) {
+			setTitle(TITLE + " - " + filename);
+		} else {
+			setTitle(TITLE);
+		}
 	}
 }

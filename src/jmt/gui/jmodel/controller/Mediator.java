@@ -620,6 +620,7 @@ public class Mediator implements GuiInterface {
 			setSelect.setEnabled(true);
 			componentBar.clickButton(setSelect);
 			openedArchive = modelLoader.getSelectedFile();
+			mainWindow.updateTitle(openedArchive.getName());
 			// Removes selection
 			graph.clearSelection();
 			// If model contains results, enable Results Window
@@ -694,6 +695,7 @@ public class Mediator implements GuiInterface {
 		resultsWindow = null;
 		openedArchive = null;
 		model = new JMODELModel();
+		mainWindow.updateTitle(null);
 		// Free same resources by forcing a garbage collection
 		System.gc();
 	}
@@ -1282,6 +1284,7 @@ public class Mediator implements GuiInterface {
 		switch (status) {
 			case ModelLoader.SUCCESS:
 				model.resetSaveState();
+				mainWindow.updateTitle(openedArchive.getName());
 				break;
 			case ModelLoader.FAILURE:
 				showErrorMessage(modelLoader.getFailureMotivation());
@@ -1301,6 +1304,7 @@ public class Mediator implements GuiInterface {
 			case ModelLoader.SUCCESS:
 				model.resetSaveState();
 				openedArchive = modelLoader.getSelectedFile();
+				mainWindow.updateTitle(openedArchive.getName());
 				break;
 			case ModelLoader.FAILURE:
 				showErrorMessage(modelLoader.getFailureMotivation());
