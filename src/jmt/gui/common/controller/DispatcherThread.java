@@ -91,6 +91,13 @@ public class DispatcherThread extends Thread implements AbortMeasure {
             timer.kill();
         gui.changeSimActionsState(true, false, false);
         results.refresh(1);
+        
+        // Removes output file, if it was created.
+        if (simulator.getOutputFile() != null) {
+        	if (!simulator.getOutputFile().delete()) {
+        		simulator.getOutputFile().deleteOnExit();
+        	}
+        }
     }
 
     /**

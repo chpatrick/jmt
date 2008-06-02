@@ -500,6 +500,13 @@ public class Dispatcher_jSIMschema {
         System.out.println(Long.toString(mean));
 
     }
+    
+    /**
+     * @return the output XML file with the results of the simulation.
+     */
+    public File getOutputFile() {
+    	return sim.getOutputFile();
+    }
 
 
     public static void testSolution() {
