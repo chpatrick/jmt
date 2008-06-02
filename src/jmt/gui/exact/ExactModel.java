@@ -18,17 +18,17 @@
   
 package jmt.gui.exact;
 
-import jmt.analytical.SolverMulti;
+import java.util.Arrays;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import jmt.framework.data.ArrayUtils;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import java.util.Arrays;
 
 /**
  * An object grouping all the data describing a system.
@@ -2052,46 +2052,56 @@ public class ExactModel implements ExactConstants {
      */
     public int checkSaturation() {
         // Checks saturation without what-if analysis
-        if(checkForSaturation(classData)) {
-            return SATURATION;
+        if(checkForSaturation(classData, visits, serviceTimes, stationServers)) {
+            return SATURATION_WHATIF;
         }
         if (isWhatIf()) {
-            double[] newClassData = (double[]) classData.clone();
             double maxValue = whatIfValues[iterations - 1];
             // Checks if values are inverted
-            if (whatIfValues[0] > maxValue)
+            if (whatIfValues[0] > maxValue) {
                 maxValue = whatIfValues[0];
-            // Change arrival rate of a single class only
-            if (whatIfType.equals(WHAT_IF_ARRIVAL) && whatIfClass >= 0) {
-                newClassData[whatIfClass] = maxValue;
-            }
-            // Change arrival rate of all open classes
-            else if (whatIfType.equals(WHAT_IF_ARRIVAL) && whatIfClass < 0) {
-                for (int i=0; i<classes;i++) {
-                    if (classTypes[i] == ExactConstants.CLASS_OPEN) {
-                        newClassData[i] *= maxValue;
-                    }
-                }
-            }
-            // Change service demands of a LI station for a single (open) class only
-            else if (whatIfType.equals(WHAT_IF_DEMANDS) && whatIfClass >= 0 && classTypes[whatIfClass] == CLASS_OPEN) {
-                // Modify arrival rate as it's the same for utilization check
-                double factor = maxValue / serviceTimes[whatIfClass][whatIfStation][0];
-                newClassData[whatIfClass]*= factor;
-            }
-            // Change service demands of a LI station for all (open) classes
-            else if (whatIfType.equals(WHAT_IF_DEMANDS) && whatIfClass < 0) {
-                for (int i=0; i<classes;i++) {
-                    if (classTypes[i] == ExactConstants.CLASS_OPEN) {
-                        // Modify arrival rate as it's the same for utilization check
-                        newClassData[whatIfClass] *= maxValue;
-                    }
-                }
             }
             
-            // Now checks saturation
-            if(checkForSaturation(newClassData)) {
-                return SATURATION_WHATIF;
+            // What if arrival rates
+            if (whatIfType.equals(WHAT_IF_ARRIVAL)) {
+                double[] newClassData = (double[]) classData.clone();
+                // Change arrival rate of a single class only
+                if (whatIfClass >= 0) {
+                    newClassData[whatIfClass] = maxValue;
+                }
+                // Change arrival rate of all open classes
+                else  {
+                    for (int i=0; i<classes;i++) {
+                        if (classTypes[i] == ExactConstants.CLASS_OPEN) {
+                            newClassData[i] *= maxValue;
+                        }
+                    }
+                }
+                if(checkForSaturation(newClassData,visits, serviceTimes, stationServers)) {
+                    return SATURATION_WHATIF;
+                }
+            }
+            // What if service demands
+            else if (whatIfType.equals(WHAT_IF_DEMANDS)) {
+                double[][][] newServiceTimes = (double[][][]) serviceTimes.clone();
+                double[][] newVisits = (double[][]) visits.clone();
+            	
+            	// Change service demands of a LI station for a single (open) class only
+                if (whatIfClass >= 0 && classTypes[whatIfClass] == CLASS_OPEN) {
+                	newServiceTimes[whatIfStation][whatIfClass][0] = maxValue;
+                	newVisits[whatIfStation][whatIfClass] = 1;
+                }
+                // Change service demands of a LI station for all (open) classes
+                else {
+                    for (int i=0; i<classes;i++) {
+                        if (classTypes[i] == ExactConstants.CLASS_OPEN) {
+                        	newServiceTimes[whatIfStation][i][0] *= maxValue;
+                        }
+                    }
+                }
+                if(checkForSaturation(classData, newVisits, newServiceTimes, stationServers)) {
+                    return SATURATION_WHATIF;
+                }
             }
         }
         return NO_SATURATION;
@@ -2104,9 +2114,12 @@ public class ExactModel implements ExactConstants {
     /**
      * Checks current model for saturation, given arrival rates for customer classes
      * @param classData arrival rates for customer classes
+     * @param visits number of visits for station
+     * @param serviceTimes service times for station
+     * @param stationServers number of servers for each station
      * @return true if model will saturate, false otherwise
      */
-    private boolean checkForSaturation(double[] classData) {
+    private boolean checkForSaturation(double[] classData, double[][] visits, double[][][] serviceTimes, int[] stationServers) {
         for (int i = 0; i < stations; i++) {
             if (stationTypes[i] == STATION_DELAY) {
                 //delay station: don't check saturation
