@@ -15,7 +15,6 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
 
 package jmt.common.exception;
 
@@ -27,6 +26,11 @@ package jmt.common.exception;
 
  */
 public class IncorrectMeasureParameterException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * Creates a new instance of <code>IncorrectMeasureParameterException</code> without detail message.
 	 */

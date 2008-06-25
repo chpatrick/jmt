@@ -1,6 +1,5 @@
 package jmt.engine.dataAnalysis.sorting;
 
-
 //
 // Modified by Lev Shereshevsky (leo@aeriesoft.ru) 98/03/20
 //
@@ -32,7 +31,6 @@ package jmt.engine.dataAnalysis.sorting;
  * @version     1.1, 12 Jan 1998
  */
 public class MergeSort implements SortAlgorithm {
-
 
 	/**
 	 *   pre :  0 <= p <= r <= A.length
@@ -73,11 +71,12 @@ public class MergeSort implements SortAlgorithm {
 		double[] copy = new double[N];
 
 		/* copy data to be merged into array ``copy'' */
-		for (i = 0; i < N; i++)
+		for (i = 0; i < N; i++) {
 			copy[i] = A[p + i];
+		}
 
-		int mid = q - p;  // index of middle element in ``copy''
-		int end = r - p;  // index of last element in ``copy''
+		int mid = q - p; // index of middle element in ``copy''
+		int end = r - p; // index of last element in ``copy''
 
 		i = 0;
 		j = mid + 1;
@@ -121,6 +120,4 @@ public class MergeSort implements SortAlgorithm {
 		sort(data, 0, data.length - 1);
 	}
 
-
 }
-

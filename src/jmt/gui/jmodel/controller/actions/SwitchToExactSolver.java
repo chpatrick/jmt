@@ -15,14 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+
+import javax.swing.KeyStroke;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
 
@@ -38,6 +40,11 @@ import java.awt.event.KeyEvent;
 public class SwitchToExactSolver extends AbstractJmodelAction {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Defines an <code>Action</code> object with a default
 	 * description string and default icon.
 	 */
@@ -45,7 +52,7 @@ public class SwitchToExactSolver extends AbstractJmodelAction {
 		super("Export to JMVA...", "toJMVA", mediator);
 		putValue(SHORT_DESCRIPTION, "Export current model to JMVA...");
 		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_M));
-        putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.ALT_MASK));
+		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_M, InputEvent.ALT_MASK));
 		setEnabled(false);
 	}
 

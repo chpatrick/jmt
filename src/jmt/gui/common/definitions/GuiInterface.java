@@ -15,10 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.definitions;
 
-import javax.swing.*;
+import javax.swing.JFrame;
 
 /**
  * <p>Title: Gui Interface</p>
@@ -30,62 +30,61 @@ import javax.swing.*;
  *         Time: 11.12.07
  */
 public interface GuiInterface {
-    /**
-     * Shows a panel with an error message
-     * @param message specified error message
-     */
-    public void showErrorMessage(String message);
+	/**
+	 * Shows a panel with an error message
+	 * @param message specified error message
+	 */
+	public void showErrorMessage(String message);
 
-    /**
-     * Shows a panel with catched exception
-     * @param e exception to be shown
-     */
-    public void handleException(Exception e);
+	/**
+	 * Shows a panel with catched exception
+	 * @param e exception to be shown
+	 */
+	public void handleException(Exception e);
 
-    /**
-     * Changes simulation action status. This method is called by DispatcherThread.
-     * @param start state for start action
-     * @param pause state for pause action
-     * @param stop state for stop action
-     */
-    public void changeSimActionsState(boolean start,  boolean pause, boolean stop);
+	/**
+	 * Changes simulation action status. This method is called by DispatcherThread.
+	 * @param start state for start action
+	 * @param pause state for pause action
+	 * @param stop state for stop action
+	 */
+	public void changeSimActionsState(boolean start, boolean pause, boolean stop);
 
-    /**
-     * Sets resultWindow to be shown. This method is used by pollerThread.
-     * @param rsw window to be set as current ResultsWindow
-     */
-    public void setResultsWindow(JFrame rsw);
+	/**
+	 * Sets resultWindow to be shown. This method is used by pollerThread.
+	 * @param rsw window to be set as current ResultsWindow
+	 */
+	public void setResultsWindow(JFrame rsw);
 
-    /**
-     * Shows results window. This method is used by pollerThread.
-     */
-    public void showResultsWindow();
+	/**
+	 * Shows results window. This method is used by pollerThread.
+	 */
+	public void showResultsWindow();
 
-    /**
-     * Used to discover if the instance can display simulation animation
-     * @return true if the instance can display simulation animation
-     */
-    public boolean isAnimationDisplayable();
+	/**
+	 * Used to discover if the instance can display simulation animation
+	 * @return true if the instance can display simulation animation
+	 */
+	public boolean isAnimationDisplayable();
 
-    /**
-     * Shows the panel to solve a problem
-     */
-    public void showRelatedPanel(int problemType,int problemSubType, Object relatedStation, Object relatedCLass);
+	/**
+	 * Shows the panel to solve a problem
+	 */
+	public void showRelatedPanel(int problemType, int problemSubType, Object relatedStation, Object relatedCLass);
 
-    /**
-     * Shows the class panel
-     */
-    public void showClassPanel();
+	/**
+	 * Shows the class panel
+	 */
+	public void showClassPanel();
 
-    /**
-     * Sets the Parametric Analysis Results Window
-     * @param parw the Parametric Analysis Results Window to be set
-     */
-    //public void setPAResultsWindow(PAResultsWindow parw);
-
-    /**
-     * Sets the availability of results in case of parametric analysis
-     * @param avaible true if they are avaible
-     */
-    //public void setPAResultsAvaible(boolean avaible);
+	/**
+	 * Sets the Parametric Analysis Results Window
+	 * @param parw the Parametric Analysis Results Window to be set
+	 */
+	//public void setPAResultsWindow(PAResultsWindow parw);
+	/**
+	 * Sets the availability of results in case of parametric analysis
+	 * @param avaible true if they are avaible
+	 */
+	//public void setPAResultsAvaible(boolean avaible);
 }

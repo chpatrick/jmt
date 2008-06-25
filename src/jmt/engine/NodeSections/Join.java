@@ -17,10 +17,16 @@
  */
 package jmt.engine.NodeSections;
 
-import jmt.common.exception.NetException;
-import jmt.engine.QueueNet.*;
-
 import java.util.HashMap;
+
+import jmt.common.exception.NetException;
+import jmt.engine.QueueNet.ForkJob;
+import jmt.engine.QueueNet.GlobalJobInfoList;
+import jmt.engine.QueueNet.Job;
+import jmt.engine.QueueNet.JobInfo;
+import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.NetEvent;
+import jmt.engine.QueueNet.NetMessage;
 
 /**
  * <p>Title: Join</p>
@@ -33,92 +39,91 @@ import java.util.HashMap;
  *         Time: 16.19.58
  */
 public class Join extends InputSection {
-    /** Data structure used to store received fragments for each job */
-    private HashMap jobs;
+	/** Data structure used to store received fragments for each job */
+	private HashMap jobs;
 
+	// --- Constructors -----------------------------------------------------------------------------
+	/**
+	 * Constructs a new Join
+	 */
+	public Join() {
+		// Disables automatic handling of jobinfolists
+		super(false);
+		jobs = new HashMap();
+	}
 
-// --- Constructors -----------------------------------------------------------------------------
-    /**
-     * Constructs a new Join
-     */
-    public Join() {
-        // Disables automatic handling of jobinfolists
-        super(false);
-        jobs = new HashMap();
-    }
-// ----------------------------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------------------------
 
-    /**
-     * Assemples splitted jobs and sends an EVENT_JOIN to reference fork when done
-     *
-     * @param message message to be processed.
-     * @throws NetException if something goes wrong
-     * @return message processing result.
-     */
-    protected int process(NetMessage message) throws NetException {
-        switch(message.getEvent()) {
-            case NetEvent.EVENT_JOB:
-                Job job = message.getJob();
-                // Sends ACK back
-                send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
+	/**
+	 * Assemples splitted jobs and sends an EVENT_JOIN to reference fork when done
+	 *
+	 * @param message message to be processed.
+	 * @throws NetException if something goes wrong
+	 * @return message processing result.
+	 */
+	protected int process(NetMessage message) throws NetException {
+		switch (message.getEvent()) {
+			case NetEvent.EVENT_JOB:
+				Job job = message.getJob();
+				// Sends ACK back
+				send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
 
-                if (job instanceof ForkJob) {
-                    ForkJob fJob = (ForkJob) job;
+				if (job instanceof ForkJob) {
+					ForkJob fJob = (ForkJob) job;
 
-                    // Removes job from global node list
-                    JobInfoList info = getOwnerNode().getJobInfoList();
-                    JobInfo jobData = info.lookFor(job);
-                    if (jobData != null)
-                        info.remove(jobData);
+					// Removes job from global node list
+					JobInfoList info = getOwnerNode().getJobInfoList();
+					JobInfo jobData = info.lookFor(job);
+					if (jobData != null) {
+						info.remove(jobData);
+					}
 
-                    // Removes job from system list
-                    GlobalJobInfoList global = getOwnerNode().getQueueNet().getJobInfoList();
-                    global.removeForkedJob(fJob);
+					// Removes job from system list
+					GlobalJobInfoList global = getOwnerNode().getQueueNet().getJobInfoList();
+					global.removeForkedJob(fJob);
 
-                    // Needed pieces
-                    int needed;
-                    if (jobs.containsKey(fJob.getForkedJob()))
-                        needed = ((Integer)jobs.get(fJob.getForkedJob())).intValue();
-                    else {
-                        needed = fJob.getForkedNumber();
-                        // As we are waiting for other fragments, adds merged job to global and local info list
-                        JobInfo merged = new JobInfo(fJob.getForkedJob());
-                        info.add(merged);
-                        jobsList.add(merged);
-                    }
-                    // Decrement needed as we received this job
-                    needed--;
+					// Needed pieces
+					int needed;
+					if (jobs.containsKey(fJob.getForkedJob())) {
+						needed = ((Integer) jobs.get(fJob.getForkedJob())).intValue();
+					} else {
+						needed = fJob.getForkedNumber();
+						// As we are waiting for other fragments, adds merged job to global and local info list
+						JobInfo merged = new JobInfo(fJob.getForkedJob());
+						info.add(merged);
+						jobsList.add(merged);
+					}
+					// Decrement needed as we received this job
+					needed--;
 
-                    // If needed is zero, all pieces has been retrived and job can be
-                    // fowarded
-                    if (needed == 0) {
-                        jobs.remove(fJob.getForkedJob());
-                        // Adds original job, otherwise we will have one less job in the network
-                        global.addForkedJob(fJob.getForkedJob());
-                        // Sends job forward
-                        sendForward(fJob.getForkedJob(), 0.0);
-                        // Notify fork node (to support blocking)
-                        send(NetEvent.EVENT_JOIN, fJob.getForkedJob(), 0.0,
-                                fJob.getReferenceFork().getSectionID(),
-                                fJob.getReferenceFork().getOwnerNode());
-                    }
-                    else
-                        // We must wait for more fragments before sending this to
-                        // next section
-                        jobs.put(fJob.getForkedJob(), new Integer(needed));
-                }
-                else
-                    // If this is not a fork job, sends it forward
-                    sendForward(job, 0.0);
+					// If needed is zero, all pieces has been retrived and job can be
+					// fowarded
+					if (needed == 0) {
+						jobs.remove(fJob.getForkedJob());
+						// Adds original job, otherwise we will have one less job in the network
+						global.addForkedJob(fJob.getForkedJob());
+						// Sends job forward
+						sendForward(fJob.getForkedJob(), 0.0);
+						// Notify fork node (to support blocking)
+						send(NetEvent.EVENT_JOIN, fJob.getForkedJob(), 0.0, fJob.getReferenceFork().getSectionID(), fJob.getReferenceFork()
+								.getOwnerNode());
+					} else {
+						// We must wait for more fragments before sending this to
+						// next section
+						jobs.put(fJob.getForkedJob(), new Integer(needed));
+					}
+				} else {
+					// If this is not a fork job, sends it forward
+					sendForward(job, 0.0);
+				}
 
-                break;
-            case NetEvent.EVENT_ACK:
-                break;
-        }
+				break;
+			case NetEvent.EVENT_ACK:
+				break;
+		}
 
-        // Everything was okay
-        return MSG_PROCESSED;
-    }
-
+		// Everything was okay
+		return MSG_PROCESSED;
+	}
 
 }

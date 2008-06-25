@@ -17,14 +17,15 @@
  */
 package jmt.gui.common.panels.parametric;
 
-import jmt.gui.common.definitions.ClassDefinition;
-import jmt.gui.common.definitions.StationDefinition;
-import jmt.gui.common.definitions.SimulationDefinition;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
+import java.awt.Color;
 import java.util.Vector;
+
+import javax.swing.JSplitPane;
+import javax.swing.border.TitledBorder;
+
+import jmt.gui.common.definitions.ClassDefinition;
+import jmt.gui.common.definitions.SimulationDefinition;
+import jmt.gui.common.definitions.StationDefinition;
 
 /**
  * <p>Title: ParameterOptionPanel</p>
@@ -35,37 +36,42 @@ import java.util.Vector;
  *         Time: 16.12.06
  */
 
+public abstract class ParameterOptionPanel extends JSplitPane {
+	Color DEFAULT_TITLE_COLOR = new TitledBorder("").getTitleColor();
+	TitledBorder title = new TitledBorder("Parameter options");
+	String DESCRIPTION;
+	protected ClassDefinition cd;
+	protected StationDefinition sd;
+	protected SimulationDefinition simd;
 
-    public abstract class ParameterOptionPanel extends JSplitPane {
-        Color DEFAULT_TITLE_COLOR = new TitledBorder("").getTitleColor();
-        TitledBorder title = new TitledBorder("Parameter options") ;
-        String DESCRIPTION;
-        protected ClassDefinition cd;
-        protected StationDefinition sd;
-        protected SimulationDefinition simd;
+	public void setEnabled(boolean enabled) {
+		if (enabled) {
+			title.setTitleColor(DEFAULT_TITLE_COLOR);
+		} else {
+			title.setTitleColor(Color.LIGHT_GRAY);
+		}
+	}
 
-        public void setEnabled (boolean enabled) {
-            if (enabled) title.setTitleColor(DEFAULT_TITLE_COLOR);
-            else title.setTitleColor(Color.LIGHT_GRAY);
-        }
+	public Object getClassKey(String name) {
+		Object key = null;
+		Vector classes = cd.getClassKeys();
+		for (int i = 0; i < classes.size(); i++) {
+			if (cd.getClassName(classes.get(i)).equals(name)) {
+				key = classes.get(i);
+			}
+		}
+		return key;
+	}
 
-        public Object getClassKey(String name) {
-            Object key = null;
-            Vector classes = cd.getClassKeys();
-            for (int i=0;i<classes.size();i++) {
-                if (cd.getClassName(classes.get(i)).equals(name)) key = classes.get(i);
-            }
-            return key;
-        }
+	public Object getStationKey(String name) {
+		Object key = null;
+		Vector stations = sd.getStationKeys();
+		for (int i = 0; i < stations.size(); i++) {
+			if (sd.getStationName(stations.get(i)).equals(name)) {
+				key = stations.get(i);
+			}
+		}
+		return key;
+	}
 
-        public Object getStationKey(String name) {
-            Object key = null;
-            Vector stations = sd.getStationKeys();
-            for (int i=0;i<stations.size();i++) {
-                if (sd.getStationName(stations.get(i)).equals(name)) key = stations.get(i);
-            }
-            return key;
-        }
-
-    }
-
+}

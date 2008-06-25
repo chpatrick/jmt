@@ -15,15 +15,14 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.common.resources.JMTImageLoader;
-import jmt.gui.jmodel.controller.Mediator;
+package jmt.gui.jmodel.controller.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import jmt.gui.common.resources.JMTImageLoader;
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
 
@@ -34,26 +33,29 @@ import java.awt.event.KeyEvent;
  */
 public class SetInsertState extends AbstractJmodelAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String className;//name of the class that will be instatiated
 
-    /**
-     * Creates an action that sets MouseListener in Insert mode
-     * @param mediator refernce to the mediator of the GUI
-     * @param className the name of the class to be inserted
-     *
-     * Author: Bertoli Marco
-     */
-    public SetInsertState(Mediator mediator, String className) {
-        super(className,mediator);
-        setSelectable(true);
-        setGroup(0);
-        // Generate default description
-        putValue(SHORT_DESCRIPTION, "Inserts a "+
-                className.substring(0, className.lastIndexOf("Cell")).toLowerCase() +".");
-        putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));
-        setIcon(className, JMTImageLoader.getImageLoader());
-        this.className = className;
-    }
+	/**
+	 * Creates an action that sets MouseListener in Insert mode
+	 * @param mediator refernce to the mediator of the GUI
+	 * @param className the name of the class to be inserted
+	 *
+	 * Author: Bertoli Marco
+	 */
+	public SetInsertState(Mediator mediator, String className) {
+		super(className, mediator);
+		setSelectable(true);
+		setGroup(0);
+		// Generate default description
+		putValue(SHORT_DESCRIPTION, "Inserts a " + className.substring(0, className.lastIndexOf("Cell")).toLowerCase() + ".");
+		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));
+		setIcon(className, JMTImageLoader.getImageLoader());
+		this.className = className;
+	}
 
 	public void actionPerformed(ActionEvent e) {
 		mediator.setInsertState(className);

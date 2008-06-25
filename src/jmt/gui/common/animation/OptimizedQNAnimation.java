@@ -15,10 +15,11 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.animation;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.ImageObserver;
 
 /**
@@ -28,55 +29,68 @@ import java.awt.image.ImageObserver;
  * Time: 9.41.35
  * To change this template use Options | File Templates.
  */
-public class OptimizedQNAnimation extends QueueNetAnimation{
+public class OptimizedQNAnimation extends QueueNetAnimation {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    public void paint(Graphics g, ImageObserver io) {
-        for(int i=0; i<jobs.size(); i++) {
-            Rectangle lastBounds = ((OptimizedJobAnimation)jobs.get(i)).getLastBounds();
-            if(lastBounds!=null)this.repaint(lastBounds.x, lastBounds.y, lastBounds.width, lastBounds.height);
-        }
-        for(int i=0; i<edges.size(); i++) ((OptimizedEdgeAnimation)edges.get(i)).paint(g, io);
-        for(int i=0; i<stations.size(); i++)((StationAnimation)stations.get(i)).paint(g,io);
-        for(int i=0; i<jobs.size(); i++)((OptimizedJobAnimation)jobs.get(i)).paint(g,io);
-    }
+	public void paint(Graphics g, ImageObserver io) {
+		for (int i = 0; i < jobs.size(); i++) {
+			Rectangle lastBounds = ((OptimizedJobAnimation) jobs.get(i)).getLastBounds();
+			if (lastBounds != null) {
+				this.repaint(lastBounds.x, lastBounds.y, lastBounds.width, lastBounds.height);
+			}
+		}
+		for (int i = 0; i < edges.size(); i++) {
+			((OptimizedEdgeAnimation) edges.get(i)).paint(g, io);
+		}
+		for (int i = 0; i < stations.size(); i++) {
+			((StationAnimation) stations.get(i)).paint(g, io);
+		}
+		for (int i = 0; i < jobs.size(); i++) {
+			((OptimizedJobAnimation) jobs.get(i)).paint(g, io);
+		}
+	}
 
-    public void addJob(JobAnimation jobAnimation, JobContainer startingPoint){
-        super.addJob(new OptimizedJobAnimation(jobAnimation),startingPoint);
-    }
+	public void addJob(JobAnimation jobAnimation, JobContainer startingPoint) {
+		super.addJob(new OptimizedJobAnimation(jobAnimation), startingPoint);
+	}
 
-    public void addEdge(EdgeAnimation edge, StationAnimation station1, StationAnimation station2){
-        super.addEdge(new OptimizedEdgeAnimation(edge),station1, station2);
-    }
+	public void addEdge(EdgeAnimation edge, StationAnimation station1, StationAnimation station2) {
+		super.addEdge(new OptimizedEdgeAnimation(edge), station1, station2);
+	}
 
 }
 
-class OptimizedJobAnimation extends JobAnimation{
+class OptimizedJobAnimation extends JobAnimation {
 
-    Rectangle lastBounds;
+	Rectangle lastBounds;
 
-    public OptimizedJobAnimation(JobAnimation job){
-        super(job);
-    }
+	public OptimizedJobAnimation(JobAnimation job) {
+		super(job);
+	}
 
-    public void setBounds(Rectangle r){
-        lastBounds = getBounds();
-        super.setBounds(r);
-    }
+	public void setBounds(Rectangle r) {
+		lastBounds = getBounds();
+		super.setBounds(r);
+	}
 
-    public Rectangle getLastBounds(){
-        return lastBounds;
-    }
+	public Rectangle getLastBounds() {
+		return lastBounds;
+	}
 }
 
-class OptimizedEdgeAnimation extends EdgeAnimation{
+class OptimizedEdgeAnimation extends EdgeAnimation {
 
+	public OptimizedEdgeAnimation(EdgeAnimation ea) {
+		super(ea);
+	}
 
-    public OptimizedEdgeAnimation(EdgeAnimation ea){
-        super(ea);
-    }
-
-    public void paint(Graphics g, ImageObserver io){
-        if(jobAnimations.size()>0)super.paint(g, io);
-    }
+	public void paint(Graphics g, ImageObserver io) {
+		if (jobAnimations.size() > 0) {
+			super.paint(g, io);
+		}
+	}
 }

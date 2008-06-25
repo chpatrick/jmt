@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.ld;
 
 import java.awt.BorderLayout;
@@ -46,6 +46,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 
 import jmt.common.exception.ExpressionParseException;
@@ -63,6 +64,10 @@ import jmt.gui.exact.table.ExactTableModel;
  */
 public class LDEditingWindow extends JMTDialog {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	/* dummy arrays to keep the tablemodel happy during initialization */
 	private double[][] serviceTimes = new double[1][1];
 	private String[] classNames = new String[1];
@@ -82,6 +87,11 @@ public class LDEditingWindow extends JMTDialog {
 	/* the Actions behind the various components */
 
 	public AbstractAction LD_CANCEL = new AbstractAction("Cancel") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public void actionPerformed(ActionEvent ae) {
 			hide();
 			ldEditor.editingCanceled();
@@ -89,6 +99,11 @@ public class LDEditingWindow extends JMTDialog {
 	};
 
 	public AbstractAction LD_COMMIT = new AbstractAction("OK") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public void actionPerformed(ActionEvent ae) {
 			hide();
 			commit();
@@ -97,6 +112,11 @@ public class LDEditingWindow extends JMTDialog {
 	};
 
 	public AbstractAction COPYDOWN_ACTION = new AbstractAction("Copy down") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		{
 			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_D, ActionEvent.CTRL_MASK, false));
 			putValue(Action.SHORT_DESCRIPTION, "Copies the value in the focused cell down to all cells in the same column");
@@ -109,12 +129,22 @@ public class LDEditingWindow extends JMTDialog {
 	};
 
 	public AbstractAction LD_HELP = new AbstractAction("Help") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public void actionPerformed(ActionEvent e) {
 			showHelp();
 		}
 	};
 
 	public AbstractAction EVALUATE = new AbstractAction("Evaluate") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		{
 			//putValue(Action.SHORT_DESCRIPTION,"Fill in the selected cells by evaluating an expression");
 		}
@@ -141,7 +171,6 @@ public class LDEditingWindow extends JMTDialog {
 		}
 	};
 
-
 	/**
 	 * adding this to a Window results in the window not releasing the focus
 	 */
@@ -163,13 +192,14 @@ public class LDEditingWindow extends JMTDialog {
 		}
 	};
 
-
 	private LDEditor ldEditor;
 
 	LDEditingWindow(Frame owner, LDEditor ldEditor) {
 		super(owner, false);
 		this.ldEditor = ldEditor;
-		if (owner == null) throw new IllegalArgumentException("owner must not be null!");
+		if (owner == null) {
+			throw new IllegalArgumentException("owner must not be null!");
+		}
 		setSize(400, 400); // only height is fixed
 		//setUndecorated(true);
 		//setResizable(false);
@@ -202,11 +232,11 @@ public class LDEditingWindow extends JMTDialog {
 		//ldTitle.setFont(new Font("Arial",Font.BOLD|Font.ITALIC,14));
 
 		ldExpression = new JTextField();
-		ldExpression.addActionListener(new ActionListener() {  // evaluate as the use presses enter
-			public void actionPerformed(ActionEvent e) {
-				EVALUATE.actionPerformed(e);
-			}
-		});
+		ldExpression.addActionListener(new ActionListener() { // evaluate as the use presses enter
+					public void actionPerformed(ActionEvent e) {
+						EVALUATE.actionPerformed(e);
+					}
+				});
 
 		/*JPanel cp=new JPanel();
 		cp.setBorder(BorderFactory.createCompoundBorder(BorderFactory.createRaisedBevelBorder(),
@@ -221,8 +251,8 @@ public class LDEditingWindow extends JMTDialog {
 		Box vBox = Box.createVerticalBox();
 		vBox.add(Box.createVerticalStrut(5));
 		JScrollPane ldTablePane = new JScrollPane(ldTable);
-		ldTablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		ldTablePane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+		ldTablePane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		ldTablePane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
 		vBox.add(ldTablePane);
 		//vBox.add(Box.createVerticalStrut(5));
 		vBox.add(makeTools());
@@ -277,10 +307,10 @@ public class LDEditingWindow extends JMTDialog {
 		box.add(evaluate);
 		box.setBorder(BorderFactory.createEtchedBorder());
 
-
 		JPanel lPanel = new JPanel();
 		lPanel.setLayout(new BorderLayout());
-		JLabel helpLabel = new JLabel("<html>Enter the expression to be evaluated, using <b><i>n</i></b> for the number of customers. For syntax details and a list of supported functions click on \"Help\"</html>");
+		JLabel helpLabel = new JLabel(
+				"<html>Enter the expression to be evaluated, using <b><i>n</i></b> for the number of customers. For syntax details and a list of supported functions click on \"Help\"</html>");
 		helpLabel.setHorizontalAlignment(SwingConstants.CENTER);
 		lPanel.add(helpLabel);
 
@@ -344,13 +374,20 @@ public class LDEditingWindow extends JMTDialog {
 	}
 
 	private void showHelp() {
-		if (helpDialog == null) helpDialog = new LDHelpDialog(this, eval);
+		if (helpDialog == null) {
+			helpDialog = new LDHelpDialog(this, eval);
+		}
 		helpDialog.show();
 	}
 
 	//************************************************************************
 
 	private class LDTable extends ExactTable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		LDTable() {
 			super(new LDTableModel());
@@ -366,7 +403,8 @@ public class LDEditingWindow extends JMTDialog {
 			installKeyboardAction(COPYDOWN_ACTION);
 			mouseHandler.getMenu().add(COPYDOWN_ACTION);
 
-			help.addHelp(this, "Click or drag to select cells; to edit data single-click and start typing. Right-click for a list of available operations");
+			help.addHelp(this,
+					"Click or drag to select cells; to edit data single-click and start typing. Right-click for a list of available operations");
 			help.addHelp(moreColumnsLabel, "There are more classes: scroll right to see them");
 			help.addHelp(moreRowsLabel, "There are more rows: scroll down to see them");
 			help.addHelp(selectAllButton, "Click to select all cells");
@@ -399,7 +437,6 @@ public class LDEditingWindow extends JMTDialog {
 			updateRows(anchorRow + 1, getRowCount());
 		}
 
-
 		/**
 		 * Fills in selected cells with values obtained evaluating <code>expr</code>
 		 * @throws jmt.common.exception.ExpressionParseException if there were errors parsing expr
@@ -422,6 +459,11 @@ public class LDEditingWindow extends JMTDialog {
 	 * rows represent customer #, columns classes
 	 */
 	private class LDTableModel extends ExactTableModel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		LDTableModel() {
 			prototype = new Double(1000);
@@ -451,7 +493,9 @@ public class LDEditingWindow extends JMTDialog {
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			try {
 				double newVal = Double.parseDouble((String) value);
-				if (newVal >= 0) serviceTimes[columnIndex][rowIndex] = newVal;
+				if (newVal >= 0) {
+					serviceTimes[columnIndex][rowIndex] = newVal;
+				}
 			} catch (NumberFormatException e) {
 			}
 		}
@@ -497,15 +541,19 @@ public class LDEditingWindow extends JMTDialog {
 		public void fillCells(String expr, int rowFrom, int rowTo, int colFrom, int colTo) throws ExpressionParseException {
 			double[] x = new double[rowTo - rowFrom + 1];
 
-			int i,r,c;
+			int i, r, c;
 
-			for (r = rowTo + 1, i = x.length - 1; r > rowFrom; r--, i--) x[i] = r;
+			for (r = rowTo + 1, i = x.length - 1; r > rowFrom; r--, i--) {
+				x[i] = r;
+			}
 
 			double[] y = eval.evaluate(expr, x);
 
-			for (r = rowFrom, i = 0; r <= rowTo; r++, i++)
-				for (c = colFrom; c <= colTo; c++)
+			for (r = rowFrom, i = 0; r <= rowTo; r++, i++) {
+				for (c = colFrom; c <= colTo; c++) {
 					serviceTimes[c][r] = y[i];
+				}
+			}
 
 			fireTableRowsUpdated(rowFrom, rowTo);
 
@@ -513,5 +561,3 @@ public class LDEditingWindow extends JMTDialog {
 
 	}
 }
-
-

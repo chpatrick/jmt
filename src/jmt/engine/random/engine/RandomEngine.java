@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * RandomEngine.java
  *
@@ -31,14 +31,14 @@ package jmt.engine.random.engine;
  */
 public abstract class RandomEngine {
 
+	private static RandomEngine defaultEngine = new MersenneTwister();
 
-    private static RandomEngine defaultEngine = new MersenneTwister();
+	//NEW
+	//@author Stefano Omini
+	//should be set by the class Simulation to initialize the default RandomEngine
+	private static long simulationSeed;
 
-    //NEW
-    //@author Stefano Omini
-    //should be set by the class Simulation to initialize the default RandomEngine
-    private static long simulationSeed;
-    //end NEW
+	//end NEW
 
 	/**
 	 * Makes this class non instantiable, but still lets others inherit from it.
@@ -55,25 +55,23 @@ public abstract class RandomEngine {
 		return defaultEngine;
 	}
 
-
-    //NEW
-    //@author Stefano Omini
-    /**
+	//NEW
+	//@author Stefano Omini
+	/**
 	 * Sets the seed of the default engine of uniform random number.
-     * WARNING: this method must be called only by the class Simulation and only
-     * before starting the simulation, otherwise the engine is seeded using the
-     * current time.
-     *
+	 * WARNING: this method must be called only by the class Simulation and only
+	 * before starting the simulation, otherwise the engine is seeded using the
+	 * current time.
+	 *
 	 */
 	public static void setSeed(long seed) {
-        simulationSeed = seed;
-        //set the new seed
-        ((MersenneTwister) defaultEngine).setNewSeed(simulationSeed);
-        return;
+		simulationSeed = seed;
+		//set the new seed
+		((MersenneTwister) defaultEngine).setNewSeed(simulationSeed);
+		return;
 	}
-    //end NEW
 
-
+	//end NEW
 
 	/**
 	 * Returns a 64 bit uniformly distributed random number in the open unit
@@ -87,15 +85,13 @@ public abstract class RandomEngine {
 	 * (including Integer.MIN_VALUE and  Integer.MAX_VALUE)
 	 */
 	public abstract int nextInt();
-	
-	/**
-     *Returns a 64 bit uniformly distributed random number in the closed interval
-     * [Long.MIN_VALUE,Long.MAX_VALUE]
-     * (including Long.MIN_VALUE and  Long.MAX_VALUE)
-     */
-    public abstract long nextLong64();
 
-	
+	/**
+	 *Returns a 64 bit uniformly distributed random number in the closed interval
+	 * [Long.MIN_VALUE,Long.MAX_VALUE]
+	 * (including Long.MIN_VALUE and  Long.MAX_VALUE)
+	 */
+	public abstract long nextLong64();
 
 	/**
 	 * Returns a 32 bit uniformly distributed random number in the open unit

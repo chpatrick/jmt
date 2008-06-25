@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -57,14 +56,15 @@ public class Exponential extends AbstractDistribution implements Distribution {
 	 */
 
 	//OLD
-    //public double pdf(double x, ExponentialPar p)
-    public double pdf(double x, Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double pdf(double x, ExponentialPar p)
+	public double pdf(double x, Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
-            //OLD
-            //double lambda = p.getLambda();
-            double lambda = ((ExponentialPar) p).getLambda();
-			if (x < 0.0) return 0.0;
+			//OLD
+			//double lambda = p.getLambda();
+			double lambda = ((ExponentialPar) p).getLambda();
+			if (x < 0.0) {
+				return 0.0;
+			}
 			return lambda * Math.exp(-x * lambda);
 		} else {
 			throw new IncorrectDistributionParameterException("Remember: parameter lambda must be gtz");
@@ -81,16 +81,17 @@ public class Exponential extends AbstractDistribution implements Distribution {
 	 * @throws IncorrectDistributionParameterException
 	 * @return double with the cumulative distribution function evaluated in x.
 	 */
-    //OLD
-    //public double cdf(double x, ExponentialPar p)
-	public double cdf(double x, Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//OLD
+	//public double cdf(double x, ExponentialPar p)
+	public double cdf(double x, Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
-			if (x <= 0.0) return 0.0;
+			if (x <= 0.0) {
+				return 0.0;
+			}
 			//OLD
-            //return 1.0 - Math.exp(-x * p.getLambda());
-            double lambda = ((ExponentialPar) p).getLambda();
-            return 1.0 - Math.exp(-x * lambda);
+			//return 1.0 - Math.exp(-x * p.getLambda());
+			double lambda = ((ExponentialPar) p).getLambda();
+			return 1.0 - Math.exp(-x * lambda);
 		} else {
 			throw new IncorrectDistributionParameterException("Remember: parameter lambda must be gtz");
 		}
@@ -108,13 +109,12 @@ public class Exponential extends AbstractDistribution implements Distribution {
 	 * the mean of the exponential distribution is calculated as 1/lambda.
 	 */
 	//OLD
-    //public double theorMean(ExponentialPar p)
-    public double theorMean(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double theorMean(ExponentialPar p)
+	public double theorMean(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			//OLD
-            //return 1 / p.getLambda();
-            return 1 / ((ExponentialPar) p).getLambda();
+			//return 1 / p.getLambda();
+			return 1 / ((ExponentialPar) p).getLambda();
 		} else {
 			throw new IncorrectDistributionParameterException("Remember: parameter lambda must be gtz");
 		}
@@ -132,13 +132,12 @@ public class Exponential extends AbstractDistribution implements Distribution {
 	 * the variance of an exponential is calculated as 1/(lambda^2).
 	 */
 	//OLD
-    //public double theorVariance(ExponentialPar p)
-    public double theorVariance(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double theorVariance(ExponentialPar p)
+	public double theorVariance(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			//OLD
-            //double lambda = p.getLambda();
-            double lambda = ((ExponentialPar) p).getLambda();
+			//double lambda = p.getLambda();
+			double lambda = ((ExponentialPar) p).getLambda();
 			return 1 / (lambda * lambda);
 		} else {
 			throw new IncorrectDistributionParameterException("Remember: parameter lambda must be gtz");
@@ -155,14 +154,12 @@ public class Exponential extends AbstractDistribution implements Distribution {
 	 * @return double with the next random number of this distribution.
 	 */
 
-	public double nextRand(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public double nextRand(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			return -Math.log(engine.raw()) / ((ExponentialPar) p).getLambda();
 		} else {
 			throw new IncorrectDistributionParameterException("Remember: parameter lambda must be gtz");
 		}
 	}
-
 
 } // end Exponential

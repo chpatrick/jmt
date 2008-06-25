@@ -28,17 +28,18 @@ package jmt.framework.gui.graph;
  * @version 1.0
  */
 public interface MeasureValue {
-    /**
-     * @return the upper bound of value. Infinity if not set
-     */
-    public double getUpperBound();
-    
-    /**
-     * @return the lower bound of value. Infinity if not set
-     */
-    public double getLowerBound();
-    /**
-     * @return the mean value
-     */
-    public double getMeanValue();
+	/**
+	 * @return the upper bound of value. Infinity if not set
+	 */
+	public double getUpperBound();
+
+	/**
+	 * @return the lower bound of value. Infinity if not set
+	 */
+	public double getLowerBound();
+
+	/**
+	 * @return the mean value
+	 */
+	public double getMeanValue();
 }

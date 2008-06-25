@@ -15,15 +15,15 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.mainGui;
+
+import java.lang.reflect.Field;
 
 import jmt.framework.gui.components.JMTToolBar;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.jmodel.controller.Mediator;
 import jmt.gui.jmodel.controller.actions.SetInsertState;
-
-import java.lang.reflect.Field;
 
 /**
  * <p>Title: Component Toolbar</p>
@@ -39,67 +39,75 @@ import java.lang.reflect.Field;
  * Modified by Giuseppe De Cicco & Fabio Granara
  */
 public class ComponentBar extends JMTToolBar {
-    public ComponentBar (Mediator m) {
-        super(JMTImageLoader.getImageLoader());
-        // Adds Select button
-        addGenericButton(m.getSetSelect());
-        addSeparator();
-        // Adds insert mode buttons.
-        String[] stations = getStationList();
-        for (int i=0; i<stations.length; i++) {
-            addGenericButton(new SetInsertState(m, stations[i]));
-        }
-        addSeparator();
-        // Adds link button
-        addGenericButton(m.getSetConnect());
-        // Blocking region button
-        addGenericButton(m.getAddBlockingRegion());
-        
-        addSeparator();
-        // Rotate button 
-        addGenericButton(m.getRotate());
-        // Set right button
-        addGenericButton(m.getSetRight());
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-        // Disables all components button
-        enableButtons(false);
-    }
+	public ComponentBar(Mediator m) {
+		super(JMTImageLoader.getImageLoader());
+		// Adds Select button
+		addGenericButton(m.getSetSelect());
+		addSeparator();
+		// Adds insert mode buttons.
+		String[] stations = getStationList();
+		for (int i = 0; i < stations.length; i++) {
+			addGenericButton(new SetInsertState(m, stations[i]));
+		}
+		addSeparator();
+		// Adds link button
+		addGenericButton(m.getSetConnect());
+		// Blocking region button
+		addGenericButton(m.getAddBlockingRegion());
 
-    /**
-     * Finds all possible station types using reflection on <code>JMODELConstants</code>
-     * In such way a future placement of new station types will be easy.
-     * @return All station types element found
-     */
-    private String[] getStationList() {
-        String path = "jmt.gui.jmodel.JGraphMod.";
-        Field[] fields = jmt.gui.jmodel.JMODELConstants.class.getFields();
-        String[] stationNames = new String[fields.length];
-        int index = 0;
-        try {
-        for (int i=0; i<fields.length; i++)
-            if (fields[i].getName().startsWith("STATION_TYPE_")) {
-                // Checks for existance of graphic component
-                String name = ((String) fields[i].get(null)).replaceAll(" ","")  + "Cell";
-                try {
-                    boolean enabled = Class.forName(path + name).getDeclaredField("canBePlaced").getBoolean(null);
-                    if (enabled)
-                        stationNames[index++] = name;
-                } catch (ClassNotFoundException e) {
-                    // Never Thrown
-                    e.printStackTrace();
-                } catch (NoSuchFieldException ex) {
-                    // Never Thrown
-                    ex.printStackTrace();
-                }
-            }
-        } catch (IllegalAccessException ex) {
-            System.out.println("A security manager has blocked reflection");
-            ex.printStackTrace();
-        }
-        // Build *Cell array to be given as output
-        String[] tmp = new String[index];
-        for (int i=0; i<index;i++)
-            tmp[i] = stationNames[i];
-        return tmp;
-    }
+		addSeparator();
+		// Rotate button 
+		addGenericButton(m.getRotate());
+		// Set right button
+		addGenericButton(m.getSetRight());
+
+		// Disables all components button
+		enableButtons(false);
+	}
+
+	/**
+	 * Finds all possible station types using reflection on <code>JMODELConstants</code>
+	 * In such way a future placement of new station types will be easy.
+	 * @return All station types element found
+	 */
+	private String[] getStationList() {
+		String path = "jmt.gui.jmodel.JGraphMod.";
+		Field[] fields = jmt.gui.jmodel.JMODELConstants.class.getFields();
+		String[] stationNames = new String[fields.length];
+		int index = 0;
+		try {
+			for (int i = 0; i < fields.length; i++) {
+				if (fields[i].getName().startsWith("STATION_TYPE_")) {
+					// Checks for existance of graphic component
+					String name = ((String) fields[i].get(null)).replaceAll(" ", "") + "Cell";
+					try {
+						boolean enabled = Class.forName(path + name).getDeclaredField("canBePlaced").getBoolean(null);
+						if (enabled) {
+							stationNames[index++] = name;
+						}
+					} catch (ClassNotFoundException e) {
+						// Never Thrown
+						e.printStackTrace();
+					} catch (NoSuchFieldException ex) {
+						// Never Thrown
+						ex.printStackTrace();
+					}
+				}
+			}
+		} catch (IllegalAccessException ex) {
+			System.out.println("A security manager has blocked reflection");
+			ex.printStackTrace();
+		}
+		// Build *Cell array to be given as output
+		String[] tmp = new String[index];
+		for (int i = 0; i < index; i++) {
+			tmp[i] = stationNames[i];
+		}
+		return tmp;
+	}
 }

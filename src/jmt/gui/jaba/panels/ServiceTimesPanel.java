@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jaba.panels;
 
 import java.awt.BorderLayout;
@@ -32,6 +32,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableCellEditor;
 
 import jmt.framework.data.ArrayUtils;
@@ -56,19 +57,24 @@ import jmt.gui.jaba.JabaWizard;
  * 4th panel: service times
  */
 public final class ServiceTimesPanel extends WizardPanel implements JabaConstants, ForceUpdatablePanel {
-    // Bertoli Marco - Used to show only two decimal digits
-    private static DecimalFormat formatter = new DecimalFormat("#0.00");
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	// Bertoli Marco - Used to show only two decimal digits
+	private static DecimalFormat formatter = new DecimalFormat("#0.00");
 
 	private JabaWizard ew;
 	private HoverHelp help;
-	private static final String helpText = "<html>In this panel you can edit the service times of LI and delay stations for each class.<br><br>" +
-	        " To enter values, single-click on the desired cell" +
-	        " and start typing.<br> To select multiple cells drag the mouse on them; click or drag on" +
-	        " row/column headers to select whole rows/columns.<br> <b>For a list of the available operations right-click" +
-	        " on the table</b>; all operations except pasting affect selected cells.<br>" +
-	        " To copy one value to multiple cells click on the cell containing the value, select the" +
-	        " target cells by dragging and select <b>\"Fill\"</b>.<br><br>" +
-	        " To edit service times of an LD station double-click anywhere on its row.<br></html>";
+	private static final String helpText = "<html>In this panel you can edit the service times of LI and delay stations for each class.<br><br>"
+			+ " To enter values, single-click on the desired cell"
+			+ " and start typing.<br> To select multiple cells drag the mouse on them; click or drag on"
+			+ " row/column headers to select whole rows/columns.<br> <b>For a list of the available operations right-click"
+			+ " on the table</b>; all operations except pasting affect selected cells.<br>"
+			+ " To copy one value to multiple cells click on the cell containing the value, select the"
+			+ " target cells by dragging and select <b>\"Fill\"</b>.<br><br>"
+			+ " To edit service times of an LD station double-click anywhere on its row.<br></html>";
 
 	private boolean zeroLD;
 
@@ -80,17 +86,20 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 
 	private STTable stTable;
 
+	private AbstractAction SWITCH_TO_SD = new AbstractAction("Service Demands") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-    private AbstractAction SWITCH_TO_SD = new AbstractAction("Service Demands") {
-        {
-            putValue(Action.SHORT_DESCRIPTION, "Input by Service Demands");
-        }
+		{
+			putValue(Action.SHORT_DESCRIPTION, "Input by Service Demands");
+		}
 
-        public void actionPerformed(ActionEvent e) {
-            ew.switchFromSTVtoSD();
-        }
-    };
-
+		public void actionPerformed(ActionEvent e) {
+			ew.switchFromSTVtoSD();
+		}
+	};
 
 	public ServiceTimesPanel(JabaWizard ew) {
 		this.ew = ew;
@@ -100,7 +109,6 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 		sync();
 		initComponents();
 	}
-
 
 	/**
 	 * gets status from data object
@@ -128,37 +136,34 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 
 		stTable = new STTable();
 
+		Box hBox = Box.createHorizontalBox();
+		hBox.add(Box.createHorizontalStrut(20));
+		//Horizontal box containing Description label and buttons
+		Box descrBox = Box.createVerticalBox();
+		descrBox.add(new JLabel(DESCRIPTION_SERVICETIMES));
+		descrBox.add(Box.createHorizontalStrut(10));
+		descrBox.add(new JButton(SWITCH_TO_SD));
+		descrBox.setPreferredSize(new Dimension(220, 1000));
+		descrBox.setMinimumSize(new Dimension(200, 200));
 
-        Box hBox = Box.createHorizontalBox();
-        hBox.add(Box.createHorizontalStrut(20));
-        //Horizontal box containing Description label and buttons
-        Box descrBox = Box.createVerticalBox();
-        descrBox.add(new JLabel(DESCRIPTION_SERVICETIMES));
-        descrBox.add(Box.createHorizontalStrut(10));
-        descrBox.add(new JButton(SWITCH_TO_SD));
-        descrBox.setPreferredSize(new Dimension(220,1000));
-        descrBox.setMinimumSize(new Dimension(200,200));
+		hBox.add(descrBox);
+		hBox.add(Box.createHorizontalStrut(10));
+		JScrollPane visitTablePane = new JScrollPane(stTable);
+		visitTablePane.setPreferredSize(new Dimension(1000, 1000));
+		visitTablePane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		visitTablePane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		hBox.add(visitTablePane);
+		hBox.add(Box.createHorizontalStrut(20));
 
-        hBox.add(descrBox);
-        hBox.add(Box.createHorizontalStrut(10));
-        JScrollPane visitTablePane = new JScrollPane(stTable);
-        visitTablePane.setPreferredSize(new Dimension(1000,1000));
-        visitTablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        visitTablePane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        hBox.add(visitTablePane);
-        hBox.add(Box.createHorizontalStrut(20));
-
-        Box totalBox = Box.createVerticalBox();
-        totalBox.add(Box.createVerticalStrut(20));
-        totalBox.add(hBox);
-        totalBox.add(Box.createVerticalStrut(20));
-
+		Box totalBox = Box.createVerticalBox();
+		totalBox.add(Box.createVerticalStrut(20));
+		totalBox.add(hBox);
+		totalBox.add(Box.createVerticalStrut(20));
 
 		setLayout(new BorderLayout());
 		add(totalBox, BorderLayout.CENTER);
 
 	}
-
 
 	public String getName() {
 		return "Service Times";
@@ -184,9 +189,10 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 		//release();
 	}
 
-    private void switchToSD(){
+	private void switchToSD() {
 
-    }
+	}
+
 	/**
 	 * Make sure we can't finish if we are editing LD data
 	 */
@@ -213,17 +219,22 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 
 	}
 
-    /**{@see ForceUpdatablePanel} for further details*/
-    public void retrieveData() {
-        this.sync();
-    }
+	/**{@see ForceUpdatablePanel} for further details*/
+	public void retrieveData() {
+		this.sync();
+	}
 
-    /**{@see ForceUpdatablePanel} for further details*/
-    public void commitData() {
-        this.commit();
-    }
+	/**{@see ForceUpdatablePanel} for further details*/
+	public void commitData() {
+		this.commit();
+	}
 
-    private class STTable extends ExactTable {
+	private class STTable extends ExactTable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		STTable() {
 			super(new STTableModel());
@@ -235,7 +246,8 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 			setColumnSelectionAllowed(true);
 			setClipboardTransferEnabled(true);
 
-			help.addHelp(this, "Click or drag to select cells; to edit data single-click and start typing. Right-click for a list of available operations");
+			help.addHelp(this,
+					"Click or drag to select cells; to edit data single-click and start typing. Right-click for a list of available operations");
 			help.addHelp(moreColumnsLabel, "There are more classes: scroll right to see them");
 			help.addHelp(moreRowsLabel, "There are more stations: scroll down to see them");
 			help.addHelp(selectAllButton, "Click to select all cells");
@@ -271,7 +283,7 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 		 * the LDEditor needs to be treated in a special way.
 		 */
 		public Component prepareEditor(TableCellEditor editor, int row, int column) {
-				return super.prepareEditor(editor, row, column);
+			return super.prepareEditor(editor, row, column);
 		}
 
 		/**
@@ -280,7 +292,9 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 		 */
 		public boolean editCellAt(int row, int col, EventObject e) {
 			if (zeroLD && (stationTypes[row] == STATION_LD)) {
-				JOptionPane.showMessageDialog(ServiceTimesPanel.this, "<html><center>Cannot edit LD service times in a system with zero customers</center></html>", "Warning", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(ServiceTimesPanel.this,
+						"<html><center>Cannot edit LD service times in a system with zero customers</center></html>", "Warning",
+						JOptionPane.WARNING_MESSAGE);
 				return false;
 			}
 			return super.editCellAt(row, col, e);
@@ -293,6 +307,11 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 	 * Rows represent stations, columns classes.
 	 */
 	private class STTableModel extends ExactTableModel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		STTableModel() {
 			prototype = "LD Settings Button";
@@ -315,7 +334,7 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 			switch (stationTypes[rowIndex]) {
 				case STATION_LI:
 				case STATION_DELAY:
-                    return formatter.format(serviceTimes[rowIndex][columnIndex][0]);
+					return formatter.format(serviceTimes[rowIndex][columnIndex][0]);
 				case STATION_LD:
 					return "LD";
 				default:
@@ -328,14 +347,15 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 		}
 
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
-			if (value instanceof String) {  //coming from the defaultEditor
+			if (value instanceof String) { //coming from the defaultEditor
 				//if ("LD".equals((String)value)) return;
 				try {
 					double newVal = Double.parseDouble((String) value);
-                    if (newVal <= 0.01)
-                        serviceTimes[rowIndex][columnIndex][0] = 0.01;
-                    else
-					    serviceTimes[rowIndex][columnIndex][0] = newVal;
+					if (newVal <= 0.01) {
+						serviceTimes[rowIndex][columnIndex][0] = 0.01;
+					} else {
+						serviceTimes[rowIndex][columnIndex][0] = newVal;
+					}
 				} catch (NumberFormatException e) {
 				}
 			} else if (value instanceof double[][]) { // coming from the LDEditor
@@ -348,7 +368,9 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 		}
 
 		public void clear(int row, int col) {
-			if (stationTypes[row] == STATION_LD) return;
+			if (stationTypes[row] == STATION_LD) {
+				return;
+			}
 			serviceTimes[row][col][0] = 0.01;
 		}
 
@@ -358,7 +380,9 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 		 */
 		public void copyCellToArea(int sourceRow, int sourceCol, int rowFrom, int rowTo, int colFrom, int colTo) {
 
-			if (stationTypes[sourceRow] == STATION_LD) return;
+			if (stationTypes[sourceRow] == STATION_LD) {
+				return;
+			}
 
 			double source = serviceTimes[sourceRow][sourceCol][0];
 

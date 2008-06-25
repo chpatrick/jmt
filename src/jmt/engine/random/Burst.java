@@ -26,7 +26,7 @@ public class Burst extends NetNode implements Distribution {
 	private static int count = 0;
 	/** if <tt>true</tt> the next EVENT_DISTRIBUTION_CHANGE message will be discarded */
 	boolean discardNextMessage = false;
-	
+
 	/** 
 	 * Probability of having events of type A. The probability of having events
 	 * of type B is (1 - probability).
@@ -40,10 +40,10 @@ public class Burst extends NetNode implements Distribution {
 	private Parameter lengthParamA;
 	/** parameter of length distribution B */
 	private Parameter lengthParamB;
-	
+
 	/** absolute system time of the interval end */
 	private double intervalEnd;
-	
+
 	/** the distribution selected and active at this time */
 	private Distribution currentLengthDistr;
 	/** the parameter of the distribution selected and active at this time */
@@ -51,7 +51,7 @@ public class Burst extends NetNode implements Distribution {
 
 	/** Represents the random generator of uniformal distributed 32 bits numbers */
 	private RandomEngine engine;
-	
+
 	/**
 	 * Creates a new Burst distribution with the specified probability of having
 	 * events of type A. <tt>distrContA</tt> is the DistributionContainer containing
@@ -66,27 +66,25 @@ public class Burst extends NetNode implements Distribution {
 	 * @throws IncorrectDistributionParameterException if the probability
 	 * is not a value comprised between 0 and 1
 	 */
-	public Burst(Double probability,
-			DistributionContainer distrContA,
-			DistributionContainer distrContB)
+	public Burst(Double probability, DistributionContainer distrContA, DistributionContainer distrContB)
 			throws IncorrectDistributionParameterException {
-		
+
 		super("@@JSIM:RESERVED@@ Burst Distribution " + count++);
-		
+
 		//TODO also check if the length distributions parameter are correct? 
-		if(!check(probability)) {
+		if (!check(probability)) {
 			throw new IncorrectDistributionParameterException("The probability must be comprised between 0 and 1.");
 		}
-		
+
 		engine = RandomEngine.makeDefault();
 		this.probability = probability;
 		this.lenghtDistrA = distrContA.getDistribution();
 		this.lengthParamA = distrContA.getParameter();
 		this.lenghtDistrB = distrContB.getDistribution();
 		this.lengthParamB = distrContB.getParameter();
-		
+
 		// sets the starting distribution and the starting interval end
-		intervalEnd = changeInterval(); 
+		intervalEnd = changeInterval();
 		sendMe(intervalEnd, NetEvent.EVENT_DISTRIBUTION_CHANGE);
 	}
 
@@ -100,14 +98,14 @@ public class Burst extends NetNode implements Distribution {
 	 */
 	public boolean check(Double probability) {
 		double prob = probability.doubleValue();
-		
-		if(prob < 0 || prob > 1) {
+
+		if (prob < 0 || prob > 1) {
 			return false;
 		} else {
 			return true;
 		}
 	}
-	
+
 	/** 
 	 * Changes the interval and returns the new interval length.
 	 * 
@@ -116,18 +114,18 @@ public class Burst extends NetNode implements Distribution {
 	 * distributions parameter are not correct
 	 */
 	private double changeInterval() throws IncorrectDistributionParameterException {
-		
-		if(engine.raw() < probability.doubleValue()) {
+
+		if (engine.raw() < probability.doubleValue()) {
 			currentLengthDistr = lenghtDistrA;
 			currentLengthPar = lengthParamA;
 		} else {
 			currentLengthDistr = lenghtDistrB;
 			currentLengthPar = lengthParamB;
 		}
-		
+
 		return currentLengthDistr.nextRand(currentLengthPar);
 	}
-	
+
 	/**
 	 * @return always 0 because in this type of distribution it has no sense
 	 * to request the cdf of the distribution.
@@ -176,20 +174,20 @@ public class Burst extends NetNode implements Distribution {
 	 * to the actual interval (A or B)
 	 */
 	public double nextRand(Parameter p) throws IncorrectDistributionParameterException {
-		
+
 		// we suppose that the next message will not be discarded
 		discardNextMessage = false;
-		
+
 		// the sum of the "jumped" intervals remaining times; 0 if the first event is in the current interval
 		double offset = 0;
 		// value returned by the current value distribution
 		double value = getCurrentValueDistrNextRand(p);
 		// remaining time of the current interval
-		double remainingTime = intervalEnd - SimSystem.getClock(); 
-		if(remainingTime < 0) { // for debug purpose
+		double remainingTime = intervalEnd - SimSystem.getClock();
+		if (remainingTime < 0) { // for debug purpose
 			throw new RuntimeException("remainingTime < 0");
 		}
-		
+
 		/*
 		 * While the current value is larger than the remaining time of the current interval:
 		 * - the next arriving message must be discarded because it will be set a new interval
@@ -198,27 +196,27 @@ public class Burst extends NetNode implements Distribution {
 		 * - compute the new absolute interval end by adding the remaining time and the offset (remainingTime + offset)
 		 * - obtain a new value from the current value distribution (the value distribution of the NEW interval)
 		 */
-		while(value > remainingTime) {
+		while (value > remainingTime) {
 			// The interval is surpassed: we have to discard the next
 			// EVENT_DISTRIBUTION_CHANGE message
 			discardNextMessage = true;
-			
+
 			offset += remainingTime;
 			remainingTime = changeInterval();
 			intervalEnd = remainingTime + offset + SimSystem.getClock();
-			
-			value = getCurrentValueDistrNextRand(p);			
+
+			value = getCurrentValueDistrNextRand(p);
 		}
-		
-		if(discardNextMessage == true) {
+
+		if (discardNextMessage == true) {
 			// send the new EVENT_DISTRIBUTION_CHANGE message
 			sendMe(offset + remainingTime, NetEvent.EVENT_DISTRIBUTION_CHANGE);
 		}
-		
+
 		// sums the random value returned by the value distribution to the offset
 		return offset + value;
 	}
-	
+
 	/** 
 	 * Returns the current value distribution new random number.
 	 * 
@@ -228,12 +226,12 @@ public class Burst extends NetNode implements Distribution {
 	 * parameter are not correct
 	 */
 	private double getCurrentValueDistrNextRand(Parameter p) throws IncorrectDistributionParameterException {
-		
+
 		BurstPar par = (BurstPar) p;
 		Distribution currentValueDistr;
 		Parameter currentValPar;
 
-		if(currentLengthDistr.equals(lenghtDistrA)) {
+		if (currentLengthDistr.equals(lenghtDistrA)) {
 			// the current distribution is distribution A
 			currentValueDistr = par.getValueDistributionA();
 			currentValPar = par.getValueParameterA();
@@ -242,10 +240,10 @@ public class Burst extends NetNode implements Distribution {
 			currentValueDistr = par.getValueDistributionB();
 			currentValPar = par.getValueParameterB();
 		}
-		
+
 		return currentValueDistr.nextRand(currentValPar);
 	}
-	
+
 	/**
 	 * Send an event to this entity with no data, specifying the delivery delay
 	 * and the event type.
@@ -256,7 +254,7 @@ public class Burst extends NetNode implements Distribution {
 	protected void sendMe(double delay, int eventType) {
 		simSchedule(this.getId(), delay, eventType);
 	}
-	
+
 	/**
 	 * Message dispatcher for Burst distribution. When an EVENT_DISTRIBUTION_CHANGE
 	 * message arrives, it chooses the new interval type based on the probability
@@ -281,14 +279,14 @@ public class Burst extends NetNode implements Distribution {
 		 * We want to discard messages only if they are not arrived at instant 0.
 		 * 
 		 */
-		if(discardNextMessage == true && Double.compare(SimSystem.getClock(), 0.0) != 0) {
+		if (discardNextMessage == true && Double.compare(SimSystem.getClock(), 0.0) != 0) {
 			discardNextMessage = false;
 			return;
 		}
-		
+
 		try {
-			
-			if(eventType == NetEvent.EVENT_DISTRIBUTION_CHANGE) {
+
+			if (eventType == NetEvent.EVENT_DISTRIBUTION_CHANGE) {
 				/* 
 				 * Change the interval and return the new interval length,
 				 * which will be added to the absolute system time of the 
@@ -299,17 +297,16 @@ public class Burst extends NetNode implements Distribution {
 				intervalEnd += delay;
 				sendMe(delay, NetEvent.EVENT_DISTRIBUTION_CHANGE);
 
-			} else if(eventType == NetEvent.EVENT_START) {
+			} else if (eventType == NetEvent.EVENT_START) {
 				// do nothing, because the switch of distributions is activated
 				// in the constructor
 			}
-			
+
 		} catch (IncorrectDistributionParameterException idpe) {
 			// re-thrown as NetException to not modify the method declaration
 			throw new NetException("Incorrect distribution parameter: " + idpe.getMessage());
 		}
-		
+
 	}
 
-	
 }

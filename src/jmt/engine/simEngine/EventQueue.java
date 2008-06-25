@@ -3,7 +3,6 @@
 
 package jmt.engine.simEngine;
 
-
 import java.util.Enumeration;
 import java.util.Vector;
 
@@ -22,6 +21,11 @@ import java.util.Vector;
  */
 
 public class EventQueue extends Vector {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	// Constructors
 	/**
 	 * Allocates a new EventQueue object.
@@ -69,13 +73,15 @@ public class EventQueue extends Vector {
 		i = -1;
 		for (e = elements(); e.hasMoreElements() && (i == -1);) {
 			event = (SimEvent) e.nextElement();
-			if (event.eventTime() > new_event.eventTime())
+			if (event.eventTime() > new_event.eventTime()) {
 				i = indexOf(event);
+			}
 		}
 
-		if (i == -1)
+		if (i == -1) {
 			addElement(new_event);
-		else
+		} else {
 			insertElementAt(new_event, i);
+		}
 	}
 }

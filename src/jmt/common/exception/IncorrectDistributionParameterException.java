@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * IncorrectDistributionParameterException.java
  *
@@ -31,11 +31,15 @@ package jmt.common.exception;
 public class IncorrectDistributionParameterException extends java.lang.Exception {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Creates a new instance of <code>IncorrectDistributionParameterException</code> without detail message.
 	 */
 	public IncorrectDistributionParameterException() {
 	}
-
 
 	/**
 	 * Constructs an instance of <code>IncorrectDistributionParameterException</code> with the specified detail message.

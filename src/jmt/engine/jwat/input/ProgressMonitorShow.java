@@ -7,11 +7,11 @@ import javax.swing.ProgressMonitor;
 public class ProgressMonitorShow implements ProgressShow {
 	private ProgressMonitor pm;
 	private int step;
-	
-	public ProgressMonitorShow(Component container,String msg,int step) {
+
+	public ProgressMonitorShow(Component container, String msg, int step) {
 		super();
-		this.step=step;
-		pm=new ProgressMonitor(container,msg,"<HTML>-<p>-</HTML>",0,0);
+		this.step = step;
+		pm = new ProgressMonitor(container, msg, "<HTML>-<p>-</HTML>", 0, 0);
 	}
 
 	public void eventUpdate(int value, String txt) {

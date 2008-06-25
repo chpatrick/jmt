@@ -15,16 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.QueueNet;
+
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 import jmt.common.exception.NetException;
 import jmt.engine.NodeSections.BlockingQueue;
 import jmt.engine.NodeSections.Queue;
 import jmt.engine.dataAnalysis.Measure;
-
-import java.util.LinkedList;
-import java.util.ListIterator;
 
 /**
  * This class implements a queue network.
@@ -82,9 +82,9 @@ public class QueueNetwork {
 
 	private int behaviour, state;
 
-    private GlobalJobInfoList jobInfoList;
+	private GlobalJobInfoList jobInfoList;
 
-    /** Creates a new instance of QueueNetwork. */
+	/** Creates a new instance of QueueNetwork. */
 	public QueueNetwork(String name) {
 		nodes = new NodeList();
 		referenceNodes = new NodeList();
@@ -93,7 +93,7 @@ public class QueueNetwork {
 		measures = new LinkedList();
 		behaviour = BEHAVIOUR_OBTAIN_ALL_MEASURES_THEN_STOP;
 		state = STATE_READY;
-    }
+	}
 
 	/** Adds a generic node to the newtork. If the node has no inputs the node
 	 * is set as reference node.
@@ -102,13 +102,13 @@ public class QueueNetwork {
 	public void addNode(NetNode node) throws jmt.common.exception.NetException {
 		nodes.add(node);
 
-        if (node.getInputNodes().size() == 0) {
+		if (node.getInputNodes().size() == 0) {
 			//if no input nodes are present, it's presumed that this node
-            //must be a source of jobs
-            referenceNodes.add(node);
-        }
+			//must be a source of jobs
+			referenceNodes.add(node);
+		}
 
-        node.setNetwork(this);
+		node.setNetwork(this);
 	}
 
 	/** Adds a node to the newtork and forces it to be a reference node.
@@ -126,10 +126,10 @@ public class QueueNetwork {
 	public void addJobClass(JobClass jobClass) {
 		jobClasses.add(jobClass);
 		jobClass.setId(jobClasses.indexOf(jobClass));
-    }
+	}
 
 	/**
-     * Gets the list of the queue network nodes.
+	 * Gets the list of the queue network nodes.
 	 * @return Queue network nodes.
 	 */
 	public NodeList getNodes() {
@@ -138,7 +138,7 @@ public class QueueNetwork {
 
 	//dekkar (Federico Granata)
 	/**
-     * Gets the NetNode with the specified name...
+	 * Gets the NetNode with the specified name...
 	 *
 	 * @param name the name of the node
 	 * @return the specified node
@@ -147,13 +147,11 @@ public class QueueNetwork {
 		return nodes.get(name);
 	}
 
-
-
-    //NEW
-    //@author Stefano Omini
+	//NEW
+	//@author Stefano Omini
 
 	/**
-     * Gets the JobClass with the specified name...
+	 * Gets the JobClass with the specified name...
 	 *
 	 * @param name the name of the JobClass
 	 * @return the job class. Null if it doesn't exist.
@@ -162,8 +160,7 @@ public class QueueNetwork {
 		return jobClasses.get(name);
 	}
 
-    //end NEW
-
+	//end NEW
 
 	//dekkar (Federico Granata)
 	/**Gets the specified measure from the node with the specified name.
@@ -191,10 +188,11 @@ public class QueueNetwork {
 				found = true;
 				break;
 		}
-		if (found)
+		if (found) {
 			return measure;
-		else
+		} else {
 			throw new jmt.common.exception.NetException(this, 0, "measure not available");
+		}
 	}
 
 	/** Gets the list of the queue network reference nodes.
@@ -222,174 +220,171 @@ public class QueueNetwork {
 	 * @param measure Reference to the measure to be added.
 	 */
 	public void addMeasure(Measure measure) {
-        // If GlobalJobInfoList is not set, creates it
-        // (at this point all classes should be declared)
-        if (jobInfoList == null)
-            jobInfoList = new GlobalJobInfoList(jobClasses.size());
+		// If GlobalJobInfoList is not set, creates it
+		// (at this point all classes should be declared)
+		if (jobInfoList == null) {
+			jobInfoList = new GlobalJobInfoList(jobClasses.size());
+		}
 
-        //sets the reference to network
-        measure.setNetwork(this);
+		//sets the reference to network
+		measure.setNetwork(this);
 
-        measures.add(measure);
-    }
+		measures.add(measure);
+	}
 
-    /**
-     * Returns Global jobInfoList associated with this queue network. This is used
-     * to calculate global measures
-     * @return Global JobInfoList of this network
-     */
-    public GlobalJobInfoList getJobInfoList() {
-        return jobInfoList;
-    }
+	/**
+	 * Returns Global jobInfoList associated with this queue network. This is used
+	 * to calculate global measures
+	 * @return Global JobInfoList of this network
+	 */
+	public GlobalJobInfoList getJobInfoList() {
+		return jobInfoList;
+	}
 
-    /**
-     * Gets the measures
-     */
+	/**
+	 * Gets the measures
+	 */
 	public LinkedList getMeasures() {
 		return measures;
 	}
 
-    /**
-     * Gets the network behaviour (see behaviour constants).
-     *
-     */
+	/**
+	 * Gets the network behaviour (see behaviour constants).
+	 *
+	 */
 	public int getBehaviour() {
 		return behaviour;
 	}
 
 	/**
-     * Sets the network behaviour (see behaviour constants).
-     */
-    public void setBehaviuor(int behaviour) {
+	 * Sets the network behaviour (see behaviour constants).
+	 */
+	public void setBehaviuor(int behaviour) {
 		this.behaviour = behaviour;
 	}
 
-    /**
-     * Sets the network state (see state constants).
-     */
+	/**
+	 * Sets the network state (see state constants).
+	 */
 	void setState(int state) {
 		this.state = state;
 	}
 
-    /**
-     * Gets the network state (see state constants).
-     */
+	/**
+	 * Gets the network state (see state constants).
+	 */
 	public int getState() {
-		if (state == STATE_FINAL || state == STATE_READY)
+		if (state == STATE_FINAL || state == STATE_READY) {
 			return state;
+		}
 		boolean flag = false;
 		ListIterator nodeList = nodes.listIterator();
 		NetNode node;
 		while (nodeList.hasNext()) {
 			node = (NetNode) nodeList.next();
-			if (node.isRunning())
+			if (node.isRunning()) {
 				flag = true;
+			}
 		}
-		if (flag)  //the state is RUNNING if at least one node is still running
+		if (flag) {
 			return state;
-		else {
+		} else {
 			state = STATE_FINAL;
 			return STATE_FINAL;
 		}
 	}
 
+	//NEW
+	//@author Stefano Omini
+	/**
+	 * Get the total number of dropped jobs in the whole network for the specified
+	 * class
+	 * @param jobClass the job class
+	 * @return the total number of dropped jobs in the whole network for the specified
+	 * class
+	 */
+	public int getDroppedJobs(JobClass jobClass) {
 
-    //NEW
-    //@author Stefano Omini
-    /**
-     * Get the total number of dropped jobs in the whole network for the specified
-     * class
-     * @param jobClass the job class
-     * @return the total number of dropped jobs in the whole network for the specified
-     * class
-     */
-    public int getDroppedJobs(JobClass jobClass) {
+		//dropped jobs
+		int dropped = 0;
+		int classIndex = jobClass.getId();
 
-        //dropped jobs
-        int dropped = 0;
-        int classIndex = jobClass.getId();
+		for (int s = 0; s < nodes.size(); s++) {
+			NetNode node = nodes.get(s);
+			NodeSection inputSection;
+			try {
+				inputSection = node.getSection(NodeSection.INPUT);
 
-        for (int s = 0; s < nodes.size(); s++) {
-            NetNode node = nodes.get(s);
-            NodeSection inputSection;
-            try {
-                inputSection = node.getSection(NodeSection.INPUT);
+				//jobs can be dropped by a finite queue or by a blocking region
 
-                //jobs can be dropped by a finite queue or by a blocking region
+				if (inputSection instanceof BlockingQueue) {
 
-                if (inputSection instanceof BlockingQueue) {
+					//input section of a blocking region
+					dropped += ((BlockingQueue) inputSection).getDroppedJobPerClass(classIndex);
 
-                    //input section of a blocking region
-                    dropped += ((BlockingQueue) inputSection).getDroppedJobPerClass(classIndex);
+				} else if (inputSection instanceof Queue) {
 
-                } else if (inputSection instanceof Queue) {
+					//check
+					boolean infinite = ((Queue) inputSection).hasInfiniteQueue();
+					if (!infinite) {
+						//finite queue
+						dropped += ((Queue) inputSection).getDroppedJobPerClass(classIndex);
+					}
 
-                    //check
-                    boolean infinite = ((Queue) inputSection).hasInfiniteQueue();
-                    if (!infinite) {
-                        //finite queue
-                        dropped += ((Queue) inputSection).getDroppedJobPerClass(classIndex);
-                    }
+				}
+			} catch (NetException ne) {
+				continue;
+			}
+		}
 
-                }
-            } catch (NetException ne) {
-                continue;
-            }
-        }
+		return dropped;
 
-        return dropped;
+	}
 
-    }
-    //end NEW
+	//end NEW
 
+	//NEW
+	//@author Stefano Omini
+	/**
+	 * Get the total number of dropped jobs in the whole network
+	 * @return the total number of dropped jobs in the whole network
+	 */
+	public int getDroppedJobs() {
 
+		//dropped jobs
+		int dropped = 0;
 
-    //NEW
-    //@author Stefano Omini
-    /**
-     * Get the total number of dropped jobs in the whole network
-     * @return the total number of dropped jobs in the whole network
-     */
-    public int getDroppedJobs() {
+		for (int s = 0; s < nodes.size(); s++) {
+			NetNode node = nodes.get(s);
+			NodeSection inputSection;
+			try {
+				inputSection = node.getSection(NodeSection.INPUT);
 
-        //dropped jobs
-        int dropped = 0;
+				//jobs can be dropped by a finite queue or by a blocking region
 
-        for (int s = 0; s < nodes.size(); s++) {
-            NetNode node = nodes.get(s);
-            NodeSection inputSection;
-            try {
-                inputSection = node.getSection(NodeSection.INPUT);
+				if (inputSection instanceof BlockingQueue) {
 
-                //jobs can be dropped by a finite queue or by a blocking region
+					//input section of a blocking region
+					dropped += ((BlockingQueue) inputSection).getDroppedJobs();
 
-                if (inputSection instanceof BlockingQueue) {
+				} else if (inputSection instanceof Queue) {
 
-                    //input section of a blocking region
-                    dropped += ((BlockingQueue) inputSection).getDroppedJobs();
+					//check
+					boolean infinite = ((Queue) inputSection).hasInfiniteQueue();
+					if (!infinite) {
+						//finite queue
+						dropped += ((Queue) inputSection).getDroppedJobs();
+					}
 
-                } else if (inputSection instanceof Queue) {
+				}
+			} catch (NetException ne) {
+				continue;
+			}
+		}
 
-                    //check
-                    boolean infinite = ((Queue) inputSection).hasInfiniteQueue();
-                    if (!infinite) {
-                        //finite queue
-                        dropped += ((Queue) inputSection).getDroppedJobs();                        
-                    }
+		return dropped;
 
-                }
-            } catch (NetException ne) {
-                continue;
-            }
-        }
-
-        return dropped;
-
-    }
-    //end NEW
-
-
+	}
+	//end NEW
 
 }
-
-

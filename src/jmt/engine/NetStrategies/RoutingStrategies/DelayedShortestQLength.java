@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NetStrategies.RoutingStrategies;
 
 import jmt.common.exception.NetException;
@@ -25,7 +25,6 @@ import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeList;
 import jmt.engine.QueueNet.NodeSection;
 import jmt.engine.random.engine.RandomEngine;
-
 
 /**
  * <p>Title:</p>
@@ -37,61 +36,64 @@ import jmt.engine.random.engine.RandomEngine;
  * TODO provvisoria per testing
  */
 public class DelayedShortestQLength extends RoutingStrategy {
-    private byte inputSection = NodeSection.INPUT;
-    private byte serviceSection = NodeSection.SERVICE;
-    private int property = NodeSection.PROPERTY_ID_RESIDENT_JOBS;
-    private RandomEngine random = RandomEngine.makeDefault();
-    private int num = 0;
-    private int[] qlen, newQlen;
+	private byte inputSection = NodeSection.INPUT;
+	private byte serviceSection = NodeSection.SERVICE;
+	private int property = NodeSection.PROPERTY_ID_RESIDENT_JOBS;
+	private RandomEngine random = RandomEngine.makeDefault();
+	private int num = 0;
+	private int[] qlen, newQlen;
 
-    /**
-     * This method should be overridden to implement a specific strategy.
-     *
-     * @param Nodes    List of nodes.
-     * @param jobClass class ofcurrent job to be routed
-     * @return Selected node .
-     */
-    public NetNode getOutNode(NodeList Nodes, JobClass jobClass) {
-        int shortestQueue;
-        if (qlen == null) {
-            qlen = new int[Nodes.size()];
-            newQlen = new int[Nodes.size()];
-        }
-        int[] next = new int[qlen.length];
-        try {
-            // Simulate delay (need to be reimplemented if used)
-            num++;
-            if (num == 1)
-                for (int i=0; i<Nodes.size(); i++)
-                    newQlen[i] = Nodes.get(i).getSection(inputSection).getIntSectionProperty(property)
-                        + Nodes.get(i).getSection(serviceSection).getIntSectionProperty(property);
-            if (num > 8) // 2 sec.
-                num = 0;
-            else if  (num > 4) { // approx 1 sec passed TODO occorre implementare un giusto test con il calendario
-               qlen = newQlen;
-               newQlen = new int[Nodes.size()];
-            }
+	/**
+	 * This method should be overridden to implement a specific strategy.
+	 *
+	 * @param Nodes    List of nodes.
+	 * @param jobClass class ofcurrent job to be routed
+	 * @return Selected node .
+	 */
+	public NetNode getOutNode(NodeList Nodes, JobClass jobClass) {
+		int shortestQueue;
+		if (qlen == null) {
+			qlen = new int[Nodes.size()];
+			newQlen = new int[Nodes.size()];
+		}
+		int[] next = new int[qlen.length];
+		try {
+			// Simulate delay (need to be reimplemented if used)
+			num++;
+			if (num == 1) {
+				for (int i = 0; i < Nodes.size(); i++) {
+					newQlen[i] = Nodes.get(i).getSection(inputSection).getIntSectionProperty(property)
+							+ Nodes.get(i).getSection(serviceSection).getIntSectionProperty(property);
+				}
+			}
+			if (num > 8) {
+				num = 0;
+			} else if (num > 4) { // approx 1 sec passed TODO occorre implementare un giusto test con il calendario
+				qlen = newQlen;
+				newQlen = new int[Nodes.size()];
+			}
 
-            // Finds shortest queue in stored array
-            int cur = 1;
-            next[0] = 0;
-            shortestQueue = qlen[0];
-            for (int i=1; i<qlen.length; i++) {
-                if (qlen[i] < next[0]) {
-                    next[0] = qlen[i];
-                    cur = 1;
-                }
-                else if (qlen[i]==next[0])
-                    next[cur++]=i;
-            }
-            if (cur == 1)
-                return Nodes.get(next[0]);
-            else
-                return Nodes.get(next[(int)Math.floor(random.raw() * cur)]);
-        } catch (NetException e) {
-            System.out.println("Error: ");
-            e.printStackTrace();
-        }
-        return null;
-    }
+			// Finds shortest queue in stored array
+			int cur = 1;
+			next[0] = 0;
+			shortestQueue = qlen[0];
+			for (int i = 1; i < qlen.length; i++) {
+				if (qlen[i] < next[0]) {
+					next[0] = qlen[i];
+					cur = 1;
+				} else if (qlen[i] == next[0]) {
+					next[cur++] = i;
+				}
+			}
+			if (cur == 1) {
+				return Nodes.get(next[0]);
+			} else {
+				return Nodes.get(next[(int) Math.floor(random.raw() * cur)]);
+			}
+		} catch (NetException e) {
+			System.out.println("Error: ");
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

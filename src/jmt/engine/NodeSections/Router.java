@@ -15,13 +15,19 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NodeSections;
 
 import jmt.engine.NetStrategies.RoutingStrategy;
-import jmt.engine.NetStrategies.ServiceStrategies.ZeroServiceTimeStrategy;
 import jmt.engine.NetStrategies.ServiceStrategy;
-import jmt.engine.QueueNet.*;
+import jmt.engine.NetStrategies.ServiceStrategies.ZeroServiceTimeStrategy;
+import jmt.engine.QueueNet.BlockingRegion;
+import jmt.engine.QueueNet.Job;
+import jmt.engine.QueueNet.JobClass;
+import jmt.engine.QueueNet.NetEvent;
+import jmt.engine.QueueNet.NetMessage;
+import jmt.engine.QueueNet.NetNode;
+import jmt.engine.QueueNet.NodeSection;
 
 /**
  * This class implements a router, which routes the jobs according to the specified
@@ -42,42 +48,37 @@ import jmt.engine.QueueNet.*;
  * @author Bertoli Marco - Fixed bug with multiserver stations
  */
 public class Router extends OutputSection {
-    
+
 	/** Property Identifier: Routing strategy.*/
 	public static final int PROPERTY_ID_ROUTING_STRATEGY = 0x0101;
 	private RoutingStrategy routingStrategies[];
 
+	/*----------------BLOCKING REGION PROPERTIES---------------------*/
+	//@author Stefano Omini
+	/*
+	these properties are used if this router is the border router of
+	a blocking region (i.e. it is connected also to nodes outside the
+	blocking region)
+	in fact, if the router sends a job outside the region, a message
+	must be sent to the input station of that region, to decrease the
+	number of jobs inside the region
+	*/
 
-    /*----------------BLOCKING REGION PROPERTIES---------------------*/
-    //@author Stefano Omini
+	/**true if this router is the border router of a blocking region*/
+	private boolean borderRouter;
+	/** the blocking region this router belongs to */
+	private BlockingRegion myBlockingRegion;
+	/** the region input station of the blocking region */
+	private NetNode regionInputStation;
 
-    /*
-    these properties are used if this router is the border router of
-    a blocking region (i.e. it is connected also to nodes outside the
-    blocking region)
-    in fact, if the router sends a job outside the region, a message
-    must be sent to the input station of that region, to decrease the
-    number of jobs inside the region
-    */
+	/*---------------------------------------------------------------*/
 
-    /**true if this router is the border router of a blocking region*/
-    private boolean borderRouter;
-    /** the blocking region this router belongs to */
-    private BlockingRegion myBlockingRegion;
-    /** the region input station of the blocking region */
-    private NetNode regionInputStation;
+	//-------------------ZERO SERVICE TIME PROPERTIES------------------------------//
+	//for each class, true if that class has a service time equal to zero and therefore
+	//must be "tunnelled"
+	private boolean hasZeroServiceTime[] = null;
 
-    /*---------------------------------------------------------------*/
-
-
-
-    //-------------------ZERO SERVICE TIME PROPERTIES------------------------------//
-    //for each class, true if that class has a service time equal to zero and therefore
-    //must be "tunnelled"
-    private boolean hasZeroServiceTime[] = null;
-    //-------------------end ZERO SERVICE TIME PROPERTIES--------------------------//
-
-
+	//-------------------end ZERO SERVICE TIME PROPERTIES--------------------------//
 
 	/** Creates a new instance of Router.
 	 * @param routingStrategies Routing strategies, one for each class.
@@ -86,58 +87,56 @@ public class Router extends OutputSection {
 		super();
 		this.routingStrategies = routingStrategies;
 
-        borderRouter = false;
-        myBlockingRegion = null;
-        regionInputStation = null;
+		borderRouter = false;
+		myBlockingRegion = null;
+		regionInputStation = null;
 	}
 
-
-    /** Creates a new instance of blocking region border Router.
+	/** Creates a new instance of blocking region border Router.
 	 * @param routingStrategies Routing strategies, one for each class.
 	 */
 	public Router(RoutingStrategy routingStrategies[], BlockingRegion blockReg) {
 		super();
 		this.routingStrategies = routingStrategies;
 
-        borderRouter = true;
-        myBlockingRegion = blockReg;
-        regionInputStation = myBlockingRegion.getInputStation();
+		borderRouter = true;
+		myBlockingRegion = blockReg;
+		regionInputStation = myBlockingRegion.getInputStation();
 	}
 
-    /**
-     * Tells whether this router is a border router of a blocking region.
-     * @return true if this router is a border router of a blocking region.
-     */
-    public boolean isBorderRouter() {
-        return borderRouter;
-    }
+	/**
+	 * Tells whether this router is a border router of a blocking region.
+	 * @return true if this router is a border router of a blocking region.
+	 */
+	public boolean isBorderRouter() {
+		return borderRouter;
+	}
 
+	/**
+	 * Turns on the "borderRouter" behaviour.
+	 * @param region the blocking region to which the owner node
+	 * of this router belongs
+	 */
+	public void borderRouterTurnON(BlockingRegion region) {
+		//sets blocking region properties
+		borderRouter = true;
+		myBlockingRegion = region;
+		regionInputStation = myBlockingRegion.getInputStation();
+		return;
+	}
 
-    /**
-     * Turns on the "borderRouter" behaviour.
-     * @param region the blocking region to which the owner node
-     * of this router belongs
-     */
-    public void borderRouterTurnON(BlockingRegion region) {
-        //sets blocking region properties
-        borderRouter = true;
-        myBlockingRegion = region;
-        regionInputStation = myBlockingRegion.getInputStation();
-        return;
-    }
+	/**
+	 * Turns off the "borderRouter" behaviour.
+	 */
+	public void borderRouterTurnOFF() {
+		//sets blocking region properties
+		borderRouter = false;
+		myBlockingRegion = null;
+		regionInputStation = null;
+		return;
+	}
 
-    /**
-     * Turns off the "borderRouter" behaviour.
-     */
-    public void borderRouterTurnOFF() {
-        //sets blocking region properties
-        borderRouter = false;
-        myBlockingRegion = null;
-        regionInputStation = null;
-        return;
-    }
-
-    public Object getObject(int id, JobClass jobClass) throws jmt.common.exception.NetException {
+	public Object getObject(int id, JobClass jobClass) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_ROUTING_STRATEGY:
 				return routingStrategies[jobClass.getId()];
@@ -148,110 +147,109 @@ public class Router extends OutputSection {
 
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 
-        switch (message.getEvent()) {
+		switch (message.getEvent()) {
 
-            case NetEvent.EVENT_JOB:
+			case NetEvent.EVENT_JOB:
 
-                Job job = message.getJob();
+				Job job = message.getJob();
 
-                //TODO: this part should be placed in the overridden version of NodeLinked
-                //at the first execution checks which classes have service time always equal to zero
-                if (hasZeroServiceTime == null) {
-                    int numberOfClasses = this.getJobClasses().size();
-                    hasZeroServiceTime = new boolean[numberOfClasses];
+				//TODO: this part should be placed in the overridden version of NodeLinked
+				//at the first execution checks which classes have service time always equal to zero
+				if (hasZeroServiceTime == null) {
+					int numberOfClasses = this.getJobClasses().size();
+					hasZeroServiceTime = new boolean[numberOfClasses];
 
-                    NodeSection serviceSect = this.getOwnerNode().getSection(NodeSection.SERVICE);
-                    if (serviceSect instanceof ServiceTunnel) {
-                        //case #1: service tunnel
-                        //nothing to control, every job has service time zero
-                        //it's useless to force the tunnel behaviour
-                        for (int c = 0; c < numberOfClasses; c++) {
-                            hasZeroServiceTime[c] = false;
-                        }
-                    } else {
-                        //case #2: server
-                        //check if there are classes with zero service time distribution
-                        if (serviceSect instanceof Server) {
-                            for (int c = 0; c < this.getJobClasses().size(); c++) {
-                                ServiceStrategy[] servStrat = (ServiceStrategy[]) ((Server) serviceSect).getObject(Server.PROPERTY_ID_SERVICE_STRATEGY);
+					NodeSection serviceSect = this.getOwnerNode().getSection(NodeSection.SERVICE);
+					if (serviceSect instanceof ServiceTunnel) {
+						//case #1: service tunnel
+						//nothing to control, every job has service time zero
+						//it's useless to force the tunnel behaviour
+						for (int c = 0; c < numberOfClasses; c++) {
+							hasZeroServiceTime[c] = false;
+						}
+					} else {
+						//case #2: server
+						//check if there are classes with zero service time distribution
+						if (serviceSect instanceof Server) {
+							for (int c = 0; c < this.getJobClasses().size(); c++) {
+								ServiceStrategy[] servStrat = (ServiceStrategy[]) ((Server) serviceSect)
+										.getObject(Server.PROPERTY_ID_SERVICE_STRATEGY);
 
-                                if (servStrat[c] instanceof ZeroServiceTimeStrategy) {
-                                    hasZeroServiceTime[c] = true;
-                                } else {
-                                    hasZeroServiceTime[c] = false;
-                                }
-                            }
-                        } else {
-                            //case #3: serviceSect is nor a service tunnel neither a server
-                            //use default behaviour
-                            for (int c = 0; c < this.getJobClasses().size(); c++) {
-                                hasZeroServiceTime[c] = false;
-                            }
-                        }
-                    }
-                }
+								if (servStrat[c] instanceof ZeroServiceTimeStrategy) {
+									hasZeroServiceTime[c] = true;
+								} else {
+									hasZeroServiceTime[c] = false;
+								}
+							}
+						} else {
+							//case #3: serviceSect is nor a service tunnel neither a server
+							//use default behaviour
+							for (int c = 0; c < this.getJobClasses().size(); c++) {
+								hasZeroServiceTime[c] = false;
+							}
+						}
+					}
+				}
 
-                //EVENT_JOB
-                //if the router is not busy, an output node is chosen using
-                //the routing strategy and a message containing the job is sent to it.
+				//EVENT_JOB
+				//if the router is not busy, an output node is chosen using
+				//the routing strategy and a message containing the job is sent to it.
 
-                JobClass jobClass = job.getJobClass();
+				JobClass jobClass = job.getJobClass();
 
-                //choose the outNode using the corresponding routing strategy
-                NetNode outNode;
+				//choose the outNode using the corresponding routing strategy
+				NetNode outNode;
 
-                outNode = routingStrategies[jobClass.getId()]
-                                            .getOutNode(getOwnerNode().getOutputNodes(), jobClass);
+				outNode = routingStrategies[jobClass.getId()].getOutNode(getOwnerNode().getOutputNodes(), jobClass);
 
-                // Bertoli Marco: sanity checks with closed classes and sinks were moved inside
-                // routing strategies
+				// Bertoli Marco: sanity checks with closed classes and sinks were moved inside
+				// routing strategies
 
-                if (outNode == null)
-                    return MSG_NOT_PROCESSED;
+				if (outNode == null) {
+					return MSG_NOT_PROCESSED;
+				}
 
+				//send the job to all nodes identified by the strategy
+				send(job, 0.0, outNode);
 
-                //send the job to all nodes identified by the strategy
-                send(job, 0.0, outNode);
+				//Border router behaviour (used in case of blocking region)
+				if (isBorderRouter()) {
+					//the owner node of this router is inside the region: if the outNode is outside
+					//the region, it means that one job has left the blocking region so the region
+					//input station (its blocking router) must receive a particular message
+					if (!myBlockingRegion.belongsToRegion(outNode)) {
 
-                //Border router behaviour (used in case of blocking region)
-                if (isBorderRouter()) {
-                    //the owner node of this router is inside the region: if the outNode is outside
-                    //the region, it means that one job has left the blocking region so the region
-                    //input station (its blocking router) must receive a particular message
-                    if (!myBlockingRegion.belongsToRegion(outNode)) {
+						//the first time finds the input station
+						if (regionInputStation == null) {
+							regionInputStation = myBlockingRegion.getInputStation();
+						}
 
-                        //the first time finds the input station
-                        if (regionInputStation == null) {
-                            regionInputStation = myBlockingRegion.getInputStation();
-                        }
+						myBlockingRegion.decreaseOccupation(jobClass);
 
-                        myBlockingRegion.decreaseOccupation(jobClass);
+						send(NetEvent.EVENT_JOB_OUT_OF_REGION, null, 0.0, NodeSection.INPUT, regionInputStation);
+					}
+				}
+				return MSG_PROCESSED;
 
-                        send(NetEvent.EVENT_JOB_OUT_OF_REGION, null, 0.0, NodeSection.INPUT, regionInputStation);
-                    }
-                }
-                return MSG_PROCESSED;
+			case NetEvent.EVENT_ACK:
+				//EVENT_ACK
+				//
+				//An ack is sent back to the service section.
+				//
 
+				//first controls if the ack is relative to a tunnelled job
+				int jobClassIndex = message.getJob().getJobClass().getId();
 
-            case NetEvent.EVENT_ACK:
-                //EVENT_ACK
-                //
-                //An ack is sent back to the service section.
-                //
+				if (hasZeroServiceTime[jobClassIndex]) {
+					//ok, this job had been tunnelled
+					//no acks must be sent backward for tunnelled jobs
+					return MSG_PROCESSED;
+				}
 
-                //first controls if the ack is relative to a tunnelled job
-                int jobClassIndex = message.getJob().getJobClass().getId();
+				sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
+				break;
 
-                if (hasZeroServiceTime[jobClassIndex]) {
-                    //ok, this job had been tunnelled
-                    //no acks must be sent backward for tunnelled jobs
-                    return MSG_PROCESSED;
-                }
-
-                sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
-                break;
-
-            default:
+			default:
 				return MSG_NOT_PROCESSED;
 		}
 		return MSG_PROCESSED;

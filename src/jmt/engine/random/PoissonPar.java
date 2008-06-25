@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -36,7 +35,6 @@ public class PoissonPar extends AbstractParameter implements Parameter {
 
 	private double mean;
 
-
 	/**
 	 * It creates a new poisson parameter with the mean required by the user. It also
 	 * verify that the required mean is correct (mean must be greater than zero).
@@ -46,8 +44,7 @@ public class PoissonPar extends AbstractParameter implements Parameter {
 	 * @throws IncorrectDistributionParameterException if mean is not greater than zero.
 	 *
 	 */
-	public PoissonPar(double mean)
-	        throws IncorrectDistributionParameterException {
+	public PoissonPar(double mean) throws IncorrectDistributionParameterException {
 		if (mean <= 0) {
 			throw new IncorrectDistributionParameterException("mean must be gtz");
 		} else {
@@ -55,8 +52,7 @@ public class PoissonPar extends AbstractParameter implements Parameter {
 		}
 	}
 
-	public PoissonPar(Double wmean)
-	        throws IncorrectDistributionParameterException {
+	public PoissonPar(Double wmean) throws IncorrectDistributionParameterException {
 		this(wmean.doubleValue());
 	}
 
@@ -99,8 +95,7 @@ public class PoissonPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setMean(double mean)
-	        throws IncorrectDistributionParameterException {
+	public void setMean(double mean) throws IncorrectDistributionParameterException {
 		if (mean <= 0) {
 			throw new IncorrectDistributionParameterException("mean must be gtz");
 		} else {

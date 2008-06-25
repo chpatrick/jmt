@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -37,10 +36,8 @@ import jmt.common.exception.IncorrectDistributionParameterException;
 
 public class NormalPar extends AbstractParameter implements Parameter {
 
-
 	private double standardDeviation;
 	private double mean;
-
 
 	/**
 	 * it creates a new normal parameter.
@@ -54,8 +51,7 @@ public class NormalPar extends AbstractParameter implements Parameter {
 	 * @throws IncorrectDistributionParameterException if the value provided for the standard deviation is not greater than zero.
 	 *
 	 */
-	public NormalPar(double mean, double standardDeviation)
-	        throws IncorrectDistributionParameterException {
+	public NormalPar(double mean, double standardDeviation) throws IncorrectDistributionParameterException {
 		if (standardDeviation <= 0) {
 			throw new IncorrectDistributionParameterException("standardDeviation must be > 0");
 		} else {
@@ -64,8 +60,7 @@ public class NormalPar extends AbstractParameter implements Parameter {
 		}
 	}
 
-	public NormalPar(Double wmean, Double wstandardDeviation)
-	        throws IncorrectDistributionParameterException {
+	public NormalPar(Double wmean, Double wstandardDeviation) throws IncorrectDistributionParameterException {
 		this(wmean.doubleValue(), wstandardDeviation.doubleValue());
 	}
 
@@ -116,8 +111,7 @@ public class NormalPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setStandardDeviation(double standardDeviation)
-	        throws IncorrectDistributionParameterException {
+	public void setStandardDeviation(double standardDeviation) throws IncorrectDistributionParameterException {
 		if (standardDeviation <= 0) {
 			throw new IncorrectDistributionParameterException("standardDeviation must be gtz");
 		} else {
@@ -135,6 +129,5 @@ public class NormalPar extends AbstractParameter implements Parameter {
 	public void setMean(double mean) {
 		this.mean = mean;
 	}
-
 
 } // end NormalPar

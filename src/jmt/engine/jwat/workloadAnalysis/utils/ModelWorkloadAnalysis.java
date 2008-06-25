@@ -21,12 +21,10 @@ import java.util.Vector;
 
 import jmt.engine.jwat.MatrixOsservazioni;
 import jmt.engine.jwat.filters.FilterOnVariable;
-import jmt.engine.jwat.workloadAnalysis.clustering.Clustering;
 import jmt.engine.jwat.workloadAnalysis.exceptions.TrasformException;
 import jmt.gui.jwat.JWatModel;
-import jmt.gui.jwat.MainJwatWizard;
 
-public class ModelWorkloadAnalysis implements JWatModel{
+public class ModelWorkloadAnalysis implements JWatModel {
 	// Matrice delle osservazioni
 	private MatrixOsservazioni matrix = null;
 	// vector of the listener on set matrix
@@ -37,17 +35,18 @@ public class ModelWorkloadAnalysis implements JWatModel{
 	/**
 	 * @param par
 	 */
-	public ModelWorkloadAnalysis(){
+	public ModelWorkloadAnalysis() {
 		listenerOnMatrixChange = new Vector();
 		listenerOnChangeVariable = new Vector();
 	}
-		
+
 	/**
 	 * @return
 	 */
 	public MatrixOsservazioni getMatrix() {
 		return matrix;
 	}
+
 	/**
 	 * @param matrix
 	 */
@@ -55,61 +54,73 @@ public class ModelWorkloadAnalysis implements JWatModel{
 		this.matrix = matrix;
 		fireNotifyOnSetMatrixObservation();
 	}
+
 	/**
 	 *
 	 *@param listener
 	 */
-	public void addOnSetMatrixObservationListener(SetMatrixListener listener){
+	public void addOnSetMatrixObservationListener(SetMatrixListener listener) {
 		listenerOnMatrixChange.add(listener);
 	}
+
 	/**
 	 * 
 	 * @param listener
 	 */
-	public void addOnChangeVariableValue(ChangeVariableListener listener){
-		if(!listenerOnChangeVariable.contains(listener)) listenerOnChangeVariable.add(listener);
+	public void addOnChangeVariableValue(ChangeVariableListener listener) {
+		if (!listenerOnChangeVariable.contains(listener)) {
+			listenerOnChangeVariable.add(listener);
+		}
 	}
+
 	/**
 	 * 
 	 * @param var
 	 */
-	public void setTransformation(){
-		for(int i = 0; i < listenerOnChangeVariable.size(); i++){
+	public void setTransformation() {
+		for (int i = 0; i < listenerOnChangeVariable.size(); i++) {
 			((ChangeVariableListener) listenerOnChangeVariable.get(i)).onChangeVariableValues();
 		}
 	}
+
 	/*
 	 * Notify change on matrix observation to all registered listener 
 	 */
-	private void fireNotifyOnSetMatrixObservation(){
-		for(int i = 0; i < listenerOnMatrixChange.size(); i++){
+	private void fireNotifyOnSetMatrixObservation() {
+		for (int i = 0; i < listenerOnMatrixChange.size(); i++) {
 			((SetMatrixListener) listenerOnMatrixChange.get(i)).onSetMatrixObservation();
 		}
 	}
-	private void fireNotifyOnResetMatrixObservation(){
-		for(int i = 0; i < listenerOnMatrixChange.size(); i++){
+
+	private void fireNotifyOnResetMatrixObservation() {
+		for (int i = 0; i < listenerOnMatrixChange.size(); i++) {
 			((SetMatrixListener) listenerOnMatrixChange.get(i)).onResetMatrixObservation();
 		}
 	}
-	public void doTransformationOnVariable(int varSel,short type) throws TrasformException{
-		matrix.applyTransformation(varSel,type);
+
+	public void doTransformationOnVariable(int varSel, short type) throws TrasformException {
+		matrix.applyTransformation(varSel, type);
 		setTransformation();
 	}
-	public boolean undoTransformationOnVariable(int varSel){
+
+	public boolean undoTransformationOnVariable(int varSel) {
 		boolean b = matrix.undoTransformation(varSel);
 		setTransformation();
 		return b;
 	}
-	public void doSamplingOnVariable(int varSel,FilterOnVariable filter){
-		matrix.doSampling(varSel,filter);
+
+	public void doSamplingOnVariable(int varSel, FilterOnVariable filter) {
+		matrix.doSampling(varSel, filter);
 		setTransformation();
 	}
-	public void undoSamplingOnVariable(int varSel){
+
+	public void undoSamplingOnVariable(int varSel) {
 		matrix.undoSampling(varSel);
 		setTransformation();
 	}
+
 	//UPDATE 28/10/2006: +spostamento operazioni di trasformazione e sampling in matrixOsservazioni
-	public void resetModel(){
+	public void resetModel() {
 		matrix = null;
 		fireNotifyOnResetMatrixObservation();
 	}

@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -47,8 +46,7 @@ public class GammaDistrPar extends AbstractParameter implements Parameter {
 	 * @throws IncorrectDistributionParameterException if alpha or lambda are not greater than zero.
 	 *
 	 */
-	public GammaDistrPar(double alpha, double lambda)
-	        throws IncorrectDistributionParameterException {
+	public GammaDistrPar(double alpha, double lambda) throws IncorrectDistributionParameterException {
 		if ((alpha <= 0.0) || (lambda <= 0.0)) {
 			throw new IncorrectDistributionParameterException("alpha and lambda must be >0.");
 		} else {
@@ -57,8 +55,7 @@ public class GammaDistrPar extends AbstractParameter implements Parameter {
 		}
 	}
 
-	public GammaDistrPar(Double walpha, Double wlambda)
-	        throws IncorrectDistributionParameterException {
+	public GammaDistrPar(Double walpha, Double wlambda) throws IncorrectDistributionParameterException {
 		this(walpha.doubleValue(), wlambda.doubleValue());
 	}
 
@@ -110,8 +107,7 @@ public class GammaDistrPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setAlpha(double alpha)
-	        throws IncorrectDistributionParameterException {
+	public void setAlpha(double alpha) throws IncorrectDistributionParameterException {
 		if (alpha <= 0.0) {
 			throw new IncorrectDistributionParameterException("alpha must be >0.");
 		} else {
@@ -129,8 +125,7 @@ public class GammaDistrPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setLambda(double lambda)
-	        throws IncorrectDistributionParameterException {
+	public void setLambda(double lambda) throws IncorrectDistributionParameterException {
 		if (lambda <= 0.0) {
 			throw new IncorrectDistributionParameterException("lambda must be >0.");
 		} else {
@@ -138,19 +133,18 @@ public class GammaDistrPar extends AbstractParameter implements Parameter {
 		}
 	}
 
-    /**
-     * Sets mean for a given distribution parameter. This method is required to adjust distributions
-     * mean values into Load Dependent Service Time Strategy
-     * @param meanValue new mean value for this distribution
-     * Author: Bertoli Marco
-     * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
-     */
-    public void setMean(double meanValue) throws IncorrectDistributionParameterException{
-        if (meanValue <= 0 || Double.isInfinite(meanValue))
-            throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");
-        lambda = meanValue / alpha;
-    }
-
-
+	/**
+	 * Sets mean for a given distribution parameter. This method is required to adjust distributions
+	 * mean values into Load Dependent Service Time Strategy
+	 * @param meanValue new mean value for this distribution
+	 * Author: Bertoli Marco
+	 * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
+	 */
+	public void setMean(double meanValue) throws IncorrectDistributionParameterException {
+		if (meanValue <= 0 || Double.isInfinite(meanValue)) {
+			throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");
+		}
+		lambda = meanValue / alpha;
+	}
 
 } // end GammaDistrPar

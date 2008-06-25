@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.test.engine;
 
 import jmt.common.exception.NetException;
@@ -29,216 +29,195 @@ import jmt.engine.testSystem.BatchTest;
  */
 public class PauseThreadTest {
 
+	private static void test1() {
+		int n = 5;
+		Thread1 t1 = new Thread1(n);
+		Thread2 t2 = new Thread2(n);
+		t1.start();
+		t2.start();
+	}
 
-    private static void test1() {
-        int n = 5;
-        Thread1  t1 = new Thread1(n);
-        Thread2  t2 = new Thread2(n);
-        t1.start();
-        t2.start();
-    }
+	private static void test2() {
 
+		//Dispatcher disp = new Dispatcher("D://randomModel_open_1.xml");
+		Dispatcher_jMVAschema disp = new Dispatcher_jMVAschema("D://JMTtest//randomModel_open_1.xml");
 
-    private static void test2() {
+		Thread3 t3 = new Thread3(disp);
+		Thread4 t4 = new Thread4(disp);
+		t3.start();
+		t4.start();
+	}
 
-        //Dispatcher disp = new Dispatcher("D://randomModel_open_1.xml");
-        Dispatcher_jMVAschema disp = new Dispatcher_jMVAschema("D://JMTtest//randomModel_open_1.xml");
+	private static void test3() {
 
-        Thread3  t3 = new Thread3(disp);
-        Thread4  t4 = new Thread4(disp);
-        t3.start();
-        t4.start();
-    }
+		//Dispatcher disp = new Dispatcher("D://randomModel_open_1.xml");
+		Dispatcher_jMVAschema disp = new Dispatcher_jMVAschema("D://JMTtest//randomModel_open_1.xml");
 
+		Thread3 t3 = new Thread3(disp);
+		Thread5 t5 = new Thread5(disp);
+		t3.start();
+		t5.start();
+	}
 
-    private static void test3() {
-
-        //Dispatcher disp = new Dispatcher("D://randomModel_open_1.xml");
-        Dispatcher_jMVAschema disp = new Dispatcher_jMVAschema("D://JMTtest//randomModel_open_1.xml");
-
-        Thread3  t3 = new Thread3(disp);
-        Thread5  t5 = new Thread5(disp);
-        t3.start();
-        t5.start();
-    }
-
-
-    public static void main (String[] args) {
-        //test1();
-        //test2();
-        test3();
-    }
+	public static void main(String[] args) {
+		//test1();
+		//test2();
+		test3();
+	}
 
 }
 
-
-
-
-
 class Thread1 extends Thread {
 
-    int models;
+	int models;
 
-    public Thread1(int n) {
-        models = n;
+	public Thread1(int n) {
+		models = n;
 
-    }
+	}
 
-    public void run() {
+	public void run() {
 
-        BatchTest.comboTest(1,1,models,1,1);
+		BatchTest.comboTest(1, 1, models, 1, 1);
 
-    }
+	}
 }
 
 class Thread2 extends Thread {
 
-    int models;
+	int models;
 
-    public Thread2(int n) {
-        models = n;
+	public Thread2(int n) {
+		models = n;
 
-    }
+	}
 
-    public void run() {
+	public void run() {
 
-        //boolean finished = false;
-        double progr = 0.0;
+		//boolean finished = false;
+		double progr = 0.0;
 
-        do {
-             try {
-                sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+		do {
+			try {
+				sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
-            if (NetSystem.pause()) {
-                if (NetSystem.getNetworkList().size() != 0) {
-                    QueueNetwork net = NetSystem.getNetworkList().get(0);
-                    try {
-                        progr = NetSystem.checkProgress(net);
-                        System.out.println("PROGRESS: " + Double.toString(progr));
-                        if (progr == 1) {
-                            //finished = true;
-                            models--;
+			if (NetSystem.pause()) {
+				if (NetSystem.getNetworkList().size() != 0) {
+					QueueNetwork net = NetSystem.getNetworkList().get(0);
+					try {
+						progr = NetSystem.checkProgress(net);
+						System.out.println("PROGRESS: " + Double.toString(progr));
+						if (progr == 1) {
+							//finished = true;
+							models--;
 
-                        }
-                    } catch (NetException e) {
-                        e.printStackTrace();
-                    }
+						}
+					} catch (NetException e) {
+						e.printStackTrace();
+					}
 
-                }
+				}
 
+				NetSystem.restartFromPause();
+			} else {
+				if (progr > 0) {
+					System.out.println("PROGRESS: finished");
+					break;
+				}
+			}
 
-                NetSystem.restartFromPause();
-            } else {
-                if (progr > 0) {
-                    System.out.println("PROGRESS: finished");
-                    break;
-                }
-            }
+		} while (models > 0);
 
-        } while (models > 0);
-
-
-    }
+	}
 }
-
-
-
 
 class Thread3 extends Thread {
 
-    private Dispatcher_jMVAschema disp;
+	private Dispatcher_jMVAschema disp;
 
-    public Thread3(Dispatcher_jMVAschema disp) {
-        this.disp = disp;
-    }
+	public Thread3(Dispatcher_jMVAschema disp) {
+		this.disp = disp;
+	}
 
-    public void run() {
+	public void run() {
 
-        disp.solveModel();
+		disp.solveModel();
 
-    }
+	}
 }
-
 
 class Thread4 extends Thread {
 
-    private Dispatcher_jMVAschema disp;
-    boolean finished = false;
+	private Dispatcher_jMVAschema disp;
+	boolean finished = false;
 
-    public Thread4(Dispatcher_jMVAschema disp) {
-        this.disp = disp;
-    }
+	public Thread4(Dispatcher_jMVAschema disp) {
+		this.disp = disp;
+	}
 
-    public void run() {
+	public void run() {
 
-        double progress = 0.0;
+		double progress = 0.0;
 
-        while(!finished) {
+		while (!finished) {
 
-            progress = disp.checkSimProgress();
+			progress = disp.checkSimProgress();
 
-            System.out.println("Progress: " + Double.toString(progress));
-            disp.refreshTempMeasures();
-            disp.printTempMeasures();
+			System.out.println("Progress: " + Double.toString(progress));
+			disp.refreshTempMeasures();
+			disp.printTempMeasures();
 
-            if (progress == 1.0) {
-                finished = true;
-                break;
-            }
+			if (progress == 1.0) {
+				finished = true;
+				break;
+			}
 
-            try {
-                sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+			try {
+				sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
-        }
+		}
 
-
-
-    }
+	}
 }
-
-
 
 class Thread5 extends Thread {
 
-    private Dispatcher_jMVAschema disp;
-    boolean finished = false;
+	private Dispatcher_jMVAschema disp;
+	boolean finished = false;
 
-    public Thread5(Dispatcher_jMVAschema disp) {
-        this.disp = disp;
-    }
+	public Thread5(Dispatcher_jMVAschema disp) {
+		this.disp = disp;
+	}
 
+	public void run() {
 
-    public void run() {
+		double progress = 0.0;
 
-        double progress = 0.0;
+		while (!finished) {
 
-        while(!finished) {
+			progress = disp.checkSimProgress();
 
-            progress = disp.checkSimProgress();
+			System.out.println("Progress: " + Double.toString(progress));
+			disp.refreshTempMeasures();
+			disp.printTempMeasures();
 
-            System.out.println("Progress: " + Double.toString(progress));
-            disp.refreshTempMeasures();
-            disp.printTempMeasures();
+			try {
+				sleep(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
-            try {
-                sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+			if (disp.abortAllMeasures()) {
+				finished = true;
+			}
 
-            if (disp.abortAllMeasures()) {
-                finished = true;
-            }
+		}
 
-        }
-
-
-
-    }
+	}
 }

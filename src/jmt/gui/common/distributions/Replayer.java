@@ -15,13 +15,14 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.distributions;
 
-import jmt.gui.common.resources.JMTImageLoader;
-
-import javax.swing.*;
 import java.io.File;
+
+import javax.swing.ImageIcon;
+
+import jmt.gui.common.resources.JMTImageLoader;
 
 /**
  * <p>Title: Replayer virtual distribution</p>
@@ -32,65 +33,60 @@ import java.io.File;
  *         Date: 12-lug-2005
  *         Time: 11.29.26
  */
-public class Replayer extends Distribution{
-    /**
-     * Construct a new Replayer Distribution
-     */
-    public Replayer() {
-        super("Replayer",
-                "jmt.engine.random.Replayer",
-                "jmt.engine.random.ReplayerPar",
-                "Replayer distribution");
-        this.setValueChecker(new ValueChecker() {
-            public boolean checkValue(Object value) {
-                Distribution d = (Distribution) value;
-                if ((new File((String)d.getParameter(0).getValue())).exists())
-                    return true;
-                else
-                    return false;
-            }
-        });
-        
-        isNestable = true;
-    }
+public class Replayer extends Distribution {
+	/**
+	 * Construct a new Replayer Distribution
+	 */
+	public Replayer() {
+		super("Replayer", "jmt.engine.random.Replayer", "jmt.engine.random.ReplayerPar", "Replayer distribution");
+		this.setValueChecker(new ValueChecker() {
+			public boolean checkValue(Object value) {
+				Distribution d = (Distribution) value;
+				if ((new File((String) d.getParameter(0).getValue())).exists()) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
 
-    /**
-     * Returns precondition that parameters' values must satisfy for this distribution to be valid
-     * @return Message describing distribution's preconditions
-     */
-    public String getPrecondition() {
-        return "specified 'fileName' does not exists. Try to provide a correct path.";
-    }
+		isNestable = true;
+	}
 
-    /**
-     * Used to set parameters of this distribution.
-     * @return distribution parameters
-     */
-    protected Distribution.Parameter[] setParameters() {
-        // Creates parameter array
-        Parameter[] parameters = new Parameter[1];
-        // Sets parameter fileName
-        parameters[0] = new Parameter("fileName",
-                "fileName",
-                String.class,
-                "");
-        return parameters;
-    }
+	/**
+	 * Returns precondition that parameters' values must satisfy for this distribution to be valid
+	 * @return Message describing distribution's preconditions
+	 */
+	public String getPrecondition() {
+		return "specified 'fileName' does not exists. Try to provide a correct path.";
+	}
 
-    /**
-     * Sets explicative image of this distribution used, together with description, to help the
-     * user to understand meaning of parameters.
-     * @return explicative image
-     */
-    protected ImageIcon setImage() {
-        return JMTImageLoader.loadImage("Replayer");
-    }
+	/**
+	 * Used to set parameters of this distribution.
+	 * @return distribution parameters
+	 */
+	protected Distribution.Parameter[] setParameters() {
+		// Creates parameter array
+		Parameter[] parameters = new Parameter[1];
+		// Sets parameter fileName
+		parameters[0] = new Parameter("fileName", "fileName", String.class, "");
+		return parameters;
+	}
 
-    /**
-     * Returns this distribution's short description
-     * @return distribution's short description
-     */
-    public String toString() {
-        return "Replayer";
-    }
+	/**
+	 * Sets explicative image of this distribution used, together with description, to help the
+	 * user to understand meaning of parameters.
+	 * @return explicative image
+	 */
+	protected ImageIcon setImage() {
+		return JMTImageLoader.loadImage("Replayer");
+	}
+
+	/**
+	 * Returns this distribution's short description
+	 * @return distribution's short description
+	 */
+	public String toString() {
+		return "Replayer";
+	}
 }

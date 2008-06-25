@@ -17,10 +17,10 @@
  */
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
 
@@ -31,22 +31,26 @@ import java.awt.event.KeyEvent;
  */
 public class AddBlockingRegion extends AbstractJmodelAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Defines an <code>Action</code> object with a default
-     * description string and default icon.
-     */
-    public AddBlockingRegion(Mediator mediator) {
-        super("Add Finite Capacity Region", "Blocking", mediator);
-        putValue(SHORT_DESCRIPTION, "Adds selected stations to a new finite capacity region");
-        putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_B));
-        setEnabled(false);
-    }
+	/**
+	 * Defines an <code>Action</code> object with a default
+	 * description string and default icon.
+	 */
+	public AddBlockingRegion(Mediator mediator) {
+		super("Add Finite Capacity Region", "Blocking", mediator);
+		putValue(SHORT_DESCRIPTION, "Adds selected stations to a new finite capacity region");
+		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_B));
+		setEnabled(false);
+	}
 
-    /**
-     * Invoked when an action occurs.
-     */
-    public void actionPerformed(ActionEvent e) {
-        mediator.addSelectionToNewBlockingRegion();
-    }
+	/**
+	 * Invoked when an action occurs.
+	 */
+	public void actionPerformed(ActionEvent e) {
+		mediator.addSelectionToNewBlockingRegion();
+	}
 }

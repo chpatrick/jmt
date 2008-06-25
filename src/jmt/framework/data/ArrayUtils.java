@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.framework.data;
 
 import java.util.Arrays;
@@ -49,9 +49,13 @@ public class ArrayUtils {
 	 * Resizes an array, preserving data and padding as needed
 	 */
 	public static int[] resize(int[] array, int newsize, int padding) {
-		if (newsize < 0) throw new RuntimeException("newsize must be >=0");
+		if (newsize < 0) {
+			throw new RuntimeException("newsize must be >=0");
+		}
 		int oldsize = array.length;
-		if (newsize == oldsize) return array;
+		if (newsize == oldsize) {
+			return array;
+		}
 
 		int[] newArray = new int[newsize];
 
@@ -72,9 +76,13 @@ public class ArrayUtils {
 	 * Resizes an array, preserving data and padding as needed
 	 */
 	public static double[] resize(double[] array, int newsize, double padding) {
-		if (newsize < 0) throw new RuntimeException("newsize must be >=0");
+		if (newsize < 0) {
+			throw new RuntimeException("newsize must be >=0");
+		}
 		int oldsize = array.length;
-		if (newsize == oldsize) return array;
+		if (newsize == oldsize) {
+			return array;
+		}
 		double[] newArray = new double[newsize];
 		int count = (oldsize < newsize ? oldsize : newsize);
 		System.arraycopy(array, 0, newArray, 0, count);
@@ -92,9 +100,13 @@ public class ArrayUtils {
 	 * Resizes an array, preserving data and padding as needed
 	 */
 	public static String[] resize(String[] array, int newsize, String padding) {
-		if (newsize < 0) throw new RuntimeException("newsize must be >=0");
+		if (newsize < 0) {
+			throw new RuntimeException("newsize must be >=0");
+		}
 		int oldsize = array.length;
-		if (newsize == oldsize) return array;
+		if (newsize == oldsize) {
+			return array;
+		}
 
 		String[] newArray = new String[newsize];
 
@@ -114,12 +126,16 @@ public class ArrayUtils {
 	 * Resizes a 2-dimensional array preserving data and padding as needed
 	 */
 	public static double[][] resize2(double[][] array, int newsize1, int newsize2, double padding) {
-		if (newsize1 < 0 || newsize2 < 0) throw new RuntimeException("newsizes must be >=0");
+		if (newsize1 < 0 || newsize2 < 0) {
+			throw new RuntimeException("newsizes must be >=0");
+		}
 
 		int oldsize1 = array.length;
 		int oldsize2 = array[0].length;
 
-		if (oldsize1 == newsize1 && oldsize2 == newsize2) return array;
+		if (oldsize1 == newsize1 && oldsize2 == newsize2) {
+			return array;
+		}
 
 		//1st dimension
 
@@ -152,7 +168,9 @@ public class ArrayUtils {
 	 * Resizes a 3-dimensional array with variable sizes preserving data and padding as needed
 	 */
 	public static double[][][] resize3var(double[][][] array, int newsize1, int newsize2, int[] newsize3, double padding) {
-		if (newsize1 < 0 || newsize2 < 0) throw new RuntimeException("newsizes must be >=0");
+		if (newsize1 < 0 || newsize2 < 0) {
+			throw new RuntimeException("newsizes must be >=0");
+		}
 
 		int oldsize1 = array.length;
 
@@ -209,7 +227,7 @@ public class ArrayUtils {
 	 * @return a deep copy of <code>array</code>
 	 */
 	public static double[][] copy2(double[][] array) {
-		int len1,len2;
+		int len1, len2;
 		len1 = array.length;
 		double[][] newArray = new double[len1][];
 		System.arraycopy(array, 0, newArray, 0, len1);
@@ -227,7 +245,7 @@ public class ArrayUtils {
 	 */
 	public static double[][][] copy3(double[][][] array) {
 
-		int len1,len2,len3;
+		int len1, len2, len3;
 		len1 = array.length;
 		double[][][] newArray = new double[len1][][];
 		System.arraycopy(array, 0, newArray, 0, len1);
@@ -245,23 +263,27 @@ public class ArrayUtils {
 		return newArray;
 	}
 
-    public static double[][][] copy3per2(double[][][] array3, double[][] factor){
-        double[][][] newArray = new double[array3.length][][];
-        for (int i = 0; i < array3.length; i++) {
-            newArray[i] = new double[array3[i].length][];
-            if(i<factor.length){
-                for (int j = 0; j < array3[i].length; j++) {
-                    newArray[i][j] = new double[array3[i][j].length];
-                    if(j<factor[i].length){
-                        for(int k=0; k<array3[i][j].length; k++){
-                                newArray[i][j][k] = array3[i][j][k]*factor[i][j];
-                        }
-                    }else return copy3(array3);
-                }
-            }else return copy3(array3);
-        }
-        return newArray;
-    }
+	public static double[][][] copy3per2(double[][][] array3, double[][] factor) {
+		double[][][] newArray = new double[array3.length][][];
+		for (int i = 0; i < array3.length; i++) {
+			newArray[i] = new double[array3[i].length][];
+			if (i < factor.length) {
+				for (int j = 0; j < array3[i].length; j++) {
+					newArray[i][j] = new double[array3[i][j].length];
+					if (j < factor[i].length) {
+						for (int k = 0; k < array3[i][j].length; k++) {
+							newArray[i][j][k] = array3[i][j][k] * factor[i][j];
+						}
+					} else {
+						return copy3(array3);
+					}
+				}
+			} else {
+				return copy3(array3);
+			}
+		}
+		return newArray;
+	}
 
 	public static void copy(String[] from, String[] to) {
 		System.arraycopy(from, 0, to, 0, from.length);
@@ -276,7 +298,7 @@ public class ArrayUtils {
 	}
 
 	public static void copy2(double[][] from, double[][] to) {
-		int len1,len2;
+		int len1, len2;
 		len1 = from.length;
 		System.arraycopy(from, 0, to, 0, len1);
 		for (int i = 0; i < len1; i++) {
@@ -287,7 +309,7 @@ public class ArrayUtils {
 
 	public static void copy3(double[][][] from, double[][][] to) {
 
-		int len1,len2,len3;
+		int len1, len2, len3;
 		len1 = from.length;
 		System.arraycopy(from, 0, to, 0, len1);
 		for (int i = 0; i < len1; i++) {
@@ -302,7 +324,9 @@ public class ArrayUtils {
 
 	public static String[] delete(String[] arr, int idx) {
 		int newlen = arr.length - 1;
-		if (newlen < 0) throw new IllegalArgumentException("cannot delete from an empty array");
+		if (newlen < 0) {
+			throw new IllegalArgumentException("cannot delete from an empty array");
+		}
 		String[] res = new String[newlen];
 		if (idx > 0) {
 			System.arraycopy(arr, 0, res, 0, idx);
@@ -315,7 +339,9 @@ public class ArrayUtils {
 
 	public static int[] delete(int[] arr, int idx) {
 		int newlen = arr.length - 1;
-		if (newlen < 0) throw new IllegalArgumentException("cannot delete from an empty array");
+		if (newlen < 0) {
+			throw new IllegalArgumentException("cannot delete from an empty array");
+		}
 		int[] res = new int[newlen];
 		if (idx > 0) {
 			System.arraycopy(arr, 0, res, 0, idx);
@@ -328,7 +354,9 @@ public class ArrayUtils {
 
 	public static double[] delete(double[] arr, int idx) {
 		int newlen = arr.length - 1;
-		if (newlen < 0) throw new IllegalArgumentException("cannot delete from an empty array");
+		if (newlen < 0) {
+			throw new IllegalArgumentException("cannot delete from an empty array");
+		}
 		double[] res = new double[newlen];
 		if (idx > 0) {
 			System.arraycopy(arr, 0, res, 0, idx);
@@ -341,7 +369,9 @@ public class ArrayUtils {
 
 	public static double[][] delete2_1(double[][] arr, int idx) {
 		int newlen = arr.length - 1;
-		if (newlen < 0) throw new IllegalArgumentException("cannot delete from an empty array");
+		if (newlen < 0) {
+			throw new IllegalArgumentException("cannot delete from an empty array");
+		}
 		double[][] res = new double[newlen][];
 		if (idx > 0) {
 			System.arraycopy(arr, 0, res, 0, idx);
@@ -361,7 +391,9 @@ public class ArrayUtils {
 
 	public static double[][][] delete3_1(double[][][] arr, int idx) {
 		int newlen = arr.length - 1;
-		if (newlen < 0) throw new IllegalArgumentException("cannot delete from an empty array");
+		if (newlen < 0) {
+			throw new IllegalArgumentException("cannot delete from an empty array");
+		}
 		double[][][] res = new double[newlen][][];
 		if (idx > 0) {
 			System.arraycopy(arr, 0, res, 0, idx);
@@ -442,7 +474,9 @@ public class ArrayUtils {
 	}
 
 	public static String toCSV(double[] array) {
-		if (array.length == 0) return "";
+		if (array.length == 0) {
+			return "";
+		}
 		StringBuffer s = new StringBuffer();
 
 		s.append(Double.toString(array[0]));
@@ -455,7 +489,9 @@ public class ArrayUtils {
 
 	public static String toCSV3_2(double[][][] array, int index1, int index3) {
 		int len2 = array[index1].length;
-		if (len2 == 0) return "";
+		if (len2 == 0) {
+			return "";
+		}
 		StringBuffer s = new StringBuffer();
 
 		s.append(Double.toString(array[index1][0][index3]));
@@ -469,33 +505,37 @@ public class ArrayUtils {
 	public static boolean fromCSV(double[] array, String str) {
 		String[] tokens = str.split(";");
 		int ntok = tokens.length;
-		if (ntok != array.length) return false;
+		if (ntok != array.length) {
+			return false;
+		}
 		for (int i = 0; i < ntok; i++) {
 			array[i] = Double.parseDouble(tokens[i]);
 		}
 		return true;
 	}
 
-    /**
-     * Extract a double[] given a string separated by ';'
-     * @param str input string
-     * @return double array
-     * <br>
-     * Author: Bertoli Marco
-     */
-    public static double[] fromCSV(String str) {
-        String[] tokens = str.split(";");
-        double[] out = new double[tokens.length];
-        for (int i = 0; i < out.length; i++) {
-            out[i] = Double.parseDouble(tokens[i]);
-        }
-        return out;
-    }
+	/**
+	 * Extract a double[] given a string separated by ';'
+	 * @param str input string
+	 * @return double array
+	 * <br>
+	 * Author: Bertoli Marco
+	 */
+	public static double[] fromCSV(String str) {
+		String[] tokens = str.split(";");
+		double[] out = new double[tokens.length];
+		for (int i = 0; i < out.length; i++) {
+			out[i] = Double.parseDouble(tokens[i]);
+		}
+		return out;
+	}
 
-    public static boolean fromCSV3_2(double[][][] array, int index1, int index3, String str) {
+	public static boolean fromCSV3_2(double[][][] array, int index1, int index3, String str) {
 		String[] tokens = str.split(";");
 		int ntok = tokens.length;
-		if (ntok != array[index1].length) return false;
+		if (ntok != array[index1].length) {
+			return false;
+		}
 
 		for (int i = 0; i < ntok; i++) {
 			array[index1][i][index3] = Double.parseDouble(tokens[i]);
@@ -506,18 +546,26 @@ public class ArrayUtils {
 	/* good ol' Arrays only has 'em for 1 dimension...*/
 	public static boolean equals2(double[][] arr1, double[][] arr2) {
 		int len1 = arr1.length;
-		if (len1 != arr2.length) return false;
+		if (len1 != arr2.length) {
+			return false;
+		}
 		for (int i = 0; i < len1; i++) {
-			if (!Arrays.equals(arr1[i], arr2[i])) return false;
+			if (!Arrays.equals(arr1[i], arr2[i])) {
+				return false;
+			}
 		}
 		return true;
 	}
 
 	public static boolean equals3(double[][][] arr1, double[][][] arr2) {
 		int len1 = arr1.length;
-		if (len1 != arr2.length) return false;
+		if (len1 != arr2.length) {
+			return false;
+		}
 		for (int i = 0; i < len1; i++) {
-			if (!equals2(arr1[i], arr2[i])) return false;
+			if (!equals2(arr1[i], arr2[i])) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -577,7 +625,6 @@ public class ArrayUtils {
 		return s.toString();
 	}
 
-
 	/**
 	 * array[n]->result[n+1], where
 	 *
@@ -593,34 +640,36 @@ public class ArrayUtils {
 		return res;
 	}
 
-    /**
-     * Copies a 2D array in a 3D one. Given source[i][j] elements are copied in
-     * position dest[i][j][k] where k is a given index.
-     * <br>
-     * Author: Bertoli Marco
-     * @param source source 2D array
-     * @param dest destination 3D array
-     * @param k third coordinate to be left unchanged
-     */
-    public static void copy2to3(double[][] source, double[][][] dest, int k) {
-        for (int i=0; i<source.length; i++)
-            for (int j=0; j<source[i].length; j++)
-                dest[i][j][k] = source[i][j];
-    }
+	/**
+	 * Copies a 2D array in a 3D one. Given source[i][j] elements are copied in
+	 * position dest[i][j][k] where k is a given index.
+	 * <br>
+	 * Author: Bertoli Marco
+	 * @param source source 2D array
+	 * @param dest destination 3D array
+	 * @param k third coordinate to be left unchanged
+	 */
+	public static void copy2to3(double[][] source, double[][][] dest, int k) {
+		for (int i = 0; i < source.length; i++) {
+			for (int j = 0; j < source[i].length; j++) {
+				dest[i][j][k] = source[i][j];
+			}
+		}
+	}
 
-    /**
-     * Given an array <em>A</em> and a number <em>n</em> returns the product <em>A*n</em>
-     * <br>
-     * Author: Bertoli Marco
-     * @param source source array <em>A</em>
-     * @param num number to be multiplied <em>n</em>
-     * @return a new array with multiplied value
-     */
-    public static double[] multiply(double[] source, double num) {
-        double[] ret = new double[source.length];
-        for (int i=0; i<ret.length; i++)
-            ret[i] = source[i] * num;
-        return ret;
-    }
+	/**
+	 * Given an array <em>A</em> and a number <em>n</em> returns the product <em>A*n</em>
+	 * <br>
+	 * Author: Bertoli Marco
+	 * @param source source array <em>A</em>
+	 * @param num number to be multiplied <em>n</em>
+	 * @return a new array with multiplied value
+	 */
+	public static double[] multiply(double[] source, double num) {
+		double[] ret = new double[source.length];
+		for (int i = 0; i < ret.length; i++) {
+			ret[i] = source[i] * num;
+		}
+		return ret;
+	}
 }
-

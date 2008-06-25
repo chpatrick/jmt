@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.dataAnalysis;
 
 /**
@@ -26,25 +26,25 @@ package jmt.engine.dataAnalysis;
  */
 public abstract class MeasureOutput {
 
-    protected Measure measure;
+	protected Measure measure;
 
-    /** Creates a new instance of MeasureOutput class.
-     * @param measure Reference to the measure to be "outputted".
-     */
-    public MeasureOutput(Measure measure) {
-        this.measure = measure;
-        measure.setOutput(this);
-    }
+	/** Creates a new instance of MeasureOutput class.
+	 * @param measure Reference to the measure to be "outputted".
+	 */
+	public MeasureOutput(Measure measure) {
+		this.measure = measure;
+		measure.setOutput(this);
+	}
 
-    /** Overrides this method to implement the way in which each measure
-     * should be written on an output stream. This method is called for every
-     * sample.
-     */
-    public abstract void write(double Sample, double Weight);
+	/** Overrides this method to implement the way in which each measure
+	 * should be written on an output stream. This method is called for every
+	 * sample.
+	 */
+	public abstract void write(double Sample, double Weight);
 
-    /** Overrides this method to implement the way in which the final measure
-     * should be written on an output stream. This method is called at the end of
-     * a measure.
-     */
-    public abstract void writeMeasure();
+	/** Overrides this method to implement the way in which the final measure
+	 * should be written on an output stream. This method is called at the end of
+	 * a measure.
+	 */
+	public abstract void writeMeasure();
 }

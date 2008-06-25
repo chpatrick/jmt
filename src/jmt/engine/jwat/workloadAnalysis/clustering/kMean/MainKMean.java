@@ -13,93 +13,94 @@ import jmt.engine.jwat.workloadAnalysis.clustering.EventClusteringDone;
 //+ aggiunta trasformazione e anti a variabili selezionate per clustering			
 //UPDATE 31/10/2006: + aggiunto calcolo delle statistiche clustering su variabili non trasformate
 
-public class MainKMean extends TimeConsumingWorker{
-	
+public class MainKMean extends TimeConsumingWorker {
+
 	private short trasf;
 	private int[] varSel;
 	private int numClust;
 	private int iteration;
 	private MatrixOsservazioni m;
 	private KMean clustering;
-	private String msg=null;
+	private String msg = null;
 	private KMeanClusteringEngine Cluster;
-	
-	public MainKMean(ProgressShow prg,MatrixOsservazioni m,int[] varSel,int numClust,int iteration,short trasf) {
+
+	public MainKMean(ProgressShow prg, MatrixOsservazioni m, int[] varSel, int numClust, int iteration, short trasf) {
 		super(prg);
-		this.m=m;
-		this.iteration=iteration;
-		this.numClust=numClust;
-		this.varSel=varSel;
-		clustering=new KMean(numClust,varSel);
-		Cluster = new KMeanClusteringEngine(clustering,this);
-		this.trasf = trasf; 
+		this.m = m;
+		this.iteration = iteration;
+		this.numClust = numClust;
+		this.varSel = varSel;
+		clustering = new KMean(numClust, varSel);
+		Cluster = new KMeanClusteringEngine(clustering, this);
+		this.trasf = trasf;
 	}
-	
+
 	public Object construct() {
 		boolean anti = false;
 		try {
-			initShow((iteration*numClust)+3);
-			updateInfos(1,"Initializing KMeans Clustering",true);
+			initShow((iteration * numClust) + 3);
+			updateInfos(1, "Initializing KMeans Clustering", true);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
 			e.printStackTrace();
-		}		
+		}
 		//Applicazione trasformazione alle variabili coinvolte nel clustering
-		if(trasf != VariableNumber.NONE){
-			for(int i = 0;i<varSel.length;i++){
+		if (trasf != VariableNumber.NONE) {
+			for (int i = 0; i < varSel.length; i++) {
 				m.getVariables()[varSel[i]].doClusteringTrasformation(trasf);
 			}
 		}
-		if (isCanceled()){
-			msg="CLUSTERING ABORTED BY USER";
-			if(trasf != VariableNumber.NONE){	
-				for(int i = 0;i<varSel.length;i++){
+		if (isCanceled()) {
+			msg = "CLUSTERING ABORTED BY USER";
+			if (trasf != VariableNumber.NONE) {
+				for (int i = 0; i < varSel.length; i++) {
 					m.getVariables()[varSel[i]].undoClueringTrasformation();
 				}
 			}
 			return null;
 		}
-		try{
+		try {
 			// Variabili | numero variabili totale | numero di variaibli coinvolte | trasformazione | num Max Cluster | num Max Iterazioni | Elenco indici delle variabili coinvolte
-			Cluster.PrepClustering(m,numClust,iteration,varSel);
-			if (isCanceled()){
-				msg="CLUSTERING ABORTED BY USER";
-				if(trasf != VariableNumber.NONE){	
-					for(int i = 0;i<varSel.length;i++){
+			Cluster.PrepClustering(m, numClust, iteration, varSel);
+			if (isCanceled()) {
+				msg = "CLUSTERING ABORTED BY USER";
+				if (trasf != VariableNumber.NONE) {
+					for (int i = 0; i < varSel.length; i++) {
 						m.getVariables()[varSel[i]].undoClueringTrasformation();
 					}
 				}
 				return null;
 			}
-			if(!Cluster.DoClustering()){
-				msg="CLUSTERING ABORTED BY USER";
-				if(trasf != VariableNumber.NONE){	
-					for(int i = 0;i<varSel.length;i++){
+			if (!Cluster.DoClustering()) {
+				msg = "CLUSTERING ABORTED BY USER";
+				if (trasf != VariableNumber.NONE) {
+					for (int i = 0; i < varSel.length; i++) {
 						m.getVariables()[varSel[i]].undoClueringTrasformation();
 					}
 				}
 				return null;
 			}
 			//Antitrasformazione delle variabili coinvolte
-			
-			if(trasf != VariableNumber.NONE){
+
+			if (trasf != VariableNumber.NONE) {
 				anti = true;
-				for(int i = 0;i<varSel.length;i++){
+				for (int i = 0; i < varSel.length; i++) {
 					m.getVariables()[varSel[i]].undoClueringTrasformation();
 				}
 			}
-			updateInfos((iteration*numClust) +2,"Saving Results",true);
+			updateInfos((iteration * numClust) + 2, "Saving Results", true);
 			//Calcolo delle statistiche clustering eseguito
-			for(int i = 0; i < clustering.getNumCluster();i++)
-				((ClusteringInfosKMean)clustering.getClusteringInfos(i)).DOStat(varSel,clustering.getAsseg()[i],m);
-			updateInfos((iteration*numClust) +3,"END",true);	
-			
-		}catch(OutOfMemoryError err){
-			updateInfos((iteration*numClust)+3,"errore",false);
+			for (int i = 0; i < clustering.getNumCluster(); i++) {
+				((ClusteringInfosKMean) clustering.getClusteringInfos(i)).DOStat(varSel, clustering.getAsseg()[i], m);
+			}
+			updateInfos((iteration * numClust) + 3, "END", true);
+
+		} catch (OutOfMemoryError err) {
+			updateInfos((iteration * numClust) + 3, "errore", false);
 			msg = "Out of Memory. Try with more memory (1Gb JMT Version)";
-			if(trasf != VariableNumber.NONE && !anti){	
-				for(int i = 0;i<varSel.length;i++){
+			if (trasf != VariableNumber.NONE && !anti) {
+				for (int i = 0; i < varSel.length; i++) {
 					m.getVariables()[varSel[i]].undoClueringTrasformation();
 				}
 			}
@@ -107,13 +108,12 @@ public class MainKMean extends TimeConsumingWorker{
 		}
 		return clustering;
 	}
-	
+
 	public void finished() {
-		if(this.get()!=null){
+		if (this.get() != null) {
 			fireEventStatus(new EventClusteringDone(clustering));
-		}
-		else{
+		} else {
 			fireEventStatus(new EventFinishAbort(msg));
 		}
-	}	
+	}
 }

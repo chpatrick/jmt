@@ -15,9 +15,8 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.engine.QueueNet;
 
+package jmt.engine.QueueNet;
 
 /**
  * This class implements a message which could be received for example by a
@@ -109,10 +108,11 @@ public class NetMessage {
 	 * @return The job of the NetMessage.
 	 */
 	public Job getJob() {
-		if ((event == NetEvent.EVENT_JOB) || (event == NetEvent.EVENT_ACK))
+		if ((event == NetEvent.EVENT_JOB) || (event == NetEvent.EVENT_ACK)) {
 			return (Job) data;
-		else
+		} else {
 			return null;
+		}
 	}
 
 	/** Sets the time field of the NetMessage.

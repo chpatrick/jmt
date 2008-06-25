@@ -15,17 +15,17 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.framework.gui.help;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.MouseAdapter;
+import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
+
+import javax.swing.JLabel;
 
 /**
 
@@ -39,6 +39,10 @@ import java.util.Stack;
  * a very basic help system - you register (Component,String) couples and when the mouse enters the component the String is displayed in a JLabel.
  */
 public class HoverHelp extends JLabel implements MouseListener {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected Map map;
 	protected Stack s;
 
@@ -53,23 +57,29 @@ public class HoverHelp extends JLabel implements MouseListener {
 	}
 
 	/**
-     * Adds help for the specified component
+	 * Adds help for the specified component
 	 * @param comp component to be added
 	 * @param help help message
 	 */
 	public void addHelp(Component comp, String help) {
-		if (help == null) return;
+		if (help == null) {
+			return;
+		}
 		Object v = map.put(comp, help);
-		if (v == null) comp.addMouseListener(this);
+		if (v == null) {
+			comp.addMouseListener(this);
+		}
 	}
 
 	/**
-     * Removes help for a specified component
+	 * Removes help for a specified component
 	 * @param comp component to be removed
 	 */
 	public void removeHelp(Component comp) {
 		Object v = map.remove(comp);
-		if (v != null) comp.removeMouseListener(this);
+		if (v != null) {
+			comp.removeMouseListener(this);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -84,28 +94,30 @@ public class HoverHelp extends JLabel implements MouseListener {
 	 * @see java.awt.event.MouseAdapter#mouseExited(java.awt.event.MouseEvent)
 	 */
 	public void mouseExited(MouseEvent e) {
-		if (!s.empty()) this.setText((String) s.pop());
+		if (!s.empty()) {
+			this.setText((String) s.pop());
+		}
 	}
 
 	public JLabel getHelpLabel() {
 		return this;
 	}
 
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
-     */
-    public void mouseClicked(MouseEvent e) {
-    }
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseClicked(java.awt.event.MouseEvent)
+	 */
+	public void mouseClicked(MouseEvent e) {
+	}
 
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
-     */
-    public void mousePressed(MouseEvent e) {
-    }
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mousePressed(java.awt.event.MouseEvent)
+	 */
+	public void mousePressed(MouseEvent e) {
+	}
 
-    /* (non-Javadoc)
-     * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-     */
-    public void mouseReleased(MouseEvent e) {
-    }
+	/* (non-Javadoc)
+	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
+	 */
+	public void mouseReleased(MouseEvent e) {
+	}
 }

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /* Distribution abstract class */
 package jmt.engine.random;
 
@@ -33,7 +33,6 @@ import jmt.common.exception.IncorrectDistributionParameterException;
 
 public interface Distribution {
 
-
 	/**
 	 * return the new random number.
 	 * This method is used to ask all the distribution to return a new random number
@@ -46,11 +45,9 @@ public interface Distribution {
 
 	public abstract double nextRand(Parameter p) throws IncorrectDistributionParameterException;
 
+	/////@author STEFANO OMINI
 
-    /////@author STEFANO OMINI
-
-
-    /**
+	/**
 	 * Returns the pdf of the distribution.
 	 * This method is used to obtain from the distribution his probability distribution
 	 * function evaluated where required by the user.
@@ -88,25 +85,18 @@ public interface Distribution {
 
 	public abstract double theorMean(Parameter p) throws IncorrectDistributionParameterException;
 
-
-
-    /**
+	/**
 	 * returns the variance of the distribution.
 	 * This method is used to obtain from the distribution his own theoretical
 	 * variance.
 	 *
 	 * @param p parameter of the constant distribution.
-     * @throws IncorrectDistributionParameterException
+	 * @throws IncorrectDistributionParameterException
 	 * @return double with the theoretic varance of the distribution.
 	 */
 
 	public abstract double theorVariance(Parameter p) throws IncorrectDistributionParameterException;
 
-
-
-
-
-    /////END @author STEFANO OMINI
-
+	/////END @author STEFANO OMINI
 
 } // end Distribution

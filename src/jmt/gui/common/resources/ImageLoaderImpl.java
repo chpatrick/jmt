@@ -33,11 +33,11 @@ import jmt.framework.gui.image.ImageLoader;
  * @version 1.0
  */
 public class ImageLoaderImpl extends ImageLoader {
-    /* (non-Javadoc)
-     * @see jmt.framework.gui.image.ImageLoader#getImageURL(java.lang.String)
-     */
-    protected URL getImageURL(String resourceName) {
-        return ImageLoaderImpl.class.getResource(resourceName);
-    }
+	/* (non-Javadoc)
+	 * @see jmt.framework.gui.image.ImageLoader#getImageURL(java.lang.String)
+	 */
+	protected URL getImageURL(String resourceName) {
+		return ImageLoaderImpl.class.getResource(resourceName);
+	}
 
 }

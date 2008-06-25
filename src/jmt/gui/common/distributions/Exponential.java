@@ -15,12 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.distributions;
 
-import jmt.gui.common.resources.JMTImageLoader;
+import javax.swing.ImageIcon;
 
-import javax.swing.*;
+import jmt.gui.common.resources.JMTImageLoader;
 
 /**
  * <p>Title: Exponential Distribution</p>
@@ -31,79 +31,73 @@ import javax.swing.*;
  *         Time: 11.47.50
  */
 public class Exponential extends Distribution {
-    /**
-     * Construct a new Exponential Distribution
-     */
-    public Exponential() {
-        super("Exponential",
-                "jmt.engine.random.Exponential",
-                "jmt.engine.random.ExponentialPar",
-                "Exponential distribution");
-        hasMean = true;
-        isNestable = true;
-    }
+	/**
+	 * Construct a new Exponential Distribution
+	 */
+	public Exponential() {
+		super("Exponential", "jmt.engine.random.Exponential", "jmt.engine.random.ExponentialPar", "Exponential distribution");
+		hasMean = true;
+		isNestable = true;
+	}
 
-    /**
-     * Used to set parameters of this distribution.
-     * @return distribution parameters
-     */
-    protected Parameter[] setParameters() {
-        // Creates parameter array
-        Parameter[] parameters = new Parameter[1];
-        // Sets parameter lambda
-        parameters[0] = new Parameter("lambda",
-                "\u03BB",
-                Double.class,
-                new Double(1));
-        // Checks value of lambda must be greater than 0 and not infinity
-        parameters[0].setValueChecker(new ValueChecker() {
-            public boolean checkValue(Object value) {
-                Double d = (Double) value;
-                if (d.doubleValue() > 0 && !d.isInfinite())
-                    return true;
-                else
-                    return false;
-            }
-        });
+	/**
+	 * Used to set parameters of this distribution.
+	 * @return distribution parameters
+	 */
+	protected Parameter[] setParameters() {
+		// Creates parameter array
+		Parameter[] parameters = new Parameter[1];
+		// Sets parameter lambda
+		parameters[0] = new Parameter("lambda", "\u03BB", Double.class, new Double(1));
+		// Checks value of lambda must be greater than 0 and not infinity
+		parameters[0].setValueChecker(new ValueChecker() {
+			public boolean checkValue(Object value) {
+				Double d = (Double) value;
+				if (d.doubleValue() > 0 && !d.isInfinite()) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
 
-        return parameters;
-    }
+		return parameters;
+	}
 
-    /**
-     * Sets explicative image of this distribution used, together with description, to help the
-     * user to understand meaning of parameters.
-     * @return explicative image
-     */
-    protected ImageIcon setImage() {
-        return JMTImageLoader.loadImage("Exponential");
-    }
+	/**
+	 * Sets explicative image of this distribution used, together with description, to help the
+	 * user to understand meaning of parameters.
+	 * @return explicative image
+	 */
+	protected ImageIcon setImage() {
+		return JMTImageLoader.loadImage("Exponential");
+	}
 
-    /**
-     * Returns this distribution's short description
-     * @return distribution's short description
-     */
-    public String toString() {
-        return "exp(" +
-                FormatNumber(((Double)parameters[0].getValue()).doubleValue()) +
-                ")";
-    }
+	/**
+	 * Returns this distribution's short description
+	 * @return distribution's short description
+	 */
+	public String toString() {
+		return "exp(" + FormatNumber(((Double) parameters[0].getValue()).doubleValue()) + ")";
+	}
 
-    /**
-     * Sets the mean for this distribution
-     * @param value mean value
-     */
-    public void setMean(double value) {
-        // mean = 1 / lambda
-        if (getParameter(0).setValue(new Double(1/value)))
-            mean = value;
-    }
+	/**
+	 * Sets the mean for this distribution
+	 * @param value mean value
+	 */
+	public void setMean(double value) {
+		// mean = 1 / lambda
+		if (getParameter(0).setValue(new Double(1 / value))) {
+			mean = value;
+		}
+	}
 
-    /**
-     * This method is called whenever a parameter changes and <code>hasC</code> or
-     * <code>hasMean</code> are true
-     */
-    public void updateCM() {
-        mean = 1/((Double)getParameter(0).getValue()).doubleValue();
-    }
+	/**
+	 * This method is called whenever a parameter changes and <code>hasC</code> or
+	 * <code>hasMean</code> are true
+	 */
+	public void updateCM() {
+		mean = 1 / ((Double) getParameter(0).getValue()).doubleValue();
+	}
 
 }

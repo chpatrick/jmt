@@ -34,69 +34,67 @@ import jmt.gui.common.editors.LDStrategyEditor;
  * @version 1.0
  */
 public class FastEvaluator implements Evaluator {
-    private static final String X = "n";
+	private static final String X = "n";
 
-    private URL helpURL;
+	private URL helpURL;
 
-    /* (non-Javadoc)
-     * @see jmt.gui.exact.ld.eval.Evaluator#evaluate(java.lang.String, double)
-     */
-    public double evaluate(String expression, double x)
-            throws ExpressionParseException {
-        try {
-            Parser p = new Parser(expression, true);
-            p.setVariable(X, x);
-            return p.getValue();
-        }
-        catch (RuntimeException ex) {
-            throw new ExpressionParseException(ex.getMessage());
-        }
-    }
+	/* (non-Javadoc)
+	 * @see jmt.gui.exact.ld.eval.Evaluator#evaluate(java.lang.String, double)
+	 */
+	public double evaluate(String expression, double x) throws ExpressionParseException {
+		try {
+			Parser p = new Parser(expression, true);
+			p.setVariable(X, x);
+			return p.getValue();
+		} catch (RuntimeException ex) {
+			throw new ExpressionParseException(ex.getMessage());
+		}
+	}
 
-    /* (non-Javadoc)
-     * @see jmt.gui.exact.ld.eval.Evaluator#evaluate(java.lang.String, double[])
-     */
-    public double[] evaluate(String expression, double[] x)
-            throws ExpressionParseException {
-        try {
-            Parser p = new Parser(expression, true);
-            double[] y = new double[x.length];
-            for (int i=0; i<x.length;i++) {
-                p.setVariable(X, x[i]);
-                y[i] = p.getValue();
-            }
-            return y;
-        }
-        catch (RuntimeException ex) {
-            throw new ExpressionParseException(ex.getMessage());
-        }
-    }
+	/* (non-Javadoc)
+	 * @see jmt.gui.exact.ld.eval.Evaluator#evaluate(java.lang.String, double[])
+	 */
+	public double[] evaluate(String expression, double[] x) throws ExpressionParseException {
+		try {
+			Parser p = new Parser(expression, true);
+			double[] y = new double[x.length];
+			for (int i = 0; i < x.length; i++) {
+				p.setVariable(X, x[i]);
+				y[i] = p.getValue();
+			}
+			return y;
+		} catch (RuntimeException ex) {
+			throw new ExpressionParseException(ex.getMessage());
+		}
+	}
 
-    /* (non-Javadoc)
-     * @see jmt.gui.exact.ld.eval.Evaluator#evaluate(java.lang.String, double[], double[])
-     */
-    public void evaluate(String expression, double[] x, double[] y) throws ExpressionParseException {
-        if (x.length != y.length) throw new IllegalArgumentException("x and y must be the same length");
-        for (int i = 0; i < x.length; i++) {
-            y[i] = evaluate(expression, x[i]);
-        }
-    }
+	/* (non-Javadoc)
+	 * @see jmt.gui.exact.ld.eval.Evaluator#evaluate(java.lang.String, double[], double[])
+	 */
+	public void evaluate(String expression, double[] x, double[] y) throws ExpressionParseException {
+		if (x.length != y.length) {
+			throw new IllegalArgumentException("x and y must be the same length");
+		}
+		for (int i = 0; i < x.length; i++) {
+			y[i] = evaluate(expression, x[i]);
+		}
+	}
 
-    /* (non-Javadoc)
-     * @see jmt.gui.exact.ld.eval.Evaluator#getHelpText()
-     */
-    public URL getHelpURL() {
-        loadHelp();
-        return helpURL;
-    }
+	/* (non-Javadoc)
+	 * @see jmt.gui.exact.ld.eval.Evaluator#getHelpText()
+	 */
+	public URL getHelpURL() {
+		loadHelp();
+		return helpURL;
+	}
 
-    /**
-     * Creates the help string, retrieving it from a html file.
-     */
-    private void loadHelp() {
-        if (helpURL == null)
-            helpURL = LDStrategyEditor.class.getResource(LDStrategyEditor.HELPFILE);
-    }
-
+	/**
+	 * Creates the help string, retrieving it from a html file.
+	 */
+	private void loadHelp() {
+		if (helpURL == null) {
+			helpURL = LDStrategyEditor.class.getResource(LDStrategyEditor.HELPFILE);
+		}
+	}
 
 }

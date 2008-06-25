@@ -22,14 +22,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
- 
+
 package jmt.gui.common.distributions;
 
 //import jmt.gui.common.distributions.Distribution.Parameter;
 //import jmt.gui.common.distributions.Distribution.ValueChecker;
-import jmt.gui.common.resources.JMTImageLoader;
+import javax.swing.ImageIcon;
 
-import javax.swing.*;
+import jmt.gui.common.resources.JMTImageLoader;
 
 /**
 * <p>Title: Constant Distribution</p>
@@ -39,113 +39,100 @@ import javax.swing.*;
 *         Date: 31-oct-2006
 *         Time: 18.02.30
 */
-public class MMPP2 extends Distribution{
-   /**
-    * Construct a new MMPP2 distribution
-    */
-   public MMPP2() {
-       super("MMPP2",
-               "jmt.engine.random.MMPP2",
-               "jmt.engine.random.MMPP2Par",
-               "MMPP(2)");
-       hasMean = false;
-       isNestable = true;
-   }
+public class MMPP2 extends Distribution {
+	/**
+	 * Construct a new MMPP2 distribution
+	 */
+	public MMPP2() {
+		super("MMPP2", "jmt.engine.random.MMPP2", "jmt.engine.random.MMPP2Par", "MMPP(2)");
+		hasMean = false;
+		isNestable = true;
+	}
 
-   /**
-    * Used to set parameters of this distribution.
-    * @return distribution parameters
-    */
-   protected Parameter[] setParameters() {
-    // Creates parameter array
-    Parameter[] parameters = new Parameter[4];
-    // Sets parameter alpha
-    parameters[2] = new Parameter("r0",
-            "r0",
-            Double.class,
-            new Double(0.5));
-    // Checks value of alpha must greater or equal then 2
-    parameters[2].setValueChecker(new ValueChecker() {
-        public boolean checkValue(Object value) {
-            Double d = (Double) value;
-            if (d.doubleValue() >= 0.0 && d.doubleValue() <=1.0  )
-                return true;
-            else
-                return false;
-        }
-    });
+	/**
+	 * Used to set parameters of this distribution.
+	 * @return distribution parameters
+	 */
+	protected Parameter[] setParameters() {
+		// Creates parameter array
+		Parameter[] parameters = new Parameter[4];
+		// Sets parameter alpha
+		parameters[2] = new Parameter("r0", "r0", Double.class, new Double(0.5));
+		// Checks value of alpha must greater or equal then 2
+		parameters[2].setValueChecker(new ValueChecker() {
+			public boolean checkValue(Object value) {
+				Double d = (Double) value;
+				if (d.doubleValue() >= 0.0 && d.doubleValue() <= 1.0) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
 
-    // Sets parameter k
-    parameters[3] = new Parameter("r1",
-            "r1",
-            Double.class,
-            new Double(0.5));
-    // Checks value of k must be greater then 0
-    parameters[3].setValueChecker(new ValueChecker() {
-        public boolean checkValue(Object value) {
-            Double d = (Double) value;
-            if (d.doubleValue() >= 0.0 && d.doubleValue() <=1.0  )
-                return true;
-            else
-                return false;
-        }
-    });
-    
-    // Sets parameter k
-    parameters[0] = new Parameter("lambda0",
-            "\u03BB0",
-            Double.class,
-            new Double(1.0));
-    // Checks value of k must be greater then 0
-    parameters[0].setValueChecker(new ValueChecker() {
-        public boolean checkValue(Object value) {
-            Double d = (Double) value;
-            if (d.doubleValue() >= 0)
-                return true;
-            else
-                return false;
-        }
-    });
-    
-    // Sets parameter k
-    parameters[1] = new Parameter("lambda1",
-            "\u03BB1",
-            Double.class,
-            new Double(2.0));
-    // Checks value of k must be greater then 0
-    parameters[1].setValueChecker(new ValueChecker() {
-        public boolean checkValue(Object value) {
-            Double d = (Double) value;
-            if (d.doubleValue() >= 0)
-                return true;
-            else
-                return false;
-        }
-    });
+		// Sets parameter k
+		parameters[3] = new Parameter("r1", "r1", Double.class, new Double(0.5));
+		// Checks value of k must be greater then 0
+		parameters[3].setValueChecker(new ValueChecker() {
+			public boolean checkValue(Object value) {
+				Double d = (Double) value;
+				if (d.doubleValue() >= 0.0 && d.doubleValue() <= 1.0) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
 
-    return parameters;
-}
+		// Sets parameter k
+		parameters[0] = new Parameter("lambda0", "\u03BB0", Double.class, new Double(1.0));
+		// Checks value of k must be greater then 0
+		parameters[0].setValueChecker(new ValueChecker() {
+			public boolean checkValue(Object value) {
+				Double d = (Double) value;
+				if (d.doubleValue() >= 0) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
 
-   /**
-    * Sets explicative image of this distribution used, together with description, to help the
-    * user to understand meaning of parameters.
-    * @return explicative image
-    */
-   protected ImageIcon setImage() {
-       return JMTImageLoader.loadImage("MMPP2");
-   }
+		// Sets parameter k
+		parameters[1] = new Parameter("lambda1", "\u03BB1", Double.class, new Double(2.0));
+		// Checks value of k must be greater then 0
+		parameters[1].setValueChecker(new ValueChecker() {
+			public boolean checkValue(Object value) {
+				Double d = (Double) value;
+				if (d.doubleValue() >= 0) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		});
 
-   /**
-    * Returns this distribution's short description
-    * @return distribution's short description
-    */
-   public String toString() {
-       return "mmpp2(" +
-       FormatNumber(((Double)parameters[0].getValue()).doubleValue()) + "," +
-       FormatNumber(((Double)parameters[1].getValue()).doubleValue()) + "," +
-       FormatNumber(((Double)parameters[2].getValue()).doubleValue()) + "," +
-       FormatNumber(((Double)parameters[3].getValue()).doubleValue()) +
-               ")";
-   }
+		return parameters;
+	}
+
+	/**
+	 * Sets explicative image of this distribution used, together with description, to help the
+	 * user to understand meaning of parameters.
+	 * @return explicative image
+	 */
+	protected ImageIcon setImage() {
+		return JMTImageLoader.loadImage("MMPP2");
+	}
+
+	/**
+	 * Returns this distribution's short description
+	 * @return distribution's short description
+	 */
+	public String toString() {
+		return "mmpp2(" + FormatNumber(((Double) parameters[0].getValue()).doubleValue()) + ","
+				+ FormatNumber(((Double) parameters[1].getValue()).doubleValue()) + ","
+				+ FormatNumber(((Double) parameters[2].getValue()).doubleValue()) + ","
+				+ FormatNumber(((Double) parameters[3].getValue()).doubleValue()) + ")";
+	}
 
 }

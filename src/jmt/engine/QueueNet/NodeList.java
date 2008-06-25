@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.QueueNet;
 
 import java.util.LinkedList;
@@ -38,7 +38,7 @@ public class NodeList {
 	/** Adds a new node to the list
 	 * @param node Reference to the node to be added.
 	 */
-    public void add(NetNode node) {
+	public void add(NetNode node) {
 		nodes.add(node);
 	}
 
@@ -71,8 +71,9 @@ public class NodeList {
 		NetNode node;
 		while (iterator.hasNext()) {
 			node = (NetNode) iterator.next();
-			if (node.getName().compareTo(name) == 0)
+			if (node.getName().compareTo(name) == 0) {
 				return node;
+			}
 		}
 		return null;
 	}
@@ -100,18 +101,18 @@ public class NodeList {
 	}
 
 	/**
-     * Converts the NodeList into an array of NetNode objects.
-     */
-    public NetNode[] toArray() {
+	 * Converts the NodeList into an array of NetNode objects.
+	 */
+	public NetNode[] toArray() {
 		return (NetNode[]) nodes.toArray(new NetNode[nodes.size()]);
 	}
 
 	/**
-     * Used to know whether a node is contained or not in the NodeList
-     * @param node Node to search
-     * @return true if the specified node is contained in the list
-     */
-    public boolean contains(NetNode node) {
+	 * Used to know whether a node is contained or not in the NodeList
+	 * @param node Node to search
+	 * @return true if the specified node is contained in the list
+	 */
+	public boolean contains(NetNode node) {
 		return nodes.contains(node);
 	}
 }

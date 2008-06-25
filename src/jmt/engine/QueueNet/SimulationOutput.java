@@ -15,14 +15,14 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.QueueNet;
+
+import java.io.File;
+import java.util.LinkedList;
 
 import jmt.engine.dataAnalysis.Measure;
 import jmt.engine.simEngine.Simulation;
-
-import java.util.LinkedList;
-import java.io.File;
 
 /**
  * A SimulationOutput object is used to print the results of all the measures.
@@ -31,38 +31,34 @@ import java.io.File;
  */
 public abstract class SimulationOutput {
 
-    protected Simulation sim;
-    protected QueueNetwork network;
-    protected Measure[] measureList;
+	protected Simulation sim;
+	protected QueueNetwork network;
+	protected Measure[] measureList;
 
+	/**
+	 * Creates a new instance of MeasureOutput class and obtains the references
+	 * to all Measure object.
+	 * @param simulation Reference to the simulation to be "outputted".
+	 */
+	public SimulationOutput(Simulation simulation) {
+		this.sim = simulation;
+		network = sim.getNetwork();
 
+		LinkedList list = network.getMeasures();
 
-    /**
-     * Creates a new instance of MeasureOutput class and obtains the references
-     * to all Measure object.
-     * @param simulation Reference to the simulation to be "outputted".
-     */
-    public SimulationOutput(Simulation simulation) {
-        this.sim = simulation;
-        network = sim.getNetwork();
+		measureList = new Measure[list.size()];
 
-        LinkedList list = network.getMeasures();
+		for (int i = 0; i < measureList.length; i++) {
+			measureList[i] = (Measure) list.get(i);
 
-        measureList = new Measure[list.size()];
+		}
+	}
 
-        for (int i = 0; i < measureList.length; i++) {
-            measureList[i] = (Measure) list.get(i);
-
-        }
-    }
-
-
-    /**
-     * Writes the output of the measures.
-     * This method must be overridden.
-     * @return created output file
-     */
-    public abstract File writeAllMeasures();
-
+	/**
+	 * Writes the output of the measures.
+	 * This method must be overridden.
+	 * @return created output file
+	 */
+	public abstract File writeAllMeasures();
 
 }

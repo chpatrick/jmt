@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -45,19 +44,16 @@ public class ConstantDistr extends AbstractDistribution implements Distribution 
 	 * @return double with the probability distribution function evaluated in x.
 	 */
 
-
-
-    //OLD
-    //public double pdf(double x, ConstantDistrPar p)
-    public double pdf(double x, Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//OLD
+	//public double pdf(double x, ConstantDistrPar p)
+	public double pdf(double x, Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
-            double constValue = ((ConstantDistrPar) p).getParameterValue();
-            if (x != constValue) {
-                return 0.0;
-            } else {
-                return 1.0;
-            }
+			double constValue = ((ConstantDistrPar) p).getParameterValue();
+			if (x != constValue) {
+				return 0.0;
+			} else {
+				return 1.0;
+			}
 		} else {
 			throw new IncorrectDistributionParameterException("parameter t must be >0");
 		}
@@ -75,16 +71,15 @@ public class ConstantDistr extends AbstractDistribution implements Distribution 
 	 */
 
 	//OLD
-    //public double cdf(double x, ConstantDistrPar p)
-    public double cdf(double x, Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double cdf(double x, ConstantDistrPar p)
+	public double cdf(double x, Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			double constValue = ((ConstantDistrPar) p).getParameterValue();
-            if (x < constValue) {
-                return 0.0;
-            } else {
-                return 1.0;
-            }
+			if (x < constValue) {
+				return 0.0;
+			} else {
+				return 1.0;
+			}
 		} else {
 			throw new IncorrectDistributionParameterException("parameter t must be >0");
 		}
@@ -101,13 +96,12 @@ public class ConstantDistr extends AbstractDistribution implements Distribution 
 	 */
 
 	//OLD
-    //public double theorMean(ConstantDistrPar p)
-    public double theorMean(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double theorMean(ConstantDistrPar p)
+	public double theorMean(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
-            //OLD
-            //return p.getT();
-            return ((ConstantDistrPar) p).getParameterValue();
+			//OLD
+			//return p.getT();
+			return ((ConstantDistrPar) p).getParameterValue();
 		} else {
 			throw new IncorrectDistributionParameterException("parameter t must be >0");
 		}
@@ -119,20 +113,19 @@ public class ConstantDistr extends AbstractDistribution implements Distribution 
 	 * variance.
 	 *
 	 * @param p parameter of the constant distribution.
-     * @throws IncorrectDistributionParameterException
+	 * @throws IncorrectDistributionParameterException
 	 * @return double with the theoretic varance of the distribution.
 	 */
 
 	//OLD
-    //public double theorVariance(ConstantDistrPar p)
-    public double theorVariance(Parameter p)
-            throws IncorrectDistributionParameterException {
+	//public double theorVariance(ConstantDistrPar p)
+	public double theorVariance(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			return 0;
 		} else {
 			throw new IncorrectDistributionParameterException("parameter t must be >0");
 		}
-    }
+	}
 
 	/**
 	 * returns the new random number.
@@ -144,8 +137,7 @@ public class ConstantDistr extends AbstractDistribution implements Distribution 
 	 * @return double with the next random number of this distribution.
 	 */
 
-	public double nextRand(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public double nextRand(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			double t = ((ConstantDistrPar) p).getParameterValue();
 			return t;
@@ -153,6 +145,5 @@ public class ConstantDistr extends AbstractDistribution implements Distribution 
 			throw new IncorrectDistributionParameterException("parameter t must be >0");
 		}
 	}
-
 
 } // end ConstantDistr

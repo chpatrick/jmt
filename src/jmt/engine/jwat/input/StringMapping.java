@@ -27,16 +27,16 @@ public class StringMapping extends VariableMapping {
 
 	//Update 28/10/2006: + funzione utilizzata per sampling che data una stringa restituisce tutti indice stringhe che la 
 	//					   contengono come sottostringa
-	public int[] getMatchingStringList(String s){
+	public int[] getMatchingStringList(String s) {
 		Vector v = new Vector(); //<Integer>
-		for(int i = 0; i < valMap.size();i++){
-			if(((String)((Mapping)valMap.get(i)).getValue()).indexOf(s) != -1){
+		for (int i = 0; i < valMap.size(); i++) {
+			if (((String) ((Mapping) valMap.get(i)).getValue()).indexOf(s) != -1) {
 				v.add(new Integer(i));
 			}
 		}
 		int[] res = new int[v.size()];
-		for(int i = 0; i < v.size();i++){
-			res[i] = ((Integer)v.get(i)).intValue();
+		for (int i = 0; i < v.size(); i++) {
+			res[i] = ((Integer) v.get(i)).intValue();
 		}
 		v.clear();
 		v = null;

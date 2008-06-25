@@ -15,15 +15,15 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NodeSections;
+
+import java.util.LinkedList;
 
 import jmt.engine.NetStrategies.ServiceStrategy;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
-
-import java.util.LinkedList;
 
 /**
  * This class implements a multi-class delay service. Every class has a
@@ -44,33 +44,32 @@ public class Delay extends ServiceSection {
 	 * @param serviceStrategy Array of service strategies, one per class.
 	 * @throws jmt.common.exception.NetException
 	 */
-	public Delay(ServiceStrategy serviceStrategy[])
-	        throws jmt.common.exception.NetException {
+	public Delay(ServiceStrategy serviceStrategy[]) throws jmt.common.exception.NetException {
 		this.serviceStrategy = serviceStrategy;
 		waitingJobs = new LinkedList();
 		coolStart = true;
 
-        //NEW
-        //@author Stefano Omini
-        //log = NetSystem.getLog();
-        //end NEW
+		//NEW
+		//@author Stefano Omini
+		//log = NetSystem.getLog();
+		//end NEW
 	}
 
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 		Job job;
 		switch (message.getEvent()) {
 
-            case NetEvent.EVENT_JOB:
+			case NetEvent.EVENT_JOB:
 
-                //EVENT_JOB
-                //If the message has been sent by this section, it means that the job
-                //has been already delayed. Therefore, if there are no waiting jobs (coolStart true)
-                //the job is forwarded and coolStart becomes false, otherwise the job is added to
-                //the existing waiting jobs.
-                //
-                //If the message has been sent by the input section, delay section sends to
-                //itself a message with the job and with a delay calculated using the
-                //service strategy; then an ack is sent to the message source.
+				//EVENT_JOB
+				//If the message has been sent by this section, it means that the job
+				//has been already delayed. Therefore, if there are no waiting jobs (coolStart true)
+				//the job is forwarded and coolStart becomes false, otherwise the job is added to
+				//the existing waiting jobs.
+				//
+				//If the message has been sent by the input section, delay section sends to
+				//itself a message with the job and with a delay calculated using the
+				//service strategy; then an ack is sent to the message source.
 
 				double serviceTime;
 				int c;
@@ -83,8 +82,9 @@ public class Delay extends ServiceSection {
 						// Sends job
 						forward(job);
 						coolStart = false;
-					} else
+					} else {
 						waitingJobs.add(job);
+					}
 				}
 				// else delays the job
 				else {
@@ -99,20 +99,21 @@ public class Delay extends ServiceSection {
 				}
 				break;
 
-            case NetEvent.EVENT_ACK:
+			case NetEvent.EVENT_ACK:
 
-                //EVENT_ACK
-                //If there are waiting jobs, the first is get and forwarded,
-                //otherwise coolStart is set to true.
+				//EVENT_ACK
+				//If there are waiting jobs, the first is get and forwarded,
+				//otherwise coolStart is set to true.
 
 				if (waitingJobs.size() != 0) {
 					job = (Job) waitingJobs.removeFirst();
 					forward(job);
-				} else
+				} else {
 					coolStart = true;
+				}
 				break;
 
-            default:
+			default:
 				return MSG_NOT_PROCESSED;
 		}
 		return MSG_PROCESSED;
@@ -121,7 +122,7 @@ public class Delay extends ServiceSection {
 	private void forward(Job job) throws jmt.common.exception.NetException {
 		sendForward(job, 0.0);
 
-        //log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
+		//log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
 	}
 
 }

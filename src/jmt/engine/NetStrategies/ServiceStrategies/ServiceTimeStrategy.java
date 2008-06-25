@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NetStrategies.ServiceStrategies;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
@@ -51,34 +51,33 @@ public class ServiceTimeStrategy extends ServiceStrategy {
 	}
 
 	/**
-     * Sets the distribution
-     * @param Distribution the distribution to be used by this strategy.
-     * @return true, if distribution has been set.
-     */
-    public boolean setDistribution(Distribution Distribution) {
+	 * Sets the distribution
+	 * @param Distribution the distribution to be used by this strategy.
+	 * @return true, if distribution has been set.
+	 */
+	public boolean setDistribution(Distribution Distribution) {
 		this.Distribution = Distribution;
 		return true;
 	}
 
-
-    /**
-     * Sets the parameters of the distribution
-     * @param Parameter the parameter object
-     * @return true, if parameters have been set.
-     */
+	/**
+	 * Sets the parameters of the distribution
+	 * @param Parameter the parameter object
+	 * @return true, if parameters have been set.
+	 */
 	public boolean setParameter(Parameter Parameter) {
 		this.Parameter = Parameter;
 		return true;
 	}
 
 	/**
-     * Calculates the service time using the specified distribution.
-     * @param CallingSection The node section which is calling this method.
-     * @return the value of service time.
-     */
-    public double wait(NodeSection CallingSection) {
+	 * Calculates the service time using the specified distribution.
+	 * @param CallingSection The node section which is calling this method.
+	 * @return the value of service time.
+	 */
+	public double wait(NodeSection CallingSection) {
 		try {
-            return Distribution.nextRand(Parameter);
+			return Distribution.nextRand(Parameter);
 		} catch (IncorrectDistributionParameterException e) {
 			e.printStackTrace();
 

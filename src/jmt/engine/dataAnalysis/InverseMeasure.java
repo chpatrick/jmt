@@ -15,9 +15,8 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.engine.dataAnalysis;
 
+package jmt.engine.dataAnalysis;
 
 /**
  * It may be convenient to use an inverse measure to save computational time:
@@ -27,11 +26,9 @@ package jmt.engine.dataAnalysis;
  * At the end the correct value is passed, since the "get" methods are overridden.
  */
 
-
 public class InverseMeasure extends jmt.engine.dataAnalysis.Measure {
 
-	public InverseMeasure(String Name, double alfa,
-	                      double precision, int maxData, boolean Verbose) {
+	public InverseMeasure(String Name, double alfa, double precision, int maxData, boolean Verbose) {
 		super(Name, alfa, precision, maxData, Verbose, null);
 	}
 
@@ -39,17 +36,18 @@ public class InverseMeasure extends jmt.engine.dataAnalysis.Measure {
 	 * @return measure value.
 	 */
 	public double getMeanValue() {
-        if (receivedNoSamples()) {
-            //no samples have been collected -> throughput is zero
-            return 0.0;
-        }
-        if (hasBeenAborted() && (analyzer.getMean() == 0) ) {
-            //measure computation was aborted before noSampleTest could be done
-            return 0.0;
-        } else  if (analyzer.getMean() > 0){
-            return 1.0 / analyzer.getMean();
-        } else
-            return 0.0;
+		if (receivedNoSamples()) {
+			//no samples have been collected -> throughput is zero
+			return 0.0;
+		}
+		if (hasBeenAborted() && (analyzer.getMean() == 0)) {
+			//measure computation was aborted before noSampleTest could be done
+			return 0.0;
+		} else if (analyzer.getMean() > 0) {
+			return 1.0 / analyzer.getMean();
+		} else {
+			return 0.0;
+		}
 	}
 
 	/** Gets lower limit of the inverse measure.
@@ -57,33 +55,34 @@ public class InverseMeasure extends jmt.engine.dataAnalysis.Measure {
 	 */
 	public double getLowerLimit() {
 		if (receivedNoSamples()) {
-            //no samples have been collected -> throughput is zero
-            return 0.0;
-        } else {
-            return 1 / (analyzer.getMean() + analyzer.getConfInt());
-        }
-    }
+			//no samples have been collected -> throughput is zero
+			return 0.0;
+		} else {
+			return 1 / (analyzer.getMean() + analyzer.getConfInt());
+		}
+	}
 
 	/** Gets upper limit of the inverse measure.
 	 * @return Lower limit.
 	 */
 	public double getUpperLimit() {
 		if (receivedNoSamples()) {
-            //no samples have been collected -> throughput is zero
-            return 0.0;
-        } else {
-            return 1 / (analyzer.getMean() - analyzer.getConfInt());
-        }
+			//no samples have been collected -> throughput is zero
+			return 0.0;
+		} else {
+			return 1 / (analyzer.getMean() - analyzer.getConfInt());
+		}
 	}
 
-    /** Gets measure value: if the confidence requirements have not been
-     * reached, it is returned the value extimated up to that moment.
+	/** Gets measure value: if the confidence requirements have not been
+	 * reached, it is returned the value extimated up to that moment.
 	 * @return measure value.
 	 */
 	public double getExtimatedMeanValue() {
-        if (analyzer.extimatedMean() > 0)
-            return 1 / analyzer.extimatedMean();
-        else
-            return 0.0;
+		if (analyzer.extimatedMean() > 0) {
+			return 1 / analyzer.extimatedMean();
+		} else {
+			return 0.0;
+		}
 	}
 }

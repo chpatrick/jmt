@@ -5,7 +5,6 @@
 
 package jmt.engine.simEngine;
 
-
 import java.text.NumberFormat;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -19,57 +18,51 @@ public class SimSystem {
 
 	private static boolean DEBUG = false;
 
-
 	// Private data members
-	static private Vector entities;  // The current entity list
+	static private Vector entities; // The current entity list
 
-    //TODO: verificare quale classe funziona meglio per la future event queue
-//	static private EventQueue future;   // The future event queue
-	static private NewEvQueue future;   // The future event queue
-//	static private SuperEventQueue future; // The future event queue
-
+	//TODO: verificare quale classe funziona meglio per la future event queue
+	//	static private EventQueue future;   // The future event queue
+	static private NewEvQueue future; // The future event queue
+	//	static private SuperEventQueue future; // The future event queue
 
 	static private EventQueue deferred; // The deferred event queue
 
-    static private double clock;     // Holds the current global simulation time
-	static private boolean running;  // Tells whether the run() member been called yet
+	static private double clock; // Holds the current global simulation time
+	static private boolean running; // Tells whether the run() member been called yet
 	static private NumberFormat nf;
 
+	//STE
+	//temp variable used by runTick
+	//static private SimEvent event = null;
 
-    //STE
-    //temp variable used by runTick
-    //static private SimEvent event = null;
+	//NEW
+	//@author Stefano Omini
 
+	//if true a timer has been defined on the simulation
+	static private boolean hasTimer = false;
 
-    //NEW
-    //@author Stefano Omini
+	//if true, max simulation time has been reached and simulation must be aborted
+	static private boolean timeout = false;
 
-    //if true a timer has been defined on the simulation
-    static private boolean hasTimer = false;
+	//true if the simulation has been finished and therefore SimSystem must be stopped
+	static private boolean simStopped = false;
 
-    //if true, max simulation time has been reached and simulation must be aborted
-    static private boolean timeout = false;
+	//end NEW
 
-    //true if the simulation has been finished and therefore SimSystem must be stopped
-    static private boolean simStopped = false;
+	//NEW
+	//@author Stefano Omini
 
+	/**
+	 * Sets timeout property
+	 * @param simTimeout True if max time has been reached
+	 */
+	static public void setTimeout(boolean simTimeout) {
+		timeout = simTimeout;
+		hasTimer = true;
+	}
 
-    //end NEW
-
-
-    //NEW
-    //@author Stefano Omini
-
-    /**
-     * Sets timeout property
-     * @param simTimeout True if max time has been reached
-     */
-    static public void setTimeout(boolean simTimeout) {
-        timeout = simTimeout;
-        hasTimer = true;
-    }
-    //end NEW
-
+	//end NEW
 
 	//
 	// Public library interface
@@ -88,15 +81,15 @@ public class SimSystem {
 
 		entities = new Vector();
 
-        //TODO: verificare quale classe funziona meglio per la future event queue
+		//TODO: verificare quale classe funziona meglio per la future event queue
 
-//		future = new EventQueue();
+		//		future = new EventQueue();
 		future = new NewEvQueue();
-//      future = new SuperEventQueue();
+		//      future = new SuperEventQueue();
 
 		deferred = new EventQueue();
 
-        clock = 0.0;
+		clock = 0.0;
 		running = false;
 
 		// Set the default number format
@@ -119,10 +112,9 @@ public class SimSystem {
 	/** A standard predicate that does not match any events. */
 	static public SimNoneP SIM_NONE = new SimNoneP();
 
+	// Public access methods
 
-    // Public access methods
-
-    /** Get the current simulation time.
+	/** Get the current simulation time.
 	 * @return The simulation time
 	 */
 	static public double clock() {
@@ -143,7 +135,6 @@ public class SimSystem {
 		return entities.size();
 	}
 
-
 	/** Finds an entity by its id number.
 	 * @param id The entity's unique id number
 	 * @return A reference to the entity, or null if it could not be found
@@ -162,11 +153,13 @@ public class SimSystem {
 
 		for (e = entities.elements(); e.hasMoreElements();) {
 			ent = (SimEntity) e.nextElement();
-			if (name.compareTo(ent.getName()) == 0)
+			if (name.compareTo(ent.getName()) == 0) {
 				found = ent;
+			}
 		}
-		if (found == null)
+		if (found == null) {
 			System.out.println("SimSystem: could not find entity " + name);
+		}
 		return found;
 	}
 
@@ -192,10 +185,10 @@ public class SimSystem {
 		} else {
 			if (e.getId() == -1) {
 
-                //-1 is the default value written by the constructor.
-                // Now a new ID is set
+				//-1 is the default value written by the constructor.
+				// Now a new ID is set
 
-                // Only add once!
+				// Only add once!
 				e.setId(entities.size());
 				entities.addElement(e);
 			}
@@ -219,19 +212,19 @@ public class SimSystem {
 		e.start();
 	}
 
-
 	/**
-     * Starts the simulation running, by calling the start() method of each entity.
-     * Of course this should be called after all the entities have been setup and added,
-     * and their ports linked.
+	 * Starts the simulation running, by calling the start() method of each entity.
+	 * Of course this should be called after all the entities have been setup and added,
+	 * and their ports linked.
 	 */
 	static public void runStart() {
 		Enumeration e;
 		SimEntity ent;
 		running = true;
 		// Start all the entities' threads
-		if (DEBUG)
+		if (DEBUG) {
 			System.out.println("SimSystem: Starting entities");
+		}
 		for (e = entities.elements(); e.hasMoreElements();) {
 			ent = (SimEntity) e.nextElement();
 			ent.start();
@@ -239,24 +232,23 @@ public class SimSystem {
 	}
 
 	/**
-     * Runs one tick of the simulation: the system looks for events in the future queue.
-     * @return <tt>false</tt> if there are no more future events to be processed
+	 * Runs one tick of the simulation: the system looks for events in the future queue.
+	 * @return <tt>false</tt> if there are no more future events to be processed
 	 */
 	static public boolean runTick() throws jmt.common.exception.NetException {
 
-        //NEW
-        //@author Stefano Omini
+		//NEW
+		//@author Stefano Omini
 
-        if (timeout) {
-            //time has expired: simulation must be aborted
-            return false;
-        }
+		if (timeout) {
+			//time has expired: simulation must be aborted
+			return false;
+		}
 
+		// If there are more future events then deals with them
+		SimEvent event;
 
-        // If there are more future events then deals with them
-        SimEvent event;
-
-        if (future.size() > 0) {
+		if (future.size() > 0) {
 			event = future.pop();
 
 			processEvent(event);
@@ -268,8 +260,9 @@ public class SimSystem {
 				if (event.eventTime() == now) {
 					processEvent(future.pop());
 					trymore = (future.size() > 0);
-				} else
+				} else {
 					trymore = false;
+				}
 			}
 		} else {
 			running = false;
@@ -278,7 +271,6 @@ public class SimSystem {
 		}
 		return running;
 	}
-
 
 	/** Stops the simulation, by calling the poison() method of each SimEntity.
 	 */
@@ -290,18 +282,18 @@ public class SimSystem {
 			ent = (SimEntity) e.nextElement();
 			ent.poison();
 		}
-		if (DEBUG)
+		if (DEBUG) {
 			System.out.println("Exiting SimSystem.run()");
+		}
 	}
 
-
-    //TODO: usato solo per debug
+	//TODO: usato solo per debug
 	/** Starts the simulation running. This should be called after
 	 * all the entities have been setup and added, and their ports linked.
-     * <br>
-     * The simulation goes on until runTick() becomes false (there are no more
-     * future events to be processed).
-     * Then the runStop() method is called.
+	 * <br>
+	 * The simulation goes on until runTick() becomes false (there are no more
+	 * future events to be processed).
+	 * Then the runStop() method is called.
 	 */
 	static public void run() throws jmt.common.exception.NetException {
 		//Now the main loop
@@ -320,13 +312,12 @@ public class SimSystem {
 		return running;
 	}
 
-
 	// Entity service methods
 
 	// Called by an entity just before it becomes non-RUNNABLE
-//	static void paused() {
-//		onestopped.v();
-//	}
+	//	static void paused() {
+	//		onestopped.v();
+	//	}
 
 	static synchronized void hold(int src, double delay) {
 		SimEvent e = new SimEvent(SimEvent.HOLD_DONE, clock + delay, src);
@@ -348,9 +339,11 @@ public class SimSystem {
 		//DEK (Federico Granata) 25-11-2003
 		for (int i = 0; i < deferred.size(); i++) {
 			event = (SimEvent) deferred.elementAt(i);
-			if (event.getDest() == d)
-				if (p.match(event))
+			if (event.getDest() == d) {
+				if (p.match(event)) {
 					w++;
+				}
+			}
 		}
 		return w;
 
@@ -432,27 +425,26 @@ public class SimSystem {
 		//System.out.println("SimSystem: Processing event");
 		// Update the system's clock
 		if (e.eventTime() < clock) {
-			throw new jmt.common.exception.NetException("SimSystem: Error - past event detected! \n" +
-			        "Time: " + clock + ", event time: " + e.eventTime() +
-			        ", event type: " + e.getType() + future);
+			throw new jmt.common.exception.NetException("SimSystem: Error - past event detected! \n" + "Time: " + clock + ", event time: "
+					+ e.eventTime() + ", event type: " + e.getType() + future);
 		}
 		clock = e.eventTime();
 
 		// Ok now process it
 		switch (e.getType()) {
 
-            case (SimEvent.SEND):
+			case (SimEvent.SEND):
 				// Checks for matching wait
 				dest = e.getDest();
-				if (dest < 0)
+				if (dest < 0) {
 					throw new jmt.common.exception.NetException("SimSystem: Error - attempt to send to a null entity");
-				else {
+				} else {
 					destEnt = (SimEntity) entities.elementAt(dest);
 					if (destEnt.getState() == SimEntity.WAITING) {
 						SimPredicate p = destEnt.getWaitingPred();
 
 						if (p == null) {
-                            //the entity was waiting for a generic predicate
+							//the entity was waiting for a generic predicate
 							destEnt.setEvbuf((SimEvent) e.clone());
 							destEnt.setState(SimEntity.RUNNABLE);
 							try {
@@ -463,8 +455,8 @@ public class SimSystem {
 							}
 						} else {
 							//the entity was waiting for events with a specified predicate
-                            //this event matches with such predicate??
-                            if (destEnt.getWaitingPred().match(e)) {
+							//this event matches with such predicate??
+							if (destEnt.getWaitingPred().match(e)) {
 								p = null;
 								destEnt.setEvbuf((SimEvent) e.clone());
 								destEnt.setState(SimEntity.RUNNABLE);
@@ -476,30 +468,29 @@ public class SimSystem {
 								}
 							} else {
 								//the event doesn't match with the predicate, so it's put in the deferred queue
-                                destEnt.simPutback(e);
+								destEnt.simPutback(e);
 							}
 						}
 					} else {
 						//if the entity is not WAITING the event is put in the deferred queue
-                        deferred.add(e);
+						deferred.add(e);
 					}
 				}
 				break;
 
-            case (SimEvent.ENULL):
-                            throw new jmt.common.exception.NetException("SimSystem: Error - event has a null type");
+			case (SimEvent.ENULL):
+				throw new jmt.common.exception.NetException("SimSystem: Error - event has a null type");
 
-            case (SimEvent.CREATE):
-                SimEntity newe = (SimEntity) e.getData();
-                addEntityDynamically(newe);
-                break;
+			case (SimEvent.CREATE):
+				SimEntity newe = (SimEntity) e.getData();
+				addEntityDynamically(newe);
+				break;
 
-
-            case (SimEvent.HOLD_DONE):
-                src = e.getSrc();
-                if (src < 0)
-                    throw new jmt.common.exception.NetException("SimSystem: Error - NULL entity holding");
-                else {
+			case (SimEvent.HOLD_DONE):
+				src = e.getSrc();
+				if (src < 0) {
+					throw new jmt.common.exception.NetException("SimSystem: Error - NULL entity holding");
+				} else {
 					((SimEntity) entities.elementAt(src)).setState(SimEntity.RUNNABLE);
 					((SimEntity) entities.elementAt(src)).restart();
 				}
@@ -508,30 +499,28 @@ public class SimSystem {
 	}
 
 	/**
-     * Aborts the simulation!
+	 * Aborts the simulation!
 	 *
 	 */
 	static public void abort() {
 		running = false;
 		if (DEBUG) {
-            System.out.println("Simulation Aborted");
-        }
+			System.out.println("Simulation Aborted");
+		}
 	}
 
+	//NEW
+	//@author Stefano Omini
 
-    //NEW
-    //@author Stefano Omini
+	/**
+	 * By using this method, the simulation can be aborted or stopped even if there
+	 * are still events in the future events queue.
+	 * @param simStopped true to stop SimSystem
+	 */
+	public static void setSimStopped(boolean simStopped) {
+		SimSystem.simStopped = simStopped;
+	}
 
-    /**
-     * By using this method, the simulation can be aborted or stopped even if there
-     * are still events in the future events queue.
-     * @param simStopped true to stop SimSystem
-     */
-    public static void setSimStopped(boolean simStopped) {
-        SimSystem.simStopped = simStopped;
-    }
-
-    //end NEW
-
+	//end NEW
 
 }

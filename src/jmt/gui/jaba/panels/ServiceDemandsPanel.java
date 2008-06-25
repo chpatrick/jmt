@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jaba.panels;
 
 import java.awt.BorderLayout;
@@ -32,6 +32,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.table.TableCellEditor;
 
 import jmt.framework.data.ArrayUtils;
@@ -56,20 +57,24 @@ import jmt.gui.jaba.JabaWizard;
  * 4th panel: service times
  */
 public final class ServiceDemandsPanel extends WizardPanel implements JabaConstants, ForceUpdatablePanel {
-    // Bertoli Marco - Used to show only two decimal digits
-    private static DecimalFormat formatter = new DecimalFormat("#0.00");
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
+	// Bertoli Marco - Used to show only two decimal digits
+	private static DecimalFormat formatter = new DecimalFormat("#0.00");
 
-    private JabaWizard ew;
+	private JabaWizard ew;
 	private HoverHelp help;
-	private static final String helpText = "<html>In this panel you can edit service demands of LI and delay stations for each class.<br><br>" +
-	        " To enter values, single-click on desired cell" +
-	        " and start typing.<br> To select multiple cells drag mouse on them; click or drag on" +
-	        " row/column headers to select the whole of rows/columns.<br> <b>For a list of available operations right-click" +
-	        " on the table</b>; all operations except pasting affect selected cells.<br>" +
-	        " To copy one value to multiple cells click on the cell containing the value, select" +
-	        " target cells by dragging and then select <b>\"Fill\"</b>.<br><br>" +
-	        " To edit service demands of an LD station double-click anywhere on its row.<br></html>";
+	private static final String helpText = "<html>In this panel you can edit service demands of LI and delay stations for each class.<br><br>"
+			+ " To enter values, single-click on desired cell"
+			+ " and start typing.<br> To select multiple cells drag mouse on them; click or drag on"
+			+ " row/column headers to select the whole of rows/columns.<br> <b>For a list of available operations right-click"
+			+ " on the table</b>; all operations except pasting affect selected cells.<br>"
+			+ " To copy one value to multiple cells click on the cell containing the value, select"
+			+ " target cells by dragging and then select <b>\"Fill\"</b>.<br><br>"
+			+ " To edit service demands of an LD station double-click anywhere on its row.<br></html>";
 
 	private boolean zeroLD;
 	private int classes, stations;
@@ -80,18 +85,20 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 
 	private STTable stTable;
 
+	private AbstractAction SWITCH_TO_ST_V = new AbstractAction("Service Times and Visits") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
+		{
+			putValue(Action.SHORT_DESCRIPTION, "Input by Service Times and Visits");
+		}
 
-    private AbstractAction SWITCH_TO_ST_V = new AbstractAction("Service Times and Visits") {
-        {
-            putValue(Action.SHORT_DESCRIPTION, "Input by Service Times and Visits");
-        }
-
-        public void actionPerformed(ActionEvent e) {
-            ew.switchFromSDtoSTV();
-        }
-    };
-
+		public void actionPerformed(ActionEvent e) {
+			ew.switchFromSDtoSTV();
+		}
+	};
 
 	public ServiceDemandsPanel(JabaWizard ew) {
 		this.ew = ew;
@@ -101,7 +108,6 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 		sync();
 		initComponents();
 	}
-
 
 	/**
 	 * gets status from data object
@@ -131,36 +137,34 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 
 		/* and now some Box black magic */
 
-        Box hBox = Box.createHorizontalBox();
-        hBox.add(Box.createHorizontalStrut(20));
-        //Horizontal box containing Description label and buttons
-        Box descrBox = Box.createVerticalBox();
-        descrBox.add(new JLabel(DESCRIPTION_SERVICEDEMANDS));
-        descrBox.add(Box.createHorizontalStrut(10));
-        descrBox.add(new JButton(SWITCH_TO_ST_V));
-        descrBox.setPreferredSize(new Dimension(220,1000));
-        descrBox.setMinimumSize(new Dimension(200,200));
+		Box hBox = Box.createHorizontalBox();
+		hBox.add(Box.createHorizontalStrut(20));
+		//Horizontal box containing Description label and buttons
+		Box descrBox = Box.createVerticalBox();
+		descrBox.add(new JLabel(DESCRIPTION_SERVICEDEMANDS));
+		descrBox.add(Box.createHorizontalStrut(10));
+		descrBox.add(new JButton(SWITCH_TO_ST_V));
+		descrBox.setPreferredSize(new Dimension(220, 1000));
+		descrBox.setMinimumSize(new Dimension(200, 200));
 
-        hBox.add(descrBox);
-        hBox.add(Box.createHorizontalStrut(10));
-        JScrollPane visitTablePane = new JScrollPane(stTable);
-        visitTablePane.setPreferredSize(new Dimension(1000,1000));
-        visitTablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        visitTablePane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        hBox.add(visitTablePane);
-        hBox.add(Box.createHorizontalStrut(20));
+		hBox.add(descrBox);
+		hBox.add(Box.createHorizontalStrut(10));
+		JScrollPane visitTablePane = new JScrollPane(stTable);
+		visitTablePane.setPreferredSize(new Dimension(1000, 1000));
+		visitTablePane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		visitTablePane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		hBox.add(visitTablePane);
+		hBox.add(Box.createHorizontalStrut(20));
 
-        Box totalBox = Box.createVerticalBox();
-        totalBox.add(Box.createVerticalStrut(20));
-        totalBox.add(hBox);
-        totalBox.add(Box.createVerticalStrut(20));
-
+		Box totalBox = Box.createVerticalBox();
+		totalBox.add(Box.createVerticalStrut(20));
+		totalBox.add(hBox);
+		totalBox.add(Box.createVerticalStrut(20));
 
 		setLayout(new BorderLayout());
 		add(totalBox, BorderLayout.CENTER);
 
 	}
-
 
 	public String getName() {
 		return "Service Demands";
@@ -173,21 +177,24 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 		JabaModel data = ew.getData();
 		synchronized (data) {
 			data.setServiceTimes(serviceDemands);
-            data.setVisits(createUnitaryVisits());
+			data.setVisits(createUnitaryVisits());
 		}
 	}
 
-    private double[][] createUnitaryVisits(){
-        double[][] visits = new double[serviceDemands.length][];
-        for(int i=0; i<serviceDemands.length; i++){
-            visits[i] = new double[serviceDemands[i].length];
-            for(int j=0; j<serviceDemands[i].length; j++){
-                if(serviceDemands[i][j][0]!=0) visits[i][j] = 1;
-                else visits[i][j] = 0;
-            }
-        }
-        return visits;
-    }
+	private double[][] createUnitaryVisits() {
+		double[][] visits = new double[serviceDemands.length][];
+		for (int i = 0; i < serviceDemands.length; i++) {
+			visits[i] = new double[serviceDemands[i].length];
+			for (int j = 0; j < serviceDemands[i].length; j++) {
+				if (serviceDemands[i][j][0] != 0) {
+					visits[i][j] = 1;
+				} else {
+					visits[i][j] = 0;
+				}
+			}
+		}
+		return visits;
+	}
 
 	public void gotFocus() {
 		sync();
@@ -225,17 +232,22 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 
 	}
 
-    /**{@see ForceUpdatablePanel} for further details*/
-    public void retrieveData() {
-        this.sync();
-    }
+	/**{@see ForceUpdatablePanel} for further details*/
+	public void retrieveData() {
+		this.sync();
+	}
 
-    /**{@see ForceUpdatablePanel} for further details*/
-    public void commitData() {
-        this.commit();
-    }
+	/**{@see ForceUpdatablePanel} for further details*/
+	public void commitData() {
+		this.commit();
+	}
 
-    private class STTable extends ExactTable {
+	private class STTable extends ExactTable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		STTable() {
 			super(new STTableModel());
 			autoResizeMode = AUTO_RESIZE_OFF;
@@ -246,7 +258,8 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 			setColumnSelectionAllowed(true);
 			setClipboardTransferEnabled(true);
 
-			help.addHelp(this, "Click or drag to select cells; to edit data single-click and start typing. Right-click for a list of available operations");
+			help.addHelp(this,
+					"Click or drag to select cells; to edit data single-click and start typing. Right-click for a list of available operations");
 			help.addHelp(moreColumnsLabel, "There are more classes: scroll right to see them");
 			help.addHelp(moreRowsLabel, "There are more stations: scroll down to see them");
 			help.addHelp(selectAllButton, "Click to select all cells");
@@ -282,7 +295,7 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 		 * the LDEditor needs to be treated in a special way.
 		 */
 		public Component prepareEditor(TableCellEditor editor, int row, int column) {
-				return super.prepareEditor(editor, row, column);
+			return super.prepareEditor(editor, row, column);
 		}
 
 		/**
@@ -291,7 +304,9 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 		 */
 		public boolean editCellAt(int row, int col, EventObject e) {
 			if (zeroLD && (stationTypes[row] == STATION_LD)) {
-				JOptionPane.showMessageDialog(ServiceDemandsPanel.this, "<html><center>Cannot edit LD service times in a system with zero customers</center></html>", "Warning", JOptionPane.WARNING_MESSAGE);
+				JOptionPane.showMessageDialog(ServiceDemandsPanel.this,
+						"<html><center>Cannot edit LD service times in a system with zero customers</center></html>", "Warning",
+						JOptionPane.WARNING_MESSAGE);
 				return false;
 			}
 			return super.editCellAt(row, col, e);
@@ -304,10 +319,15 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 	 */
 	private class STTableModel extends ExactTableModel {
 
-        STTableModel() {
-            prototype = "LD Settings Button";
-            rowHeaderPrototype = "Station10000";
-        }
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		STTableModel() {
+			prototype = "LD Settings Button";
+			rowHeaderPrototype = "Station10000";
+		}
 
 		public int getRowCount() {
 			return stations;
@@ -325,8 +345,8 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 			switch (stationTypes[rowIndex]) {
 				case STATION_LI:
 				case STATION_DELAY:
-				    return formatter.format(serviceDemands[rowIndex][columnIndex][0]);
-                case STATION_LD:
+					return formatter.format(serviceDemands[rowIndex][columnIndex][0]);
+				case STATION_LD:
 					return "LD";
 				default:
 					return null;
@@ -338,14 +358,15 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 		}
 
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
-			if (value instanceof String) {  //coming from the defaultEditor
+			if (value instanceof String) { //coming from the defaultEditor
 				//if ("LD".equals((String)value)) return;
 				try {
 					double newVal = Double.parseDouble((String) value);
-					if (newVal <= 0.01)
-                        serviceDemands[rowIndex][columnIndex][0] = 0.01;
-                    else
-                        serviceDemands[rowIndex][columnIndex][0] = newVal;
+					if (newVal <= 0.01) {
+						serviceDemands[rowIndex][columnIndex][0] = 0.01;
+					} else {
+						serviceDemands[rowIndex][columnIndex][0] = newVal;
+					}
 				} catch (NumberFormatException e) {
 				}
 			} else if (value instanceof double[][]) { // coming from the LDEditor
@@ -358,7 +379,9 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 		}
 
 		public void clear(int row, int col) {
-			if (stationTypes[row] == STATION_LD) return;
+			if (stationTypes[row] == STATION_LD) {
+				return;
+			}
 			serviceDemands[row][col][0] = 0.01;
 		}
 
@@ -368,7 +391,9 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 		 */
 		public void copyCellToArea(int sourceRow, int sourceCol, int rowFrom, int rowTo, int colFrom, int colTo) {
 
-			if (stationTypes[sourceRow] == STATION_LD) return;
+			if (stationTypes[sourceRow] == STATION_LD) {
+				return;
+			}
 
 			double source = serviceDemands[sourceRow][sourceCol][0];
 

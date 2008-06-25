@@ -3,7 +3,6 @@
 
 package jmt.engine.simEngine;
 
-
 /**
  * A predicate to select events with specific tags from the deferred
  * event queue.
@@ -13,7 +12,7 @@ package jmt.engine.simEngine;
  */
 
 public class SimTypeP extends SimPredicate {
-	private int tag1,tag2,tag3;
+	private int tag1, tag2, tag3;
 	private int ntags;
 
 	/** Constructor.
@@ -56,8 +55,7 @@ public class SimTypeP extends SimPredicate {
 			case 2:
 				return (ev.getTag() == tag1) || (ev.getTag() == tag2);
 			case 3:
-				return (ev.getTag() == tag1) || (ev.getTag() == tag2) ||
-				        (ev.getTag() == tag3);
+				return (ev.getTag() == tag1) || (ev.getTag() == tag2) || (ev.getTag() == tag3);
 		}
 		return false;
 	}

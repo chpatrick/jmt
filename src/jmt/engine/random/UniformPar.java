@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -39,7 +38,6 @@ public class UniformPar extends AbstractParameter implements Parameter {
 	private double max;
 	private double min;
 
-
 	/**
 	 * It creates a new uniform parameter using the bound provided by the user.
 	 *
@@ -50,8 +48,7 @@ public class UniformPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public UniformPar(double min, double max)
-	        throws IncorrectDistributionParameterException {
+	public UniformPar(double min, double max) throws IncorrectDistributionParameterException {
 		this.max = max;
 		this.min = min;
 		if (!check()) {
@@ -59,8 +56,7 @@ public class UniformPar extends AbstractParameter implements Parameter {
 		}
 	}
 
-	public UniformPar(Double wmin, Double wmax)
-	        throws IncorrectDistributionParameterException {
+	public UniformPar(Double wmin, Double wmax) throws IncorrectDistributionParameterException {
 		this(wmin.doubleValue(), wmax.doubleValue());
 	}
 
@@ -130,8 +126,7 @@ public class UniformPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setMin(double min)
-	        throws IncorrectDistributionParameterException {
+	public void setMin(double min) throws IncorrectDistributionParameterException {
 		if (check(max, min)) {
 			this.min = min;
 		} else {
@@ -150,8 +145,7 @@ public class UniformPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setMax(double max)
-	        throws IncorrectDistributionParameterException {
+	public void setMax(double max) throws IncorrectDistributionParameterException {
 		if (check(max, min)) {
 			this.max = max;
 		} else {
@@ -159,19 +153,20 @@ public class UniformPar extends AbstractParameter implements Parameter {
 		}
 	}
 
-    /**
-     * Sets mean for a given distribution parameter. This method is required to adjust distributions
-     * mean values into Load Dependent Service Time Strategy
-     * @param meanValue new mean value for this distribution
-     * Author: Bertoli Marco
-     * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
-     */
-    public void setMean(double meanValue) throws IncorrectDistributionParameterException {
-        if (meanValue < 0 || Double.isInfinite(meanValue))
-            throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");
-        // Keeps variation coefficient c constant
-        double c = (max - min) / (max + min) * Math.sqrt(3);
-        max = meanValue + meanValue * c / Math.sqrt(3);
-        min = meanValue - meanValue * c / Math.sqrt(3);
-    }
+	/**
+	 * Sets mean for a given distribution parameter. This method is required to adjust distributions
+	 * mean values into Load Dependent Service Time Strategy
+	 * @param meanValue new mean value for this distribution
+	 * Author: Bertoli Marco
+	 * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
+	 */
+	public void setMean(double meanValue) throws IncorrectDistributionParameterException {
+		if (meanValue < 0 || Double.isInfinite(meanValue)) {
+			throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");
+		}
+		// Keeps variation coefficient c constant
+		double c = (max - min) / (max + min) * Math.sqrt(3);
+		max = meanValue + meanValue * c / Math.sqrt(3);
+		min = meanValue - meanValue * c / Math.sqrt(3);
+	}
 } // end UniformPar

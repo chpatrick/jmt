@@ -31,6 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -48,40 +49,40 @@ import jmt.gui.jwat.JWATConstants;
 
 //UPDATE 02/11/2006: + Creazione classe
 
-public class FuzzyInfoCluster extends JPanel implements CommonConstants,JWATConstants {
-	
+public class FuzzyInfoCluster extends JPanel implements CommonConstants, JWATConstants {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ClusteringInfosFuzzy infos = null;
 	private int numClusters = 0;
 	private ModelWorkloadAnalysis model = null;
 	private WorkloadAnalysisSession session = null;
-	
-	private static final String PANEL_TITLE = HTML_START
-	+ HTML_FONT_TITLE + "Cluster Information" + HTML_FONT_TIT_END + HTML_FONT_NORM
-	+ "This panel shows information of variables (center and statistics) within a single cluster" + HTML_FONT_NOR_END
-	+ HTML_END;
-	private static final String DESCR_LABEL = HTML_START
-		+ HTML_FONT_NORM + "Cluster X/Y has Z observations" + HTML_FONT_NOR_END
-		+ HTML_END;
-	
+
+	private static final String PANEL_TITLE = HTML_START + HTML_FONT_TITLE + "Cluster Information" + HTML_FONT_TIT_END + HTML_FONT_NORM
+			+ "This panel shows information of variables (center and statistics) within a single cluster" + HTML_FONT_NOR_END + HTML_END;
+	private static final String DESCR_LABEL = HTML_START + HTML_FONT_NORM + "Cluster X/Y has Z observations" + HTML_FONT_NOR_END + HTML_END;
+
 	private JList clustList = null;
 	private JTable clustInfo = null;
-	
+
 	private JLabel desctText = null;
-	
+
 	private int clustering;
 	private FuzzyClusterDetails clustDet;
-	
-	public FuzzyInfoCluster(ClusteringInfosFuzzy info,int i,WorkloadAnalysisSession session,int clustering){
-		model = (ModelWorkloadAnalysis)session.getDataModel();
-		this.session=session;
+
+	public FuzzyInfoCluster(ClusteringInfosFuzzy info, int i, WorkloadAnalysisSession session, int clustering) {
+		model = (ModelWorkloadAnalysis) session.getDataModel();
+		this.session = session;
 		infos = info;
 		numClusters = i;
 		this.clustering = clustering;
 		initPanel();
-		
+
 	}
-	
-	private void initPanel(){
+
+	private void initPanel() {
 		Box mainPanel = Box.createVerticalBox();
 		Box descLabelP = Box.createHorizontalBox();
 		Box clusterP = Box.createHorizontalBox();
@@ -90,45 +91,49 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants,JWATCons
 		mainPanel.add(Box.createHorizontalStrut(10));
 		mainPanel.add(centralP);
 		mainPanel.add(Box.createHorizontalStrut(10));
-		
+
 		centralP.add(Box.createVerticalStrut(10));
 		centralP.add(descLabelP);
 		centralP.add(Box.createVerticalStrut(10));
 		centralP.add(clusterP);
 		centralP.add(Box.createVerticalStrut(10));
-		
-		setLayout(new GridLayout(2,1));
+
+		setLayout(new GridLayout(2, 1));
 		add(mainPanel);
-		clustDet =new FuzzyClusterDetails(session,clustering,numClusters);
+		clustDet = new FuzzyClusterDetails(session, clustering, numClusters);
 		add(clustDet);
-		
+
 		//Stringa informativa
-		JPanel p = new JPanel(new GridLayout(1,1));
+		JPanel p = new JPanel(new GridLayout(1, 1));
 		p.add(new JLabel(PANEL_TITLE));
-		descLabelP.add(p,BorderLayout.NORTH);
-		
+		descLabelP.add(p, BorderLayout.NORTH);
+
 		//Pannello laterale con JList Clusters
-		JPanel p1 = new JPanel(new BorderLayout(5,5));
+		JPanel p1 = new JPanel(new BorderLayout(5, 5));
 		JPanel temp = new JPanel(new FlowLayout());
 		temp.add(getClusterList());
-		p1.add(temp,BorderLayout.WEST);
-		
+		p1.add(temp, BorderLayout.WEST);
+
 		//Pannello Con JTable
-		JPanel p2 = new JPanel(new BorderLayout(5,10));
+		JPanel p2 = new JPanel(new BorderLayout(5, 10));
 		desctText = new JLabel(DESCR_LABEL);
-		p2.add(desctText,BorderLayout.NORTH);
-		p2.add(getTable(),BorderLayout.CENTER);
-		String cur = DESCR_LABEL.replaceFirst("X",Integer.toString(clustList.getSelectedIndex()+1));
-		cur = cur.replaceFirst("Y",Integer.toString(numClusters));
-		desctText.setText(cur.replaceFirst("Z",Integer.toString(infos.numElem[clustList.getSelectedIndex()])));
-		
-		p1.add(p2,BorderLayout.CENTER);
+		p2.add(desctText, BorderLayout.NORTH);
+		p2.add(getTable(), BorderLayout.CENTER);
+		String cur = DESCR_LABEL.replaceFirst("X", Integer.toString(clustList.getSelectedIndex() + 1));
+		cur = cur.replaceFirst("Y", Integer.toString(numClusters));
+		desctText.setText(cur.replaceFirst("Z", Integer.toString(infos.numElem[clustList.getSelectedIndex()])));
+
+		p1.add(p2, BorderLayout.CENTER);
 		clusterP.add(p1);
 	}
-	
-	private JScrollPane getTable(){
-		if(clustInfo == null){
-			clustInfo = new JTable(new clustTableModel(infos.infoCluster[clustList.getSelectedIndex()].statClust)){
+
+	private JScrollPane getTable() {
+		if (clustInfo == null) {
+			clustInfo = new JTable(new clustTableModel(infos.infoCluster[clustList.getSelectedIndex()].statClust)) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 				{
 					setAutoResizeMode(AUTO_RESIZE_OFF);
 					getColumnModel().getColumn(1).setPreferredWidth(130);
@@ -138,75 +143,82 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants,JWATCons
 					getColumnModel().getColumn(4).setPreferredWidth(75);
 					getColumnModel().getColumn(5).setPreferredWidth(75);
 					ColumnHeaderToolTips tips = new ColumnHeaderToolTips();
-			        tips.setToolTip(getColumnModel().getColumn(0), "Considered in the clustering");
-			        getTableHeader().addMouseMotionListener(tips);
+					tips.setToolTip(getColumnModel().getColumn(0), "Considered in the clustering");
+					getTableHeader().addMouseMotionListener(tips);
 				}
+
 				public TableCellRenderer getCellRenderer(int row, int column) {
-					if (column == 0)
+					if (column == 0) {
 						return getDefaultRenderer(Boolean.class);
+					}
 					return getDefaultRenderer(String.class);
 				}
 			};;
 			clustInfo.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-			clustInfo.setSelectionBackground(new Color(83,126,126));
+			clustInfo.setSelectionBackground(new Color(83, 126, 126));
 			clustInfo.setSelectionForeground(Color.BLACK);
 		}
-		
+
 		JScrollPane p = new JScrollPane(clustInfo);
 		return p;
 	}
-	
-	private JScrollPane getClusterList(){
-		if(clustList == null){
+
+	private JScrollPane getClusterList() {
+		if (clustList == null) {
 			clustList = new JList();
-			
-			clustList.setSelectionBackground(new Color(83,126,126));
+
+			clustList.setSelectionBackground(new Color(83, 126, 126));
 			clustList.setSelectionForeground(Color.BLACK);
 			clustList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			clustList.setFont(new Font(clustList.getFont().getName(),clustList.getFont().getStyle(),clustList.getFont().getSize()+1));
-			
+			clustList.setFont(new Font(clustList.getFont().getName(), clustList.getFont().getStyle(), clustList.getFont().getSize() + 1));
+
 			String[] clustStr = new String[numClusters];
-			for(int i = 0;i < numClusters; i++){
-				clustStr[i] = "Cluster " + (i+1);
+			for (int i = 0; i < numClusters; i++) {
+				clustStr[i] = "Cluster " + (i + 1);
 			}
-			
+
 			clustList.setListData(clustStr);
-			
-			clustList.addListSelectionListener(new ListSelectionListener(){
+
+			clustList.addListSelectionListener(new ListSelectionListener() {
 				public void valueChanged(ListSelectionEvent e) {
-					if(clustInfo != null && clustList.getSelectedIndex() >= 0){
-						if(!e.getValueIsAdjusting()){
-							((clustTableModel)clustInfo.getModel()).setData(infos.infoCluster[clustList.getSelectedIndex()].statClust);
+					if (clustInfo != null && clustList.getSelectedIndex() >= 0) {
+						if (!e.getValueIsAdjusting()) {
+							((clustTableModel) clustInfo.getModel()).setData(infos.infoCluster[clustList.getSelectedIndex()].statClust);
 							clustInfo.tableChanged(new TableModelEvent(clustInfo.getModel()));
 							clustDet.setCluster(clustList.getSelectedIndex());
-							String cur = DESCR_LABEL.replaceFirst("X",Integer.toString(clustList.getSelectedIndex()+1));
-							cur = cur.replaceFirst("Y",Integer.toString(numClusters));
-							desctText.setText(cur.replaceFirst("Z",Integer.toString(infos.numElem[clustList.getSelectedIndex()])));
+							String cur = DESCR_LABEL.replaceFirst("X", Integer.toString(clustList.getSelectedIndex() + 1));
+							cur = cur.replaceFirst("Y", Integer.toString(numClusters));
+							desctText.setText(cur.replaceFirst("Z", Integer.toString(infos.numElem[clustList.getSelectedIndex()])));
 						}
 					}
 				}
 			});
 		}
 		clustList.setSelectedIndex(0);
-		
-		JScrollPane p = new JScrollPane(clustList,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		p.setPreferredSize(new Dimension(120,115));
+
+		JScrollPane p = new JScrollPane(clustList, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		p.setPreferredSize(new Dimension(120, 115));
 		return p;
-	}	
-	
-	public void setInfos(){
+	}
+
+	public void setInfos() {
 		clustList.clearSelection();
 		clustList.setSelectedIndex(0);
 	}
-	
-	private class clustTableModel extends AbstractTableModel{
-		private String[] header={"Sel.","Name","Center","Std. Dev.","Kurt.","Skew."};
+
+	private class clustTableModel extends AbstractTableModel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private String[] header = { "Sel.", "Name", "Center", "Std. Dev.", "Kurt.", "Skew." };
 		private SFCluStat[] data = null;
-		
-		public clustTableModel(SFCluStat[] stats){
+
+		public clustTableModel(SFCluStat[] stats) {
 			data = stats;
 		}
-		
+
 		public int getRowCount() {
 			return data.length;
 		}
@@ -216,31 +228,42 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants,JWATCons
 		}
 
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			if(rowIndex < data.length){
-				if(columnIndex == 1){
+			if (rowIndex < data.length) {
+				if (columnIndex == 1) {
 					return model.getMatrix().getVariableNames()[rowIndex];
 				}
-				if(columnIndex == 0){
-					int[] sel = ((FuzzyKMean)session.getListOfClustering().get(clustering)).getVarClust();	
-					for(int i = 0; i < sel.length;i++){
-						if(sel[i] == rowIndex) return Boolean.TRUE;
+				if (columnIndex == 0) {
+					int[] sel = ((FuzzyKMean) session.getListOfClustering().get(clustering)).getVarClust();
+					for (int i = 0; i < sel.length; i++) {
+						if (sel[i] == rowIndex) {
+							return Boolean.TRUE;
+						}
 					}
 					return Boolean.FALSE;
 				}
-				if(columnIndex == 2) return defaultFormat.format(data[rowIndex].dMedia);
-				if(columnIndex == 3) return defaultFormat.format(data[rowIndex].dStdDv);
-				if(columnIndex == 4) return defaultFormat.format(data[rowIndex].dKurto);
-				if(columnIndex == 5) return defaultFormat.format(data[rowIndex].dSkewn);
+				if (columnIndex == 2) {
+					return defaultFormat.format(data[rowIndex].dMedia);
+				}
+				if (columnIndex == 3) {
+					return defaultFormat.format(data[rowIndex].dStdDv);
+				}
+				if (columnIndex == 4) {
+					return defaultFormat.format(data[rowIndex].dKurto);
+				}
+				if (columnIndex == 5) {
+					return defaultFormat.format(data[rowIndex].dSkewn);
+				}
 			}
 			return null;
 		}
-		
+
 		public String getColumnName(int columnIndex) {
-			if(columnIndex < header.length)
+			if (columnIndex < header.length) {
 				return header[columnIndex];
+			}
 			return "";
 		}
-		
+
 		/**
 		 * Tells wether data contained in a specific cell(given row and column
 		 * index) is editable or not. In this case distribution column is not
@@ -249,12 +272,12 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants,JWATCons
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}
-		
+
 		public Class getColumnClass(int index) {
 			return String.class;
 		}
-		
-		public void setData(SFCluStat[] data){
+
+		public void setData(SFCluStat[] data) {
 			this.data = data;
 		}
 	}

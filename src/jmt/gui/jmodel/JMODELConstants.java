@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel;
 
 import jmt.gui.common.CommonConstants;
@@ -30,5 +30,5 @@ import jmt.gui.common.CommonConstants;
  *         Time: 18.10.43
  */
 public interface JMODELConstants extends CommonConstants {
-    public static String COLOR_NAME = "Color"; // Name to save color into objectNumber data strucure
+	public static String COLOR_NAME = "Color"; // Name to save color into objectNumber data strucure
 }

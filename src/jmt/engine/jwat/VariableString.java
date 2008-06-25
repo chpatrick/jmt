@@ -22,26 +22,23 @@ import jmt.engine.jwat.input.VariableMapping;
 
 public class VariableString extends VariableNumber {
 	// Utilizzata per mantenere l'associazione ra numero e stringa
-	
-	
+
 	public VariableString(Observation[] valObs, String vName, int pos, short type, VariableMapping varMapping) {
 		super(valObs, vName, pos, type, varMapping);
 	}
-	
-	
+
 	/**
 	 * Returns Index-th value of the variable
 	 * @param Index index of variable's value desired
 	 * @return value of Index-th value
 	 * @throws ArrayIndexOutOfBoundsException throws if Index is < 0 or > numbero of observations
 	 */
-	public String getOriginalValue(int Index) throws ArrayIndexOutOfBoundsException
-	{	
-		if(Index < 0 || Index > obsValue.length){
+	public String getOriginalValue(int Index) throws ArrayIndexOutOfBoundsException {
+		if (Index < 0 || Index > obsValue.length) {
 			throw new ArrayIndexOutOfBoundsException();
+		} else {
+			return (String) mapping.getValue(obsValue[Index].getIndex(nVar));
 		}
-		else
-			return (String)mapping.getValue(obsValue[Index].getIndex(nVar));
 	}
 
 	/**
@@ -52,16 +49,16 @@ public class VariableString extends VariableNumber {
 	 * @throws ArrayIndexOutOfBoundsException throws if Index is < 0 or > numbero of observations 
 	 * or var < 0 or > number of variables ( elements of observation )
 	 */
-	public String getOriginalValue(int Index, int var) throws ArrayIndexOutOfBoundsException
-	{
-		if(Index < 0 || Index > obsValue.length){
+	public String getOriginalValue(int Index, int var) throws ArrayIndexOutOfBoundsException {
+		if (Index < 0 || Index > obsValue.length) {
 			throw new ArrayIndexOutOfBoundsException();
+		} else {
+			return (String) mapping.getValue(obsValue[Index].getIndex(var));
 		}
-		else
-			return (String)mapping.getValue(obsValue[Index].getIndex(var));
 	}
+
 	//UPDATE 28/10/2006: + funzione per ottenere liste dai valori matchabili
-	public int[] getListOfMatching(String s){
-		return ((StringMapping)mapping).getMatchingStringList(s);
+	public int[] getListOfMatching(String s) {
+		return ((StringMapping) mapping).getMatchingStringList(s);
 	}
 }

@@ -15,8 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jsim.panels;
+
+import java.awt.BorderLayout;
+
+import javax.swing.JTable;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.CommonConstants;
@@ -25,13 +33,6 @@ import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.definitions.StationDefinition;
 import jmt.gui.common.editors.ImagedComboBoxCellEditorFactory;
 import jmt.gui.common.panels.WarningScrollTable;
-
-import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,151 +43,176 @@ import java.awt.*;
  */
 public class RefSourcePanel extends WizardPanel implements CommonConstants {
 
-    protected ClassDefinition classData;
-    protected StationDefinition stationData;
-    protected SimulationDefinition simData;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected ClassDefinition classData;
+	protected StationDefinition stationData;
+	protected SimulationDefinition simData;
 
-    protected WarningScrollTable warning;
+	protected WarningScrollTable warning;
 
-    private RefSourceTable refSourceTable;
+	private RefSourceTable refSourceTable;
 
-    protected ImagedComboBoxCellEditorFactory combos;
+	protected ImagedComboBoxCellEditorFactory combos;
 
-    public RefSourcePanel(ClassDefinition classes,
-                        StationDefinition stations,
-                        SimulationDefinition sim){
-        super();
-        combos = new ImagedComboBoxCellEditorFactory(stations);
-        setData(classes, stations, sim);
-        initComponents();
-        refreshComponents();
-    }
+	public RefSourcePanel(ClassDefinition classes, StationDefinition stations, SimulationDefinition sim) {
+		super();
+		combos = new ImagedComboBoxCellEditorFactory(stations);
+		setData(classes, stations, sim);
+		initComponents();
+		refreshComponents();
+	}
 
-    private void initComponents(){
-        refSourceTable = new RefSourceTable();
-        setLayout(new BorderLayout());
-        //setBorder(new TitledBorder(new EtchedBorder(), "Reference Stations"));
-        warning = new WarningScrollTable(refSourceTable, WARNING_CLASS_STATION);
-        warning.addCheckVector(classData.getClassKeys());
-        warning.addCheckVector(stationData.getStationKeys());
-        add(warning, BorderLayout.CENTER);
-    }
+	private void initComponents() {
+		refSourceTable = new RefSourceTable();
+		setLayout(new BorderLayout());
+		//setBorder(new TitledBorder(new EtchedBorder(), "Reference Stations"));
+		warning = new WarningScrollTable(refSourceTable, WARNING_CLASS_STATION);
+		warning.addCheckVector(classData.getClassKeys());
+		warning.addCheckVector(stationData.getStationKeys());
+		add(warning, BorderLayout.CENTER);
+	}
 
-    public void setData(ClassDefinition classes,
-                        StationDefinition stations,
-                        SimulationDefinition sim){
-        classData = classes;
-        stationData = stations;
-        simData = sim;
-        combos.setData(stations);
-        refreshComponents();
-    }
+	public void setData(ClassDefinition classes, StationDefinition stations, SimulationDefinition sim) {
+		classData = classes;
+		stationData = stations;
+		simData = sim;
+		combos.setData(stations);
+		refreshComponents();
+	}
 
-    public void repaint(){
-        refreshComponents();
-        super.repaint();
-    }
+	public void repaint() {
+		refreshComponents();
+		super.repaint();
+	}
 
-    private void refreshComponents(){
-        if(refSourceTable!=null){
-            refSourceTable.tableChanged(new TableModelEvent(refSourceTable.getModel()));
-        }
-        if (warning != null) {
-            warning.clearCheckVectors();
-            warning.addCheckVector(classData.getClassKeys());
-            warning.addCheckVector(stationData.getStationKeys());
-        }
-    }
+	private void refreshComponents() {
+		if (refSourceTable != null) {
+			refSourceTable.tableChanged(new TableModelEvent(refSourceTable.getModel()));
+		}
+		if (warning != null) {
+			warning.clearCheckVectors();
+			warning.addCheckVector(classData.getClassKeys());
+			warning.addCheckVector(stationData.getStationKeys());
+		}
+	}
 
-    protected class RefSourceTable extends JTable{
+	protected class RefSourceTable extends JTable {
 
-        int[] columnWidths = new int[]{80, 100};
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		int[] columnWidths = new int[] { 80, 100 };
 
-        public RefSourceTable(){
-            super();
-            setModel(new RefSourceTableModel());
-            for(int i=0; i<getColumnCount(); i++){
-                getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
-            }
-            setRowHeight(ROW_HEIGHT);
-        }
+		public RefSourceTable() {
+			super();
+			setModel(new RefSourceTableModel());
+			for (int i = 0; i < getColumnCount(); i++) {
+				getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+			}
+			setRowHeight(ROW_HEIGHT);
+		}
 
-        public TableCellEditor getCellEditor(int row, int column){
-            if(column==1) return combos.getEditor(stationData.getStationKeysNoSourceSink());
-            else return super.getCellEditor(row, column);
-        }
-        public TableCellRenderer getCellRenderer(int row, int column){
-            if(column==1) return combos.getRenderer();
-            else return super.getCellRenderer(row, column);
-        }
-    }
+		public TableCellEditor getCellEditor(int row, int column) {
+			if (column == 1) {
+				return combos.getEditor(stationData.getStationKeysNoSourceSink());
+			} else {
+				return super.getCellEditor(row, column);
+			}
+		}
 
-    protected class RefSourceTableModel extends AbstractTableModel{
-        public int getRowCount() {
-            return classData.getClassKeys().size();
-        }
+		public TableCellRenderer getCellRenderer(int row, int column) {
+			if (column == 1) {
+				return combos.getRenderer();
+			} else {
+				return super.getCellRenderer(row, column);
+			}
+		}
+	}
 
-        public int getColumnCount() {
-            return 2;
-        }
+	protected class RefSourceTableModel extends AbstractTableModel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-        public String getColumnName(int columnIndex) {
-            if(columnIndex==0)return "Class";
-            else if(columnIndex==1) return "Reference Station";
-            else return null;
-        }
+		public int getRowCount() {
+			return classData.getClassKeys().size();
+		}
 
-        public Class getColumnClass(int columnIndex) {
-            return String.class;
-        }
+		public int getColumnCount() {
+			return 2;
+		}
 
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            if(columnIndex==0)return false;
-            if(classData.getClassType(classData.getClassKeys().get(rowIndex))==CLASS_TYPE_OPEN){
-                return false;
-            }
-            return true;
-        }
+		public String getColumnName(int columnIndex) {
+			if (columnIndex == 0) {
+				return "Class";
+			} else if (columnIndex == 1) {
+				return "Reference Station";
+			} else {
+				return null;
+			}
+		}
 
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            Object key = classData.getClassKeys().get(rowIndex);
-            if(columnIndex == 0){
-                return classData.getClassName(key);
-            }else if(columnIndex ==1){
-                return classData.getClassRefStation(key);
-            }else return null;
-        }
+		public Class getColumnClass(int columnIndex) {
+			return String.class;
+		}
 
-        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            Object key = classData.getClassKeys().get(rowIndex);
-            if(columnIndex == 1 && aValue != null){
-                classData.setClassRefStation(key, aValue);
-            }
-        }
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			if (columnIndex == 0) {
+				return false;
+			}
+			if (classData.getClassType(classData.getClassKeys().get(rowIndex)) == CLASS_TYPE_OPEN) {
+				return false;
+			}
+			return true;
+		}
 
-    }
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			Object key = classData.getClassKeys().get(rowIndex);
+			if (columnIndex == 0) {
+				return classData.getClassName(key);
+			} else if (columnIndex == 1) {
+				return classData.getClassRefStation(key);
+			} else {
+				return null;
+			}
+		}
 
-    /**
-     * called by the Wizard when the panel becomes active
-     */
-    public void gotFocus() {
-        combos.clearCache();
-    }
+		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+			Object key = classData.getClassKeys().get(rowIndex);
+			if (columnIndex == 1 && aValue != null) {
+				classData.setClassRefStation(key, aValue);
+			}
+		}
 
-    /**
-     * @return the panel's name
-     */
-    public String getName() {
-        return "Reference station";
-    }
+	}
 
-    /**
-     * called by the Wizard before when switching to another panel
-     */
-    public void lostFocus() {
-        // Aborts editing of table
-        TableCellEditor editor = refSourceTable.getCellEditor();
-        if (editor != null)
-            editor.stopCellEditing();
-    }
+	/**
+	 * called by the Wizard when the panel becomes active
+	 */
+	public void gotFocus() {
+		combos.clearCache();
+	}
+
+	/**
+	 * @return the panel's name
+	 */
+	public String getName() {
+		return "Reference station";
+	}
+
+	/**
+	 * called by the Wizard before when switching to another panel
+	 */
+	public void lostFocus() {
+		// Aborts editing of table
+		TableCellEditor editor = refSourceTable.getCellEditor();
+		if (editor != null) {
+			editor.stopCellEditing();
+		}
+	}
 }

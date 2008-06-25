@@ -15,15 +15,19 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.table;
 
-import javax.swing.*;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.DefaultCellEditor;
+import javax.swing.JComboBox;
+import javax.swing.JTable;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,51 +37,47 @@ import java.awt.event.ActionListener;
  * This class allows multiple-choice table cells to be rendered as combobox instead of
  * simple text fields. This gives users a more understandable view of a table GUI.
  */
-public class ComboBoxCell
-        extends DefaultCellEditor
-        implements TableCellRenderer, TableCellEditor, ActionListener {
+public class ComboBoxCell extends DefaultCellEditor implements TableCellRenderer, TableCellEditor, ActionListener {
 
-    private JComboBox jcb;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JComboBox jcb;
 
-    public ComboBoxCell(Object[] valueSet){
-        super(new JComboBox(valueSet));
-        jcb = (JComboBox)getComponent();
-        jcb.setBackground(Color.WHITE);
-        jcb.addActionListener(this);
-    }
+	public ComboBoxCell(Object[] valueSet) {
+		super(new JComboBox(valueSet));
+		jcb = (JComboBox) getComponent();
+		jcb.setBackground(Color.WHITE);
+		jcb.addActionListener(this);
+	}
 
-    public Component getTableCellRendererComponent(JTable table, Object value,
-                                                   boolean isSelected, boolean hasFocus,
-                                                   int row, int column) {
-        jcb.setSelectedItem(value);
-        if(isSelected && !hasFocus){
-            jcb.setBackground(table.getSelectionBackground());
-            jcb.setForeground(table.getSelectionForeground());
-        }else{
-            jcb.setBackground(table.getBackground());
-            jcb.setForeground(table.getForeground());
-        }
-        return jcb;
-    }
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		jcb.setSelectedItem(value);
+		if (isSelected && !hasFocus) {
+			jcb.setBackground(table.getSelectionBackground());
+			jcb.setForeground(table.getSelectionForeground());
+		} else {
+			jcb.setBackground(table.getBackground());
+			jcb.setForeground(table.getForeground());
+		}
+		return jcb;
+	}
 
+	/**Returns combo box contained into this renderer. This provides further customization
+	 * capabilities.
+	 * @return :ComboBox to be rendered.
+	 * */
+	public JComboBox getComboBox() {
+		return (JComboBox) super.getComponent();
+	}
 
-    /**Returns combo box contained into this renderer. This provides further customization
-     * capabilities.
-     * @return :ComboBox to be rendered.
-     * */
-    public JComboBox getComboBox(){
-        return (JComboBox) super.getComponent();
-    }
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+		return jcb;
+	}
 
-    public Component getTableCellEditorComponent(JTable table, Object value,
-                                                 boolean isSelected,
-                                                 int row, int column) {
-        return jcb;
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        fireEditingStopped();
-    }
-
+	public void actionPerformed(ActionEvent e) {
+		fireEditingStopped();
+	}
 
 }

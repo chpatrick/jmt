@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
@@ -45,80 +45,75 @@ public class Replayer extends AbstractDistribution implements Distribution {
 	 * consistent.
 	 * @return double with the next random number from the sequence.
 	 */
-	public double nextRand(Parameter p)
-	        throws IncorrectDistributionParameterException {
-		if (p instanceof ReplayerPar)
+	public double nextRand(Parameter p) throws IncorrectDistributionParameterException {
+		if (p instanceof ReplayerPar) {
 			return ((ReplayerPar) p).getNext();
-		throw new IncorrectDistributionParameterException(
-		        "The class of the parameter is not correct");
+		}
+		throw new IncorrectDistributionParameterException("The class of the parameter is not correct");
 	}
 
+	//TODO: mancano pdf, cdf, media e varianza.
 
-    //TODO: mancano pdf, cdf, media e varianza.
+	/////@author STEFANO OMINI
 
+	/**
+	 * Returns the pdf of the distribution.
+	 * This method is used to obtain from the distribution his probability distribution
+	 * function evaluated where required by the user.
+	 *
+	 * @param x a double indicating where to evaluate the pdf.
+	 * @param p parameter of the constant distribution.
+	 * @throws IncorrectDistributionParameterException
+	 * @return double with the probability distribution function evaluated in x.
+	 */
 
-    /////@author STEFANO OMINI
+	public double pdf(double x, Parameter p) throws IncorrectDistributionParameterException {
+		throw new IncorrectDistributionParameterException("Method not implemented yet");
+	};
 
-    /**
-     * Returns the pdf of the distribution.
-     * This method is used to obtain from the distribution his probability distribution
-     * function evaluated where required by the user.
-     *
-     * @param x a double indicating where to evaluate the pdf.
-     * @param p parameter of the constant distribution.
-     * @throws IncorrectDistributionParameterException
-     * @return double with the probability distribution function evaluated in x.
-     */
+	/**
+	 * Returns the cdf of the distribution.
+	 * This method is used to obtain from the distribution his cumulative distribution
+	 * function evaluated where required by the user.
+	 *
+	 * @param x a double indicating where to evaluate the cdf.
+	 * @param p parameter of the constant distribution.
+	 * @throws IncorrectDistributionParameterException
+	 * @return double with the cumulative distribution function evaluated in x.
+	 */
 
-    public double pdf(double x, Parameter p) throws IncorrectDistributionParameterException{
-        throw new IncorrectDistributionParameterException("Method not implemented yet");
-    };
+	public double cdf(double x, Parameter p) throws IncorrectDistributionParameterException {
+		throw new IncorrectDistributionParameterException("Method not implemented yet");
+	};
 
-    /**
-     * Returns the cdf of the distribution.
-     * This method is used to obtain from the distribution his cumulative distribution
-     * function evaluated where required by the user.
-     *
-     * @param x a double indicating where to evaluate the cdf.
-     * @param p parameter of the constant distribution.
-     * @throws IncorrectDistributionParameterException
-     * @return double with the cumulative distribution function evaluated in x.
-     */
+	/**
+	  * returns the mean of the distribution.
+	  * This method is used to obtain from the distribution the value of his own
+	  * theoretic mean.
+	  *
+	  * @param p parameter of the constant distribution.
+	  * @throws IncorrectDistributionParameterException
+	  * @return double with the theoretic mean of the distribution.
+	  */
 
-    public double cdf(double x, Parameter p) throws IncorrectDistributionParameterException{
-        throw new IncorrectDistributionParameterException("Method not implemented yet");
-    };
+	public double theorMean(Parameter p) throws IncorrectDistributionParameterException {
+		throw new IncorrectDistributionParameterException("Method not implemented yet");
+	};
 
-    /**
-      * returns the mean of the distribution.
-      * This method is used to obtain from the distribution the value of his own
-      * theoretic mean.
-      *
-      * @param p parameter of the constant distribution.
-      * @throws IncorrectDistributionParameterException
-      * @return double with the theoretic mean of the distribution.
-      */
+	/**
+	  * returns the variance of the distribution.
+	  * This method is used to obtain from the distribution his own theoretical
+	  * variance.
+	  *
+	  * @param p parameter of the constant distribution.
+	  * @throws IncorrectDistributionParameterException
+	  * @return double with the theoretic varance of the distribution.
+	  */
 
-    public double theorMean(Parameter p) throws IncorrectDistributionParameterException{
-        throw new IncorrectDistributionParameterException("Method not implemented yet");
-    };
+	public double theorVariance(Parameter p) throws IncorrectDistributionParameterException {
+		throw new IncorrectDistributionParameterException("Method not implemented yet");
+	};
 
-
-
-    /**
-      * returns the variance of the distribution.
-      * This method is used to obtain from the distribution his own theoretical
-      * variance.
-      *
-      * @param p parameter of the constant distribution.
-      * @throws IncorrectDistributionParameterException
-      * @return double with the theoretic varance of the distribution.
-      */
-
-    public double theorVariance(Parameter p) throws IncorrectDistributionParameterException{
-        throw new IncorrectDistributionParameterException("Method not implemented yet");
-    };
-
-    /////END @author STEFANO OMINI
+	/////END @author STEFANO OMINI
 
 }

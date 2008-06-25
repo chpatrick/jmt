@@ -17,7 +17,7 @@
  */
 package jmt.framework.gui.controller;
 
-import java.awt.*;
+import java.awt.Window;
 import java.util.Vector;
 
 /**
@@ -31,30 +31,32 @@ import java.util.Vector;
  *         Time: 14.46.35
  */
 public class Manager {
-    protected static Vector windows = new Vector();
+	protected static Vector windows = new Vector();
 
-    /**
-     * Adds a new Window to be checked for termination before terminating JVM
-     * @param application application to be checked
-     */
-    public static void addWindow(Window application) {
-        if (!windows.contains(application))
-            windows.add(application);
-    }
+	/**
+	 * Adds a new Window to be checked for termination before terminating JVM
+	 * @param application application to be checked
+	 */
+	public static void addWindow(Window application) {
+		if (!windows.contains(application)) {
+			windows.add(application);
+		}
+	}
 
-    /**
-     * This method has to be called each time a JMT application is terminated. If all applications
-     * are terminated, JVM is killed.
-     * @param application application to be terminated. If application was not disposed,
-     * this method will do 'dispose()' too.
-     */
-    public static void exit(Window application) {
-        // Disposes application window if user didn't do it.
-        if (application.isDisplayable())
-            application.dispose();
-        windows.remove(application);
-        if (windows.isEmpty()) {
-            System.exit(0); // Closes current JVM with no error code.
-        }
-    }
+	/**
+	 * This method has to be called each time a JMT application is terminated. If all applications
+	 * are terminated, JVM is killed.
+	 * @param application application to be terminated. If application was not disposed,
+	 * this method will do 'dispose()' too.
+	 */
+	public static void exit(Window application) {
+		// Disposes application window if user didn't do it.
+		if (application.isDisplayable()) {
+			application.dispose();
+		}
+		windows.remove(application);
+		if (windows.isEmpty()) {
+			System.exit(0); // Closes current JVM with no error code.
+		}
+	}
 }

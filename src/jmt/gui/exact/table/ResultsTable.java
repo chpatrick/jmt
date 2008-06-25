@@ -15,14 +15,19 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.table;
 
-import jmt.framework.gui.help.HoverHelp;
+import java.awt.Color;
+import java.awt.Component;
 
-import javax.swing.*;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JPopupMenu;
+import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
-import java.awt.*;
+
+import jmt.framework.gui.help.HoverHelp;
 
 /**
 
@@ -37,6 +42,10 @@ import java.awt.*;
  */
 public class ResultsTable extends ExactTable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected HoverHelp help;
 
 	public ResultsTable(ExactTableModel dm, HoverHelp help) {
@@ -65,31 +74,25 @@ public class ResultsTable extends ExactTable {
 		setDefaultRenderer(Object.class, new DisabledCellRenderer());
 	}
 
-    //NEW Federico Dall'Orso
-    public TableCellRenderer getCellRenderer(int row, int column){
-        final TableCellRenderer cellRenderer = super.getCellRenderer(row, column);
-        return new TableCellRenderer(){
-            public Component getTableCellRendererComponent(JTable table, Object value,
-                                                           boolean isSelected, boolean hasFocus,
-                                                           int row, int column) {
-                Component label = cellRenderer.getTableCellRendererComponent(
-                        table,
-                        value,
-                        isSelected,
-                        hasFocus,
-                        row,
-                        column
-                );
-                Color col = Color.WHITE;
-                if(row==0||column==0){
-                    col= new Color(255,255,210);
-                }
-                if(!isSelected && !hasFocus)label.setBackground(col);
-                return label;
-            }
-        };
-    }
-    //END
+	//NEW Federico Dall'Orso
+	public TableCellRenderer getCellRenderer(int row, int column) {
+		final TableCellRenderer cellRenderer = super.getCellRenderer(row, column);
+		return new TableCellRenderer() {
+			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+				Component label = cellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+				Color col = Color.WHITE;
+				if (row == 0 || column == 0) {
+					col = new Color(255, 255, 210);
+				}
+				if (!isSelected && !hasFocus) {
+					label.setBackground(col);
+				}
+				return label;
+			}
+		};
+	}
+
+	//END
 
 	protected void installKeyboard() {
 		InputMap im = getInputMap();
@@ -109,6 +112,5 @@ public class ResultsTable extends ExactTable {
 	public boolean isCellEditable(int row, int column) {
 		return false;
 	}
-
 
 }

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 5-apr-2004 by Ernesto
  *
@@ -36,7 +36,7 @@ public class MM1Data {
 	public double lambdai;
 	public double si;
 	public double buffer;
-	
+
 	/**
 	 * 
 	 */
@@ -44,18 +44,18 @@ public class MM1Data {
 		lambdai = 0.0;
 		si = 0.0;
 	}
-	
-	public double getNi(){
+
+	public double getNi() {
 		return MM1Logic.getNi(getUi(), buffer);
 	}
-	
-	public double getUi(){
+
+	public double getUi() {
 		return MM1Logic.getUi(lambdai, si);
-		
+
 	}
-	
-	public double getRi(){
+
+	public double getRi() {
 		return MM1Logic.getRi(getUi(), si);
 	}
-	
+
 }

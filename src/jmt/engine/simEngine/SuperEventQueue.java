@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.simEngine;
 
 import java.util.Enumeration;
@@ -55,12 +55,13 @@ public class SuperEventQueue {
 	 */
 	public final void add(SimEvent newEvent) {
 		double evTime = newEvent.eventTime();
-		if (evTime > clock)
+		if (evTime > clock) {
 			future.add(newEvent);
-		else if (evTime == clock)
+		} else if (evTime == clock) {
 			now.push(newEvent);
-		else
+		} else {
 			throw new RuntimeException("Impossible to Insert an event");
+		}
 	}
 
 	/**
@@ -68,19 +69,22 @@ public class SuperEventQueue {
 	 * @return           The next event.
 	 */
 	public final SimEvent pop() {
-		if (size() == 0)
+		if (size() == 0) {
 			return null;
+		}
 
 		if (now.size() != 0) {
-			if (now.top().eventTime() == clock)
+			if (now.top().eventTime() == clock) {
 				return now.pop();
-			else
+			} else {
 				throw new RuntimeException("Impossible to Pop an event");
+			}
 		} else {//a bit complicate need to feel now queue with elements with same
 			//timestamp
 			SimEvent first = future.pop();
-			if (clock > first.eventTime())
+			if (clock > first.eventTime()) {
 				throw new RuntimeException("Impossible to Pop an event");
+			}
 			clock = first.eventTime();//sets new clock
 			//while there r elemnts with same time timestamp it puts them in now
 			//queue
@@ -97,10 +101,11 @@ public class SuperEventQueue {
 	 * @return	The next event.
 	 */
 	public final SimEvent top() {
-		if (now.size() != 0)
+		if (now.size() != 0) {
 			return now.top();
-		else
+		} else {
 			return future.top();
+		}
 	}
 
 	/**
@@ -135,9 +140,9 @@ public class SuperEventQueue {
 
 			public Object nextElement() {
 				synchronized (SuperEventQueue.this) {
-					if (en.hasMoreElements())
+					if (en.hasMoreElements()) {
 						return en.nextElement();
-					else {
+					} else {
 						en = future.elements();
 						return en.nextElement();
 					}

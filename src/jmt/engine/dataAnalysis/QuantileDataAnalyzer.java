@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.dataAnalysis;
 
 import jmt.engine.dataAnalysis.sorting.HeapSort;
@@ -32,45 +32,42 @@ import jmt.engine.math.SampleMeanVar;
 
  */
 public class QuantileDataAnalyzer extends DynamicDataAnalyzerImpl {
-    //TODO: questa classe funziona anche nel caso di InverseMeasure????
+	//TODO: questa classe funziona anche nel caso di InverseMeasure????
 	DoubleArrayList data;
 
 	boolean ordered = false;
 
 	double[] quantile;
 
-
 	SortAlgorithm sorter;
 
-    /**
-     * Creates a QuantileDataAnalyzer.
-     * @param  alfa    the quantile required for the confidence interval
+	/**
+	 * Creates a QuantileDataAnalyzer.
+	 * @param  alfa    the quantile required for the confidence interval
 	 * @param  precision   maximum amplitude of confidence interval
 	 *                      (precision = maxamplitude / mean)
 	 * @param maxData  maximum number of data to be analyzed
-     *
-     * @param quantile Requested quantiles //TODO: giusto??
-     * @param sorter Sorting algorithm used to manage data
-     */
-	public QuantileDataAnalyzer(double alfa, double precision, int maxData,
-	                            double[] quantile, SortAlgorithm sorter) {
+	 *
+	 * @param quantile Requested quantiles //TODO: giusto??
+	 * @param sorter Sorting algorithm used to manage data
+	 */
+	public QuantileDataAnalyzer(double alfa, double precision, int maxData, double[] quantile, SortAlgorithm sorter) {
 		super(alfa, precision, maxData);
 		this.quantile = quantile;
 		this.sorter = sorter;
 	}
 
-    /**
-     * Creates a QuantileDataAnalyzer. A default sorting algorithm is
-     * used to manage data.
-     * @param  alfa    the quantile required for the confidence interval
+	/**
+	 * Creates a QuantileDataAnalyzer. A default sorting algorithm is
+	 * used to manage data.
+	 * @param  alfa    the quantile required for the confidence interval
 	 * @param  precision   maximum amplitude of confidence interval
 	 *                      (precision = maxamplitude / mean)
 	 * @param maxData  maximum number of data to be analyzed
-     *
-     * @param quantile Requested quantiles
-     */
-	public QuantileDataAnalyzer(double alfa, double precision, int maxData,
-	                            double[] quantile) {
+	 *
+	 * @param quantile Requested quantiles
+	 */
+	public QuantileDataAnalyzer(double alfa, double precision, int maxData, double[] quantile) {
 		super(alfa, precision, maxData);
 		this.quantile = quantile;
 		data = new DoubleArrayList(1024);
@@ -79,7 +76,7 @@ public class QuantileDataAnalyzer extends DynamicDataAnalyzerImpl {
 	}
 
 	/**
-     * Adds the new sample to the statistic.
+	 * Adds the new sample to the statistic.
 	 * @param newSample the new sample
 	 * @param Weight the weight of the newSample, if it is not needed put 1.
 	 * @return true if the confidence interval is smaller than required by
@@ -100,12 +97,12 @@ public class QuantileDataAnalyzer extends DynamicDataAnalyzerImpl {
 	 * @return the estiamted quantile
 	 */
 	public double getQuantile(double prob) {
-		if (ordered)
-			return data.get((int) ((double) data.getSize() * prob));
-		else {
+		if (ordered) {
+			return data.get((int) (data.getSize() * prob));
+		} else {
 			sort();
 			ordered = true;
-			return data.get((int) ((double) data.getSize() * prob));
+			return data.get((int) (data.getSize() * prob));
 		}
 	}
 
@@ -132,8 +129,9 @@ public class QuantileDataAnalyzer extends DynamicDataAnalyzerImpl {
 	 * @return estiamted probability
 	 */
 	public double getProbability(double quantile) {
-		if (ordered)
+		if (ordered) {
 			return search(quantile);
+		}
 		return Double.NaN;
 	}
 
@@ -141,22 +139,26 @@ public class QuantileDataAnalyzer extends DynamicDataAnalyzerImpl {
 		int l = 1, r = data.getSize() - 1, x;
 		while (l < r) {
 			x = (l + r) >> 1;
-			if (element == data.get(x))
-				return (x / ((double) data.getSize() - 1.0));
-			if (element < data.get(x)) r = x - 1; else l = x + 1;
+			if (element == data.get(x)) {
+				return (x / (data.getSize() - 1.0));
+			}
+			if (element < data.get(x)) {
+				r = x - 1;
+			} else {
+				l = x + 1;
+			}
 		}
-		return (l / ((double) data.getSize() - 1.0));
+		return (l / (data.getSize() - 1.0));
 	}
 
 	protected void sort() {
 		double[] d = data.toArray(0, data.getSize() - 1);
-//		long start = System.currentTimeMillis();
+		//		long start = System.currentTimeMillis();
 		sorter.sort(d);
-//		System.out.println("tempo = "+ (System.currentTimeMillis() - start));
+		//		System.out.println("tempo = "+ (System.currentTimeMillis() - start));
 		data = new DoubleArrayList(d);
 
 	}
-
 
 	/** Applies the spetctral test to generate the Confidence Intervals.
 	 *  see: P. Heidelberger, Peter D. Welch
@@ -169,8 +171,8 @@ public class QuantileDataAnalyzer extends DynamicDataAnalyzerImpl {
 	protected boolean HWtest() {
 		sort();
 		ordered = true;
-//		System.out.println("quantile " + getQuantileResults(0.75));
-//		System.out.println("nSamples = " + nSamples);
+		//		System.out.println("quantile " + getQuantileResults(0.75));
+		//		System.out.println("nSamples = " + nSamples);
 		return super.HWtest();
 	}
 
@@ -188,14 +190,16 @@ public class QuantileDataAnalyzer extends DynamicDataAnalyzerImpl {
 		//DEK (Federico Granata)
 		//si puo' fare array copy
 		System.arraycopy(batchMean, 0, tempBatch, 0, numBatch - 1);
-//		for (int i = 0; i < numBatch; i++)
-//			tempBatch[i] = batchMean[i];
+		//		for (int i = 0; i < numBatch; i++)
+		//			tempBatch[i] = batchMean[i];
 
 		extVar = calcVar(tempBatch, 0, batch, K, polyOrder);
-		if (Math.abs(extVar - sampleVar) > sampleVar * precision * 2)
+		if (Math.abs(extVar - sampleVar) > sampleVar * precision * 2) {
 			extVar = Double.MAX_VALUE;
-		if (extVar < sampleVar)
+		}
+		if (extVar < sampleVar) {
 			extVar = sampleVar;
+		}
 	}
 
 }

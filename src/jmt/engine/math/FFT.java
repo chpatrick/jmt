@@ -16,12 +16,11 @@ package jmt.engine.math;
 public class FFT {
 
 	public static final double num_flops(int N) {
-		double Nd = (double) N;
-		double logN = (double) log2(N);
+		double Nd = N;
+		double logN = log2(N);
 
 		return (5.0 * Nd - 2) * logN + 2 * (Nd + 1);
 	}
-
 
 	/** Compute Fast Fourier Transform of (complex) data, in place.*/
 	public static void transform(double data[]) {
@@ -35,8 +34,9 @@ public class FFT {
 		int nd = data.length;
 		int n = nd / 2;
 		double norm = 1 / ((double) n);
-		for (int i = 0; i < nd; i++)
+		for (int i = 0; i < nd; i++) {
 			data[i] *= norm;
+		}
 	}
 
 	/** Accuracy check on FFT of data. Make a copy of data, Compute the FFT, then
@@ -62,26 +62,33 @@ public class FFT {
 	public static double[] makeRandom(int n) {
 		int nd = 2 * n;
 		double data[] = new double[nd];
-		for (int i = 0; i < nd; i++)
+		for (int i = 0; i < nd; i++) {
 			data[i] = Math.random();
+		}
 		return data;
 	}
-
 
 	/* ______________________________________________________________________ */
 
 	protected static int log2(int n) {
 		int log = 0;
-		for (int k = 1; k < n; k *= 2, log++) ;
-		if (n != (1 << log))
+		for (int k = 1; k < n; k *= 2, log++) {
+			;
+		}
+		if (n != (1 << log)) {
 			throw new Error("FFT: Data length is not a power of 2!: " + n);
+		}
 		return log;
 	}
 
 	protected static void transform_internal(double data[], int direction) {
-		if (data.length == 0) return;
+		if (data.length == 0) {
+			return;
+		}
 		int n = data.length / 2;
-		if (n == 1) return;         // Identity operation!
+		if (n == 1) {
+			return; // Identity operation!
+		}
 		int logn = log2(n);
 
 		/* bit reverse the input data for decimation in time algorithm */
@@ -93,7 +100,7 @@ public class FFT {
 			double w_real = 1.0;
 			double w_imag = 0.0;
 
-			double theta = 2.0 * direction * Math.PI / (2.0 * (double) dual);
+			double theta = 2.0 * direction * Math.PI / (2.0 * dual);
 			double s = Math.sin(theta);
 			double t = Math.sin(theta / 2.0);
 			double s2 = 2.0 * t * t;
@@ -140,7 +147,6 @@ public class FFT {
 		}
 	}
 
-
 	protected static void bitreverse(double data[]) {
 		/* This is the Goldrader bit-reversal algorithm */
 		int n = data.length / 2;
@@ -178,11 +184,3 @@ public class FFT {
 		}
 	}
 }
-
-
-
-
-
-
-
-

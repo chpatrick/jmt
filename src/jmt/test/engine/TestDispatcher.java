@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.test.engine;
 
 import jmt.engine.simDispatcher.Dispatcher_jMVAschema;
@@ -29,47 +29,43 @@ import jmt.engine.simDispatcher.Dispatcher_jSIMschema;
  */
 public class TestDispatcher {
 
+	public static void test_dispatcher_jMVAschema(String path, boolean delete) {
 
-    public static void test_dispatcher_jMVAschema(String path, boolean delete) {
+		final Dispatcher_jMVAschema disp = new Dispatcher_jMVAschema(path);
+		disp.setDeleteIntermediateFiles(delete);
 
-        final Dispatcher_jMVAschema disp = new Dispatcher_jMVAschema(path);
-        disp.setDeleteIntermediateFiles(delete);
+		// Remove next line to initialize with random seed
+		disp.setSimulationSeed(1200000);
 
-        // Remove next line to initialize with random seed
-        disp.setSimulationSeed(1200000);
+		/* Decomment this to add a timer to stop simulation
+		new Thread() {
+		        public void run() {
+		            try{
+		                // Set maximum simulation time in milliseconds (here 15 seconds)
+		                sleep(15000);
+		            }
+		            catch (InterruptedException ex) {
+		                //Do nothing
+		            }
+		            disp.abortAllMeasures();
+		        }
+		}.start();    */
 
-        /* Decomment this to add a timer to stop simulation
-        new Thread() {
-                public void run() {
-                    try{
-                        // Set maximum simulation time in milliseconds (here 15 seconds)
-                        sleep(15000);
-                    }
-                    catch (InterruptedException ex) {
-                        //Do nothing
-                    }
-                    disp.abortAllMeasures();
-                }
-        }.start();    */
+		disp.solveModel();
+	}
 
-        disp.solveModel();
-    }
+	public static void test_dispatcher_jSIMschema(String path) {
 
+		Dispatcher_jSIMschema disp = new Dispatcher_jSIMschema(path);
+		disp.automaticSimulationSeed();
+		disp.solveHandlingExceptions();
 
-    public static void test_dispatcher_jSIMschema(String path) {
+	}
 
-        Dispatcher_jSIMschema disp = new Dispatcher_jSIMschema(path);
-        disp.automaticSimulationSeed();
-        disp.solveHandlingExceptions();
-
-    }
-
-
-    public static void main(String[] args) {
-        String modelPath = "D:\\TEST\\chiuso.xml";
-        //test_dispatcher_jMVAschema(modelPath,false);
-        test_dispatcher_jSIMschema(modelPath);
-    }
-
+	public static void main(String[] args) {
+		String modelPath = "D:\\TEST\\chiuso.xml";
+		//test_dispatcher_jMVAschema(modelPath,false);
+		test_dispatcher_jSIMschema(modelPath);
+	}
 
 }

@@ -15,8 +15,11 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.link;
+
+import java.awt.Frame;
+import java.io.File;
 
 import jmt.analytical.SolverDispatcher;
 import jmt.common.exception.InputDataException;
@@ -24,10 +27,8 @@ import jmt.common.exception.SolverException;
 import jmt.framework.xml.XMLUtils;
 import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.panels.ProgressWindow;
-import org.xml.sax.SAXException;
 
-import java.io.File;
-import java.awt.*;
+import org.xml.sax.SAXException;
 
 /**
 
@@ -49,21 +50,21 @@ public class SolverClient {
 
 	private SolverDispatcher solver;
 	private XMLUtils xmlUtils;
-    private Frame owner;
-    private ProgressWindow progress;
+	private Frame owner;
+	private ProgressWindow progress;
 
-    public SolverClient(Frame owner) {
+	public SolverClient(Frame owner) {
 		solver = new SolverDispatcher();
 		xmlUtils = new XMLUtils();
-        this.owner = owner;
-    }
+		this.owner = owner;
+	}
 
 	public File solve(ExactModel model) throws SolverException, InputDataException {
 		File temp = null;
 
 		try {
 			temp = File.createTempFile("~jmt_solverClient", ".xml", null);
-            temp.deleteOnExit();
+			temp.deleteOnExit();
 			if (!xmlUtils.saveXML(model.createDocument(), temp)) {
 				fail("Error saving model to temp file", null);
 			}
@@ -73,44 +74,44 @@ public class SolverClient {
 			fail("Error saving model to temp file", e);
 		}
 
-        // Creates a solver thread and a solver progress window
-        SolverThread solverThread = new SolverThread(solver, temp);
-        progress = new ProgressWindow(this, model, owner);
-        // Adds a listener that is notified each time the analytical solver terminates
-        solver.addSolverListener(new SolverDispatcher.SolverListener() {
+		// Creates a solver thread and a solver progress window
+		SolverThread solverThread = new SolverThread(solver, temp);
+		progress = new ProgressWindow(this, model, owner);
+		// Adds a listener that is notified each time the analytical solver terminates
+		solver.addSolverListener(new SolverDispatcher.SolverListener() {
 
-            /**
-             * This method is called each time the computation of a model is terminated
-             *
-             * @param num number of computated model (used for iterated solutions)
-             */
-            public void computationTerminated(int num) {
-                progress.terminateAnalysis(num);
-            }
-        });
-        progress.hide();
-        // Starts solution and shows progress window
-        solverThread.start();
-        progress.show();
+			/**
+			 * This method is called each time the computation of a model is terminated
+			 *
+			 * @param num number of computated model (used for iterated solutions)
+			 */
+			public void computationTerminated(int num) {
+				progress.terminateAnalysis(num);
+			}
+		});
+		progress.hide();
+		// Starts solution and shows progress window
+		solverThread.start();
+		progress.show();
 
-        // Waits for computation to be terminated
-        try {
-            solverThread.join();
-        } catch (InterruptedException e) {
-            fail("Interrupted while waiting for results", null);
-        }
+		// Waits for computation to be terminated
+		try {
+			solverThread.join();
+		} catch (InterruptedException e) {
+			fail("Interrupted while waiting for results", null);
+		}
 
-        // Checks for exceptions
-        if (solverThread.getInputException() != null) {
-            progress.kill();
-            throw solverThread.getInputException();
-        }
-        if (solverThread.getSolverException() != null) {
-            progress.kill();
-            throw solverThread.getSolverException();
-        }
+		// Checks for exceptions
+		if (solverThread.getInputException() != null) {
+			progress.kill();
+			throw solverThread.getInputException();
+		}
+		if (solverThread.getSolverException() != null) {
+			progress.kill();
+			throw solverThread.getSolverException();
+		}
 
-        try {
+		try {
 			if (!model.loadDocument(xmlUtils.loadXML(temp))) {
 				fail("Error loading solved model from tempfile", null);
 			}
@@ -119,11 +120,13 @@ public class SolverClient {
 		} catch (Exception e) {
 			fail("Error loading solved model from tempfile", e);
 		}
-        return temp;
+		return temp;
 	}
 
-    private void fail(String message, Throwable t) throws SolverException {
-		if (DEBUG) t.printStackTrace();
+	private void fail(String message, Throwable t) throws SolverException {
+		if (DEBUG) {
+			t.printStackTrace();
+		}
 		StringBuffer s = new StringBuffer(message);
 		if (t != null) {
 			s.append("\n");
@@ -133,63 +136,63 @@ public class SolverClient {
 		throw new SolverException(s.toString(), t);
 	}
 
-    /**
-     * Stops What-if analysis
-     */
-    public void stop() {
-        solver.stop();
-    }
+	/**
+	 * Stops What-if analysis
+	 */
+	public void stop() {
+		solver.stop();
+	}
 
-    /**
-     * Thread used to solve the model.
-     */
-    protected class SolverThread extends Thread {
-        private SolverDispatcher solver;
-        private File model;
-        private SolverException solverException;
-        private InputDataException inputDataException;
+	/**
+	 * Thread used to solve the model.
+	 */
+	protected class SolverThread extends Thread {
+		private SolverDispatcher solver;
+		private File model;
+		private SolverException solverException;
+		private InputDataException inputDataException;
 
-        /**
-         * Creates a solver thread
-         * @param solver reference to a SolverDispatcher object
-         * @param model file to be opened
-         */
-        public SolverThread(SolverDispatcher solver, File model) {
-            this.solver = solver;
-            this.model = model;
-            // Avoid blocking the system during solution...
-            this.setPriority(Thread.MIN_PRIORITY);
-        }
+		/**
+		 * Creates a solver thread
+		 * @param solver reference to a SolverDispatcher object
+		 * @param model file to be opened
+		 */
+		public SolverThread(SolverDispatcher solver, File model) {
+			this.solver = solver;
+			this.model = model;
+			// Avoid blocking the system during solution...
+			this.setPriority(Thread.MIN_PRIORITY);
+		}
 
-        /**
-         * Starts SolverDispatcher
-         */
-        public void run() {
-            try {
-                solver.solve(model);
-            } catch (SolverException e) {
-                solverException = e;
-                progress.kill();
-            } catch (InputDataException e) {
-                inputDataException = e;
-                progress.kill();
-            }
-        }
+		/**
+		 * Starts SolverDispatcher
+		 */
+		public void run() {
+			try {
+				solver.solve(model);
+			} catch (SolverException e) {
+				solverException = e;
+				progress.kill();
+			} catch (InputDataException e) {
+				inputDataException = e;
+				progress.kill();
+			}
+		}
 
-        /**
-         * Tells if a SolverException was thrown
-         * @return thrown SolverException or null if none was raised
-         */
-        public SolverException getSolverException() {
-            return solverException;
-        }
+		/**
+		 * Tells if a SolverException was thrown
+		 * @return thrown SolverException or null if none was raised
+		 */
+		public SolverException getSolverException() {
+			return solverException;
+		}
 
-        /**
-         * Tells if an InputDataException was thrown
-         * @return thrown InputDataException or null if none was raised
-         */
-        public InputDataException getInputException() {
-            return inputDataException;
-        }
-    }
+		/**
+		 * Tells if an InputDataException was thrown
+		 * @return thrown InputDataException or null if none was raised
+		 */
+		public InputDataException getInputException() {
+			return inputDataException;
+		}
+	}
 }

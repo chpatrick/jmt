@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.QueueNet;
 
 import java.util.LinkedList;
@@ -70,7 +70,6 @@ public class NetworkList {
 		return (QueueNetwork) Networks.get(Index);
 	}
 
-
 	/** Gets the network in the list, if it exists, which has the specified Name.
 	 * @return The network called "Name". Returns Null if it doesn't exist.
 	 */
@@ -79,8 +78,9 @@ public class NetworkList {
 		QueueNetwork jc;
 		while (iterator.hasNext()) {
 			jc = (QueueNetwork) iterator.next();
-			if (jc.getName().compareTo(Name) == 0)
+			if (jc.getName().compareTo(Name) == 0) {
 				return jc;
+			}
 		}
 		return null;
 	}
@@ -92,22 +92,20 @@ public class NetworkList {
 		return Networks.size();
 	}
 
-    /**
-     * Gets a list iterator
-     *
-     */
+	/**
+	 * Gets a list iterator
+	 *
+	 */
 	public ListIterator listIterator() {
 		return Networks.listIterator();
 	}
 
-
-    /**Returns the index in this list of the first
-     * occurrence of the specified element, or -1
-     * if the List does not contain this element.
-     */
+	/**Returns the index in this list of the first
+	 * occurrence of the specified element, or -1
+	 * if the List does not contain this element.
+	 */
 
 	int indexOf(QueueNetwork Network) {
 		return Networks.indexOf(Network);
 	}
 }
-

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.animation;
 
 /**
@@ -27,10 +27,10 @@ package jmt.gui.common.animation;
  * and render jobs
  */
 public interface JobContainer {
-    /**Adds a job to this jobcontainer. Once a job is added, it can be used for many purposes.
-     * For example, if the implementing class is a EdgeAnimation, the job is rendered and
-     * moved along the edge and then, when it gets to the end of the edge, routed to another
-     * edge or a station.
-     * @param jobAnimation: job to be added to this jobcontainer.*/
-    public void addJob(JobAnimation jobAnimation);
+	/**Adds a job to this jobcontainer. Once a job is added, it can be used for many purposes.
+	 * For example, if the implementing class is a EdgeAnimation, the job is rendered and
+	 * moved along the edge and then, when it gets to the end of the edge, routed to another
+	 * edge or a station.
+	 * @param jobAnimation: job to be added to this jobcontainer.*/
+	public void addJob(JobAnimation jobAnimation);
 }

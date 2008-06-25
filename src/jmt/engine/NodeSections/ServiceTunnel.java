@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NodeSections;
 
 import jmt.engine.QueueNet.NetMessage;
@@ -35,35 +35,31 @@ public class ServiceTunnel extends ServiceSection {
 	public ServiceTunnel() {
 		super();
 
-        //NEW
-        //@author Stefano Omini
-        //log = NetSystem.getLog();
-        //end NEW
+		//NEW
+		//@author Stefano Omini
+		//log = NetSystem.getLog();
+		//end NEW
 	}
 
-
-
-
-    //NEW
-    //@author Stefano Omini
-    /** Creates a new instance of ServiceTunnel.
+	//NEW
+	//@author Stefano Omini
+	/** Creates a new instance of ServiceTunnel.
 	 */
 	public ServiceTunnel(boolean auto) {
 		super(auto);
-    }
+	}
 
-
-    public void NodeLinked(NetNode node) {
-        //if (jobsList == null)
+	public void NodeLinked(NetNode node) {
+		//if (jobsList == null)
 		//	jobsList = new JobInfoList(getJobClasses().size(), true);
 
-    }
-    //end NEW
+	}
 
+	//end NEW
 
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 
-        if (isMyOwnerNode(message.getSource())) {
+		if (isMyOwnerNode(message.getSource())) {
 			if (message.getSourceSection() == NodeSection.INPUT) {
 				sendForward(message.getEvent(), message.getData(), 0.0);
 
@@ -72,10 +68,11 @@ public class ServiceTunnel extends ServiceSection {
 			if (message.getSourceSection() == NodeSection.OUTPUT) {
 				sendBackward(message.getEvent(), message.getData(), 0.0);
 
-                //log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
+				//log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
 			}
 			return MSG_PROCESSED;
-		} else
+		} else {
 			return MSG_NOT_PROCESSED;
+		}
 	}
 }

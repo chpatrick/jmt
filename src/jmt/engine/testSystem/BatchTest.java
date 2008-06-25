@@ -15,18 +15,18 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.engine.testSystem;
 
-import org.apache.log4j.FileAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
+package jmt.engine.testSystem;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 /**
  * Test engine for simulator.
@@ -44,221 +44,192 @@ import java.util.Date;
  */
 public class BatchTest {
 
-    //Log4J logger
-    private Logger logger;
-    //logger level
-    private Level loggerLevel = Level.INFO;
-    //true if you want to receive extended info about confidence intervals
-    private boolean extendedInfo = true;
+	//Log4J logger
+	private Logger logger;
+	//logger level
+	private Level loggerLevel = Level.INFO;
+	//true if you want to receive extended info about confidence intervals
+	private boolean extendedInfo = true;
 
+	/**
+	 * Creates a BatchTest object with the corresponding logger
+	 * @param level logger level
+	 * @param extendedInfo if true, extended info about confidence intervals are logged
+	 */
+	public BatchTest(Level level, boolean extendedInfo) {
 
-    /**
-     * Creates a BatchTest object with the corresponding logger
-     * @param level logger level
-     * @param extendedInfo if true, extended info about confidence intervals are logged
-     */
-    public BatchTest(Level level, boolean extendedInfo) {
+		loggerLevel = level;
+		logger = Logger.getLogger(BatchTest.class);
+		logger.setLevel(level);
 
-        loggerLevel = level;
-        logger = Logger.getLogger(BatchTest.class);
-        logger.setLevel(level);
+		//for example: 20050307_204315 -> 7 March 2005, 20:43:15
+		String datePattern = "yyyyMMdd_HHmmss";
+		SimpleDateFormat formatter = new SimpleDateFormat(datePattern);
 
-        //for example: 20050307_204315 -> 7 March 2005, 20:43:15
-        String datePattern = "yyyyMMdd_HHmmss";
-        SimpleDateFormat formatter = new SimpleDateFormat(datePattern);
+		Date today = new Date();
+		String todayString = formatter.format(today);
 
-        Date today = new Date();
-        String todayString = formatter.format(today);
+		String logName = todayString + "_batch_test.csv";
 
-        String logName = todayString + "_batch_test.csv";
+		try {
+			//standard
+			//PatternLayout pattern = new PatternLayout("%r [%t] %p %c %x - %m%n");
+			//PatternLayout pattern = new PatternLayout("%r - %p %x - %m%n");
+			PatternLayout pattern = new PatternLayout("%m%n");
 
-        try {
-            //standard
-            //PatternLayout pattern = new PatternLayout("%r [%t] %p %c %x - %m%n");
-            //PatternLayout pattern = new PatternLayout("%r - %p %x - %m%n");
-            PatternLayout pattern = new PatternLayout("%m%n");
+			File logFile = new File(logName);
+			if (!logFile.createNewFile()) {
+				throw new IOException("trying to overwrite an existing file");
+			};
 
-            File logFile = new File(logName);
-            if (!logFile.createNewFile()) {
-                throw new IOException("trying to overwrite an existing file");
-            };
+			FileAppender app = new FileAppender(pattern, logName, false);
+			logger.addAppender(app);
+			logger.setAdditivity(false);
 
-            FileAppender app = new FileAppender(pattern, logName, false);
-            logger.addAppender(app);
-            logger.setAdditivity(false);
+		} catch (IOException e) {
+			System.out.println("Error in creating log file");
+			return;
+		};
 
-        } catch(IOException e) {
-            System.out.println("Error in creating log file");
-            return;
-        };
+	}
 
+	public static void test_fixedPath(String path) {
+		BatchTest btest = new BatchTest(Level.INFO, true);
+		ResultsCheck check = new ResultsCheck(path, true);
+		check.checkRes();
+	}
 
-    }
+	/**
+	 * Executes multiple runs for a set of models.
+	 * The seeds used for model generation and for simulation
+	 * are automatically generated.
+	 * @param classN number of classes for each random model
+	 * @param statN number of stations for each random model
+	 * @param modelN number of random models
+	 * @param modelType type of random models
+	 * @param simRuns number of simulation runs for each model
+	 */
+	public static void comboTest(int classN, int statN, int modelN, int modelType, int simRuns) {
 
+		//debug level = INFO with extended info.
+		BatchTest btest = new BatchTest(Level.INFO, true);
 
+		for (int m = 0; m < modelN; m++) {
 
+			//Creates a random model of the specified type
+			//uses automatic seed for model generation
+			RandomMVAModelGenerator randomGen = new RandomMVAModelGenerator(classN, statN, modelType, -1);
+			File model = randomGen.saveToFile();
 
+			//result check with extended info
+			ResultsCheck check = new ResultsCheck(model.getAbsolutePath(), true);
+			//multiple runs
+			check.checkRes(simRuns);
+		}
 
+	}
 
-    public static void test_fixedPath(String path) {
-        BatchTest btest = new BatchTest(Level.INFO, true);
-        ResultsCheck check = new ResultsCheck(path, true);
-        check.checkRes(); 
-    }
+	/**
+	 * Executes multiple runs for one model, generated with the passed seed.
+	 * The seed used for simulations is automatically generated.
+	 * @param classN number of classes for the random model
+	 * @param statN number of stations for the random model
+	 * @param modelGenSeed the seed used to generate the random model
+	 * @param modelType type of random model
+	 * @param simRuns number of simulation runs for the model
+	 */
+	public static void test_fixedModelSeed(int classN, int statN, long modelGenSeed, int modelType, int simRuns) {
 
+		//debug level = INFO with extended info.
+		BatchTest btest = new BatchTest(Level.INFO, true);
 
+		//Creates a random model of the specified type
+		//uses passed seed for model generation
+		RandomMVAModelGenerator randomGen = new RandomMVAModelGenerator(classN, statN, modelType, modelGenSeed);
+		File model = randomGen.saveToFile();
 
+		//result check with extended info
+		ResultsCheck check = new ResultsCheck(model.getAbsolutePath(), true);
+		//multiple runs (of course with automatic seed)
+		check.checkRes(simRuns);
 
-    /**
-     * Executes multiple runs for a set of models.
-     * The seeds used for model generation and for simulation
-     * are automatically generated.
-     * @param classN number of classes for each random model
-     * @param statN number of stations for each random model
-     * @param modelN number of random models
-     * @param modelType type of random models
-     * @param simRuns number of simulation runs for each model
-     */
-    public static void comboTest(int classN, int statN, int modelN, int modelType,
-                                 int simRuns) {
+	}
 
-        //debug level = INFO with extended info.
-        BatchTest btest = new BatchTest(Level.INFO, true);
+	/**
+	 * Executes a single test with the passed simulation seed. The seeds used
+	 * for model generation is automatically generated.
+	 * @param classN number of classes for each random model
+	 * @param statN number of stations for each random model
+	 * @param modelType type of random models
+	 * @param simSeed the simulation seed
+	 */
+	public static void test_fixedSimSeed(int classN, int statN, int modelType, long simSeed) {
 
-        for (int m = 0; m < modelN; m++) {
+		//debug level = INFO with extended info.
+		BatchTest btest = new BatchTest(Level.INFO, true);
 
-            //Creates a random model of the specified type
-            //uses automatic seed for model generation
-            RandomMVAModelGenerator randomGen = new RandomMVAModelGenerator(classN, statN,
-                    modelType, -1);
-            File model = randomGen.saveToFile();
+		//Creates a random model of the specified type
+		//uses automatic seed for model generation
+		RandomMVAModelGenerator randomGen = new RandomMVAModelGenerator(classN, statN, modelType, -1);
+		File model = randomGen.saveToFile();
 
-            //result check with extended info
-            ResultsCheck check = new ResultsCheck(model.getAbsolutePath(), true);
-            //multiple runs
-            check.checkRes(simRuns);
-        }
+		//result check with extended info and fixed seed
+		ResultsCheck check = new ResultsCheck(model.getAbsolutePath(), true, simSeed);
+		//fixed seed -> only one run
+		check.checkRes();
+	}
 
-    }
+	/**
+	 * Executes a single test with the passed seeds for model generation and for simulation.
+	 * @param classN number of classes for each random model
+	 * @param statN number of stations for each random model
+	 * @param modelGenSeed the seed used to generate the random model
+	 * @param modelType type of random models
+	 * @param simSeed the simulation seed
+	 */
+	public static void test_fixedSimSeedAndModelSeed(int classN, int statN, long modelGenSeed, int modelType, long simSeed) {
 
+		//debug level = INFO with extended info.
+		BatchTest btest = new BatchTest(Level.INFO, true);
 
+		//Creates a random model of the specified type
+		//uses the fixed seed for model generation
+		RandomMVAModelGenerator randomGen = new RandomMVAModelGenerator(classN, statN, modelType, modelGenSeed);
+		File model = randomGen.saveToFile();
 
-    /**
-     * Executes multiple runs for one model, generated with the passed seed.
-     * The seed used for simulations is automatically generated.
-     * @param classN number of classes for the random model
-     * @param statN number of stations for the random model
-     * @param modelGenSeed the seed used to generate the random model
-     * @param modelType type of random model
-     * @param simRuns number of simulation runs for the model
-     */
-    public static void test_fixedModelSeed(int classN, int statN, long modelGenSeed, int modelType,
-                                 int simRuns) {
+		//result check with extended info and fixed seed
+		ResultsCheck check = new ResultsCheck(model.getAbsolutePath(), true, simSeed);
+		//fixed seed -> only one run
+		check.checkRes();
 
-        //debug level = INFO with extended info.
-        BatchTest btest = new BatchTest(Level.INFO, true);
+	}
 
-        //Creates a random model of the specified type
-        //uses passed seed for model generation
-        RandomMVAModelGenerator randomGen = new RandomMVAModelGenerator(classN, statN,
-                modelType, modelGenSeed);
-        File model = randomGen.saveToFile();
+	/**
+	 * Executes a single test with the passed seeds for model generation and for simulation.
+	 * Of course all the sim runs will be exactly the same: this method is used only to
+	 * test jsim performance.
+	 * @param classN number of classes for each random model
+	 * @param statN number of stations for each random model
+	 * @param modelGenSeed the seed used to generate the random model
+	 * @param modelType type of random models
+	 * @param runs number of runs
+	 * @param simSeed the simulation seed
+	 */
+	public static void test_fixedSimSeedAndModelSeed_runs(int classN, int statN, long modelGenSeed, int modelType, int runs, long simSeed) {
 
-        //result check with extended info
-        ResultsCheck check = new ResultsCheck(model.getAbsolutePath(), true);
-        //multiple runs (of course with automatic seed)
-        check.checkRes(simRuns);
+		//debug level = INFO with extended info.
+		BatchTest btest = new BatchTest(Level.INFO, true);
 
-    }
+		//Creates a random model of the specified type
+		//uses the fixed seed for model generation
+		RandomMVAModelGenerator randomGen = new RandomMVAModelGenerator(classN, statN, modelType, modelGenSeed);
+		File model = randomGen.saveToFile();
 
+		//result check with extended info and fixed seed
+		ResultsCheck check = new ResultsCheck(model.getAbsolutePath(), true, simSeed);
+		//fixed seed -> only one run
+		check.checkRes(runs);
 
-    /**
-     * Executes a single test with the passed simulation seed. The seeds used
-     * for model generation is automatically generated.
-     * @param classN number of classes for each random model
-     * @param statN number of stations for each random model
-     * @param modelType type of random models
-     * @param simSeed the simulation seed
-     */
-    public static void test_fixedSimSeed(int classN, int statN, int modelType, long simSeed) {
+	}
 
-        //debug level = INFO with extended info.
-        BatchTest btest = new BatchTest(Level.INFO, true);
-
-        //Creates a random model of the specified type
-        //uses automatic seed for model generation
-        RandomMVAModelGenerator randomGen = new RandomMVAModelGenerator(classN, statN,
-                modelType, -1);
-        File model = randomGen.saveToFile();
-
-        //result check with extended info and fixed seed
-        ResultsCheck check = new ResultsCheck(model.getAbsolutePath(), true, simSeed);
-        //fixed seed -> only one run
-        check.checkRes();
-        }
-
-
-
-
-    /**
-     * Executes a single test with the passed seeds for model generation and for simulation.
-     * @param classN number of classes for each random model
-     * @param statN number of stations for each random model
-     * @param modelGenSeed the seed used to generate the random model
-     * @param modelType type of random models
-     * @param simSeed the simulation seed
-     */
-    public static void test_fixedSimSeedAndModelSeed(int classN, int statN, long modelGenSeed, int modelType,
-                                                     long simSeed) {
-
-        //debug level = INFO with extended info.
-        BatchTest btest = new BatchTest(Level.INFO, true);
-
-        //Creates a random model of the specified type
-        //uses the fixed seed for model generation
-        RandomMVAModelGenerator randomGen = new RandomMVAModelGenerator(classN, statN, modelType,
-                modelGenSeed);
-        File model = randomGen.saveToFile();
-
-        //result check with extended info and fixed seed
-        ResultsCheck check = new ResultsCheck(model.getAbsolutePath(), true, simSeed);
-        //fixed seed -> only one run
-        check.checkRes();
-
-    }
-
-
-    /**
-     * Executes a single test with the passed seeds for model generation and for simulation.
-     * Of course all the sim runs will be exactly the same: this method is used only to
-     * test jsim performance.
-     * @param classN number of classes for each random model
-     * @param statN number of stations for each random model
-     * @param modelGenSeed the seed used to generate the random model
-     * @param modelType type of random models
-     * @param runs number of runs
-     * @param simSeed the simulation seed
-     */
-    public static void test_fixedSimSeedAndModelSeed_runs(int classN, int statN, long modelGenSeed, int modelType,
-                                                     int runs, long simSeed) {
-
-        //debug level = INFO with extended info.
-        BatchTest btest = new BatchTest(Level.INFO, true);
-
-        //Creates a random model of the specified type
-        //uses the fixed seed for model generation
-        RandomMVAModelGenerator randomGen = new RandomMVAModelGenerator(classN, statN, modelType,
-                modelGenSeed);
-        File model = randomGen.saveToFile();
-
-        //result check with extended info and fixed seed
-        ResultsCheck check = new ResultsCheck(model.getAbsolutePath(), true, simSeed);
-        //fixed seed -> only one run
-        check.checkRes(runs);
-
-    }
-
-
-
-    
 }

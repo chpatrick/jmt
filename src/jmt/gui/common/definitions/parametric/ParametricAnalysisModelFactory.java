@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.definitions.parametric;
 
 import jmt.gui.common.definitions.ClassDefinition;
@@ -31,34 +31,31 @@ import jmt.gui.common.definitions.StationDefinition;
  *         Time: 16.59.46
  */
 
+public class ParametricAnalysisModelFactory implements ParametricAnalysis {
 
-public class ParametricAnalysisModelFactory implements ParametricAnalysis{
-
-    /**
-     *
-     * @param param the string describing the PAD to be created
-     * @param cd class definition
-     * @param sd station definition
-     * @param simd simulation definition
-     * @return a new ParametricAnalysisDefinition
-     */
-    public static ParametricAnalysisDefinition createParametricAnalysisModel(String param,ClassDefinition cd, StationDefinition sd, SimulationDefinition simd) {
-            if (param.equals(ParametricAnalysis.PA_TYPE_NUMBER_OF_CUSTOMERS)) {
-                return new NumberOfCustomerParametricAnalysis(cd,sd,simd);
-            }
-            else if (param.equals(ParametricAnalysis.PA_TYPE_POPULATION_MIX)) {
-                return new PopulationMixParametricAnalysis(cd,sd,simd);
-            }
-            else if (param.equals(ParametricAnalysis.PA_TYPE_SERVICE_TIMES)) {
-                return new ServiceTimesParametricAnalysis(cd,sd,simd);
-            }
-            else if (param.equals(ParametricAnalysis.PA_TYPE_ARRIVAL_RATE)) {
-                return new ArrivalRateParametricAnalysis(cd,sd,simd);
-            }
-            else if (param.equals(ParametricAnalysis.PA_TYPE_SEED)) {
-                return new SeedParametricAnalysis(cd,sd,simd);
-            }
-            else return null;
-        }
+	/**
+	 *
+	 * @param param the string describing the PAD to be created
+	 * @param cd class definition
+	 * @param sd station definition
+	 * @param simd simulation definition
+	 * @return a new ParametricAnalysisDefinition
+	 */
+	public static ParametricAnalysisDefinition createParametricAnalysisModel(String param, ClassDefinition cd, StationDefinition sd,
+			SimulationDefinition simd) {
+		if (param.equals(ParametricAnalysis.PA_TYPE_NUMBER_OF_CUSTOMERS)) {
+			return new NumberOfCustomerParametricAnalysis(cd, sd, simd);
+		} else if (param.equals(ParametricAnalysis.PA_TYPE_POPULATION_MIX)) {
+			return new PopulationMixParametricAnalysis(cd, sd, simd);
+		} else if (param.equals(ParametricAnalysis.PA_TYPE_SERVICE_TIMES)) {
+			return new ServiceTimesParametricAnalysis(cd, sd, simd);
+		} else if (param.equals(ParametricAnalysis.PA_TYPE_ARRIVAL_RATE)) {
+			return new ArrivalRateParametricAnalysis(cd, sd, simd);
+		} else if (param.equals(ParametricAnalysis.PA_TYPE_SEED)) {
+			return new SeedParametricAnalysis(cd, sd, simd);
+		} else {
+			return null;
+		}
+	}
 
 }

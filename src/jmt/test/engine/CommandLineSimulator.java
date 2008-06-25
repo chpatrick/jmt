@@ -15,16 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.test.engine;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import jmt.common.exception.LoadException;
 import jmt.engine.QueueNet.NetSystem;
 import jmt.engine.simEngine.SimLoader;
 import jmt.engine.simEngine.Simulation;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 /**
  * @author Stefano
@@ -32,233 +32,221 @@ import java.io.IOException;
  */
 public class CommandLineSimulator {
 
+	public static void testFixedPath(String path) {
+		long start, stop, elapsed;
 
-    public static void testFixedPath(String path) {
-        long start, stop, elapsed;
+		try {
+			//File model = new File(path);
+			//FileInputStream is = new FileInputStream(model);
+			SimLoader loader = new SimLoader(path);
+			Simulation sim = loader.getSim();
+			sim.initialize();
 
-        try {
-            //File model = new File(path);
-            //FileInputStream is = new FileInputStream(model);
-            SimLoader loader = new SimLoader(path);
-            Simulation sim = loader.getSim();
-            sim.initialize();
+			start = System.currentTimeMillis();
+			sim.run();
+			stop = System.currentTimeMillis();
+			elapsed = stop - start;
+			//System.out.println("Duration execution "+i+": ");
+			//System.out.println(Long.toString(elapsed));
+		} catch (FileNotFoundException e) {
+			System.out.println("Errore, file non trovato...");
+			return;
+		} catch (LoadException e) {
+			System.out.println("Errore, file non caricato...");
+			e.printStackTrace();
+			return;
+		} catch (IOException e) {
+			System.out.println("Errore, modello non inizializzato...");
+			return;
+		} catch (Exception e) {
 
-            start = System.currentTimeMillis();
-            sim.run();
-            stop = System.currentTimeMillis();
-            elapsed = stop - start;
-            //System.out.println("Duration execution "+i+": ");
-            //System.out.println(Long.toString(elapsed));
-        } catch (FileNotFoundException e) {
-            System.out.println("Errore, file non trovato...");
-            return;
-        } catch (LoadException e) {
-            System.out.println("Errore, file non caricato...");
-            e.printStackTrace();
-            return;
-        } catch (IOException e) {
-            System.out.println("Errore, modello non inizializzato...");
-            return;
-        } catch (Exception e) {
+			System.out.println("Errore, simulazione fallita...");
+			e.printStackTrace();
+			return;
+		}
 
-            System.out.println("Errore, simulazione fallita...");
-            e.printStackTrace();
-            return;
-        }
+	}
 
-    }
+	public static void testFixedPathAndSeed(String path, long seed) {
+		long start, stop, elapsed;
 
+		try {
+			//File model = new File(path);
+			//FileInputStream is = new FileInputStream(model);
+			SimLoader loader = new SimLoader(path);
+			Simulation sim = loader.getSim();
 
-    public static void testFixedPathAndSeed(String path, long seed) {
-        long start, stop, elapsed;
+			//TODO: fixed seed
+			sim.setRandomEngineSeed(seed);
 
-        try {
-            //File model = new File(path);
-            //FileInputStream is = new FileInputStream(model);
-            SimLoader loader = new SimLoader(path);
-            Simulation sim = loader.getSim();
+			sim.initialize();
 
-            //TODO: fixed seed
-            sim.setRandomEngineSeed(seed);
+			start = System.currentTimeMillis();
+			sim.run();
+			stop = System.currentTimeMillis();
+			elapsed = stop - start;
+			//System.out.println("Duration execution "+i+": ");
+			//System.out.println(Long.toString(elapsed));
+		} catch (FileNotFoundException e) {
+			System.out.println("Errore, file non trovato...");
+			return;
+		} catch (LoadException e) {
+			System.out.println("Errore, file non caricato...");
+			e.printStackTrace();
+			return;
+		} catch (IOException e) {
+			System.out.println("Errore, modello non inizializzato...");
+			return;
+		} catch (Exception e) {
 
-            sim.initialize();
+			System.out.println("Errore, simulazione fallita...");
+			e.printStackTrace();
+			return;
+		}
 
-            start = System.currentTimeMillis();
-            sim.run();
-            stop = System.currentTimeMillis();
-            elapsed = stop - start;
-            //System.out.println("Duration execution "+i+": ");
-            //System.out.println(Long.toString(elapsed));
-        } catch (FileNotFoundException e) {
-            System.out.println("Errore, file non trovato...");
-            return;
-        } catch (LoadException e) {
-            System.out.println("Errore, file non caricato...");
-            e.printStackTrace();
-            return;
-        } catch (IOException e) {
-            System.out.println("Errore, modello non inizializzato...");
-            return;
-        } catch (Exception e) {
+	}
 
-            System.out.println("Errore, simulazione fallita...");
-            e.printStackTrace();
-            return;
-        }
+	public static void test1() {
+		long start, stop, elapsed;
 
-    }
+		String path = "D://JMTtest//sim_solverstep0.xml";
+		//String path = "D://JMTtest//sim_model_with_blocking_open_drop.xml";
+		//String path = "D://JMTtest//sim_jsim_randomModel_open_1.xml";
 
-    public static void test1() {
-        long start, stop, elapsed;
+		try {
+			//File model = new File(path);
+			//FileInputStream is = new FileInputStream(model);
+			SimLoader loader = new SimLoader(path);
+			Simulation sim = loader.getSim();
+			sim.initialize();
+			start = System.currentTimeMillis();
+			sim.run();
+			stop = System.currentTimeMillis();
+			elapsed = stop - start;
+			//System.out.println("Duration execution "+i+": ");
+			System.out.println(Long.toString(elapsed));
+		} catch (FileNotFoundException e) {
+			System.out.println("Errore, file non trovato...");
+			return;
+		} catch (LoadException e) {
+			System.out.println("Errore, file non caricato...");
+			e.printStackTrace();
+			return;
+		} catch (IOException e) {
+			System.out.println("Errore, modello non inizializzato...");
+			return;
+		} catch (Exception e) {
 
-        String path = "D://JMTtest//sim_solverstep0.xml";
-        //String path = "D://JMTtest//sim_model_with_blocking_open_drop.xml";
-        //String path = "D://JMTtest//sim_jsim_randomModel_open_1.xml";
+			System.out.println("Errore, simulazione fallita...");
+			e.printStackTrace();
+			return;
+		}
 
+	}
 
+	public static void test2() {
 
+		try {
 
-        try {
-            //File model = new File(path);
-            //FileInputStream is = new FileInputStream(model);
-            SimLoader loader = new SimLoader(path);
-            Simulation sim = loader.getSim();
-            sim.initialize();
-            start = System.currentTimeMillis();
-            sim.run();
-            stop = System.currentTimeMillis();
-            elapsed = stop - start;
-            //System.out.println("Duration execution "+i+": ");
-            System.out.println(Long.toString(elapsed));
-        } catch (FileNotFoundException e) {
-            System.out.println("Errore, file non trovato...");
-            return;
-        } catch (LoadException e) {
-            System.out.println("Errore, file non caricato...");
-            e.printStackTrace();
-            return;
-        } catch (IOException e) {
-            System.out.println("Errore, modello non inizializzato...");
-            return;
-        } catch (Exception e) {
+			SimLoader loader = new SimLoader("D://sim_test_2open.xml");
+			Simulation sim = loader.getSim();
+			sim.initialize();
+			sim.run();
+			double elapsed = NetSystem.getElapsedTime();
+			System.out.println(elapsed);
 
-            System.out.println("Errore, simulazione fallita...");
-            e.printStackTrace();
-            return;
-        }
+		} catch (FileNotFoundException e) {
+			System.out.println("Errore, file non trovato...");
+			e.printStackTrace();
+			return;
+		} catch (LoadException e) {
+			System.out.println("Errore, file non caricato...");
+			e.printStackTrace();
+			return;
+		} catch (IOException e) {
+			System.out.println("Errore, modello non inizializzato...");
+			e.printStackTrace();
+			return;
+		} catch (Exception e) {
+			System.out.println("Errore, simulazione fallita...");
+			e.printStackTrace();
+			return;
+		}
 
-    }
+	}
 
+	public static void testSimulationTime() {
 
-    public static void test2() {
+		int N = 5;
+		long[] duration = new long[N];
+		long start, stop, elapsed;
+		long tot = 0;
 
-        try {
+		for (int i = 0; i < N; i++) {
 
-            SimLoader loader = new SimLoader("D://sim_test_2open.xml");
-            Simulation sim = loader.getSim();
-            sim.initialize();
-            sim.run();
-            double elapsed = NetSystem.getElapsedTime();
-            System.out.println(elapsed);
+			try {
 
-        } catch (FileNotFoundException e) {
-            System.out.println("Errore, file non trovato...");
-            e.printStackTrace();
-            return;
-        } catch (LoadException e) {
-            System.out.println("Errore, file non caricato...");
-            e.printStackTrace();
-            return;
-        } catch (IOException e) {
-            System.out.println("Errore, modello non inizializzato...");
-            e.printStackTrace();
-            return;
-        } catch (Exception e) {
-            System.out.println("Errore, simulazione fallita...");
-            e.printStackTrace();
-            return;
-        }
+				SimLoader loader = new SimLoader("D://sim_prova.xml");
+				Simulation sim = loader.getSim();
+				sim.initialize();
+				start = System.currentTimeMillis();
 
-    }
+				sim.run();
 
+				stop = System.currentTimeMillis();
+				elapsed = stop - start;
+				//System.out.println("Duration execution "+i+": ");
+				System.out.println(Long.toString(elapsed));
 
-    public static void testSimulationTime() {
+				duration[i] = elapsed;
+				tot += elapsed;
 
-        int N = 5;
-        long[] duration = new long[N];
-        long start, stop, elapsed;
-        long tot = 0;
+			} catch (FileNotFoundException e) {
+				System.out.println("Errore, file non trovato...");
+				e.printStackTrace();
+				return;
+			} catch (LoadException e) {
+				System.out.println("Errore, file non caricato...");
+				e.printStackTrace();
+				return;
+			} catch (IOException e) {
+				System.out.println("Errore, modello non inizializzato...");
+				e.printStackTrace();
+				return;
+			} catch (Exception e) {
+				System.out.println("Errore, simulazione fallita...");
+				e.printStackTrace();
+				return;
+			}
+		}
 
+		long mean = tot / N;
+		System.out.println("Mean: ");
+		System.out.println(Long.toString(mean));
 
-        for (int i = 0; i < N; i++) {
+	}
 
+	public static void main(String[] argsv) {
+		//test1();
+		//test2();
+		//testSimulationTime();
 
-            try {
+		//String path = "D://JMTtest//simulatore_systemR_closed.xml";
+		//String path = "D://JMTtest//simulatore_systemR_open.xml";
+		//String path = "D://JMTtest//simulatore_closed_par_.xml";
 
-                SimLoader loader = new SimLoader("D://sim_prova.xml");
-                Simulation sim = loader.getSim();
-                sim.initialize();
-                start = System.currentTimeMillis();
+		/*
+		for (int i = 1; i < 4; i++) {
+		    //String path = "D://JMTtest//simulatore_mm1k_" + i +  ".xml";
+		    String path = "D://JMTtest//regione_mm1k_" + i +  ".xml";
+		    testFixedPathAndSeed(path, 232323);
+		}
+		*/
 
-                sim.run();
+		//String path = "D://JMTtest//misure_aggreg.xml";
+		String path = "D://JMTtest//verbose.xml";
+		testFixedPathAndSeed(path, 232323);
 
-                stop = System.currentTimeMillis();
-                elapsed = stop - start;
-                //System.out.println("Duration execution "+i+": ");
-                System.out.println(Long.toString(elapsed));
-
-                duration[i] = elapsed;
-                tot += elapsed;
-
-            } catch (FileNotFoundException e) {
-                System.out.println("Errore, file non trovato...");
-                e.printStackTrace();
-                return;
-            } catch (LoadException e) {
-                System.out.println("Errore, file non caricato...");
-                e.printStackTrace();
-                return;
-            } catch (IOException e) {
-                System.out.println("Errore, modello non inizializzato...");
-                e.printStackTrace();
-                return;
-            } catch (Exception e) {
-                System.out.println("Errore, simulazione fallita...");
-                e.printStackTrace();
-                return;
-            }
-        }
-
-        long mean = tot / N;
-        System.out.println("Mean: ");
-        System.out.println(Long.toString(mean));
-
-    }
-
-    public static void main(String[] argsv) {
-        //test1();
-        //test2();
-        //testSimulationTime();
-
-
-        //String path = "D://JMTtest//simulatore_systemR_closed.xml";
-        //String path = "D://JMTtest//simulatore_systemR_open.xml";
-        //String path = "D://JMTtest//simulatore_closed_par_.xml";
-
-        /*
-        for (int i = 1; i < 4; i++) {
-            //String path = "D://JMTtest//simulatore_mm1k_" + i +  ".xml";
-            String path = "D://JMTtest//regione_mm1k_" + i +  ".xml";
-            testFixedPathAndSeed(path, 232323);
-        }
-        */
-
-        //String path = "D://JMTtest//misure_aggreg.xml";
-        String path = "D://JMTtest//verbose.xml";
-        testFixedPathAndSeed(path, 232323);
-
-
-
-    }
+	}
 
 }

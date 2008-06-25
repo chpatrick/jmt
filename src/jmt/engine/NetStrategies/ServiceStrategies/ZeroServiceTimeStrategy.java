@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NetStrategies.ServiceStrategies;
 
 import jmt.engine.NetStrategies.ServiceStrategy;
@@ -29,18 +29,16 @@ import jmt.engine.QueueNet.NodeSection;
 
 public class ZeroServiceTimeStrategy extends ServiceStrategy {
 
-
 	/** Creates a new instance of ServiceTime.*/
 	public ZeroServiceTimeStrategy() {
 	}
 
-
 	/**
-     * The returned service time is always equal to 0.0.
-     * @param CallingSection The node section which is calling this method.
-     * @return the value of service time, which is always 0.0.
-     */
-    public double wait(NodeSection CallingSection) {
+	 * The returned service time is always equal to 0.0.
+	 * @param CallingSection The node section which is calling this method.
+	 * @return the value of service time, which is always 0.0.
+	 */
+	public double wait(NodeSection CallingSection) {
 		return 0;
 	}
 }

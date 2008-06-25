@@ -15,12 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.dataAnalysis.measureOutputs;
 
-import jmt.engine.dataAnalysis.MeasureOutput;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
-import java.io.*;
+import jmt.engine.dataAnalysis.MeasureOutput;
 
 /**
  * This class implements a csv output for measure class. <br>
@@ -42,46 +46,43 @@ public class CSVMeasureOutput extends MeasureOutput {
 
 	private boolean StdOutput;
 
-    /**
-     * Constructor of a CSVMeasureOutput object.
-     * @param Measure the measure to be sent in output
-     * @param Append true to write at the end of the file (of course
-     * it's useful only if a file is used)
-     * @param FileName the name of the file; if null the output will be sent
-     * on the standard output
-     * @throws java.io.IOException
-     */
-	public CSVMeasureOutput(jmt.engine.dataAnalysis.Measure Measure, boolean Append, String FileName)
-	        throws IOException {
+	/**
+	 * Constructor of a CSVMeasureOutput object.
+	 * @param Measure the measure to be sent in output
+	 * @param Append true to write at the end of the file (of course
+	 * it's useful only if a file is used)
+	 * @param FileName the name of the file; if null the output will be sent
+	 * on the standard output
+	 * @throws java.io.IOException
+	 */
+	public CSVMeasureOutput(jmt.engine.dataAnalysis.Measure Measure, boolean Append, String FileName) throws IOException {
 		super(Measure);
 		if (FileName == null) {
 			File = new OutputStreamWriter(System.out);
 			StdOutput = true;
 		} else {
 
-            File = new BufferedWriter(new FileWriter(FileName + ".csv", Append));
-            StdOutput = false;
+			File = new BufferedWriter(new FileWriter(FileName + ".csv", Append));
+			StdOutput = false;
 		}
 	}
 
-    /**
-     * Constructor of a CSVMeasureOutput object, using a file.
-     * @param Measure the measure to be sent in output
-     * @param Append true to write at the end of the file (of course
-     * it's useful only if a file is used)
-     * @throws java.io.IOException
-     */
-	public CSVMeasureOutput(jmt.engine.dataAnalysis.Measure Measure, boolean Append)
-	        throws IOException {
+	/**
+	 * Constructor of a CSVMeasureOutput object, using a file.
+	 * @param Measure the measure to be sent in output
+	 * @param Append true to write at the end of the file (of course
+	 * it's useful only if a file is used)
+	 * @throws java.io.IOException
+	 */
+	public CSVMeasureOutput(jmt.engine.dataAnalysis.Measure Measure, boolean Append) throws IOException {
 		super(Measure);
-		File = new BufferedWriter(new FileWriter(Measure.getName() +
-		        ".csv", Append));
+		File = new BufferedWriter(new FileWriter(Measure.getName() + ".csv", Append));
 		StdOutput = false;
 	}
 
 	public void write(double Sample, double Weight) {
 		try {
-            File.write(Sample + "; " + Weight + ";\n");
+			File.write(Sample + "; " + Weight + ";\n");
 		} catch (IOException exc) {
 		}
 	}
@@ -89,26 +90,20 @@ public class CSVMeasureOutput extends MeasureOutput {
 	public void writeMeasure() {
 		try {
 
-            if (measure.getSuccess() == true) {
-                File.write("\nMeasure name; " + measure.getName() + ";\n" +
-                        "Measure value; " + measure.getMeanValue() + ";\n" +
-                        "Lower limit; " + measure.getLowerLimit() + ";\n" +
-                        "Upper Limit; " + measure.getUpperLimit() + ";\n" +
-                        "Discarded samples; " + measure.getDiscardedSamples() + ";\n" +
-			            "Analyzed samples; " + measure.getAnalyzedSamples() + ";\n" +
-                        "Max samples; " + measure.getMaxSamples() + ";\n" +
-                        "Measure was successful; " + measure.getSuccess() + ";");
-            } else {
-                File.write("\nMeasure name; " + measure.getName() + ";\n" +
-                        "Extimated mean; " + measure.getExtimatedMeanValue() + ";\n" +
-                        "Discarded samples; " + measure.getDiscardedSamples() + ";\n" +
-			            "Analyzed samples; " + measure.getAnalyzedSamples() + ";\n" +
-                        "Max samples; " + measure.getMaxSamples() + ";\n" +
-                        "Measure was successful; " + measure.getSuccess() + ";");
-            }
+			if (measure.getSuccess() == true) {
+				File.write("\nMeasure name; " + measure.getName() + ";\n" + "Measure value; " + measure.getMeanValue() + ";\n" + "Lower limit; "
+						+ measure.getLowerLimit() + ";\n" + "Upper Limit; " + measure.getUpperLimit() + ";\n" + "Discarded samples; "
+						+ measure.getDiscardedSamples() + ";\n" + "Analyzed samples; " + measure.getAnalyzedSamples() + ";\n" + "Max samples; "
+						+ measure.getMaxSamples() + ";\n" + "Measure was successful; " + measure.getSuccess() + ";");
+			} else {
+				File.write("\nMeasure name; " + measure.getName() + ";\n" + "Extimated mean; " + measure.getExtimatedMeanValue() + ";\n"
+						+ "Discarded samples; " + measure.getDiscardedSamples() + ";\n" + "Analyzed samples; " + measure.getAnalyzedSamples() + ";\n"
+						+ "Max samples; " + measure.getMaxSamples() + ";\n" + "Measure was successful; " + measure.getSuccess() + ";");
+			}
 
-			if (!StdOutput)
+			if (!StdOutput) {
 				File.close();
+			}
 		} catch (IOException exc) {
 		}
 	}

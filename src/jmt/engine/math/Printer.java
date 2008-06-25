@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Double.java
  *
@@ -31,16 +31,18 @@ package jmt.engine.math;
 public class Printer {
 
 	public static String print(double value, int digits) {
-		if (digits > 12)
+		if (digits > 12) {
 			new IllegalArgumentException("digits must be lover than 12");
+		}
 		double d = Math.pow(10, digits);
 		value = Math.round(value * d) / d;
 		return Double.toString(value);
 	}
 
 	public static String print(float value, int digits) {
-		if (digits > 8)
+		if (digits > 8) {
 			new IllegalArgumentException("digits must be lover than 8");
+		}
 		float d = (new Double(Math.pow(10, digits))).floatValue();
 		value = Math.round(value * d) / d;
 		return Float.toString(value);

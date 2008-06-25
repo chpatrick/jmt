@@ -15,15 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.JGraphMod;
 
-import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.jmodel.controller.Mediator;
+
 import org.jgraph.graph.Port;
-
-import javax.swing.*;
-
 
 /** Generates new jobs in open systems, it generates jobs of 1 JobClass only
 
@@ -35,10 +32,15 @@ import javax.swing.*;
 
  */
 public class TerminalCell extends JmtCell {
-    // Disables this component
-    public static final boolean canBePlaced = false;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    // Do not change this as it is accessed by reflection to forecast new cell dimensions (Bertoli Marco)
+	// Disables this component
+	public static final boolean canBePlaced = false;
+
+	// Do not change this as it is accessed by reflection to forecast new cell dimensions (Bertoli Marco)
 	public static final String ICON = Mediator.advanced ? "bc" : "terminal";
 
 	/**
@@ -49,10 +51,10 @@ public class TerminalCell extends JmtCell {
 	 */
 	public TerminalCell(Object userObject) {
 		super(ICON, userObject);
-//		this.add(new InputPort(userObject));
-//		this.add(new OutputPort(userObject));
+		//		this.add(new InputPort(userObject));
+		//		this.add(new OutputPort(userObject));
 		type = TERMINAL;
-//		this.
+		//		this.
 	}
 
 	/**creats the ports for this vertex
@@ -66,50 +68,49 @@ public class TerminalCell extends JmtCell {
 		return ports;
 	}
 
-//	protected Point getInPortOffset(Map attr, Icon icon, Dimension cellDimension) {
-//		int iconHeight = icon.getIconHeight();
-//		int iconWidth = icon.getIconWidth();
-//		//exactly the opposite of a normal JmtCell
-//		//(opposite means inport at the place of outport)
-//		int xOff = (cellDimension.width - iconWidth)
-//		        / 2 * 1000 / cellDimension.width
-//		        + iconWidth * 1000 / cellDimension.width;
-//		int yOff = iconHeight / 2 * 1000 / cellDimension.height;
-//		return new Point(xOff, yOff);
-//	}
-//
-//	protected Point getOutPortoffset(Map attr, Icon icon, Dimension cellDimension) {
-//		int iconHeight = icon.getIconHeight();
-//		int iconWidth = icon.getIconWidth();
-//		//exactly the opposite of a normal JmtCell
-//		//(opposite means inport at the place of outport)
-//		int xOff = (cellDimension.width - iconWidth)
-//		        / 2 * 1000 / cellDimension.width;
-//		int yOff = iconHeight / 2 * 1000 / cellDimension.height;
-//		return new Point(xOff, yOff);
-//	}
-//
-//	public boolean isLeftInputCell() {
-//		return false;
-//	}
+	//	protected Point getInPortOffset(Map attr, Icon icon, Dimension cellDimension) {
+	//		int iconHeight = icon.getIconHeight();
+	//		int iconWidth = icon.getIconWidth();
+	//		//exactly the opposite of a normal JmtCell
+	//		//(opposite means inport at the place of outport)
+	//		int xOff = (cellDimension.width - iconWidth)
+	//		        / 2 * 1000 / cellDimension.width
+	//		        + iconWidth * 1000 / cellDimension.width;
+	//		int yOff = iconHeight / 2 * 1000 / cellDimension.height;
+	//		return new Point(xOff, yOff);
+	//	}
+	//
+	//	protected Point getOutPortoffset(Map attr, Icon icon, Dimension cellDimension) {
+	//		int iconHeight = icon.getIconHeight();
+	//		int iconWidth = icon.getIconWidth();
+	//		//exactly the opposite of a normal JmtCell
+	//		//(opposite means inport at the place of outport)
+	//		int xOff = (cellDimension.width - iconWidth)
+	//		        / 2 * 1000 / cellDimension.width;
+	//		int yOff = iconHeight / 2 * 1000 / cellDimension.height;
+	//		return new Point(xOff, yOff);
+	//	}
+	//
+	//	public boolean isLeftInputCell() {
+	//		return false;
+	//	}
 
-    /**
-     * Tells if this station generates or destroys jobs (useful for blocking region
-     * management)
-     * @return true if this station generates or destroy jobs, false otherwise
-     */
-    public boolean generateOrDestroyJobs() {
-        return true;
-    }
+	/**
+	 * Tells if this station generates or destroys jobs (useful for blocking region
+	 * management)
+	 * @return true if this station generates or destroy jobs, false otherwise
+	 */
+	public boolean generateOrDestroyJobs() {
+		return true;
+	}
 
-    /**
-     * Returns the name of the icon of this cell
-     *
-     * @return the name of the icon of this cell
-     */
-    public String getIcon() {
-        return ICON;
-    }
-   
+	/**
+	 * Returns the name of the icon of this cell
+	 *
+	 * @return the name of the icon of this cell
+	 */
+	public String getIcon() {
+		return ICON;
+	}
 
 }

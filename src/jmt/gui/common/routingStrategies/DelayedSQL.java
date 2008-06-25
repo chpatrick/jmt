@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.routingStrategies;
 
 import java.util.HashMap;
@@ -28,37 +28,36 @@ import java.util.HashMap;
  * To change this template use Options | File Templates.
  * Modified by Bertoli Marco
  */
-public class DelayedSQL extends RoutingStrategy{
+public class DelayedSQL extends RoutingStrategy {
 
-    public DelayedSQL(){
-        description ="Jobs are routed to the station which has the smallest " +
-                "queue length.";
-    }
+	public DelayedSQL() {
+		description = "Jobs are routed to the station which has the smallest " + "queue length.";
+	}
 
-    public String getName() {
-        return "Delayed SQL";
-    }
+	public String getName() {
+		return "Delayed SQL";
+	}
 
-    public HashMap getValues() {
-        return null;
-    }
+	public HashMap getValues() {
+		return null;
+	}
 
-    public Object clone() {
-        return new DelayedSQL();
-    }
+	public Object clone() {
+		return new DelayedSQL();
+	}
 
-    public String getClassPath() {
-        return "jmt.engine.NetStrategies.RoutingStrategies.DelayedShortestQLength";
-    }
+	public String getClassPath() {
+		return "jmt.engine.NetStrategies.RoutingStrategies.DelayedShortestQLength";
+	}
 
-    /**
-     * Returns true if the routing strategy is dependent from the state of
-     * the model
-     * @return  true if the routing strategy is dependent from the state of
-     * the model
-     */
-    public boolean isModelStateDependent() {
-        return true;
-    }
+	/**
+	 * Returns true if the routing strategy is dependent from the state of
+	 * the model
+	 * @return  true if the routing strategy is dependent from the state of
+	 * the model
+	 */
+	public boolean isModelStateDependent() {
+		return true;
+	}
 
 }

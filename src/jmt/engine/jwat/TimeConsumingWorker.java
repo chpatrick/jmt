@@ -12,7 +12,6 @@ import jmt.engine.jwat.input.EventStatus;
 import jmt.engine.jwat.input.ProgressShow;
 import jmt.gui.jwat.SwingWorker;
 
-
 /**
  * @author Maevar
  *
@@ -21,39 +20,37 @@ public abstract class TimeConsumingWorker extends SwingWorker {
 
 	private ProgressShow viewer;
 	private Vector statusListener = null; //<ProgressStatusListener>
-	
+
 	/**
 	 * 
 	 */
 	public TimeConsumingWorker(ProgressShow prg) {
 		super();
-		viewer=prg;
-		statusListener=new Vector();
+		viewer = prg;
+		statusListener = new Vector();
 	}
-	
-	public int getStep(){
+
+	public int getStep() {
 		return viewer.getStep();
 	}
-	
-	public void addStatusListener(ProgressStatusListener listener)
-	{
+
+	public void addStatusListener(ProgressStatusListener listener) {
 		statusListener.add(listener);
 	}
-	
-	public void fireEventStatus(EventStatus e)
-	{
-		for(int i=0;i<statusListener.size();i++) 
+
+	public void fireEventStatus(EventStatus e) {
+		for (int i = 0; i < statusListener.size(); i++) {
 			((ProgressStatusListener) statusListener.get(i)).statusEvent(e);
+		}
 	}
-	
-	public void updateInfos(final int value,final String txt,boolean waitShow)
-	{
-		Runnable r=new Runnable(){
+
+	public void updateInfos(final int value, final String txt, boolean waitShow) {
+		Runnable r = new Runnable() {
 			public void run() {
-				viewer.eventUpdate(value,txt);
+				viewer.eventUpdate(value, txt);
 			}
 		};
-		if(waitShow){
+		if (waitShow) {
 			try {
 				SwingUtilities.invokeAndWait(r);
 			} catch (InterruptedException e) {
@@ -61,20 +58,17 @@ public abstract class TimeConsumingWorker extends SwingWorker {
 			} catch (InvocationTargetException e) {
 				e.printStackTrace();
 			}
-		}
-		else{
+		} else {
 			SwingUtilities.invokeLater(r);
-		}		
+		}
 	}
-	
-	public boolean isCanceled()
-	{
+
+	public boolean isCanceled() {
 		return viewer.isCanceled();
 	}
-	
-	public void initShow(final int maxValue) throws InterruptedException, InvocationTargetException
-	{
-		Runnable r=new Runnable(){
+
+	public void initShow(final int maxValue) throws InterruptedException, InvocationTargetException {
+		Runnable r = new Runnable() {
 			public void run() {
 				viewer.initShow(maxValue);
 			}
@@ -82,26 +76,25 @@ public abstract class TimeConsumingWorker extends SwingWorker {
 
 		SwingUtilities.invokeAndWait(r);
 	}
-	
-	public void closeView()
-	{
-		Runnable r=new Runnable(){
+
+	public void closeView() {
+		Runnable r = new Runnable() {
 			public void run() {
 				viewer.closeView();
 			}
 		};
-		
+
 		SwingUtilities.invokeLater(r);
-		
+
 	}
 
 	/* (non-Javadoc)
 	 * @see jmt.jwat.Utility.SwingWorker#construct()
 	 */
 	public abstract Object construct();
-	
+
 	/* (non-Javadoc)
 	 * @see jmt.jwat.Utility.SwingWorker#finished()
 	 */
-	public abstract void finished(); 
+	public abstract void finished();
 }

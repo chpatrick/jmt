@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 16-mar-2004 by Ernesto
  *
@@ -33,14 +33,14 @@ package jmt.jmarkov.Graphics;
  * @author Ernesto
  */
 
-public interface Notifier   {
+public interface Notifier {
 
 	public void runningIn(double t);
-	
+
 	public void addingToQ(double t);
-	
+
 	public void removingFromQ();
-	
+
 	public void reset();
-	
+
 }

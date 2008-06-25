@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.serviceStrategies;
 
 /**
@@ -27,10 +27,10 @@ package jmt.gui.common.serviceStrategies;
  *         Date: 18-ott-2005
  *         Time: 10.27.11
  */
-public interface ServiceStrategy extends Cloneable{
-    /**
-     * Overrides Cloneable 'clone' method, providing absence of exceptions
-     * @return a clone of current service strategy
-     */
-    public Object clone();
+public interface ServiceStrategy extends Cloneable {
+	/**
+	 * Overrides Cloneable 'clone' method, providing absence of exceptions
+	 * @return a clone of current service strategy
+	 */
+	public Object clone();
 }

@@ -15,12 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
 import java.awt.event.ActionEvent;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
 
@@ -31,12 +31,17 @@ import java.awt.event.ActionEvent;
  */
 public class SetConnectState extends AbstractJmodelAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public SetConnectState(Mediator mediator) {
 		super("Connect", "Link", mediator);
 		putValue(SHORT_DESCRIPTION, "Connect two Elements");
-//		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_X));
-        setSelectable(true);
-        setGroup(0);
+		//		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_X));
+		setSelectable(true);
+		setGroup(0);
 		setEnabled(false);
 	}
 

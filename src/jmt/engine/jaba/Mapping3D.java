@@ -30,57 +30,51 @@ import java.util.Vector;
  * Debugged and optimized by Bertoli Marco
  */
 public class Mapping3D {
-    private final double rad3 = Math.sqrt(3);
-    private final double rad3d2 = Math.sqrt(3) / 2;
+	private final double rad3 = Math.sqrt(3);
+	private final double rad3d2 = Math.sqrt(3) / 2;
 
+	/**
+	 * Questo metodo è usato per mappare le 3 coordinate beta in un sistema di 2 coordinate
+	 * @param beta1
+	 * @param beta2
+	 * @return xy
+	 */
+	public double[] Beta2xy(double beta1, double beta2, double beta3) {
+		double[] xy = new double[2];
+		//Soluzione esatta ma che rende il disegno specchiato.
+		//xy[0]=beta3*0.866026+beta2*0.866026*2;//+beta1*0.866026;
+		//Soluzione che rende il disegno corretto
+		xy[0] = beta3 * rad3d2 + beta2 * rad3;//+beta1*0.866026;
+		xy[1] = beta3;
+		return xy;
+	}
 
-    /**
-     * Questo metodo è usato per mappare le 3 coordinate beta in un sistema di 2 coordinate
-     * @param beta1
-     * @param beta2
-     * @return xy
-     */
-    public double[] Beta2xy(double beta1,double beta2,double beta3)
-    {
-        double[] xy = new double[2];
-        //Soluzione esatta ma che rende il disegno specchiato.
-        //xy[0]=beta3*0.866026+beta2*0.866026*2;//+beta1*0.866026;
-        //Soluzione che rende il disegno corretto
-        xy[0]=beta3*rad3d2+beta2*rad3;//+beta1*0.866026;
-        xy[1]=beta3;
-        return xy;
-    }
+	/**
+	 * Questo metodo rimappa in 2D tutti i punti di un settore di saturazione
+	 * @param s3d
+	 */
+	public Sector3D RemapSector(Sector3D s3d) {
+		int numofpoints = (s3d).CountPoint();
+		for (int i = 0; i < numofpoints; i++) {
+			double[] coord = (s3d).getBetas(i);
+			double[] newcoord = Beta2xy(coord[0], coord[1], coord[2]);
+			(s3d).addxycoord(newcoord);
+		}
+		return s3d;
+	}
 
-    /**
-     * Questo metodo rimappa in 2D tutti i punti di un settore di saturazione
-     * @param s3d
-     */
-    public Sector3D RemapSector(Sector3D s3d)
-    {
-        int numofpoints=((Sector3D)s3d).CountPoint();
-        for (int i=0;i<numofpoints;i++)
-        {
-            double[] coord = ((Sector3D)s3d).getBetas(i);
-            double[] newcoord = Beta2xy(coord[0],coord[1],coord[2]);
-            ((Sector3D)s3d).addxycoord(newcoord);
-        }
-        return s3d;
-    }
+	/**
+	 * Questo metodo viene usato per mappare in 2D tutti i settori di un Vector di Sector3D
+	 * @param sect
+	 * @return sect
+	 */
+	public Vector RemapAllSectors(Vector sect) {
+		Vector newsect = new Vector();
+		int numofsect = sect.size();
+		for (int i = 0; i < numofsect; i++) {
+			newsect.addElement(RemapSector((Sector3D) sect.get(i)));
+		}
+		return newsect;
+	}
 
-    /**
-     * Questo metodo viene usato per mappare in 2D tutti i settori di un Vector di Sector3D
-     * @param sect
-     * @return sect
-     */
-    public Vector RemapAllSectors(Vector sect)
-    {
-        Vector newsect = new Vector();
-        int numofsect = sect.size();
-        for (int i=0;i<numofsect;i++)
-        {
-            newsect.addElement(RemapSector((Sector3D)sect.get(i)));
-        }
-        return newsect;
-    }
-    
 }

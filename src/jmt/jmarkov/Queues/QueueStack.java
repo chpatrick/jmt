@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 11-mar-2004
  *
@@ -33,41 +33,43 @@ import java.util.Stack;
  * processi in attesa di essere eseguiti
  */
 public class QueueStack extends Stack {
-	int aCounter=0,
-		exCounter=0,
-		maxjobs=0;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	int aCounter = 0, exCounter = 0, maxjobs = 0;
 	boolean unlimited = true;
-	
+
 	Integer element; //elemento fittizio con cui riempio la coda
-	
+
 	/**
 	 * 
 	 */
 	public QueueStack(int max) {
 		super();
-		if(max == 0){
+		if (max == 0) {
 			maxjobs = 0;
 			unlimited = true;
-		}
-		else{
+		} else {
 			maxjobs = max;
 			unlimited = false;
 		}
-		
+
 	}
 
 	/**
 	 * aggiunge un processo alla coda
 	 */
 	public synchronized void addToQueue() {
-		if((unlimited)||(maxjobs > 0)){
+		if ((unlimited) || (maxjobs > 0)) {
 			super.push(new Integer(0));
 			notify();
-		}
-		else try {
-			wait();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		} else {
+			try {
+				wait();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -77,33 +79,35 @@ public class QueueStack extends Stack {
 	 * in attesa di essere eseguito, false altrimenti
 	 */
 	public synchronized void removeFromQueue() {
-		if (super.empty())
+		if (super.empty()) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
 		super.pop();
 
 	}
-	
-	public void clearQueue(){
+
+	public void clearQueue() {
 		exCounter = 0;
-		aCounter =0;
+		aCounter = 0;
 		super.removeAllElements();
 		maxjobs = 0;
 		unlimited = true;
 	}
-	
-	public void moreJobsToDo(){
-		if((unlimited)||(maxjobs > 0))
+
+	public void moreJobsToDo() {
+		if ((unlimited) || (maxjobs > 0)) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
 	}
 
 }

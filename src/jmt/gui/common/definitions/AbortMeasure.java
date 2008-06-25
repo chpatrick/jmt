@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.definitions;
 
 /**
@@ -28,9 +28,9 @@ package jmt.gui.common.definitions;
  *         Time: 12.06.45
  */
 public interface AbortMeasure {
-    /**
-     * Aborts a measure, given its index
-     * @param index index of the measure to be aborted
-     */
-    public void abortMeasure(int index);
+	/**
+	 * Aborts a measure, given its index
+	 * @param index index of the measure to be aborted
+	 */
+	public void abortMeasure(int index);
 }

@@ -80,19 +80,17 @@ public class MersenneTwister extends RandomEngine {
 		init_genrand((long) (Math.random() * Long.MAX_VALUE));
 	}
 
-    /**
-     * Constructor
-     * @param seed seed used to generate the sequence
-     */
+	/**
+	 * Constructor
+	 * @param seed seed used to generate the sequence
+	 */
 	public MersenneTwister(long seed) {
 		init_genrand(seed);
 	}
 
-
-    public void setNewSeed(long seed) {
-        init_genrand(seed);
-    }
-
+	public void setNewSeed(long seed) {
+		init_genrand(seed);
+	}
 
 	/** initializes mt[N] with a seed */
 	void init_genrand(long s) {
@@ -109,20 +107,18 @@ public class MersenneTwister extends RandomEngine {
 		}
 	}
 
-
-    /**
-     * initialized by an array with array-length
-     * @param init_key the array for initializing keys
-     * @param key_length array length
-     */
+	/**
+	 * initialized by an array with array-length
+	 * @param init_key the array for initializing keys
+	 * @param key_length array length
+	 */
 	private void init_by_array(long[] init_key, int key_length) {
 		int i, j, k;
 		long[] internal = new long[N];
 
 		internal[0] = 0x12BD6AAL & 0xffffffffL;
 		for (mti = 1; mti < N; mti++) {
-			internal[mti] = (0x6C078965L * (internal[mti - 1] ^
-			        (internal[mti - 1] >> 30)) + mti);
+			internal[mti] = (0x6C078965L * (internal[mti - 1] ^ (internal[mti - 1] >> 30)) + mti);
 			/* See Knuth TAOCP Vol2. 3rd Ed. P.106 for multiplier. */
 			/* In the previous versions, MSBs of the seed affect   */
 			/* only MSBs of the array mt[].                        */
@@ -136,8 +132,7 @@ public class MersenneTwister extends RandomEngine {
 		j = 0;
 		k = (N > key_length ? N : key_length);
 		for (; k > 0; k--) {
-			internal[i] = (internal[i] ^ ((internal[i - 1]
-			        ^ (internal[i - 1] >>> 30)) * 0x19660DL)) + init_key[j] + j;
+			internal[i] = (internal[i] ^ ((internal[i - 1] ^ (internal[i - 1] >>> 30)) * 0x19660DL)) + init_key[j] + j;
 			/* non linear */
 			internal[i] &= 0xffffffffL;
 			/* for WORDSIZE > 32 machines */
@@ -147,11 +142,12 @@ public class MersenneTwister extends RandomEngine {
 				internal[0] = internal[N - 1];
 				i = 1;
 			}
-			if (j >= key_length) j = 0;
+			if (j >= key_length) {
+				j = 0;
+			}
 		}
 		for (k = N - 1; k > 0; k--) {
-			internal[i] = (internal[i] ^ ((internal[i - 1] ^ (internal[i - 1] >>> 30))
-			        * 0x5D588B65L)) - i; /* non linear */
+			internal[i] = (internal[i] ^ ((internal[i - 1] ^ (internal[i - 1] >>> 30)) * 0x5D588B65L)) - i; /* non linear */
 			internal[i] &= 0xffffffffL;
 			/* for WORDSIZE > 32 machines */
 			i++;
@@ -161,8 +157,9 @@ public class MersenneTwister extends RandomEngine {
 			}
 		}
 
-		for (i = 1; i < N; i++)
+		for (i = 1; i < N; i++) {
 			mt[i] = (int) (internal[i] & 0xffffffffL);
+		}
 
 		mt[0] = 0x80000000; /* MSB is 1; assuring non-zero initial array */
 	}
@@ -173,21 +170,19 @@ public class MersenneTwister extends RandomEngine {
 
 		if (mti >= N) { /* generate N words at one time */
 			int kk;
-			if (mti == N + 1)   /* if init_genrand() has not been called, */
+			if (mti == N + 1) {
 				init_genrand(0x1571L); /* a default initial seed is used */
+			}
 			for (kk = 0; kk < N - M; kk++) {
 				y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-				mt[kk] = mt[kk + M] ^ (y >>> 1) ^
-				        ((y & 0x1) == 0 ? mag0 : mag1);
+				mt[kk] = mt[kk + M] ^ (y >>> 1) ^ ((y & 0x1) == 0 ? mag0 : mag1);
 			}
 			for (; kk < N - 1; kk++) {
 				y = (mt[kk] & UPPER_MASK) | (mt[kk + 1] & LOWER_MASK);
-				mt[kk] = mt[kk + (M - N)] ^ (y >>> 1) ^
-				        ((y & 0x1) == 0 ? mag0 : mag1);
+				mt[kk] = mt[kk + (M - N)] ^ (y >>> 1) ^ ((y & 0x1) == 0 ? mag0 : mag1);
 			}
 			y = (mt[N - 1] & UPPER_MASK) | (mt[0] & LOWER_MASK);
-			mt[N - 1] = mt[M - 1] ^ (y >>> 1) ^
-			        ((y & 0x1) == 0 ? mag0 : mag1);
+			mt[N - 1] = mt[M - 1] ^ (y >>> 1) ^ ((y & 0x1) == 0 ? mag0 : mag1);
 
 			mti = 0;
 		}
@@ -210,31 +205,34 @@ public class MersenneTwister extends RandomEngine {
 	/* generates a random number on [0,1]-real-interval */
 	private final double genrand_real1() {
 		int i = genrand_int32();
-		if (i > 0)
+		if (i > 0) {
 			return i / 4294967295.0;
-		/* divided by 2^32-1 */
-		else
+			/* divided by 2^32-1 */
+		} else {
 			return ((double) (i & 0x7fffffff) + 0x80000000L) / 4294967295.0;
+		}
 	}
 
 	/* generates a random number on [0,1)-real-interval */
 	private final double genrand_real2() {
 		int i = genrand_int32();
-		if (i > 0)
+		if (i > 0) {
 			return i / 4294967296.0;
-		/* divided by 2^32 */
-		else
+			/* divided by 2^32 */
+		} else {
 			return ((double) (i & 0x7fffffff) + 0x80000000L) / 4294967296.0;
+		}
 	}
 
 	/* generates a random number on (0,1)-real-interval */
 	private final double genrand_real3() {
 		int i = genrand_int32();
-		if (i > 0)
+		if (i > 0) {
 			return (i + 0.5) / 4294967296.0;
-		/* divided by 2^32 */
-		else
+			/* divided by 2^32 */
+		} else {
 			return (((double) (i & 0x7fffffff) + 0x80000000L) + 0.5) / 4294967296.0;
+		}
 	}
 
 	/* generates a random number on [0,1) with 53-bit resolution*/
@@ -242,6 +240,7 @@ public class MersenneTwister extends RandomEngine {
 		long a = genrand_int32() >>> 5, b = genrand_int32() >>> 6;
 		return (a * 67108864.0 + b) / 9007199254740992.0;
 	}
+
 	/* These real versions are due to Isaku Wada, 2002/01/09 added */
 
 	/**
@@ -268,10 +267,11 @@ public class MersenneTwister extends RandomEngine {
 	 */
 	public long nextLong() {
 		int i = genrand_int32();
-		if (i > 0)
+		if (i > 0) {
 			return i;
-		else
-			return (long) (i & 0x7fffffff) + 0x80000000L;
+		} else {
+			return (i & 0x7fffffff) + 0x80000000L;
+		}
 	}
 
 	/**
@@ -286,17 +286,19 @@ public class MersenneTwister extends RandomEngine {
 		if (i > 0) {
 			n = i;
 			n <<= 32;
-			if (j > 0)
+			if (j > 0) {
 				return n + j;
-			else // i>0, j<0
+			} else {
 				return n + (j & 0x7fffffff) + 0x80000000L;
+			}
 		} else {//i < 0
 			n = (i & 0x7fffffff) + 0x80000000L;
 			n <<= 32;
-			if (j > 0)
+			if (j > 0) {
 				return n + j;
-			else//i<0, j <0
+			} else {
 				return n + (j & 0x7fffffff) + 0x80000000L;
+			}
 		}
 	}
 
@@ -308,16 +310,14 @@ public class MersenneTwister extends RandomEngine {
 		return genrand_real3();
 	}
 
-
 	/**
 	 * test
 	 */
 	public static void test() {
 		int integer;
 		MersenneTwister p = new MersenneTwister();
-		long init[] = {0x123L, 0x234L, 0x345L, 0x456L};
+		long init[] = { 0x123L, 0x234L, 0x345L, 0x456L };
 		p.init_by_array(init, init.length);
-
 
 		System.out.println("\nINT:  ");
 		/*
@@ -333,48 +333,63 @@ public class MersenneTwister extends RandomEngine {
 
 		for (int i = 0; i < 1000; i++) {
 			System.out.print(p.nextLong() + " ");
-			if (i % 5 == 4) System.out.println();
+			if (i % 5 == 4) {
+				System.out.println();
+			}
 		}
 
 		System.out.println("\nDOUBLE [0,1):  ");
 		for (int i = 0; i < 1000; i++) {
 			System.out.print(p.genrand_real2() + " ");
-			if (i % 5 == 4) System.out.println();
+			if (i % 5 == 4) {
+				System.out.println();
+			}
 		}
 
 		p.init_genrand(723);
 		System.out.println("\nINT:  ");
 		for (int i = 0; i < 1000; i++) {
 			integer = p.genrand_int32();
-			if (integer > 0)
+			if (integer > 0) {
 				System.out.print(integer + " ");
-			else
-				System.out.print(((long) (integer & 0x7fffffff) + 0x80000000L) + " ");
-			if (i % 5 == 4) System.out.println();
+			} else {
+				System.out.print(((integer & 0x7fffffff) + 0x80000000L) + " ");
+			}
+			if (i % 5 == 4) {
+				System.out.println();
+			}
 		}
 
 		System.out.println("\nDOUBLE [0,1]:  ");
 		for (int i = 0; i < 1000; i++) {
 			System.out.print(p.genrand_real1() + " ");
-			if (i % 5 == 4) System.out.println();
+			if (i % 5 == 4) {
+				System.out.println();
+			}
 		}
 
 		System.out.println("\nDOUBLE [0,1):  ");
 		for (int i = 0; i < 1000; i++) {
 			System.out.print(p.genrand_real2() + " ");
-			if (i % 5 == 4) System.out.println();
+			if (i % 5 == 4) {
+				System.out.println();
+			}
 		}
 
 		System.out.println("\nDOUBLE (0,1):  ");
 		for (int i = 0; i < 1000; i++) {
 			System.out.print(p.genrand_real3() + " ");
-			if (i % 5 == 4) System.out.println();
+			if (i % 5 == 4) {
+				System.out.println();
+			}
 		}
 
 		System.out.println("\nDOUBLE 64 [0,1):  ");
 		for (int i = 0; i < 1000; i++) {
 			System.out.print(p.genrand_res53() + " ");
-			if (i % 5 == 4) System.out.println();
+			if (i % 5 == 4) {
+				System.out.println();
+			}
 		}
 
 	}

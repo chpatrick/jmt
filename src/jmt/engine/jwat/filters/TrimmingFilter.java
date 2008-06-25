@@ -22,22 +22,29 @@ import jmt.engine.jwat.Observation;
 public class TrimmingFilter implements FilterOnVariable {
 	private int index;
 	private boolean up; //true elimina da index in poi altrimenti al contrario
-	public TrimmingFilter(int index,boolean b){
+
+	public TrimmingFilter(int index, boolean b) {
 		this.index = index;
 		up = b;
 	}
+
 	/**
 	 * Ritorna true se l'osservazione matcha il filtro
 	 */
 	public boolean isMatching(Observation o, int pos) {
-		if(up){
-			if(pos < index) return true;
-			else return false;
-		}else{
-			if(pos > index) return true;
-			else return false;
+		if (up) {
+			if (pos < index) {
+				return true;
+			} else {
+				return false;
+			}
+		} else {
+			if (pos > index) {
+				return true;
+			} else {
+				return false;
+			}
 		}
 	}
 
 }
-

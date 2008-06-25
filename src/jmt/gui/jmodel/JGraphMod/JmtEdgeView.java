@@ -21,11 +21,8 @@ import java.awt.Shape;
 import java.awt.geom.GeneralPath;
 
 import jmt.gui.jmodel.controller.Mediator;
-import jmt.gui.jmodel.controller.SelectState;
 
 import org.jgraph.graph.CellViewRenderer;
-import org.jgraph.graph.DefaultCellViewFactory;
-import org.jgraph.graph.EdgeRenderer;
 import org.jgraph.graph.EdgeView;
 
 /**
@@ -35,13 +32,16 @@ import org.jgraph.graph.EdgeView;
  * 
  */
 
-public class JmtEdgeView extends EdgeView{
+public class JmtEdgeView extends EdgeView {
 
-// Questa variabile e' gia statica dai sorgenti della libreria.
+	/**
+		 * 
+		 */
+	private static final long serialVersionUID = 1L;
+	// Questa variabile e' gia statica dai sorgenti della libreria.
 	private static JmtEdgeRenderer renderer = new JmtEdgeRenderer();
-	private Mediator mediator; 
+	private Mediator mediator;
 
-	
 	public JmtEdgeView() {
 		super();
 	}
@@ -52,33 +52,32 @@ public class JmtEdgeView extends EdgeView{
 		super(cell);
 
 	}
+
 	public JmtEdgeView(Object cell, Mediator factory) {
 		// TODO Auto-generated constructor stub
 		super(cell);
-		this.mediator=factory;
+		this.mediator = factory;
 	}
 
 	public CellViewRenderer getRenderer() {
-		
+
 		return renderer;
 	}
-// Giuseppe De Cicco & Fabio Granara
+
+	// Giuseppe De Cicco & Fabio Granara
 	public Shape getShape() {
-//		System.out.println("chiamato");
-	
-		
-		
-		if (sharedPath != null )
+		//		System.out.println("chiamato");
+
+		if (sharedPath != null) {
 			return sharedPath;
-		else if(mediator.getIsReleased()){
-//			System.out.println("VAlore in View: "+((JmtEdge)(this.getCell())).latiDiIntersezione.size());
-//			System.out.println("**********RESTITUISCO IL RENDERER***********");
+		} else if (mediator.getIsReleased()) {
+			//			System.out.println("VAlore in View: "+((JmtEdge)(this.getCell())).latiDiIntersezione.size());
+			//			System.out.println("**********RESTITUISCO IL RENDERER***********");
 			return sharedPath = (GeneralPath) renderer.createShape();
-		}
-		else{
+		} else {
 
 			return sharedPath = (GeneralPath) renderer.createShape2();
-			
+
 		}
 	}
 

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 /**
@@ -57,7 +57,7 @@ public class EmpiricalEntry {
 		this.probability = probability;
 	}
 
-    /**
+	/**
 	 * Creates a new instance of an <code>EmpiricalEntry</code> object with
 	 * specified value and probability.
 	 * @param value A given <code>String</code> representing a node value.

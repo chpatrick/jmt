@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NetStrategies;
 
 import jmt.common.AutoCheck;
@@ -24,7 +24,6 @@ import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobInfoList;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeSection;
-
 
 /**
  * Use this interface to implement a specific queue put strategy.
@@ -41,9 +40,7 @@ public abstract class QueuePutStrategy implements AutoCheck {
 	 * @param callingSection The section which calls this strategy.
 	 * @throws jmt.common.exception.NetException
 	 */
-	public abstract void put(Job job, JobInfoList queue, byte sourceSection,
-	                         NetNode sourceNode, NodeSection callingSection)
-	        throws NetException;
+	public abstract void put(Job job, JobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) throws NetException;
 
 	public boolean check() {
 		return true;

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Spectrum.java
  *
@@ -40,16 +40,19 @@ public class Spectrum {
 		double[] intData = new double[2 * n];
 		double[] spectrum;
 
-		if (n > data.length)
+		if (n > data.length) {
 			throw new Error("number of data must be >= than n");
+		}
 
-		for (int i = 0; i < n; i++)
+		for (int i = 0; i < n; i++) {
 			intData[2 * i] = data[i + start];
+		}
 		intData = zeroPad(intData);
 		FFT.transform(intData);
 		spectrum = new double[intData.length / 2];
-		for (int i = 0; i < spectrum.length; i++)
+		for (int i = 0; i < spectrum.length; i++) {
 			spectrum[i] = (Math.pow(intData[2 * i], 2) + Math.pow(intData[2 * i + 1], 2)) / n;
+		}
 		return spectrum;
 	}
 
@@ -63,10 +66,12 @@ public class Spectrum {
 		int n = data.length;
 		double[] intData;
 
-		for (int k = 1; k < n; k *= 2, log++) ;
-		if (n == (1 << log))
+		for (int k = 1; k < n; k *= 2, log++) {
+			;
+		}
+		if (n == (1 << log)) {
 			return data;
-		else {
+		} else {
 			intData = new double[(1 << log)];
 			System.arraycopy(data, 0, intData, 0, n);
 			return intData;

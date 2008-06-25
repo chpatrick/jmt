@@ -17,15 +17,33 @@
  */
 package jmt.gui.common.panels;
 
-import jmt.gui.common.CommonConstants;
-import jmt.gui.common.resources.JMTImageLoader;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dialog;
+import java.awt.Dimension;
+import java.awt.Frame;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
 import java.util.Vector;
+
+import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.Scrollable;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
+
+import jmt.gui.common.CommonConstants;
+import jmt.gui.common.resources.JMTImageLoader;
 
 /**
  * <p>Title: Warning Window</p>
@@ -37,157 +55,163 @@ import java.util.Vector;
  *         Time: 14.34.42
  */
 public class WarningWindow {
-    private JDialog dialog;
-    private Vector warnings;
-    private JLabel header;
+	private JDialog dialog;
+	private Vector warnings;
+	private JLabel header;
 
-    private static final int BORDER = 20;
+	private static final int BORDER = 20;
 
-    /**
-     * Creates a new WarningWindow to show specified warnings
-     * @param warnings warnings to be shown
-     * @param owner owner of the shown dialog. If it's not a Dialog nor a Frame, created
-     * window will not be modal.
-     */
-    public WarningWindow(Vector warnings, Window owner, String from, String to) {
-        if (owner instanceof Dialog)
-            dialog = new JDialog((Dialog)owner, true);
-        else if (owner instanceof Frame)
-            dialog = new JDialog((Frame)owner, true);
-        else
-            dialog = new JDialog();
-        this.warnings = warnings;
-        initDialog(from, to);
-    }
+	/**
+	 * Creates a new WarningWindow to show specified warnings
+	 * @param warnings warnings to be shown
+	 * @param owner owner of the shown dialog. If it's not a Dialog nor a Frame, created
+	 * window will not be modal.
+	 */
+	public WarningWindow(Vector warnings, Window owner, String from, String to) {
+		if (owner instanceof Dialog) {
+			dialog = new JDialog((Dialog) owner, true);
+		} else if (owner instanceof Frame) {
+			dialog = new JDialog((Frame) owner, true);
+		} else {
+			dialog = new JDialog();
+		}
+		this.warnings = warnings;
+		initDialog(from, to);
+	}
 
-    /**
-     * Initialize internal dialog to be shown
-     */
-    private void initDialog(String from, String to) {
-        dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-        dialog.setTitle("Model conversion terminated with warnings");
-        int width = 600, height=450;
+	/**
+	 * Initialize internal dialog to be shown
+	 */
+	private void initDialog(String from, String to) {
+		dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		dialog.setTitle("Model conversion terminated with warnings");
+		int width = 600, height = 450;
 
-        // Centers this dialog on the screen
-        Dimension scrDim = Toolkit.getDefaultToolkit().getScreenSize();
-        dialog.setBounds((scrDim.width-width)/2,(scrDim.height-height)/2,width,height);
+		// Centers this dialog on the screen
+		Dimension scrDim = Toolkit.getDefaultToolkit().getScreenSize();
+		dialog.setBounds((scrDim.width - width) / 2, (scrDim.height - height) / 2, width, height);
 
+		// Creates a main panel with
+		JPanel main = new JPanel(new BorderLayout(BORDER / 2, BORDER / 2));
+		main.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
 
-        // Creates a main panel with
-        JPanel main = new JPanel (new BorderLayout(BORDER/2, BORDER/2));
-        main.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
-        
-        // Creates header
-        String text = CommonConstants.CONVERSION_WARNING_DESCRIPTION;
-        text = text.replaceAll(CommonConstants.PAR1, from);
-        text = text.replaceAll(CommonConstants.PAR2, to);
-        header = new JLabel(text);
-        main.add(header, BorderLayout.NORTH);
+		// Creates header
+		String text = CommonConstants.CONVERSION_WARNING_DESCRIPTION;
+		text = text.replaceAll(CommonConstants.PAR1, from);
+		text = text.replaceAll(CommonConstants.PAR2, to);
+		header = new JLabel(text);
+		main.add(header, BorderLayout.NORTH);
 
-        // Creates a box to show warnings
-        ScrollablePanel box = new ScrollablePanel();
-        box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-        Iterator i = warnings.iterator();
-        while (i.hasNext())
-            box.add(getEntry((String)i.next()));
+		// Creates a box to show warnings
+		ScrollablePanel box = new ScrollablePanel();
+		box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
+		Iterator i = warnings.iterator();
+		while (i.hasNext()) {
+			box.add(getEntry((String) i.next()));
+		}
 
-        box.setBackground(Color.white);
+		box.setBackground(Color.white);
 
-        main.add(new JScrollPane(box), BorderLayout.CENTER);
+		main.add(new JScrollPane(box), BorderLayout.CENTER);
 
+		dialog.getContentPane().add(main, BorderLayout.CENTER);
 
-        dialog.getContentPane().add(main, BorderLayout.CENTER);
+		// Adds a lower panel with okay button
+		JPanel lower = new JPanel();
+		JButton okButton = new JButton("OK");
+		okButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dialog.dispose();
+			}
+		});
+		lower.add(okButton);
+		dialog.getContentPane().add(lower, BorderLayout.SOUTH);
+	}
 
-        // Adds a lower panel with okay button
-        JPanel lower = new JPanel();
-        JButton okButton = new JButton("OK");
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dialog.dispose();
-            }
-        });
-        lower.add(okButton);
-        dialog.getContentPane().add(lower, BorderLayout.SOUTH);
-    }
+	/**
+	 * This is used to create components to be shown inside box
+	 * @param text text to be displayed inside box
+	 * @return created component
+	 */
+	private Component getEntry(String text) {
+		JLabel label = new JLabel("<HTML>" + text + "</HTML>");
+		label.setIcon(JMTImageLoader.loadImage("Warning"));
+		label.setIconTextGap(BORDER);
+		label.setHorizontalTextPosition(SwingConstants.RIGHT);
+		label.setBorder(BorderFactory.createEmptyBorder(4, 4, 4, 4));
+		return label;
+	}
 
-    /**
-     * This is used to create components to be shown inside box
-     * @param text text to be displayed inside box
-     * @return created component
-     */
-    private Component getEntry(String text) {
-        JLabel label = new JLabel("<HTML>"+text+"</HTML>");
-        label.setIcon(JMTImageLoader.loadImage("Warning"));
-        label.setIconTextGap(BORDER);
-        label.setHorizontalTextPosition(JLabel.RIGHT);
-        label.setBorder(BorderFactory.createEmptyBorder(4,4,4,4));
-        return label;
-    }
+	/**
+	 * Sets title of shown dialog
+	 * @param title title of shown dialog
+	 */
+	public void setTitle(String title) {
+		dialog.setTitle(title);
+	}
 
-    /**
-     * Sets title of shown dialog
-     * @param title title of shown dialog
-     */
-    public void setTitle(String title) {
-        dialog.setTitle(title);
-    }
+	/**
+	 * Shows warning window dialog
+	 */
+	public void show() {
+		dialog.show();
+	}
 
-    /**
-     * Shows warning window dialog
-     */
-    public void show() {
-        dialog.show();
-    }
+	/**
+	 * Inner class to display a panel with vertical scrollbars only
+	 */
+	public class ScrollablePanel extends JPanel implements Scrollable {
+		/**
+		* 
+		*/
+		private static final long serialVersionUID = 1L;
 
-    /**
-     * Inner class to display a panel with vertical scrollbars only
-     */
-    public class ScrollablePanel extends JPanel implements Scrollable {
-            public void setBounds( int x, int y, int width, int height ) {
-                super.setBounds( x, y, getParent().getWidth(), height );
-            }
+		public void setBounds(int x, int y, int width, int height) {
+			super.setBounds(x, y, getParent().getWidth(), height);
+		}
 
-            public Dimension getPreferredSize() {
-                return new Dimension( getWidth(), getPreferredHeight() );
-            }
+		public Dimension getPreferredSize() {
+			return new Dimension(getWidth(), getPreferredHeight());
+		}
 
-            public Dimension getPreferredScrollableViewportSize() {
-                return super.getPreferredSize();
-            }
+		public Dimension getPreferredScrollableViewportSize() {
+			return super.getPreferredSize();
+		}
 
-            public int getScrollableUnitIncrement( Rectangle visibleRect, int orientation, int direction ) {
-                int hundredth = ( orientation ==  SwingConstants.VERTICAL
-                        ? getParent().getHeight() : getParent().getWidth() ) / 100;
-                return ( hundredth == 0 ? 1 : hundredth );
-            }
+		public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
+			int hundredth = (orientation == SwingConstants.VERTICAL ? getParent().getHeight() : getParent().getWidth()) / 100;
+			return (hundredth == 0 ? 1 : hundredth);
+		}
 
-            public int getScrollableBlockIncrement( Rectangle visibleRect, int orientation, int direction ) {
-                return orientation == SwingConstants.VERTICAL ? getParent().getHeight() : getParent().getWidth();
-            }
+		public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
+			return orientation == SwingConstants.VERTICAL ? getParent().getHeight() : getParent().getWidth();
+		}
 
-            public boolean getScrollableTracksViewportWidth() {
-                return true;
-            }
+		public boolean getScrollableTracksViewportWidth() {
+			return true;
+		}
 
-            public boolean getScrollableTracksViewportHeight() {
-                return false;
-            }
+		public boolean getScrollableTracksViewportHeight() {
+			return false;
+		}
 
-            private int getPreferredHeight() {
-                int rv = 0;
-                for ( int k = 0, count = getComponentCount(); k < count; k++ ) {
-                    Component comp = getComponent( k );
-                    Rectangle r = comp.getBounds();
-                    int height = r.y + r.height;
-                    if ( height > rv )
-                        rv = height;
-                }
+		private int getPreferredHeight() {
+			int rv = 0;
+			for (int k = 0, count = getComponentCount(); k < count; k++) {
+				Component comp = getComponent(k);
+				Rectangle r = comp.getBounds();
+				int height = r.y + r.height;
+				if (height > rv) {
+					rv = height;
+				}
+			}
 
-                if (getParent().getHeight() > rv)
-                    return getParent().getHeight();
-                else
-                    return rv;
-            }
-        }
+			if (getParent().getHeight() > rv) {
+				return getParent().getHeight();
+			} else {
+				return rv;
+			}
+		}
+	}
 
 }

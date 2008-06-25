@@ -15,15 +15,18 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.framework.gui.table.editors;
 
-import javax.swing.*;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.AbstractCellEditor;
+import javax.swing.JButton;
+import javax.swing.JTable;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -36,48 +39,46 @@ import java.awt.event.ActionListener;
  * of this component, simply by overriding <code>getCellRenderer</code> and <code>
  * getCellEditor</code> in <code>JTable class</code>.
  */
-public class ButtonCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener, TableCellRenderer{
+public class ButtonCellEditor extends AbstractCellEditor implements TableCellEditor, ActionListener, TableCellRenderer {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JButton button;
 
-    private JButton button;
+	/**Creates a new instance of <code>ButtonCellEditor</code> given a customized <code>JButton
+	 * </code> to be inserted in table.
+	 * @param jbutt: button to be displayed in specific cell*/
+	public ButtonCellEditor(JButton jbutt) {
+		button = jbutt;
+		jbutt.addActionListener(this);
+	}
 
-    /**Creates a new instance of <code>ButtonCellEditor</code> given a customized <code>JButton
-     * </code> to be inserted in table.
-     * @param jbutt: button to be displayed in specific cell*/
-    public ButtonCellEditor(JButton jbutt){
-        button = jbutt;
-        jbutt.addActionListener(this);
-    }
+	/**Returns a value to be updated in the table model. This method must be overridden in
+	 * implementing classes as it always return <code>null</code> value.
+	 * @return : value to be updated inside the table model*/
+	public Object getCellEditorValue() {
+		return null;
+	}
 
-    /**Returns a value to be updated in the table model. This method must be overridden in
-     * implementing classes as it always return <code>null</code> value.
-     * @return : value to be updated inside the table model*/
-    public Object getCellEditorValue() {
-        return null;
-    }
+	/**This method is called whenever an action event is invoked by this editor's component*/
+	public void actionPerformed(ActionEvent e) {
+		fireEditingStopped();
+	}
 
-    /**This method is called whenever an action event is invoked by this editor's component*/
-    public void actionPerformed(ActionEvent e) {
-        fireEditingStopped();
-    }
+	/**Returns component to edit table cell value. Refer to
+	 * {@link javax.swing.table.TableCellEditor} for further informations about this method
+	 * */
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+		return button;
+	}
 
-    /**Returns component to edit table cell value. Refer to
-     * {@link javax.swing.table.TableCellEditor} for further informations about this method
-     * */
-    public Component getTableCellEditorComponent(JTable table, Object value,
-                                                 boolean isSelected,
-                                                 int row, int column) {
-        return button;
-    }
-
-    /**Returns component to be rendered in the cell table.  Refer to
-     * {@link javax.swing.table.TableCellEditor} for further informations about this method
-     * */
-    public Component getTableCellRendererComponent(JTable table, Object value,
-                                                   boolean isSelected, boolean hasFocus,
-                                                   int row, int column) {
-        return button;
-    }
-
+	/**Returns component to be rendered in the cell table.  Refer to
+	 * {@link javax.swing.table.TableCellEditor} for further informations about this method
+	 * */
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+		return button;
+	}
 
 }

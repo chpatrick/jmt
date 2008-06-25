@@ -1,4 +1,3 @@
-  
 package jmt.gui.jmodel.controller.actions;
 
 import java.awt.event.ActionEvent;
@@ -13,6 +12,11 @@ import jmt.gui.jmodel.controller.Mediator;
  * 
  */
 public class ActionRotate extends AbstractJmodelAction {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Defines an <code>Action</code> object with a default
@@ -35,7 +39,6 @@ public class ActionRotate extends AbstractJmodelAction {
 	public void actionPerformed(ActionEvent e) {
 		//GDC & FG
 		mediator.rotateComponent(null);
-		
+
 	}
 }
-

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.QueueNet;
 
 /** This class implements a waiting request of a job to be processed by a
@@ -26,33 +26,33 @@ package jmt.engine.QueueNet;
  */
 public class WaitingRequest extends JobInfo {
 
-    private NetNode Node;
+	private NetNode Node;
 
-    private byte Section;
+	private byte Section;
 
-    /**
-     * Creates a new WaitingRequest object.
-     * @param Node Reference to the node which sent the job.
-     * @param Section Reference to the section which sent the job.
-     * @param Job Reference to the job sent.
-     */
-    public WaitingRequest(NetNode Node, byte Section, Job Job) {
-        super(Job);
-        this.Node = Node;
-        this.Section = Section;
-    }
+	/**
+	 * Creates a new WaitingRequest object.
+	 * @param Node Reference to the node which sent the job.
+	 * @param Section Reference to the section which sent the job.
+	 * @param Job Reference to the job sent.
+	 */
+	public WaitingRequest(NetNode Node, byte Section, Job Job) {
+		super(Job);
+		this.Node = Node;
+		this.Section = Section;
+	}
 
-    /** Gets referenced node.
-     * @return Node property value.
-     */
-    public NetNode getNode() {
-        return Node;
-    }
+	/** Gets referenced node.
+	 * @return Node property value.
+	 */
+	public NetNode getNode() {
+		return Node;
+	}
 
-    /** Gets referenced section.
-     * @return Section property value.
-     */
-    public byte getSection() {
-        return Section;
-    }
+	/** Gets referenced section.
+	 * @return Section property value.
+	 */
+	public byte getSection() {
+		return Section;
+	}
 }

@@ -15,17 +15,17 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.JGraphMod;
+
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 import org.jgraph.graph.CellView;
 import org.jgraph.graph.CellViewFactory;
 import org.jgraph.graph.GraphLayoutCache;
 import org.jgraph.graph.GraphModel;
-
-import java.awt.*;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
 
 /**
  * An object that defines the view of a graphmodel. This object
@@ -46,6 +46,11 @@ import java.util.ArrayList;
 public class JmtGraphLayoutCache extends GraphLayoutCache {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Constructs a view for the specified model that uses
 	 * <code>factory</code> to create its views.
 	 *
@@ -54,7 +59,6 @@ public class JmtGraphLayoutCache extends GraphLayoutCache {
 	public JmtGraphLayoutCache(GraphModel model, CellViewFactory factory) {
 		super(model, factory);
 	}
-
 
 	/**
 	 * Return all cells that intersect the given rectangle.
@@ -65,9 +69,11 @@ public class JmtGraphLayoutCache extends GraphLayoutCache {
 		Rectangle2D bounds;
 		for (int i = 0; i < views.length; i++) {
 			bounds = views[i].getBounds();
-			if (bounds != null)
-				if (bounds.intersects(clip))
+			if (bounds != null) {
+				if (bounds.intersects(clip)) {
 					result.add(views[i]);
+				}
+			}
 		}
 		views = new CellView[result.size()];
 		result.toArray(views);

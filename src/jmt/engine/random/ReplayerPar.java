@@ -15,16 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.engine.random;
 
-import jmt.common.exception.IncorrectDistributionParameterException;
-import jmt.engine.dataAnalysis.Log;
+package jmt.engine.random;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+
+import jmt.common.exception.IncorrectDistributionParameterException;
+import jmt.engine.dataAnalysis.Log;
 
 /**
 
@@ -41,10 +41,10 @@ public class ReplayerPar extends AbstractParameter implements Parameter {
 	private BufferedReader in;
 
 	/**
-     * Creates a ReplayerPar
-     * @param fileName the file containing the previously generated numbers.
-     */
-    public ReplayerPar(String fileName) {
+	 * Creates a ReplayerPar
+	 * @param fileName the file containing the previously generated numbers.
+	 */
+	public ReplayerPar(String fileName) {
 		try {
 			fr = new FileReader(fileName);
 			in = new BufferedReader(fr);
@@ -55,10 +55,10 @@ public class ReplayerPar extends AbstractParameter implements Parameter {
 	}
 
 	/**
-     * Returns the next number from the file.
-     *
-     */
-    public double getNext() {
+	 * Returns the next number from the file.
+	 *
+	 */
+	public double getNext() {
 		String str = null;
 		try {
 			str = in.readLine();
@@ -80,9 +80,9 @@ public class ReplayerPar extends AbstractParameter implements Parameter {
 		return Double.parseDouble(str);
 	}
 
-    /**
-     * Used only for test.
-     */
+	/**
+	 * Used only for test.
+	 */
 	public static boolean test(String fileName) {
 		Log writer = new Log(fileName);
 		Exponential e = new Exponential();

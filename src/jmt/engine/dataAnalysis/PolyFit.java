@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * PolyFit.java
  *
@@ -35,9 +35,8 @@ import Jama.SingularValueDecomposition;
  */
 public class PolyFit {
 
-
 	/**
-     * fit:
+	 * fit:
 	 * returns the coefficients of the polynomial which best approximates f
 	 * (in the mean square error sense) for the given data.
 	 *  y = f(x).
@@ -56,18 +55,21 @@ public class PolyFit {
 		double[][] beta = new double[order + 1][1];
 		double[] poli = new double[order + 1];//values of y'
 
-		if ((y.length < ndata) || (x.length < ndata))
+		if ((y.length < ndata) || (x.length < ndata)) {
 			return a;
+		}
 
 		//create the matrix to solve to find the polynomial coefficient
 		poli[0] = 1;
 		for (int i = 0; i < ndata; i++) {
-			for (int j = 1; j <= order; j++)
+			for (int j = 1; j <= order; j++) {
 				poli[j] = Math.pow(x[i], j);//value of polynomial at x
+			}
 			for (int k = 0; k <= order; k++) {
 				beta[k][0] += y[i] * poli[k];
-				for (int j = 0; j <= order; j++)
+				for (int j = 0; j <= order; j++) {
 					alfa[k][j] += poli[k] * poli[j];
+				}
 			}
 		}
 
@@ -76,11 +78,11 @@ public class PolyFit {
 		Matrix mA = new Matrix(order + 1, 1);
 		mA = mAlfa.solve(mBeta);
 		beta = mA.getArrayCopy();
-		for (int i = 0; i <= order; i++)
+		for (int i = 0; i <= order; i++) {
 			a[i] = beta[i][0];
+		}
 		return a;
 	}
-
 
 	/** fitSVD:
 	 * returns the coefficients of the polynomial which best approximates f
@@ -98,8 +100,9 @@ public class PolyFit {
 	 * @param order the order of the polynomial
 	 */
 	public static double[] fitSVD(int ndata, double[] x, double[] y, double[] sd, int order) {
-		if ((y.length < ndata) || (x.length < ndata) || ((sd != null) && (sd.length < ndata)))
+		if ((y.length < ndata) || (x.length < ndata) || ((sd != null) && (sd.length < ndata))) {
 			throw new IllegalArgumentException("data paramenters incorrect too short vector");
+		}
 		Matrix A = new Matrix(ndata, order + 1);
 		double[] b = new double[ndata];
 		SingularValueDecomposition SVD;
@@ -114,12 +117,14 @@ public class PolyFit {
 
 		if (sd == null) {
 			sd = new double[ndata];
-			for (int i = 0; i < ndata; i++)
+			for (int i = 0; i < ndata; i++) {
 				sd[i] = 1;
+			}
 		}
 
-		for (int i = 0; i < ndata; i++)
+		for (int i = 0; i < ndata; i++) {
 			A.set(i, 0, 1 / sd[i]);
+		}
 		for (int i = 0; i < ndata; i++) {
 			xVal = 1;
 			yVal = 1;
@@ -138,22 +143,22 @@ public class PolyFit {
 		for (int j = 0; j <= order; j++) {
 			coeff[j] = 0;
 			if (w[j] > small) {
-				for (int i = 0; i < ndata; i++)
+				for (int i = 0; i < ndata; i++) {
 					coeff[j] += U[i][j] * b[i];
+				}
 				coeff[j] /= w[j];
 			}
 		}
 
 		for (int j = 0; j <= order; j++) {
 			a[j] = 0;
-			for (int k = 0; k <= order; k++)
+			for (int k = 0; k <= order; k++) {
 				a[j] += coeff[k] * V[k][j];
+			}
 		}
 
 		return a;
 	}
-
-	
 
 	/* writes some data in D:/java/ParameterAnalysis/provaPoly.dat
 	 *  then print some polynomial fit coefficients, You have to test them
@@ -161,7 +166,7 @@ public class PolyFit {
 	 *  @param  args the command line arguments
 	 */
 
-    /** tests the fitSVD method
+	/** tests the fitSVD method
 	 */
 	public static void testSVD() {
 		//Log l = new Log("D:/java/ParameterAnalysis/provaPoly.dat");
@@ -179,17 +184,17 @@ public class PolyFit {
 		for (order = 0; order < 10; order++) {
 			double[] a;
 			a = fitSVD(200, x, y, null, order);
-			for (int i = 0; i <= order; i++)
+			for (int i = 0; i <= order; i++) {
 				System.out.print(a[i] + "  ");
+			}
 			System.out.println();
 			a = fit(200, x, y, order);
-			for (int i = 0; i <= order; i++)
+			for (int i = 0; i <= order; i++) {
 				System.out.print(a[i] + "  ");
+			}
 			System.out.println();
 		}
 		//l.close();
 	}
-
-
 
 }

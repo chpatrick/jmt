@@ -15,15 +15,21 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.engine.NodeSections;
 
-import jmt.common.exception.NetException;
-import jmt.engine.QueueNet.*;
-import jmt.engine.random.engine.RandomEngine;
+package jmt.engine.NodeSections;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
+
+import jmt.common.exception.NetException;
+import jmt.engine.QueueNet.Job;
+import jmt.engine.QueueNet.JobClass;
+import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.NetEvent;
+import jmt.engine.QueueNet.NetMessage;
+import jmt.engine.QueueNet.NetNode;
+import jmt.engine.QueueNet.WaitingRequest;
+import jmt.engine.random.engine.RandomEngine;
 
 /**
  * This class implements a terminal: each class has a finite number of customers in
@@ -37,21 +43,19 @@ public class Terminal extends InputSection {
 	private boolean coolStart;//when is true the waitingjobs queue is void
 
 	//TODO: se riusciamo a convertire in job info list è meglio
-    private LinkedList waitingJobs; //job waiting to be sent to service section
+	private LinkedList waitingJobs; //job waiting to be sent to service section
 
-    private JobInfoList waitingRequests;
+	private JobInfoList waitingRequests;
 
 	private int jobsPerClass[]; //number of jobs per class
 
-    private final static boolean DEBUG = false;
+	private final static boolean DEBUG = false;
 
-
-
-    /**
-     * Creates a terminal
-     * @param jobsPerClass number of jobs for each class
-     */
-    public Terminal(int[] jobsPerClass) {
+	/**
+	 * Creates a terminal
+	 * @param jobsPerClass number of jobs for each class
+	 */
+	public Terminal(int[] jobsPerClass) {
 		super();
 		waitingJobs = new LinkedList();
 		coolStart = true;
@@ -60,17 +64,17 @@ public class Terminal extends InputSection {
 			this.jobsPerClass[c] = jobsPerClass[c];
 		}
 
-        //NEW
-        //@author Stefano Omini
-        //log = NetSystem.getLog();
-        //end NEW
+		//NEW
+		//@author Stefano Omini
+		//log = NetSystem.getLog();
+		//end NEW
 	}
 
-    /**
-     * Creates a terminal
-     * @param jobsPerClass number of jobs for each class
-     */
-    public Terminal(Integer[] jobsPerClass) {
+	/**
+	 * Creates a terminal
+	 * @param jobsPerClass number of jobs for each class
+	 */
+	public Terminal(Integer[] jobsPerClass) {
 		super();
 		waitingJobs = new LinkedList();
 		coolStart = true;
@@ -79,15 +83,13 @@ public class Terminal extends InputSection {
 			this.jobsPerClass[c] = jobsPerClass[c].intValue();
 		}
 
-        //NEW
-        //@author Stefano Omini
-        //log = NetSystem.getLog();
-        //end NEW
+		//NEW
+		//@author Stefano Omini
+		//log = NetSystem.getLog();
+		//end NEW
 	}
 
-
-
-    protected void nodeLinked(NetNode node) {
+	protected void nodeLinked(NetNode node) {
 		// Sets netnode dependent properties
 		waitingRequests = new JobInfoList(getJobClasses().size(), true);
 		//TODO: togliere??
@@ -95,170 +97,161 @@ public class Terminal extends InputSection {
 		//	jobsList = new JobInfoList(getJobClasses().size(), true);
 	}
 
-
-    protected int process(NetMessage message) throws NetException {
+	protected int process(NetMessage message) throws NetException {
 		Job job;
 		int c;
 		switch (message.getEvent()) {
 
+			case NetEvent.EVENT_START:
 
-            case NetEvent.EVENT_START:
-
-                //case EVENT_START:
-                //the terminal creates all the jobs requested by each class.
-                //for each job created, it sends to itself a message with delay 0
+				//case EVENT_START:
+				//the terminal creates all the jobs requested by each class.
+				//for each job created, it sends to itself a message with delay 0
 
 				//log.write(NetLog.LEVEL_RELEASE, null, this, NetLog.EVENT_START);
 				ListIterator jobClasses = getJobClasses().listIterator();
 				JobClass jobClass;
 
-                //generator of random numbers (uses the same engine of
-                //distributions and strategies) used to mix the order of
-                //leaving jobs, otherwise they leave in order of class
-                //(i.e. c1, c1, c1, ...c2, c2, c2, ... c3....)
-                RandomEngine randomEng = RandomEngine.makeDefault();
+				//generator of random numbers (uses the same engine of
+				//distributions and strategies) used to mix the order of
+				//leaving jobs, otherwise they leave in order of class
+				//(i.e. c1, c1, c1, ...c2, c2, c2, ... c3....)
+				RandomEngine randomEng = RandomEngine.makeDefault();
 
-                //delay used to mix leaving order
-                double mixRandomDelay = 0.0;
+				//delay used to mix leaving order
+				double mixRandomDelay = 0.0;
 
 				while (jobClasses.hasNext()) {
 					jobClass = (JobClass) jobClasses.next();
 
-                    //NEW
-                    //@author Stefano Omini
-                    if (jobClass.getType() == JobClass.OPEN_CLASS) {
-                        //open class: no jobs to be generated
-                        continue;
-                    }
-                    //end NEW
+					//NEW
+					//@author Stefano Omini
+					if (jobClass.getType() == JobClass.OPEN_CLASS) {
+						//open class: no jobs to be generated
+						continue;
+					}
+					//end NEW
 
 					c = jobClass.getId();
 
-					if (jobsPerClass != null){
+					if (jobsPerClass != null) {
 
-                        //terminal of a closed system
-                        //generates all the jobs
-                        for (int i = 0; i < jobsPerClass[c]; i++) {
-                            //note that if jobsPerClass[c] = -1 (open class) the instructions
-                            //of this for are not performed
+						//terminal of a closed system
+						//generates all the jobs
+						for (int i = 0; i < jobsPerClass[c]; i++) {
+							//note that if jobsPerClass[c] = -1 (open class) the instructions
+							//of this for are not performed
 
-                            //each job is created and sent to the terminal itself
+							//each job is created and sent to the terminal itself
 							job = new Job(jobClass);
 
-                            //OLD
-                            // the delay of departure is set to 0
-                            //sendMe(job, 0);
+							//OLD
+							// the delay of departure is set to 0
+							//sendMe(job, 0);
 
-                            //NEW
-                            //@author Stefano Omini
-                            //sets a random (very small) delay to mix the jobs
-                            //of different classes
+							//NEW
+							//@author Stefano Omini
+							//sets a random (very small) delay to mix the jobs
+							//of different classes
 
-                            //mixRandomDelay = (randomEng.nextDouble()) * 0.00001;
-                            mixRandomDelay = (randomEng.raw()) * 0.00001;
+							//mixRandomDelay = (randomEng.nextDouble()) * 0.00001;
+							mixRandomDelay = (randomEng.raw()) * 0.00001;
 
-                            sendMe(job, mixRandomDelay);
-                            //end NEW
+							sendMe(job, mixRandomDelay);
+							//end NEW
 
-                            //log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_CREATED);
+							//log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_CREATED);
 						}
-                    }
+					}
 				}
 				break;
 
-            case NetEvent.EVENT_JOB:
+			case NetEvent.EVENT_JOB:
 
-                //case EVENT_JOB
-                //if coolStart=false adds the job to the list of waiting jobs.
-                //
-                //if coolStart=true (no waiting jobs) checks the source
-                //If the message has been received from the terminal itself, the job's
-                //bornTime is set, then the job is forwarded. Otherwise, if it has been
-                //received from the outside, an ack message is sent to the source of the
-                //message, the job's bornTime is set, then the job is forwarded.
-                //
+				//case EVENT_JOB
+				//if coolStart=false adds the job to the list of waiting jobs.
+				//
+				//if coolStart=true (no waiting jobs) checks the source
+				//If the message has been received from the terminal itself, the job's
+				//bornTime is set, then the job is forwarded. Otherwise, if it has been
+				//received from the outside, an ack message is sent to the source of the
+				//message, the job's bornTime is set, then the job is forwarded.
+				//
 
 				//log.write(NetLog.LEVEL_DEBUG, message.getJob(), this, NetLog.JOB_IN);
 
 				// Gets the job from the message
 				job = message.getJob();
 
-                //TODO: serve questa coolStart????
-                if (coolStart) {
-                    //the queue of waiting jobs is empty
+				//TODO: serve questa coolStart????
+				if (coolStart) {
+					//the queue of waiting jobs is empty
 
-                    if (message.getSource() == this.getOwnerNode()
-                            && message.getSourceSection() == this.getSectionID()) {
+					if (message.getSource() == this.getOwnerNode() && message.getSourceSection() == this.getSectionID()) {
 
-                        //message sent by the terminal itself
-                        job.born();
-                        sendForward(job, 0.0);
+						//message sent by the terminal itself
+						job.born();
+						sendForward(job, 0.0);
 
-                        //log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
+						//log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
 
-                        coolStart = false;
+						coolStart = false;
 
-                        return MSG_PROCESSED;
-                    } else {
+						return MSG_PROCESSED;
+					} else {
 
-                        //job received from the outside
+						//job received from the outside
 
-                        //send an ack
-                        send(NetEvent.EVENT_ACK, job, 0.0,
-                                message.getSourceSection(),
-                                message.getSource());
+						//send an ack
+						send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
 
+						//job goes on
+						job.born();
+						sendForward(job, 0.0);
 
-                        //job goes on
-                        job.born();
-                        sendForward(job, 0.0);
+						//log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
 
-                        //log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
+						coolStart = false;
 
-                        coolStart = false;
+						return MSG_PROCESSED;
 
-                        return MSG_PROCESSED;
+					}
 
-                    }
+				} else {
+					//coolStart is false: there are waiting jobs. Add the received job.
+					waitingRequests.add(new WaitingRequest(message.getSource(), message.getSourceSection(), job));
+				}
+				break;
 
-                } else {
-                    //coolStart is false: there are waiting jobs. Add the received job.
-                    waitingRequests.add(new WaitingRequest(
-								        message.getSource(),
-								        message.getSourceSection(),
-								        job));
-                }
-                break;
+			case NetEvent.EVENT_ACK:
 
-            case NetEvent.EVENT_ACK:
+				//case EVENT_ACK:
+				//if there are waiting jobs, takes the first, set its bornTime and
+				//forwards it to the service section.
+				//then it creates a new job and sends to itself a message whose delay is the time of
+				//departure of that job.
+				//otherwise, if there are no waiting jobs, sets coolstart=true
 
-                //case EVENT_ACK:
-                //if there are waiting jobs, takes the first, set its bornTime and
-                //forwards it to the service section.
-                //then it creates a new job and sends to itself a message whose delay is the time of
-                //departure of that job.
-                //otherwise, if there are no waiting jobs, sets coolstart=true
-
-                if (waitingRequests.size() != 0) {
+				if (waitingRequests.size() != 0) {
 					WaitingRequest wr;
 					wr = (WaitingRequest) waitingRequests.removeFirst();
 
-                    if (!isMyOwnerNode(wr.getNode())) {
+					if (!isMyOwnerNode(wr.getNode())) {
 						send(NetEvent.EVENT_ACK, wr.getJob(), 0.0, wr.getSection(), wr.getNode());
 
-                        //log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
+						//log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
 					}
 
-                    Job jobSent = wr.getJob();
+					Job jobSent = wr.getJob();
 					sendForward(jobSent, 0.0);
 
-                    //log.write(NetLog.LEVEL_DEBUG, jobSent, this, NetLog.JOB_OUT);
-                } else {
+					//log.write(NetLog.LEVEL_DEBUG, jobSent, this, NetLog.JOB_OUT);
+				} else {
 					coolStart = true;
-                }
+				}
 				break;
 
-            default:
+			default:
 				return MSG_NOT_PROCESSED;
 		}
 		return MSG_PROCESSED;

@@ -14,9 +14,9 @@
 // IMPLIED, INCLUDING, WITHOUT LIMITATION, WARRANTY OF MERCHANTABILITY OR
 // FITNESS FOR A PARTICULAR PURPOSE.
 package jmt.engine.jaba.Hull;
+
 import java.util.Enumeration;
 import java.util.Vector;
-
 
 /**
  * A class representing a polygon
@@ -24,91 +24,74 @@ import java.util.Vector;
  * @author  Chris Pudney <cpudney@alphapharm.pharm.uwa.edu.au>
  * @version 1.1
  */
-public class Polygon
-{
-  /** 
-   * The set of vertices representing the polygon.  The vertices must
-   * be stored in the vector in the order in which they define polygon
-   * perimeter.  For planar polygons this should be clockwise with
-   * respect to the outwards pointing normal.
-   */
-  private Vector vertices;	// Polygon vertices
+public class Polygon {
+	/** 
+	 * The set of vertices representing the polygon.  The vertices must
+	 * be stored in the vector in the order in which they define polygon
+	 * perimeter.  For planar polygons this should be clockwise with
+	 * respect to the outwards pointing normal.
+	 */
+	private Vector vertices; // Polygon vertices
 
-
-  /**
-   * Construct a polygon with no vertices.
-   */
-  public Polygon()
-    {
-      vertices = new Vector();
-    }
-
-
-  /**
-   * Construct a polygon given a list of vertices.
-   *
-   * @param v  the list of vertices
-   */
-  public Polygon(Vector v)
-    {
-      vertices = v;
-    }
-
-  /**
-   * Reverse the order of the vertices that define a contour
-   */
-  public void reverse()
-    {
-      /* Add vertices in reverse order */
-      Vector vertices = getVertices();
-      int size = vertices.size();
-      for (int i = 1;
-	   i < size;
-	   i++)
-	{
-	  vertices.insertElementAt(vertices.elementAt(i), 0);
-	  vertices.removeElementAt(i + 1);
+	/**
+	 * Construct a polygon with no vertices.
+	 */
+	public Polygon() {
+		vertices = new Vector();
 	}
-    }
-  
-  /**
-   * Get the vertices of a polygon.
-   *
-   * @return Returns a vector p
-   */
-  public Vector getVertices()
-    {
-      return vertices;
-    }
 
-
-  /**
-    * Returns the next vertex of a polygon
-    *
-    * @param v  the vertex
-    * @return   the vertex following v, or null if v is not a vertex of the
-    *           polygon
-    */
-  public Vertex nextVertex(Vertex v)
-    {
-      int ind = vertices.indexOf(v);
-      return (Vertex)(ind == -1 ?
-	null : vertices.elementAt((ind + 1) % vertices.size()));
-    }
-
-
-  /**
-   * Returns a string describing a polygon.
-   */
-  public String toString()
-    { 
-      String s = new String();
-
-      for (Enumeration e = getVertices().elements();
-	   e.hasMoreElements();)
-	{
-	  s += e.nextElement();
+	/**
+	 * Construct a polygon given a list of vertices.
+	 *
+	 * @param v  the list of vertices
+	 */
+	public Polygon(Vector v) {
+		vertices = v;
 	}
-      return s;
-    }
+
+	/**
+	 * Reverse the order of the vertices that define a contour
+	 */
+	public void reverse() {
+		/* Add vertices in reverse order */
+		Vector vertices = getVertices();
+		int size = vertices.size();
+		for (int i = 1; i < size; i++) {
+			vertices.insertElementAt(vertices.elementAt(i), 0);
+			vertices.removeElementAt(i + 1);
+		}
+	}
+
+	/**
+	 * Get the vertices of a polygon.
+	 *
+	 * @return Returns a vector p
+	 */
+	public Vector getVertices() {
+		return vertices;
+	}
+
+	/**
+	  * Returns the next vertex of a polygon
+	  *
+	  * @param v  the vertex
+	  * @return   the vertex following v, or null if v is not a vertex of the
+	  *           polygon
+	  */
+	public Vertex nextVertex(Vertex v) {
+		int ind = vertices.indexOf(v);
+		return (Vertex) (ind == -1 ? null : vertices.elementAt((ind + 1) % vertices.size()));
+	}
+
+	/**
+	 * Returns a string describing a polygon.
+	 */
+	public String toString() {
+		String s = new String();
+
+		for (Enumeration e = getVertices().elements(); e.hasMoreElements();) {
+			s += e.nextElement();
+		}
+		return s;
+	}
 }

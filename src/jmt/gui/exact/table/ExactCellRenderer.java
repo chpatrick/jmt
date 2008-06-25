@@ -15,22 +15,28 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.table;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.text.NumberFormatter;
-import java.awt.*;
+import java.awt.Component;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
+
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.text.NumberFormatter;
 
 /**
  * A CellRenderer displaying numbers and string with correct alignment and format
  */
 public class ExactCellRenderer extends DefaultTableCellRenderer {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static DecimalFormatSymbols dfs = new DecimalFormatSymbols();
 
 	static {
@@ -42,33 +48,33 @@ public class ExactCellRenderer extends DefaultTableCellRenderer {
 
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
-        //Federico Dall'Orso 22/6/2005
-        //OLD
+		//Federico Dall'Orso 22/6/2005
+		//OLD
 		/* called side effects
 		super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
 		/* adjust alignment */
 		/*
-        if (value instanceof Number) {
+		if (value instanceof Number) {
 			setHorizontalAlignment(SwingConstants.RIGHT);
 		} else {
 			setHorizontalAlignment(SwingConstants.CENTER);
 		}
 
 		return this;
-        */
-        //NEW
-        if (value instanceof Number) {
+		*/
+		//NEW
+		if (value instanceof Number) {
 			super.setHorizontalAlignment(SwingConstants.RIGHT);
-        }else if(value instanceof Boolean){
-            return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-		}else {
-            super.setHorizontalAlignment(SwingConstants.CENTER);
+		} else if (value instanceof Boolean) {
+			return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+		} else {
+			super.setHorizontalAlignment(SwingConstants.CENTER);
 		}
-        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+		Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
 		return c;
-        //END Federico Dall'Orso
+		//END Federico Dall'Orso
 	}
 
 	public void setValue(Object o) {

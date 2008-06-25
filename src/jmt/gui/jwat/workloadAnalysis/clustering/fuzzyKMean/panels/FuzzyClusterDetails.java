@@ -25,6 +25,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
@@ -40,12 +42,16 @@ import jmt.gui.common.CommonConstants;
 import jmt.gui.jwat.workloadAnalysis.chart.FuzzyKSingleClusterScatter;
 
 public class FuzzyClusterDetails extends JPanel implements CommonConstants {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JButton loadInfo;
 	private JButton saveInfo;
 	private JTextArea infoCluster;
 	private ModelWorkloadAnalysis model;
 	private WorkloadAnalysisSession session;
-	
+
 	private JComboBox xVar;
 	private JComboBox yVar;
 	private SingleScatter panel;
@@ -53,43 +59,46 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 	private int match = 0;
 	private int clustering;
 	private boolean redraw = true;
-	
-	public FuzzyClusterDetails(WorkloadAnalysisSession m,int clustering,int cluster){
-		this.model = (ModelWorkloadAnalysis)m.getDataModel();
-		this.session=m;
+
+	public FuzzyClusterDetails(WorkloadAnalysisSession m, int clustering, int cluster) {
+		this.model = (ModelWorkloadAnalysis) m.getDataModel();
+		this.session = m;
 		this.clustering = clustering;
 		this.cluster = cluster;
 		initPanel();
 	}
-	
-	public void setCluster(int value){
-		this.match = value+2;
+
+	public void setCluster(int value) {
+		this.match = value + 2;
 		infoCluster.setText("");
 		redraw = true;
 		panel.repaint();
 	}
-	
-	private void initPanel(){
+
+	private void initPanel() {
 		setLayout(new BorderLayout());
 		setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Single cluster details"));
 		panel = new SingleScatter();
-		
+
 		infoCluster = new JTextArea();
 		infoCluster.setEditable(false);
-		infoCluster.setFont(new Font(infoCluster.getFont().getName(),infoCluster.getFont().getStyle(),infoCluster.getFont().getSize()+1));
-		
-		JScrollPane sp = new JScrollPane(infoCluster,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		
+		infoCluster.setFont(new Font(infoCluster.getFont().getName(), infoCluster.getFont().getStyle(), infoCluster.getFont().getSize() + 1));
+
+		JScrollPane sp = new JScrollPane(infoCluster, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
 		loadInfo = new JButton("Show Obser.");
-		loadInfo.addActionListener(new ActionListener(){
+		loadInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int ret=JOptionPane.showConfirmDialog(FuzzyClusterDetails.this,"This operation may require several minutes, continue? ","Warning!!",JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE);
-				if(ret==JOptionPane.YES_OPTION){
+				int ret = JOptionPane.showConfirmDialog(FuzzyClusterDetails.this, "This operation may require several minutes, continue? ",
+						"Warning!!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+				if (ret == JOptionPane.YES_OPTION) {
 					Observation[] o = model.getMatrix().getVariables()[0].getCurObs();
 					String s = "";
-					short[] c1 = ((ClusteringInfosFuzzy)((FuzzyKMean)session.getListOfClustering().get(clustering)).getClusteringInfos(cluster-2)).getAssignment();
-					for(int i = 0 ; i < o.length;i++){
-						if(c1[o[i].getID()-1] == match){
+					short[] c1 = ((ClusteringInfosFuzzy) ((FuzzyKMean) session.getListOfClustering().get(clustering)).getClusteringInfos(cluster - 2))
+							.getAssignment();
+					for (int i = 0; i < o.length; i++) {
+						if (c1[o[i].getID() - 1] == match) {
 							s += o[i].toString() + "\n";
 						}
 					}
@@ -99,102 +108,105 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 		});
 		saveInfo = new JButton("Save Info");
 		saveInfo.setEnabled(false);
-		
-		JPanel combos = new JPanel(new GridLayout(2,1));
+
+		JPanel combos = new JPanel(new GridLayout(2, 1));
 		xVar = new JComboBox(model.getMatrix().getVariableNames());
 		yVar = new JComboBox(model.getMatrix().getVariableNames());
 		xVar.setSelectedIndex(0);
-		if(model.getMatrix().getVariableNames().length > 1)	yVar.setSelectedIndex(1);
-		else yVar.setSelectedIndex(0);
-		xVar.addActionListener(new ActionListener(){
+		if (model.getMatrix().getVariableNames().length > 1) {
+			yVar.setSelectedIndex(1);
+		} else {
+			yVar.setSelectedIndex(0);
+		}
+		xVar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				redraw = true;
 				panel.repaint();
 			}
 		});
-		yVar.addActionListener(new ActionListener(){
+		yVar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				redraw = true;
 				panel.repaint();
 			}
 		});
-		xVar.setPreferredSize(new Dimension(80,18));
+		xVar.setPreferredSize(new Dimension(80, 18));
 		JPanel uno = new JPanel();
 		uno.add(new JLabel("X: "));
 		uno.add(xVar);
 		JPanel due = new JPanel();
 		due.add(new JLabel("Y: "));
-		yVar.setPreferredSize(new Dimension(80,18));
+		yVar.setPreferredSize(new Dimension(80, 18));
 		due.add(yVar);
 		combos.add(uno);
 		combos.add(due);
-		
+
 		JPanel left = new JPanel(new BorderLayout());
 		JPanel graph = new JPanel();
-		
+
 		JPanel t = new JPanel(new BorderLayout());
 		JPanel buttons = new JPanel(new FlowLayout());
 		loadInfo.setPreferredSize(DIM_BUTTON_S);
-		loadInfo.addActionListener(new ActionListener(){
+		loadInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 			}
 		});
 		buttons.add(loadInfo);
-		
+
 		saveInfo.setPreferredSize(DIM_BUTTON_S);
-		saveInfo.addActionListener(new ActionListener(){
+		saveInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 			}
 		});
 		buttons.add(saveInfo);
-		
-		t.add(sp,BorderLayout.CENTER);
-		t.add(buttons,BorderLayout.SOUTH);
-		
-		add(t,BorderLayout.CENTER);
-		left.add(panel,BorderLayout.CENTER);
-		left.add(combos,BorderLayout.SOUTH);
-		add(left,BorderLayout.WEST);
+
+		t.add(sp, BorderLayout.CENTER);
+		t.add(buttons, BorderLayout.SOUTH);
+
+		add(t, BorderLayout.CENTER);
+		left.add(panel, BorderLayout.CENTER);
+		left.add(combos, BorderLayout.SOUTH);
+		add(left, BorderLayout.WEST);
 	}
-	
-	private class SingleScatter extends JPanel{
+
+	private class SingleScatter extends JPanel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 		private int WIDTH = 100;
 		private int HEIGHT = 100;
-		private BufferedImage graph = new BufferedImage(WIDTH,HEIGHT,BufferedImage.TYPE_INT_RGB);
-		
-		public SingleScatter(){
-			setPreferredSize(new Dimension(WIDTH+4,HEIGHT+4));
+		private BufferedImage graph = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+
+		public SingleScatter() {
+			setPreferredSize(new Dimension(WIDTH + 4, HEIGHT + 4));
 			setCursor(new Cursor(Cursor.HAND_CURSOR));
-			addMouseListener(new MouseListener(){
+			addMouseListener(new MouseListener() {
 
 				public void mouseClicked(MouseEvent e) {
-					if(e.getClickCount() == 2){
+					if (e.getClickCount() == 2) {
 						final JFrame f = new JFrame();
-						
+
 						JWatWorkloadManager.addJMTWindow(f);
-						f.addWindowListener(new WindowAdapter(){
-							public void windowClosing(WindowEvent e){
+						f.addWindowListener(new WindowAdapter() {
+							public void windowClosing(WindowEvent e) {
 								JWatWorkloadManager.exit(f);
 							}
-							public void windowClosed(WindowEvent e){
+
+							public void windowClosed(WindowEvent e) {
 								JWatWorkloadManager.exit(f);
 							}
 						});
-						
-						f.setSize(640,690);
+
+						f.setSize(640, 690);
 						f.setTitle("Single cluster Fuzzy K-Means scatter plot");
-						f.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-						f.setContentPane(new FuzzyKSingleClusterScatter(xVar.getSelectedIndex(),
-								yVar.getSelectedIndex(),
-								session,
-								f,
-								clustering,
-								cluster-2,
-								match));
+						f.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+						f.setContentPane(new FuzzyKSingleClusterScatter(xVar.getSelectedIndex(), yVar.getSelectedIndex(), session, f, clustering,
+								cluster - 2, match));
 						f.setVisible(true);
-										
+
 					}
 				}
 
@@ -209,49 +221,47 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 
 				public void mouseReleased(MouseEvent e) {
 				}
-				
+
 			});
 		}
-		
-		public void paint(Graphics g){
+
+		public void paint(Graphics g) {
 			super.paint(g);
 			//Draw Black rectangle
-			Graphics2D g1 = (Graphics2D)g;
+			Graphics2D g1 = (Graphics2D) g;
 			//Sfondo Bianco
 			g1.setColor(Color.WHITE);
-			g1.fillRect(0,0,WIDTH+3,HEIGHT+3);
+			g1.fillRect(0, 0, WIDTH + 3, HEIGHT + 3);
 			//Bordi neri
 			g1.setColor(Color.BLACK);
-			g1.drawLine(1,1,1,HEIGHT+1);
-			g1.drawLine(1,1,WIDTH+1,1);
-			g1.drawLine(1,HEIGHT+1,WIDTH+1,HEIGHT+1);
-			g1.drawLine(WIDTH+1,1,WIDTH+1,HEIGHT+1);
-			if(redraw){
-				Graphics2D g2 = (Graphics2D)graph.getGraphics();
+			g1.drawLine(1, 1, 1, HEIGHT + 1);
+			g1.drawLine(1, 1, WIDTH + 1, 1);
+			g1.drawLine(1, HEIGHT + 1, WIDTH + 1, HEIGHT + 1);
+			g1.drawLine(WIDTH + 1, 1, WIDTH + 1, HEIGHT + 1);
+			if (redraw) {
+				Graphics2D g2 = (Graphics2D) graph.getGraphics();
 				VariableNumber x = model.getMatrix().getVariables()[xVar.getSelectedIndex()];
 				VariableNumber y = model.getMatrix().getVariables()[yVar.getSelectedIndex()];
 				int row = yVar.getSelectedIndex();
-				short[] c1 = ((ClusteringInfosFuzzy)((FuzzyKMean)session.getListOfClustering().get(clustering)).getClusteringInfos(cluster-2)).getAssignment();
+				short[] c1 = ((ClusteringInfosFuzzy) ((FuzzyKMean) session.getListOfClustering().get(clustering)).getClusteringInfos(cluster - 2))
+						.getAssignment();
 				g2.setColor(Color.WHITE);
-				g2.fillRect(1,1,WIDTH-1,HEIGHT-1);
+				g2.fillRect(1, 1, WIDTH - 1, HEIGHT - 1);
 				//Calcolo del passo del grafico
-				double yFoot = (HEIGHT-1)/ y.getUniStats().getRangeValue();
-				for(int i=1;i<=WIDTH-1;i++)
-				{
+				double yFoot = (HEIGHT - 1) / y.getUniStats().getRangeValue();
+				for (int i = 1; i <= WIDTH - 1; i++) {
 					boolean[] done = new boolean[101];
 					int k = 1;
 					//System.err.println("STart interval : " + x.getStartInt(i) + " end : " + x.getEndInt(i));
-					for(int j=x.getStartInt(i);j<x.getEndInt(i);j++)
-					{
-						if((int)((x.getValue(j,row) - y.getUniStats().getMinValue()) * yFoot)>= 0){
+					for (int j = x.getStartInt(i); j < x.getEndInt(i); j++) {
+						if ((int) ((x.getValue(j, row) - y.getUniStats().getMinValue()) * yFoot) >= 0) {
 							//System.err.println(x.getValue(j,row) +" " + y.getUniStats().getMinValue() +" " + yFoot);
-							if(!done[(int)((x.getValue(j,row) - y.getUniStats().getMinValue()) * yFoot)])
-							{
-								if(c1[x.getObsID(j)-1] == match){
-									g2.setColor(JavaWatColor.getColor(c1[x.getObsID(j)-1]));
-									g2.fillOval(i,HEIGHT - ((int)(((x.getValue(j,row) - y.getUniStats().getMinValue())) * yFoot)),1,1);
+							if (!done[(int) ((x.getValue(j, row) - y.getUniStats().getMinValue()) * yFoot)]) {
+								if (c1[x.getObsID(j) - 1] == match) {
+									g2.setColor(JavaWatColor.getColor(c1[x.getObsID(j) - 1]));
+									g2.fillOval(i, HEIGHT - ((int) (((x.getValue(j, row) - y.getUniStats().getMinValue())) * yFoot)), 1, 1);
 								}
-								done[(int)((x.getValue(j,row) - y.getUniStats().getMinValue()) * yFoot)] = true;
+								done[(int) ((x.getValue(j, row) - y.getUniStats().getMinValue()) * yFoot)] = true;
 							}
 						}
 					}
@@ -259,8 +269,8 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 				redraw = false;
 				repaint();
 			}
-			g1.drawImage(graph,1,1,null);
-			
+			g1.drawImage(graph, 1, 1, null);
+
 		}
 	}
 

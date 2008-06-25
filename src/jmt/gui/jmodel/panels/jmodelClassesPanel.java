@@ -15,8 +15,15 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.panels;
+
+import java.awt.Color;
+
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 import jmt.framework.gui.table.editors.ButtonCellEditor;
 import jmt.framework.gui.table.editors.ColorCellEditor;
@@ -26,11 +33,6 @@ import jmt.gui.jmodel.JMODELConstants;
 import jmt.gui.jmodel.definitions.JmodelClassDefinition;
 import jmt.gui.jmodel.definitions.JmodelStationDefinition;
 import jmt.gui.jsim.panels.ClassesPanel;
-
-import javax.swing.*;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
 
 /**
  * <p>Title: JModel User Classes Panel</p>
@@ -45,127 +47,151 @@ import java.awt.*;
  *         Time: 9.42.15
  */
 public class jmodelClassesPanel extends ClassesPanel implements JMODELConstants {
-    protected JmodelClassDefinition classdefinition;
-    protected JmodelStationDefinition stationdefinition;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected JmodelClassDefinition classdefinition;
+	protected JmodelStationDefinition stationdefinition;
 
-    protected ImagedComboBoxCellEditorFactory stations;
+	protected ImagedComboBoxCellEditorFactory stations;
 
-    /**
-     * Construct a new jmodelClassesPanel
-     * @param cd a reference to the underlayng data structure
-     */
-    public jmodelClassesPanel(JmodelClassDefinition cd, JmodelStationDefinition sd) {
-        super();
-        classdefinition = cd;
-        stationdefinition = sd;
-        stations = new ImagedComboBoxCellEditorFactory(sd);
-        classTable = new jmodelClassTable();
-        initComponents();
-        classTable.getTableHeader().setReorderingAllowed(false);
-        setData(cd);
-    }
+	/**
+	 * Construct a new jmodelClassesPanel
+	 * @param cd a reference to the underlayng data structure
+	 */
+	public jmodelClassesPanel(JmodelClassDefinition cd, JmodelStationDefinition sd) {
+		super();
+		classdefinition = cd;
+		stationdefinition = sd;
+		stations = new ImagedComboBoxCellEditorFactory(sd);
+		classTable = new jmodelClassTable();
+		initComponents();
+		classTable.getTableHeader().setReorderingAllowed(false);
+		setData(cd);
+	}
 
-    /**Sets data model for this panel.
-     * Instantly all of the panel components are assigned their specific value.
-     * @param cd: data for class definition.*/
-    public void setData(ClassDefinition cd){
-        data = cd;
-        classTable.setModel(new jmodelClassTableModel());
-        classNumSpinner.setValue(new Integer(data.getClassKeys().size()));
-    }
+	/**Sets data model for this panel.
+	 * Instantly all of the panel components are assigned their specific value.
+	 * @param cd: data for class definition.*/
+	public void setData(ClassDefinition cd) {
+		data = cd;
+		classTable.setModel(new jmodelClassTableModel());
+		classNumSpinner.setValue(new Integer(data.getClassKeys().size()));
+	}
 
-    /**
-     * Adds a new class
-     */
-    protected void addClass(){
-        classdefinition.addClass();
-        refreshComponents();
-    }
+	/**
+	 * Adds a new class
+	 */
+	protected void addClass() {
+		classdefinition.addClass();
+		refreshComponents();
+	}
 
-    /**
-     * Overrides ClassTable. It is a table containing class parameters.
-     * Added suppport for "Color" column and rererence station combobox
-     */
-    protected class jmodelClassTable extends ClassTable{
-        public jmodelClassTable() {
-            super();
-            columnSizes = new int[]{8,100,60,28,38,140,39,90,18};
-        }
+	/**
+	 * Overrides ClassTable. It is a table containing class parameters.
+	 * Added suppport for "Color" column and rererence station combobox
+	 */
+	protected class jmodelClassTable extends ClassTable {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-        public TableCellRenderer getCellRenderer(int row, int column){
-            if (column == 0)
-                return new ColorCellEditor();
-            else if (column == 2)
-                return super.getCellRenderer(row, 1);
-            else if (column == 6){
-                /*if distribution column contains null value, no editor must be displayed,
-                as this class is a closed one (e.g. described by population)*/
-                if(getValueAt(row, column-1) != null){
-                    return new ButtonCellEditor(editDistributionButton);
-                }else{
-                    return getDefaultRenderer(String.class);
-                }
-            }
-            // Column for refercence source
-            else if (column == 7)
-                return stations.getRenderer();
-            // Addition of column that contains delete buttons
-            else if(column == 8) return new ButtonCellEditor(deleteButton);
-            else return getDefaultRenderer(getModel().getColumnClass(column));
-        }
+		public jmodelClassTable() {
+			super();
+			columnSizes = new int[] { 8, 100, 60, 28, 38, 140, 39, 90, 18 };
+		}
 
-        public TableCellEditor getCellEditor(int row, int column){
-            if (column == 0)
-                return new ColorCellEditor();
-            else if(column == 6 && getValueAt(row, column-1) != null){
-                return new ButtonCellEditor(new JButton(editDistribution));
-            }
-            else if (column == 7 && getValueAt(row, 2).equals("Open"))
-                return stations.getEditor(stationdefinition.getStationKeysSource());
-            else if (column == 7 && getValueAt(row, 2).equals("Closed"))
-                return stations.getEditor(stationdefinition.getStationKeysNoSourceSink());
-            else if (column == 8)
-                return new ButtonCellEditor(new JButton(deleteClass));
-            else return super.getCellEditor(row, column - 1);
-        }
-    }
+		public TableCellRenderer getCellRenderer(int row, int column) {
+			if (column == 0) {
+				return new ColorCellEditor();
+			} else if (column == 2) {
+				return super.getCellRenderer(row, 1);
+			} else if (column == 6) {
+				/*if distribution column contains null value, no editor must be displayed,
+				as this class is a closed one (e.g. described by population)*/
+				if (getValueAt(row, column - 1) != null) {
+					return new ButtonCellEditor(editDistributionButton);
+				} else {
+					return getDefaultRenderer(String.class);
+				}
+			}
+			// Column for refercence source
+			else if (column == 7) {
+				return stations.getRenderer();
+			} else if (column == 8) {
+				return new ButtonCellEditor(deleteButton);
+			} else {
+				return getDefaultRenderer(getModel().getColumnClass(column));
+			}
+		}
 
-    /**
-     * Define a custom table model. Overrides ClassTableModel to add support for "Color" column
-     */
-    protected class jmodelClassTableModel extends ClassTableModel{
-        public jmodelClassTableModel() {
-            super();
-            columnNames = new String[]{"Color","Name", "Type", "Priority",
-                                            "Population", "Interarrival Time Distribution", "",
-                                            "Reference Station", ""};
-            colClasses = new Class[]{Color.class, String.class, JComboBox.class, String.class,
-                                         String.class, String.class, Object.class,
-                                         JComboBox.class, JButton.class};
-        }
+		public TableCellEditor getCellEditor(int row, int column) {
+			if (column == 0) {
+				return new ColorCellEditor();
+			} else if (column == 6 && getValueAt(row, column - 1) != null) {
+				return new ButtonCellEditor(new JButton(editDistribution));
+			} else if (column == 7 && getValueAt(row, 2).equals("Open")) {
+				return stations.getEditor(stationdefinition.getStationKeysSource());
+			} else if (column == 7 && getValueAt(row, 2).equals("Closed")) {
+				return stations.getEditor(stationdefinition.getStationKeysNoSourceSink());
+			} else if (column == 8) {
+				return new ButtonCellEditor(new JButton(deleteClass));
+			} else {
+				return super.getCellEditor(row, column - 1);
+			}
+		}
+	}
 
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            if (columnIndex == 0)
-                return classdefinition.getClassColor(classdefinition.getClassKeys().get(rowIndex));
-            else if (columnIndex == 7)
-                return classdefinition.getClassRefStation(classdefinition.getClassKeys().get(rowIndex));
-            else
-                return super.getValueAt(rowIndex, columnIndex - 1);
-        }
-        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            if (columnIndex == 0)
-                classdefinition.setClassColor(classdefinition.getClassKeys().get(rowIndex), (Color) aValue);
-            else if (columnIndex == 7) {
-                classdefinition.setClassRefStation(classdefinition.getClassKeys().get(rowIndex), aValue);
-            }
-            else
-                super.setValueAt(aValue, rowIndex, columnIndex - 1);
-        }
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            if(columnIndex == 4 && (getValueAt(rowIndex, 2).equals("Open"))) return false;
-            if(columnIndex == 6 && (getValueAt(rowIndex, 2).equals("Closed"))) return false;
-            if(columnIndex == 5) return false;
-            return true;
-        }
-    }
+	/**
+	 * Define a custom table model. Overrides ClassTableModel to add support for "Color" column
+	 */
+	protected class jmodelClassTableModel extends ClassTableModel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public jmodelClassTableModel() {
+			super();
+			columnNames = new String[] { "Color", "Name", "Type", "Priority", "Population", "Interarrival Time Distribution", "",
+					"Reference Station", "" };
+			colClasses = new Class[] { Color.class, String.class, JComboBox.class, String.class, String.class, String.class, Object.class,
+					JComboBox.class, JButton.class };
+		}
+
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			if (columnIndex == 0) {
+				return classdefinition.getClassColor(classdefinition.getClassKeys().get(rowIndex));
+			} else if (columnIndex == 7) {
+				return classdefinition.getClassRefStation(classdefinition.getClassKeys().get(rowIndex));
+			} else {
+				return super.getValueAt(rowIndex, columnIndex - 1);
+			}
+		}
+
+		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+			if (columnIndex == 0) {
+				classdefinition.setClassColor(classdefinition.getClassKeys().get(rowIndex), (Color) aValue);
+			} else if (columnIndex == 7) {
+				classdefinition.setClassRefStation(classdefinition.getClassKeys().get(rowIndex), aValue);
+			} else {
+				super.setValueAt(aValue, rowIndex, columnIndex - 1);
+			}
+		}
+
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			if (columnIndex == 4 && (getValueAt(rowIndex, 2).equals("Open"))) {
+				return false;
+			}
+			if (columnIndex == 6 && (getValueAt(rowIndex, 2).equals("Closed"))) {
+				return false;
+			}
+			if (columnIndex == 5) {
+				return false;
+			}
+			return true;
+		}
+	}
 }

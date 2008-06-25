@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.xml;
 
 /**
@@ -28,32 +28,32 @@ package jmt.gui.common.xml;
  *         Time: 18.01.33
  */
 public interface GuiXMLConstants {
-    public static final String XML_DOCUMENT_XSD = "JModelGUI.xsd";
-    public static final String XML_DOCUMENT_ROOT = "jmodel";
+	public static final String XML_DOCUMENT_XSD = "JModelGUI.xsd";
+	public static final String XML_DOCUMENT_ROOT = "jmodel";
 
-    public static final String XML_E_CLASS = "userClass";
-    public static final String XML_A_CLASS_NAME = "name";
-    public static final String XML_A_CLASS_COLOR = "color";
+	public static final String XML_E_CLASS = "userClass";
+	public static final String XML_A_CLASS_NAME = "name";
+	public static final String XML_A_CLASS_COLOR = "color";
 
-    public static final String XML_E_STATION = "station";
-    public static final String XML_A_STATION_NAME = "name";
-    public static final String XML_E_POSITION = "position";
-    public static final String XML_A_POSITION_X = "x";
-    public static final String XML_A_POSITION_Y = "y";
-    public static final String XML_A_POSITION_ROTATE = "rotate";
+	public static final String XML_E_STATION = "station";
+	public static final String XML_A_STATION_NAME = "name";
+	public static final String XML_E_POSITION = "position";
+	public static final String XML_A_POSITION_X = "x";
+	public static final String XML_A_POSITION_Y = "y";
+	public static final String XML_A_POSITION_ROTATE = "rotate";
 
-    public static final String XML_E_PARAMETRIC = "parametric";
-    public static final String XML_A_PARAMETRIC_CLASSPATH = "classPath";
-    public static final String XML_A_PARAMETRIC_ENABLED = "enabled";
-    public static final String XML_E_FIELD = "field";
-    public static final String XML_A_FIELD_NAME = "name";
-    public static final String XML_A_FIELD_VALUE = "value";
+	public static final String XML_E_PARAMETRIC = "parametric";
+	public static final String XML_A_PARAMETRIC_CLASSPATH = "classPath";
+	public static final String XML_A_PARAMETRIC_ENABLED = "enabled";
+	public static final String XML_E_FIELD = "field";
+	public static final String XML_A_FIELD_NAME = "name";
+	public static final String XML_A_FIELD_VALUE = "value";
 
-    public static final String XML_ARCHIVE_DOCUMENT_XSD = "Archive.xsd";
-    public static final String XML_ARCHIVE_DOCUMENT_ROOT = "archive";
+	public static final String XML_ARCHIVE_DOCUMENT_XSD = "Archive.xsd";
+	public static final String XML_ARCHIVE_DOCUMENT_ROOT = "archive";
 
-    public static final String XML_ARCHIVE_A_NAME = "name";
-    public static final String XML_ARCHIVE_A_TIMESTAMP = "timestamp";
+	public static final String XML_ARCHIVE_A_NAME = "name";
+	public static final String XML_ARCHIVE_A_TIMESTAMP = "timestamp";
 
-    public static final String ENCODING = "ISO-8859-1";
+	public static final String ENCODING = "ISO-8859-1";
 }

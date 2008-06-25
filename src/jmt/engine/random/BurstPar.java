@@ -1,6 +1,5 @@
 package jmt.engine.random;
 
-
 /**
  * 
  * This is the parameter that should be passed to the Burst distribution.
@@ -17,13 +16,13 @@ public class BurstPar extends AbstractParameter implements Parameter {
 
 	/** parameter of value distribution A */
 	private Parameter valueParameterA;
-	
+
 	/** parameter of value distribution B */
 	private Parameter valueParameterB;
-	
+
 	/** value distribution A */
 	private Distribution valueDistributionA;
-	
+
 	/** value distribution A */
 	private Distribution valueDistributionB;
 
@@ -43,7 +42,7 @@ public class BurstPar extends AbstractParameter implements Parameter {
 		this.valueDistributionB = contB.getDistribution();
 		this.valueParameterB = contB.getParameter();
 	}
-	
+
 	/**
 	 * Returns the value distribution A. 
 	 * 
@@ -52,7 +51,7 @@ public class BurstPar extends AbstractParameter implements Parameter {
 	public Distribution getValueDistributionA() {
 		return valueDistributionA;
 	}
-	
+
 	/**
 	 * Returns the parameter of value distribution A. 
 	 * 
@@ -61,7 +60,7 @@ public class BurstPar extends AbstractParameter implements Parameter {
 	public Parameter getValueParameterA() {
 		return valueParameterA;
 	}
-	
+
 	/**
 	 * Returns the value distribution B.
 	 * 
@@ -70,7 +69,7 @@ public class BurstPar extends AbstractParameter implements Parameter {
 	public Distribution getValueDistributionB() {
 		return valueDistributionB;
 	}
-	
+
 	/**
 	 * Returns the parameter of value distribution B. 
 	 * 
@@ -79,7 +78,7 @@ public class BurstPar extends AbstractParameter implements Parameter {
 	public Parameter getValueParameterB() {
 		return valueParameterB;
 	}
-	
+
 	/**
 	 * Sets the the value distribution A.
 	 * 
@@ -88,7 +87,7 @@ public class BurstPar extends AbstractParameter implements Parameter {
 	public void setValueDistributionA(Distribution distributionA) {
 		this.valueDistributionA = distributionA;
 	}
-	
+
 	/**
 	 * Sets the the parameter of value distribution A.
 	 * 
@@ -97,7 +96,7 @@ public class BurstPar extends AbstractParameter implements Parameter {
 	public void setValueParameterA(Parameter parameterA) {
 		this.valueParameterA = parameterA;
 	}
-	
+
 	/**
 	 * Sets the the value distribution B.
 	 * 
@@ -106,7 +105,7 @@ public class BurstPar extends AbstractParameter implements Parameter {
 	public void setValueDistributionB(Distribution distributionB) {
 		this.valueDistributionB = distributionB;
 	}
-	
+
 	/**
 	 * Sets the the parameter of value distribution B.
 	 * 
@@ -115,6 +114,5 @@ public class BurstPar extends AbstractParameter implements Parameter {
 	public void setValueParameterB(Parameter parameterB) {
 		this.valueParameterB = parameterB;
 	}
-
 
 } // end BurstPar

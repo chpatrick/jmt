@@ -15,11 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
- 
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
 *
@@ -32,7 +31,6 @@ import jmt.common.exception.IncorrectDistributionParameterException;
 *
 */
 
-
 public class MMPP2Par extends AbstractParameter implements Parameter {
 
 	private double mean;
@@ -44,8 +42,7 @@ public class MMPP2Par extends AbstractParameter implements Parameter {
 	protected ExponentialPar expParam1;
 	protected ExponentialPar expParam2;
 
-	public MMPP2Par(Double lambda0, Double lambda1, Double r0, Double r1)
-	        throws IncorrectDistributionParameterException {
+	public MMPP2Par(Double lambda0, Double lambda1, Double r0, Double r1) throws IncorrectDistributionParameterException {
 		this.r0 = r0.doubleValue();
 		this.r1 = r1.doubleValue();
 		this.lambda1 = lambda0.doubleValue();
@@ -54,8 +51,8 @@ public class MMPP2Par extends AbstractParameter implements Parameter {
 		this.mean = 0;
 		this.var = 0;
 		// creates 2 ExponentialPar objects
-		expParam1 = new ExponentialPar(1/this.lambda1);
-		expParam2 = new ExponentialPar(1/this.lambda2);
+		expParam1 = new ExponentialPar(1 / this.lambda1);
+		expParam2 = new ExponentialPar(1 / this.lambda2);
 	}
 
 	/**
@@ -64,16 +61,19 @@ public class MMPP2Par extends AbstractParameter implements Parameter {
 	 * @throws IncorrectDistributionParameterException if p is not betwen zero and one or if lambda1 and labda2 are not both greater than zero.
 	 *
 	 */
-	private void testParameters()
-	        throws IncorrectDistributionParameterException {
-		if (r1 <= 0 || r1 >= 1)
+	private void testParameters() throws IncorrectDistributionParameterException {
+		if (r1 <= 0 || r1 >= 1) {
 			throw new IncorrectDistributionParameterException("Error: must be 0 < r1 < 1");
-		if (r0 <= 0 || r0 >= 1)
+		}
+		if (r0 <= 0 || r0 >= 1) {
 			throw new IncorrectDistributionParameterException("Error: must be 0 < r0 < 1");
-		if (lambda1 < 0)
+		}
+		if (lambda1 < 0) {
 			throw new IncorrectDistributionParameterException("Error: lambda1 must be >= 0");
-		if (lambda2 < 0)
+		}
+		if (lambda2 < 0) {
 			throw new IncorrectDistributionParameterException("Error: lambda2 must be >= 0");
+		}
 	}
 
 	/**

@@ -36,49 +36,51 @@ import javax.swing.event.ChangeListener;
  * @version 1.0
  */
 public class SelectedActionButtonChangeListener implements PropertyChangeListener, ChangeListener {
-    private AbstractJMTAction action;
-    private AbstractButton button;
-    
-    /**
-     * Adds a selected change listener between target action and target button
-     * @param action action to be linked
-     * @param button button to be linked
-     */
-    public SelectedActionButtonChangeListener(AbstractJMTAction action, AbstractButton button) {
-        this.action = action;
-        this.button = button;
-        action.addPropertyChangeListener(this);
-        button.addChangeListener(this);
-    }
-    
-    /* (non-Javadoc)
-     * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
-     */
-    public void propertyChange(PropertyChangeEvent evt) {
-        if (evt.getPropertyName().equals(AbstractJMTAction.PROPERTY_SELECTED)) {
-            // Action was changed
-            if (button.isSelected() != action.isSelected())
-                button.setSelected(action.isSelected());
-        }
-    }
-    
-    /* (non-Javadoc)
-     * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
-     */
-    public void stateChanged(ChangeEvent e) {
-        // Button was changed
-        if (e.getSource() == button) {
-            if (action.isSelected() != button.isSelected())
-                action.setSelected(button.isSelected());
-        }
-    }
+	private AbstractJMTAction action;
+	private AbstractButton button;
 
-    /**
-     * Removes this listener from action and button
-     */
-    public void remove() {
-        action.removePropertyChangeListener(this);
-        button.removeChangeListener(this);
-    }
+	/**
+	 * Adds a selected change listener between target action and target button
+	 * @param action action to be linked
+	 * @param button button to be linked
+	 */
+	public SelectedActionButtonChangeListener(AbstractJMTAction action, AbstractButton button) {
+		this.action = action;
+		this.button = button;
+		action.addPropertyChangeListener(this);
+		button.addChangeListener(this);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.beans.PropertyChangeListener#propertyChange(java.beans.PropertyChangeEvent)
+	 */
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (evt.getPropertyName().equals(AbstractJMTAction.PROPERTY_SELECTED)) {
+			// Action was changed
+			if (button.isSelected() != action.isSelected()) {
+				button.setSelected(action.isSelected());
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+	 */
+	public void stateChanged(ChangeEvent e) {
+		// Button was changed
+		if (e.getSource() == button) {
+			if (action.isSelected() != button.isSelected()) {
+				action.setSelected(button.isSelected());
+			}
+		}
+	}
+
+	/**
+	 * Removes this listener from action and button
+	 */
+	public void remove() {
+		action.removePropertyChangeListener(this);
+		button.removeChangeListener(this);
+	}
 
 }

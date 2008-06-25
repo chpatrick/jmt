@@ -15,19 +15,17 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 11-mar-2004
  *
  */
 package jmt.jmarkov.Queues;
 
-import jmt.jmarkov.Queues.Exceptions.InfiniteBufferException;
-import jmt.jmarkov.Queues.Exceptions.NoJobsException;
-import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
-
 import java.util.Random;
 
+import jmt.jmarkov.Queues.Exceptions.NoJobsException;
+import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 
 /**
  * Contiene gli algoritmi che regolano il funzionamento 
@@ -41,48 +39,48 @@ import java.util.Random;
  */
 public class MM1Logic implements QueueLogic {
 
-
-    //NEW
-    //@author Stefano Omini
-    // introduced DEBUG var to skip System.out.println() calls in final release
-    private static final boolean DEBUG = false;
-    //end NEW
-
+	//NEW
+	//@author Stefano Omini
+	// introduced DEBUG var to skip System.out.println() calls in final release
+	private static final boolean DEBUG = false;
+	//end NEW
 
 	protected double mult = 1.0;
 
 	/**
 	 * media degli arrivi [job/ms]
 	 */
-    protected double lambda;
+	protected double lambda;
 
 	/**
 	 * media dei tempi di esecuzione [ms]
 	 */
-    protected double s;
-	
+	protected double s;
+
 	/**
 	 * Utilizzo della coda [job]
 	 */
-	
-    protected Random rnd;
+
+	protected Random rnd;
 
 	/**
 	 * Inizializza la coda  
 	 * @param lambda rappresenta la media del <i>processo di Poisson</i> che regola gli arrivi <b>[job/s]</b>
 	 * @param s rappresenta la media del <i>processo di Poisson</i> che regola le esecuzioni <b>[ms]</b>
 	 */
-	public MM1Logic(double lambda, double s){
+	public MM1Logic(double lambda, double s) {
 		this.lambda = lambda;
 		this.s = s;
 		rnd = new Random();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see Queues.QueueLogic#getArrivalTime()
 	 */
 	public double getArrivalTime() throws NoJobsException {
-		if (lambda == 0) throw new NoJobsException();
+		if (lambda == 0) {
+			throw new NoJobsException();
+		}
 		return (this.getTime(1000.0 * mult / lambda));
 	}
 
@@ -90,14 +88,14 @@ public class MM1Logic implements QueueLogic {
 	 * @see Queues.QueueLogic#getRunTime()
 	 */
 	public double getRunTime() {
-		return(this.getTime(s * 1000.0 * mult ));
+		return (this.getTime(s * 1000.0 * mult));
 	}
 
 	/* (non-Javadoc)
 	 * @see Queues.QueueLogic#getStatusProbability(int)
 	 */
-	public double getStatusProbability(int status) throws NonErgodicException{
-		return ((1 - utilization()) * Math.pow(utilization(),(double)status));
+	public double getStatusProbability(int status) throws NonErgodicException {
+		return ((1 - utilization()) * Math.pow(utilization(), status));
 	}
 
 	/**
@@ -109,32 +107,32 @@ public class MM1Logic implements QueueLogic {
 	 */
 	private double getTime(double media) {
 		//forma esplicita della legge di distribuzione Poisson
-		return((- media * Math.log(rnd.nextDouble())));
-		
+		return ((-media * Math.log(rnd.nextDouble())));
+
 	}
 
 	/**
 	 * inizializza <b>lambda</b> ad un nuovo valore
 	 * @param lambda nuovo valore <b>[job/s]</b>
 	 */
-	public void setLambda(double lambda){
+	public void setLambda(double lambda) {
 		this.lambda = lambda;
 		if (DEBUG) {
-            System.out.println("l=" + lambda);
-        }
+			System.out.println("l=" + lambda);
+		}
 	}
-	
+
 	/**
 	 * inizializza <b>s</b> ad un nuovo valore
 	 * @param s nuovo valore <b>[s]</b>
 	 */
-	public void setS(double s){
+	public void setS(double s) {
 		this.s = s;
 		if (DEBUG) {
-            System.out.println("s=" + s);
-        }
+			System.out.println("s=" + s);
+		}
 	}
-	
+
 	/**
 	 * Calcola il numero medio di stati occupati, 
 	 * a seconda dei parametri lambda e mu inseriti
@@ -143,8 +141,8 @@ public class MM1Logic implements QueueLogic {
 	 * 
 	 * @exception NonErgodicException la coda è non ergodica (U > 1 o U < 0)
 	 */
-	public double mediaJobs() throws NonErgodicException{
-		return (double)(utilization())/(1.0 - utilization());	
+	public double mediaJobs() throws NonErgodicException {
+		return (utilization()) / (1.0 - utilization());
 	}
 
 	/**
@@ -153,11 +151,12 @@ public class MM1Logic implements QueueLogic {
 	 * 
 	 * @return
 	 */
-	public double utilization() throws NonErgodicException{
-		if((lambda * s) > 1){
-			throw new NonErgodicException();	
+	public double utilization() throws NonErgodicException {
+		if ((lambda * s) > 1) {
+			throw new NonErgodicException();
+		} else {
+			return (lambda * s);
 		}
-		else return (lambda * s);
 	}
 
 	/* (non-Javadoc)
@@ -170,23 +169,28 @@ public class MM1Logic implements QueueLogic {
 	/**
 	 * @param buffer
 	 */
-	public void setMaxStates(int buffer) {	
+	public void setMaxStates(int buffer) {
 	}
-	
-	
+
 	/**
 	 * Accelera la simulazione
 	 * @param t t = 1 per tempo reale, t > 1 per accelerare
 	 */
-	public void setTimeMultiplier(double tm){
+	public void setTimeMultiplier(double tm) {
 		//double t = 1/tm;
-		if(tm > 100.0) this.mult = 1.0/100.0;
-		if(tm < 1.0)  this.mult = 1.0;
-		if(tm <= 100.0) this.mult = 1.0/tm;
+		if (tm > 100.0) {
+			this.mult = 1.0 / 100.0;
+		}
+		if (tm < 1.0) {
+			this.mult = 1.0;
+		}
+		if (tm <= 100.0) {
+			this.mult = 1.0 / tm;
+		}
 	}
-	
-	public double getTimeMultiplier(){
-		return 1.0/mult;
+
+	public double getTimeMultiplier() {
+		return 1.0 / mult;
 	}
 
 	/* (non-Javadoc)
@@ -200,7 +204,7 @@ public class MM1Logic implements QueueLogic {
 	 * @see Queues.QueueLogic#responseTime()
 	 */
 	public double responseTime() throws NonErgodicException {
-		return 	s / (1.0 - utilization());
+		return s / (1.0 - utilization());
 	}
 
 	/**
@@ -208,58 +212,63 @@ public class MM1Logic implements QueueLogic {
 	 * ergodico
 	 * @return
 	 */
-	public double getMaxErgodicLambda(){
+	public double getMaxErgodicLambda() {
 		return (1.0 / s);
 	}
-	
+
 	/**
 	 * Restituisce S massimo, fissato lambda, tale che il processo sia
 	 * ergodico
 	 * @return
 	 */
-	public double getMaxErgodicS(){
-		return (1.0/lambda);
+	public double getMaxErgodicS() {
+		return (1.0 / lambda);
 	}
-	
+
 	/**
 	 * Restituisce l'utilizzo dell'iesimo job
 	 * @param lambdai lamda iesimo
 	 * @param si s iesimo
 	 * @return
 	 */
-	public static double getUi(double lambdai, double si){
-		if ((si / lambdai) < 1.0) return (si / lambdai);
-		else return 1.0;
+	public static double getUi(double lambdai, double si) {
+		if ((si / lambdai) < 1.0) {
+			return (si / lambdai);
+		} else {
+			return 1.0;
+		}
 	}
 
 	/**
 	 * Restituisce la media dell'iesimo job
 	 * @param Ui Utilizzo iesimo 
 	 * @return
-	 */	
-	public static double getNi(double Ui, double buffer){
-		if ((Ui <= 1.0) && (Ui >= 0.0))
+	 */
+	public static double getNi(double Ui, double buffer) {
+		if ((Ui <= 1.0) && (Ui >= 0.0)) {
 			return (Ui / (1.0 - Ui));
+		}
 		return Double.MAX_VALUE;
 	}
-	
+
 	/**
 	 * Restituisce il tempo di risposta iesimo
 	 * @param Ui Utilizzo iesimo 
 	 * @param si s iesimo
 	 * @return 
 	 */
-	public static double getRi(double Ui, double si){
-		if ((Ui <= 1.0) && (Ui >= 0.0))
+	public static double getRi(double Ui, double si) {
+		if ((Ui <= 1.0) && (Ui >= 0.0)) {
 			return (si / (1.0 - Ui));
+		}
 		return Double.MAX_VALUE;
 	}
-	
-	public double getLambda(){
+
+	public double getLambda() {
 		return lambda;
 	}
-	
-	public double getS(){
+
+	public double getS() {
 		return s;
 	}
 }

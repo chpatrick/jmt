@@ -15,14 +15,13 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.framework.gui.components;
 
+package jmt.framework.gui.components;
 
 import java.net.URL;
 
 import javax.swing.JScrollPane;
-
+import javax.swing.ScrollPaneConstants;
 
 /**
  * <p><b>Name:</b> QuickHTMLViewer</p> 
@@ -35,29 +34,32 @@ import javax.swing.JScrollPane;
  * @author Bertoli Marco
  * @version 1.0
  */
-public class QuickHTMLViewer extends JMTFrame{
+public class QuickHTMLViewer extends JMTFrame {
 
-    /**creates a new instance of this viewer, given the document's url, and sets up
-     * visualization.
-     * @param url: url of document that must be displayed.
-     */
-    public QuickHTMLViewer(URL url){
-        this.centerWindow(640, 480);
-        HtmlPanel html = new HtmlPanel(url);
-        html.setAntiAliasing(true);
-        JScrollPane jsp = new JScrollPane(html,
-                                          JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                          JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        this.getContentPane().add(jsp);
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    /**creates a new instance of this viewer, given the document's url, and sets up
-     * visualization.
-     * @param url: url of document that must be displayed.
-     * @param title: title of the window.
-     */
-    public QuickHTMLViewer(URL url, String title){
-        this(url);
-        this.setTitle(title);
-    }
+	/**creates a new instance of this viewer, given the document's url, and sets up
+	 * visualization.
+	 * @param url: url of document that must be displayed.
+	 */
+	public QuickHTMLViewer(URL url) {
+		this.centerWindow(640, 480);
+		HtmlPanel html = new HtmlPanel(url);
+		html.setAntiAliasing(true);
+		JScrollPane jsp = new JScrollPane(html, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		this.getContentPane().add(jsp);
+	}
+
+	/**creates a new instance of this viewer, given the document's url, and sets up
+	 * visualization.
+	 * @param url: url of document that must be displayed.
+	 * @param title: title of the window.
+	 */
+	public QuickHTMLViewer(URL url, String title) {
+		this(url);
+		this.setTitle(title);
+	}
 }

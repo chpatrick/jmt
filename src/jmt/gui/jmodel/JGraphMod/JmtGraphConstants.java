@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.JGraphMod;
 
 import org.jgraph.graph.Edge;
@@ -30,7 +30,6 @@ import org.jgraph.graph.GraphConstants;
  */
 public class JmtGraphConstants extends GraphConstants {
 
-	public static final Edge.Routing ROUTING_JMT
-	        = new JmtRouting();
+	public static final Edge.Routing ROUTING_JMT = new JmtRouting();
 
 }

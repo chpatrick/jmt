@@ -19,7 +19,6 @@ package jmt.gui.jwat.workloadAnalysis.panels;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
@@ -52,27 +51,27 @@ import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.JWatWizard;
 import jmt.gui.jwat.MainJwatWizard;
 
-public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATConstants{
+public class LoadDemoPanel extends WizardPanel implements CommonConstants, JWATConstants {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	public static String absolutePath = "./";
-	private String demoDescription="<HTML>"+
-	"<b>Type of demo:</b> Workload analysis <p>" +
-	"<b>Description:</b> This demo has been extracted from an Apache log file selecting only some variables<p>"+
-	"<b># observations:</b> This demo has 37614 observations <p>" +
-	"<b># variables:</b> Each observation is characterized by four variables<p>" +
-	"<b>Variables description:</b><p>" +
-	"<TABLE align=center border=1>" +
-	"<TR><TD><B>Name</B></TD><TD><B>Description</B></TD><TD><B>Type</B></TD></TR>" +
-	"<TR><TD>IP</TD><TD>IP address</TD><TD>String</TD></TR>" +
-	"<TR><TD>Timestamp</TD><TD>Timestamp of the visit as seen by the web server</TD><TD>Date</TD></TR>" +
-	"<TR><TD>Access request</TD><TD>The request made</TD><TD>String</TD></TR>" +
-	"<TR><TD>Bytes transferred</TD><TD>The number of bytes transferred</TD><TD>Numeric</TD></TR>" +
-	"</TABLE></HTML>";
-	private String useDescription="<HTML>"+
-	"<b>STEP 1:</b> Choose demo file from the list then click 'Load demo'.<p><p>" +
-	"<b>STEP 2:</b> Analyze the statistics panels then click next.<p><p>" +
-	"<b>STEP 3:</b> Choose clustering algorithm, choose the options ( we suggest to select the (value-min)/(max-min) transformation) of clustering then click 'solve'.<p><p>" +
-	"<b>STEP 4:</b> Analyze the cluster results (using back button you can return to STEP 3 and apply different clustering algorithm).<p><p>" +
- 	"</HTML>";
+	private String demoDescription = "<HTML>" + "<b>Type of demo:</b> Workload analysis <p>"
+			+ "<b>Description:</b> This demo has been extracted from an Apache log file selecting only some variables<p>"
+			+ "<b># observations:</b> This demo has 37614 observations <p>"
+			+ "<b># variables:</b> Each observation is characterized by four variables<p>" + "<b>Variables description:</b><p>"
+			+ "<TABLE align=center border=1>" + "<TR><TD><B>Name</B></TD><TD><B>Description</B></TD><TD><B>Type</B></TD></TR>"
+			+ "<TR><TD>IP</TD><TD>IP address</TD><TD>String</TD></TR>"
+			+ "<TR><TD>Timestamp</TD><TD>Timestamp of the visit as seen by the web server</TD><TD>Date</TD></TR>"
+			+ "<TR><TD>Access request</TD><TD>The request made</TD><TD>String</TD></TR>"
+			+ "<TR><TD>Bytes transferred</TD><TD>The number of bytes transferred</TD><TD>Numeric</TD></TR>" + "</TABLE></HTML>";
+	private String useDescription = "<HTML>"
+			+ "<b>STEP 1:</b> Choose demo file from the list then click 'Load demo'.<p><p>"
+			+ "<b>STEP 2:</b> Analyze the statistics panels then click next.<p><p>"
+			+ "<b>STEP 3:</b> Choose clustering algorithm, choose the options ( we suggest to select the (value-min)/(max-min) transformation) of clustering then click 'solve'.<p><p>"
+			+ "<b>STEP 4:</b> Analyze the cluster results (using back button you can return to STEP 3 and apply different clustering algorithm).<p><p>"
+			+ "</HTML>";
 
 	private static final String TEMP_DEMO_NAME_WA = "Demo_WA";
 	private JButton loadDemo;
@@ -82,11 +81,11 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 	private JLabel demoDesc;
 	private JLabel useDesc;
 	private MainJwatWizard parent;
-	
+
 	public LoadDemoPanel(MainJwatWizard parent) {
 		super();
 		model = (ModelWorkloadAnalysis) parent.getModel();
-		canGoOn=false;
+		canGoOn = false;
 		this.parent = parent;
 		initGUI();
 	}
@@ -94,118 +93,122 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants,JWATCo
 	public String getName() {
 		return "Load Demo";
 	}
-	
-	private void initGUI()
-	{
+
+	private void initGUI() {
 		this.setLayout(new BorderLayout());
-		
-		JPanel grid = new JPanel(new GridLayout(2,1,5,5));
-		
-		JPanel upper = new JPanel(new BorderLayout(10,10));
-		demos = new JList(new String[]{TEMP_DEMO_NAME_WA});
+
+		JPanel grid = new JPanel(new GridLayout(2, 1, 5, 5));
+
+		JPanel upper = new JPanel(new BorderLayout(10, 10));
+		demos = new JList(new String[] { TEMP_DEMO_NAME_WA });
 		Font f = demos.getFont();
-		demos.setFont(new Font(f.getFontName(), f.getStyle(), f
-				.getSize() + 2));
+		demos.setFont(new Font(f.getFontName(), f.getStyle(), f.getSize() + 2));
 		//demos.setPreferredSize(new Dimension(150,200));
 		demos.setFixedCellWidth(150);
-		demos.addListSelectionListener(new ListSelectionListener(){
-	
+		demos.addListSelectionListener(new ListSelectionListener() {
+
 			public void valueChanged(ListSelectionEvent e) {
-				if(!e.getValueIsAdjusting()){
-					if(demos.getSelectedIndex() >=0){
+				if (!e.getValueIsAdjusting()) {
+					if (demos.getSelectedIndex() >= 0) {
 						//TODO insert peculiar strings for demo
-					}else{
+					} else {
 						demos.setSelectedIndex(0);
 					}
 				}
 			}
-			
+
 		});
 		demos.setSelectedIndex(0);
 		demoDesc = new JLabel(demoDescription);
-		upper.add(new JScrollPane(demos),BorderLayout.WEST);
-		upper.add(new JScrollPane(demoDesc),BorderLayout.CENTER);
+		upper.add(new JScrollPane(demos), BorderLayout.WEST);
+		upper.add(new JScrollPane(demoDesc), BorderLayout.CENTER);
 		demoDesc.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Demo description"));
-		
+
 		useDesc = new JLabel(useDescription);
 		useDesc.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "How to execute a demo"));
-		
+
 		grid.add(upper);
 		grid.add(new JScrollPane(useDesc));
-		
+
 		JPanel south = new JPanel(new FlowLayout(FlowLayout.CENTER));
 		south.add(new JLabel("Click this button to load selected demo   --->   "));
-		loadDemo=new JButton("Load demo");
+		loadDemo = new JButton("Load demo");
 		loadDemo.setBackground(Color.RED);
-		loadDemo.addActionListener(new ActionListener(){
+		loadDemo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-					//Calls loader
-					try {
-						Loader.readData(absolutePath + "examples/"+ TEMP_DEMO_NAME_WA+"Data.jwat",Loader.loadParameter(TEMP_DEMO_NAME_WA),new ProgressMonitorShow(LoadDemoPanel.this,"Loading Data...",1000),new InputStatusListener());
-					} catch (FileNotFoundException ee) {
-						JOptionPane.showMessageDialog(LoadDemoPanel.this,"Loading aborted. File not found.","ABORT!!",JOptionPane.WARNING_MESSAGE);
-					}
-					catch (IOException ee) {
-						JOptionPane.showMessageDialog(LoadDemoPanel.this,"Loading demo failed.","ABORT!!",JOptionPane.WARNING_MESSAGE);
-					}
+				//Calls loader
+				try {
+					Loader.readData(absolutePath + "examples/" + TEMP_DEMO_NAME_WA + "Data.jwat", Loader.loadParameter(TEMP_DEMO_NAME_WA),
+							new ProgressMonitorShow(LoadDemoPanel.this, "Loading Data...", 1000), new InputStatusListener());
+				} catch (FileNotFoundException ee) {
+					JOptionPane.showMessageDialog(LoadDemoPanel.this, "Loading aborted. File not found.", "ABORT!!", JOptionPane.WARNING_MESSAGE);
+				} catch (IOException ee) {
+					JOptionPane.showMessageDialog(LoadDemoPanel.this, "Loading demo failed.", "ABORT!!", JOptionPane.WARNING_MESSAGE);
 				}
+			}
 		});
 		south.add(loadDemo);
-		this.add(grid,BorderLayout.CENTER);
-		this.add(south,BorderLayout.SOUTH);
+		this.add(grid, BorderLayout.CENTER);
+		this.add(south, BorderLayout.SOUTH);
 	}
 
-	private class InputStatusListener implements ProgressStatusListener
-	{
+	private class InputStatusListener implements ProgressStatusListener {
 
 		public void statusEvent(EventStatus e) {
 
-			switch(e.getType()){
-				case EventStatus.ABORT_EVENT:	abortEvent((EventFinishAbort)e);
+			switch (e.getType()) {
+				case EventStatus.ABORT_EVENT:
+					abortEvent((EventFinishAbort) e);
 					break;
-				case EventStatus.DONE_EVENT:	finishedEvent((EventFinishLoad)e);
+				case EventStatus.DONE_EVENT:
+					finishedEvent((EventFinishLoad) e);
 					break;
 			}
-			
+
 		}
-		
+
 		//Abort input file loading
 		private void abortEvent(EventFinishAbort e) {
-			JOptionPane.showMessageDialog(LoadDemoPanel.this,e.getMessage(),"LOADING ABORTED!!",JOptionPane.WARNING_MESSAGE);
-			canGoOn=false;
-			((JWatWizard)getParentWizard()).setEnableButton("Next >",false);
-			((JWatWizard)getParentWizard()).setEnableButton("Solve",false);
-			
+			JOptionPane.showMessageDialog(LoadDemoPanel.this, e.getMessage(), "LOADING ABORTED!!", JOptionPane.WARNING_MESSAGE);
+			canGoOn = false;
+			((JWatWizard) getParentWizard()).setEnableButton("Next >", false);
+			((JWatWizard) getParentWizard()).setEnableButton("Solve", false);
+
 		}
-	
-//		data loaded
+
+		//		data loaded
 		private void finishedEvent(final EventFinishLoad e) {
 			model.setMatrix(e.getSession());
-			((JWatWizard)getParentWizard()).setEnableButton("Next >",true);
-			((JWatWizard)getParentWizard()).setEnableButton("Solve",false);
-			canGoOn=true;
-			((JWatWizard)getParentWizard()).showNextPanel();
-				
-		}	
+			((JWatWizard) getParentWizard()).setEnableButton("Next >", true);
+			((JWatWizard) getParentWizard()).setEnableButton("Solve", false);
+			canGoOn = true;
+			((JWatWizard) getParentWizard()).showNextPanel();
+
+		}
 	}
-	public void lostFocus(){
+
+	public void lostFocus() {
 		parent.setLastPanel(WORKLOAD_INPUT_PANEL);
 	}
+
 	/********** WIZARD MANAGEMENT FUNCTIONS **********/
 	// TODO controllare validita dei dati forniti nel pannello e creazione e passaggio informazioni al modello per il prossimo panello
 	// Chiamata prima di passare al prossimo pannello
 	public boolean canGoForward() {
 		return canGoOn;
 	}
-	
-	public void setCanGoForward(boolean canGo){
-		canGoOn=canGo;
+
+	public void setCanGoForward(boolean canGo) {
+		canGoOn = canGo;
 	}
+
 	// TODO controllare con Fuma cosa fare
 	// Chiamata quando dal pannello si torna indietro
 	public boolean canGoBack() {
-		if (JOptionPane.showConfirmDialog(this,"Are you sure want to go back to start screen ?",
-				"Back operation", JOptionPane.YES_NO_OPTION,JOptionPane.WARNING_MESSAGE) == JOptionPane.NO_OPTION) return false;
+		if (JOptionPane.showConfirmDialog(this, "Are you sure want to go back to start screen ?", "Back operation", JOptionPane.YES_NO_OPTION,
+				JOptionPane.WARNING_MESSAGE) == JOptionPane.NO_OPTION) {
+			return false;
+		}
 		//Reset della finestra principale
 		parent.resetScreen();
 		return true;

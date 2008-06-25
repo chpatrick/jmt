@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jaba;
 
 import java.util.Vector;
@@ -29,22 +29,22 @@ import java.util.Vector;
  */
 public class JabaResults {
 
-    private Vector results = new Vector();
+	private Vector results = new Vector();
 
-    public void setResults(Vector results)
-    {
-        this.results = results;
-    }
+	public void setResults(Vector results) {
+		this.results = results;
+	}
 
-    public Vector getResults()
-    {
-        return results;
-    }
+	public Vector getResults() {
+		return results;
+	}
 
-    public boolean hasResults()
-    {
-        if (results.size()>0) return true;
-        else return false;
-    }
+	public boolean hasResults() {
+		if (results.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 
 }

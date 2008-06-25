@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.framework.data;
 
 import java.util.HashMap;
@@ -30,35 +30,37 @@ import java.util.HashMap;
  * for speed-up of data search operations, in particular the most recently requested
  * element is stored to assure a faster search.
  */
-public class CachedHashMap extends HashMap{
+public class CachedHashMap extends HashMap {
 
-    //Most recently used key and relative value.
-    private Object mruValue,
-    mruKey;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	//Most recently used key and relative value.
+	private Object mruValue, mruKey;
 
-    /**Returns requested object. If this object was requested before, search
-     * operation is faster.*/
-    public Object get(Object key){
-        if(key != null){
-            if(key.equals(mruKey)){
-                return mruValue;
-            }
-        }
-        mruKey = key;
-        mruValue = super.get(key);
-        return mruValue;
-    }
+	/**Returns requested object. If this object was requested before, search
+	 * operation is faster.*/
+	public Object get(Object key) {
+		if (key != null) {
+			if (key.equals(mruKey)) {
+				return mruValue;
+			}
+		}
+		mruKey = key;
+		mruValue = super.get(key);
+		return mruValue;
+	}
 
-
-    /**Method overridden to avoid aliasing between currently stored value and
-     * superclass matching.*/
-    public Object put(Object key, Object value){
-        if(key!=null){
-            if(key.equals(mruKey)){
-                mruValue = value;
-            }
-        }
-        return super.put(key, value);
-    }
+	/**Method overridden to avoid aliasing between currently stored value and
+	 * superclass matching.*/
+	public Object put(Object key, Object value) {
+		if (key != null) {
+			if (key.equals(mruKey)) {
+				mruValue = value;
+			}
+		}
+		return super.put(key, value);
+	}
 
 }

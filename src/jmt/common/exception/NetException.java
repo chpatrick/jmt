@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.common.exception;
 
 /**
@@ -23,6 +23,11 @@ package jmt.common.exception;
  * @author Francesco Radaelli
  */
 public class NetException extends Exception {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private Object ThrownBy;
 
@@ -47,8 +52,7 @@ public class NetException extends Exception {
 	 *  @param Message  The detail message.
 	 *  @param HangingException Hanging exception.
 	 */
-	public NetException(Object ThrownBy, int Type, String Message,
-	                    NetException HangingException) {
+	public NetException(Object ThrownBy, int Type, String Message, NetException HangingException) {
 		super(Message);
 		this.ThrownBy = ThrownBy;
 		this.Type = Type;

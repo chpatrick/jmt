@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.routingStrategies;
 
 import java.util.HashMap;
@@ -27,38 +27,37 @@ import java.util.HashMap;
  * Time: 15.58.07
  * To change this template use Options | File Templates.
  */
-public class LeastUtilizationRouting extends RoutingStrategy{
+public class LeastUtilizationRouting extends RoutingStrategy {
 
-    public LeastUtilizationRouting(){
-        description ="Jobs are routed to the station with " +
-            "the smallest average utilization.";
-    }
+	public LeastUtilizationRouting() {
+		description = "Jobs are routed to the station with " + "the smallest average utilization.";
+	}
 
-    public String getName() {
-        return "Least Utilization";
-    }
+	public String getName() {
+		return "Least Utilization";
+	}
 
-    public HashMap getValues() {
-        return null;
-    }
+	public HashMap getValues() {
+		return null;
+	}
 
-    public Object clone() {
-        return new LeastUtilizationRouting();
-    }
+	public Object clone() {
+		return new LeastUtilizationRouting();
+	}
 
-    public String getClassPath() {
-        return "jmt.engine.NetStrategies.RoutingStrategies.LeastUtilizationRoutingStrategy";
-    }
+	public String getClassPath() {
+		return "jmt.engine.NetStrategies.RoutingStrategies.LeastUtilizationRoutingStrategy";
+	}
 
-    /**
-     * Returns true if the routing strategy is dependent from the state of
-     * the model
-     * @return  true if the routing strategy is dependent from the state of
-     * the model
-     *
-     * Author: Francesco D'Aquino
-     */
-    public boolean isModelStateDependent() {
-        return true;
-    }
+	/**
+	 * Returns true if the routing strategy is dependent from the state of
+	 * the model
+	 * @return  true if the routing strategy is dependent from the state of
+	 * the model
+	 *
+	 * Author: Francesco D'Aquino
+	 */
+	public boolean isModelStateDependent() {
+		return true;
+	}
 }

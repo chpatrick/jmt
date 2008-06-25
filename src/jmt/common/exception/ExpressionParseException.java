@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.common.exception;
 
 /**
@@ -30,6 +30,10 @@ package jmt.common.exception;
  * Thrown if errors are found while parsing an expression
  */
 public class ExpressionParseException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private final int loc;
 
 	public ExpressionParseException(int loc, String message) {

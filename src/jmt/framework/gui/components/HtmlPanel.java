@@ -42,96 +42,100 @@ import jmt.framework.net.BareBonesBrowserLaunch;
  * @version 1.0
  */
 public class HtmlPanel extends JEditorPane {
-    private boolean antiAliasing;
-    /**
-     * Builds a new HtmlPanel
-     */
-    public HtmlPanel() {
-        this(null);
-    }
-    
-    /**
-     * Builds a new HtmlPanel that shows given url
-     * @param url url of the page to be displayed
-     */
-    public HtmlPanel(URL url) {
-        init();
-        if (url != null) {
-            setURL(url);
-            putClientProperty(BasicHTML.documentBaseKey, url.getPath());
-            // The following line fixes a problem with incorrectly drawn text inside tables.
-            setCaretPosition(0);
-        }
-    }
-    
-    /**
-     * Sets the page to be displayed in the panel
-     * @param url url of the page to be displayed
-     */
-    public void setURL(URL url) {
-        try {
-            setPage(url);
-        } catch (IOException e1) {
-            setText("<html><em>Page Unavailable</em></html>");
-        }
-        repaint();
-    }
-    
-    /**
-     * Initialize this component
-     */
-    private void init() {
-        antiAliasing = false;
-        // By default disable editing
-        setEditable(false);
-        setContentType("text/html");
-        
-        // Adds hyperlink listener
-        this.addHyperlinkListener(new HyperlinkListener() {
-            public void hyperlinkUpdate(HyperlinkEvent e) {
-                if(e.getEventType()==HyperlinkEvent.EventType.ACTIVATED){
-                    // An hyperlink is activated
-                    if (getPage() != null && e.getURL().getPath() != null && 
-                            e.getURL().getPath().equals(getPage().getPath()))
-                        setURL(e.getURL());
-                    else
-                        // Open external links in default browser
-                        BareBonesBrowserLaunch.openURL(e.getURL().toString());
-                }
-            }
-        });
-    }
-    
-    /**
-     * Tells to use antialiasing to draw html text. Default is false.
-     * @param use true to use antialiasing, false otherwise.
-     */
-    public void setAntiAliasing(boolean use) {
-        this.antiAliasing = use;
-    }
-    
-    /**
-     * Tells if antialiasing is used to draw html text. Default is false.
-     * @return true if antialiasing is used.
-     */
-    public boolean isAntiAliasing() {
-        return this.antiAliasing;
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private boolean antiAliasing;
 
-    /* (non-Javadoc)
-     * @see javax.swing.JComponent#printComponent(java.awt.Graphics)
-     */
-    protected void paintComponent(Graphics g) {
-        if (antiAliasing) {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-            g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
-            super.paintComponent(g2d);
-        } else {
-            super.paintComponent(g);
-        }
-    }
-    
-    
+	/**
+	 * Builds a new HtmlPanel
+	 */
+	public HtmlPanel() {
+		this(null);
+	}
+
+	/**
+	 * Builds a new HtmlPanel that shows given url
+	 * @param url url of the page to be displayed
+	 */
+	public HtmlPanel(URL url) {
+		init();
+		if (url != null) {
+			setURL(url);
+			putClientProperty(BasicHTML.documentBaseKey, url.getPath());
+			// The following line fixes a problem with incorrectly drawn text inside tables.
+			setCaretPosition(0);
+		}
+	}
+
+	/**
+	 * Sets the page to be displayed in the panel
+	 * @param url url of the page to be displayed
+	 */
+	public void setURL(URL url) {
+		try {
+			setPage(url);
+		} catch (IOException e1) {
+			setText("<html><em>Page Unavailable</em></html>");
+		}
+		repaint();
+	}
+
+	/**
+	 * Initialize this component
+	 */
+	private void init() {
+		antiAliasing = false;
+		// By default disable editing
+		setEditable(false);
+		setContentType("text/html");
+
+		// Adds hyperlink listener
+		this.addHyperlinkListener(new HyperlinkListener() {
+			public void hyperlinkUpdate(HyperlinkEvent e) {
+				if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+					// An hyperlink is activated
+					if (getPage() != null && e.getURL().getPath() != null && e.getURL().getPath().equals(getPage().getPath())) {
+						setURL(e.getURL());
+					} else {
+						// Open external links in default browser
+						BareBonesBrowserLaunch.openURL(e.getURL().toString());
+					}
+				}
+			}
+		});
+	}
+
+	/**
+	 * Tells to use antialiasing to draw html text. Default is false.
+	 * @param use true to use antialiasing, false otherwise.
+	 */
+	public void setAntiAliasing(boolean use) {
+		this.antiAliasing = use;
+	}
+
+	/**
+	 * Tells if antialiasing is used to draw html text. Default is false.
+	 * @return true if antialiasing is used.
+	 */
+	public boolean isAntiAliasing() {
+		return this.antiAliasing;
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.JComponent#printComponent(java.awt.Graphics)
+	 */
+	protected void paintComponent(Graphics g) {
+		if (antiAliasing) {
+			Graphics2D g2d = (Graphics2D) g;
+			g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+			g2d.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+			super.paintComponent(g2d);
+		} else {
+			super.paintComponent(g);
+		}
+	}
+
 }

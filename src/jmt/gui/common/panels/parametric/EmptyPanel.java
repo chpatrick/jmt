@@ -17,8 +17,11 @@
  */
 package jmt.gui.common.panels.parametric;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.JPanel;
 
 /**
  * <p>Title:</p>
@@ -29,21 +32,25 @@ import java.awt.*;
  *         Time: 16.14.43
  */
 public class EmptyPanel extends ParameterOptionPanel {
-        public EmptyPanel() {
-            initialize();
-        }
+	/**
+	* 
+	*/
+	private static final long serialVersionUID = 1L;
 
+	public EmptyPanel() {
+		initialize();
+	}
 
-        public void initialize() {
-            JPanel empty = new JPanel();
-            empty.setPreferredSize(new Dimension(800,600));
-            this.setLayout(new BorderLayout());
-            this.add(empty,BorderLayout.CENTER);
-            title.setTitleColor(Color.LIGHT_GRAY);
-            this.setBorder(title);
-        }
+	public void initialize() {
+		JPanel empty = new JPanel();
+		empty.setPreferredSize(new Dimension(800, 600));
+		this.setLayout(new BorderLayout());
+		this.add(empty, BorderLayout.CENTER);
+		title.setTitleColor(Color.LIGHT_GRAY);
+		this.setBorder(title);
+	}
 
-         public String[] getClassNames() {
-            return null;
-        }
-    }
+	public String[] getClassNames() {
+		return null;
+	}
+}

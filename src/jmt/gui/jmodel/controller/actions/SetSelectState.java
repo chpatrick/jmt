@@ -15,12 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
 import java.awt.event.ActionEvent;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
 
@@ -31,12 +31,17 @@ import java.awt.event.ActionEvent;
  */
 public class SetSelectState extends AbstractJmodelAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public SetSelectState(Mediator mediator) {
-		super("Select","Select", mediator);
+		super("Select", "Select", mediator);
 		putValue(SHORT_DESCRIPTION, "Select");
-        setGroup(0);
-        setSelectable(true);
-        setEnabled(false);
+		setGroup(0);
+		setSelectable(true);
+		setEnabled(false);
 	}
 
 	/**

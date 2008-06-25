@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.simDispatcher;
 
 import java.io.BufferedInputStream;
@@ -45,203 +45,194 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class ModelTransformer {
 
-    private File xmlSource;
-    private File xmlDestination;
-    //private File xslTransformer;
+	private File xmlSource;
+	private File xmlDestination;
+	//private File xslTransformer;
 
-    private String xsdSource;
-    private String xsdDestination;
-    private String xsltTransformer;
+	private String xsdSource;
+	private String xsdDestination;
+	private String xsltTransformer;
 
+	private Transformer transf;
+	private StreamSource dSource;
+	private StreamResult dResult;
 
-    private Transformer transf;
-    private StreamSource dSource;
-    private StreamResult dResult;
-    
-    private boolean validate = true;
+	private boolean validate = true;
 
+	public ModelTransformer() {
+		//nothing to do??
+	}
 
+	private void configureTransformer(String xmlSourcePath, String xmlDestinationPath, String xslTransformerPath, String xsdSourcePath,
+			String xsdDestinationPath) {
+		try {
+			this.xmlSource = new File(xmlSourcePath);
+			this.xmlDestination = new File(xmlDestinationPath);
+			this.xmlDestination.createNewFile();
+			this.xsltTransformer = xslTransformerPath;
+			this.xsdSource = xsdSourcePath;
+			this.xsdDestination = xsdDestinationPath;
+		} catch (IOException e) {
+			System.out.println("Error in creating destination file..");
+			e.printStackTrace();
+		}
 
+	}
 
-     public ModelTransformer() {
-         //nothing to do??
-     }
+	/**
+	 * Sets if parser must validate 
+	 * @param validate true if parser must validate, false otherwise
+	 */
+	public void setValidate(boolean validate) {
+		this.validate = validate;
+	}
 
+	private boolean transform() {
 
+		try {
 
-    private void configureTransformer(String xmlSourcePath, String xmlDestinationPath,
-                                     String xslTransformerPath, String xsdSourcePath,
-                                     String xsdDestinationPath) {
-        try {
-            this.xmlSource = new File(xmlSourcePath);
-            this.xmlDestination = new File(xmlDestinationPath);
-            this.xmlDestination.createNewFile();
-            this.xsltTransformer = xslTransformerPath;
-            this.xsdSource = xsdSourcePath;
-            this.xsdDestination = xsdDestinationPath;
-        } catch (IOException e) {
-            System.out.println("Error in creating destination file..");
-            e.printStackTrace();
-        }
+			//configure parser
+			SAXParser parser = new SAXParser();
+			parser.setFeature("http://xml.org/sax/features/validation", true);
+			parser.setFeature("http://apache.org/xml/features/validation/schema", true);
+			parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+			parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", xsdSource);
+			parser.setErrorHandler(new DefaultHandler());
 
+			//parse source file to validate it
+			if (validate) {
+				parser.parse(new InputSource(new BufferedInputStream(new FileInputStream(xmlSource))));
+			}
 
-    }
-    
-    /**
-     * Sets if parser must validate 
-     * @param validate true if parser must validate, false otherwise
-     */
-    public void setValidate(boolean validate) {
-        this.validate = validate;
-    }
+			//transform
+			dSource = new StreamSource(xmlSource);
+			dResult = new StreamResult(xmlDestination);
+			transf = TransformerFactory.newInstance().newTransformer(new StreamSource(xsltTransformer));
+			transf.transform(dSource, dResult);
 
+			//configure parser
+			parser.setFeature("http://xml.org/sax/features/validation", true);
+			parser.setFeature("http://apache.org/xml/features/validation/schema", true);
+			parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
+			parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation", xsdDestination);
+			parser.setErrorHandler(new DefaultHandler());
 
-    private boolean transform() {
+			//parse destination file to validate it
+			if (validate) {
+				parser.parse(new InputSource(new BufferedInputStream(new FileInputStream(xmlDestination))));
+			}
 
-        try {
+			//transformation successful
+			return true;
 
-            //configure parser
-            SAXParser parser= new SAXParser();
-            parser.setFeature("http://xml.org/sax/features/validation", true);
-            parser.setFeature("http://apache.org/xml/features/validation/schema", true);
-            parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
-            parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
-                    xsdSource);
-            parser.setErrorHandler(new DefaultHandler());
+		} catch (IOException e) {
+			System.out.println("Error in creating destination file..");
+			e.printStackTrace();
+		} catch (SAXException e) {
+			System.out.println("Error with SAX parser..");
+			e.printStackTrace();
+		} catch (TransformerException e) {
+			System.out.println("Error in transforming files..");
+			e.printStackTrace();
+		}
 
-            //parse source file to validate it
-            if (validate)
-                parser.parse(new InputSource(new BufferedInputStream(new FileInputStream(xmlSource))));
+		//some exception has been thrown
+		return false;
+	}
 
-            //transform
-            dSource = new StreamSource(xmlSource);
-            dResult = new StreamResult(xmlDestination);
-            transf = TransformerFactory.newInstance().newTransformer(new StreamSource(xsltTransformer));
-            transf.transform(dSource, dResult);
+	/**
+	 * Only for debug
+	 *
+	 */
+	public void printNodes(Node n) {
+		if (n == null) {
+			return;
+		}
+		String attrs = "";
+		if (n.getAttributes() != null) {
+			NamedNodeMap aNodes = n.getAttributes();
+			for (int i = 0; i < aNodes.getLength(); i++) {
+				Node item = aNodes.item(i);
+				attrs = attrs + " " + item.getNodeName() + "=" + item.getNodeValue();
+			}
+		}
+		System.out.println(n.getNodeName() + " = " + n.getNodeValue() + ";\tattrs: " + attrs);
+		if (n.getChildNodes() == null) {
+			return;
+		}
+		NodeList nl = n.getChildNodes();
+		for (int i = 0; i < nl.getLength(); i++) {
+			printNodes(nl.item(i));
+		}
+	}
 
-            //configure parser
-            parser.setFeature("http://xml.org/sax/features/validation", true);
-            parser.setFeature("http://apache.org/xml/features/validation/schema", true);
-            parser.setFeature("http://apache.org/xml/features/validation/schema-full-checking", true);
-            parser.setProperty("http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation",
-                    xsdDestination);
-            parser.setErrorHandler(new DefaultHandler());
+	/**
+	 * Transform an xml file describing the model, converting it from the
+	 *  JMTmodel.xsd schema to the SIMmodeldefinition.xsd schema
+	 * @param srcPath the path of the original xml file
+	 * @param dstPath the path of the destination xml file
+	 */
+	public boolean MVAtoSIM_parallel(String srcPath, String dstPath) {
 
-            //parse destination file to validate it
-            if (validate)
-                parser.parse(new InputSource(new BufferedInputStream(new FileInputStream(xmlDestination))));
+		//source xsd
+		String srcXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JMVA_MODEL_DEFINITION);
 
-            //transformation successful
-            return true;
+		//destination xsd
+		String dstXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JSIM_MODEL_DEFINITION);
 
-        } catch (IOException e) {
-            System.out.println("Error in creating destination file..");
-            e.printStackTrace();
-        } catch (SAXException e) {
-            System.out.println("Error with SAX parser..");
-            e.printStackTrace();
-        } catch (TransformerException e) {
-            System.out.println("Error in transforming files..");
-            e.printStackTrace();
-        }
+		//xslt transformation
+		String transPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JMVA_TO_JSIM);
 
-        //some exception has been thrown
-        return false;
-    }
+		configureTransformer(srcPath, dstPath, transPath, srcXsdPath, dstXsdPath);
+		return transform();
 
+	}
 
-    /**
-     * Only for debug
-     *
-     */
-    public void printNodes(Node n){
-        if(n==null)return;
-        String attrs="";
-        if(n.getAttributes()!=null){
-            NamedNodeMap aNodes = n.getAttributes();
-            for(int i=0; i<aNodes.getLength(); i++){
-                Node item=aNodes.item(i);
-                attrs = attrs+" "+item.getNodeName()+"="+item.getNodeValue();
-            }
-        }
-        System.out.println(n.getNodeName()+" = "+n.getNodeValue()+";\tattrs: "+attrs);
-        if(n.getChildNodes()==null) return;
-        NodeList nl=n.getChildNodes();
-        for(int i=0; i<nl.getLength(); i++){
-            printNodes(nl.item(i));
-        }
-    }
+	/**
+	 * Transform an xml file containing the simulation results (SIMmodeloutput),
+	 * converting it in a file with the model definition and the results following
+	 * the JMTmodel.xsd schema. This must be used together with XSLT transformer that changes Residence times
+	 * @param srcPath the path of the original xml file
+	 * @param dstPath the path of the destination xml file
+	 */
+	public boolean OUTtoMVAScaling(String srcPath, String dstPath) {
 
-    /**
-     * Transform an xml file describing the model, converting it from the
-     *  JMTmodel.xsd schema to the SIMmodeldefinition.xsd schema
-     * @param srcPath the path of the original xml file
-     * @param dstPath the path of the destination xml file
-     */
-    public boolean MVAtoSIM_parallel(String srcPath, String dstPath) {
+		//source xsd
+		String srcXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JSIM_MODEL_RESULTS);
 
-        //source xsd
-        String srcXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JMVA_MODEL_DEFINITION);
+		//destination xsd
+		String dstXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JMVA_MODEL_DEFINITION);
 
-        //destination xsd
-        String dstXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JSIM_MODEL_DEFINITION);
+		//xslt transformation
+		String transPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.OUT_TO_JMVA_SCALING);
 
-        //xslt transformation
-        String transPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JMVA_TO_JSIM);
+		configureTransformer(srcPath, dstPath, transPath, srcXsdPath, dstXsdPath);
 
-        configureTransformer(srcPath, dstPath, transPath, srcXsdPath, dstXsdPath);
-        return transform();
-        
+		return transform();
 
-    }
+	}
 
+	/**
+	 * Transform an xml file containing the simulation results (SIMmodeloutput),
+	 * converting it in a file with the model definition and the results following
+	 * the JMTmodel.xsd schema.
+	 * @param srcPath the path of the original xml file
+	 * @param dstPath the path of the destination xml file
+	 */
+	public boolean OUTtoMVA(String srcPath, String dstPath) {
 
+		//source xsd
+		String srcXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JSIM_MODEL_RESULTS);
 
-    /**
-     * Transform an xml file containing the simulation results (SIMmodeloutput),
-     * converting it in a file with the model definition and the results following
-     * the JMTmodel.xsd schema. This must be used together with XSLT transformer that changes Residence times
-     * @param srcPath the path of the original xml file
-     * @param dstPath the path of the destination xml file
-     */
-    public boolean OUTtoMVAScaling(String srcPath, String dstPath) {
+		//destination xsd
+		String dstXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JMVA_MODEL_DEFINITION);
 
-        //source xsd
-        String srcXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JSIM_MODEL_RESULTS);
+		//xslt transformation
+		String transPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.OUT_TO_JMVA);
 
-        //destination xsd
-        String dstXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JMVA_MODEL_DEFINITION);
+		configureTransformer(srcPath, dstPath, transPath, srcXsdPath, dstXsdPath);
 
-        //xslt transformation
-        String transPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.OUT_TO_JMVA_SCALING);
+		return transform();
 
-        configureTransformer(srcPath, dstPath, transPath, srcXsdPath, dstXsdPath);
-
-        return transform();
-
-    }
-    
-    /**
-     * Transform an xml file containing the simulation results (SIMmodeloutput),
-     * converting it in a file with the model definition and the results following
-     * the JMTmodel.xsd schema.
-     * @param srcPath the path of the original xml file
-     * @param dstPath the path of the destination xml file
-     */
-    public boolean OUTtoMVA(String srcPath, String dstPath) {
-
-        //source xsd
-        String srcXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JSIM_MODEL_RESULTS);
-
-        //destination xsd
-        String dstXsdPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.JMVA_MODEL_DEFINITION);
-
-        //xslt transformation
-        String transPath = XSDSchemaLoader.loadSchema(XSDSchemaLoader.OUT_TO_JMVA);
-
-        configureTransformer(srcPath, dstPath, transPath, srcXsdPath, dstXsdPath);
-
-        return transform();
-
-    }    
+	}
 }

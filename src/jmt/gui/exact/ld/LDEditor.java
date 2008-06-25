@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.ld;
 
 import java.awt.Component;
@@ -42,6 +42,11 @@ import javax.swing.table.TableCellEditor;
  * An editor for LD service times. Uses a JDialog to perform editing.
  */
 public class LDEditor extends AbstractCellEditor implements TableCellEditor {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private Frame owner;
 
@@ -84,9 +89,7 @@ public class LDEditor extends AbstractCellEditor implements TableCellEditor {
 	/**
 	 * should never be called
 	 */
-	public Component getTableCellEditorComponent(JTable table, Object value,
-	                                             boolean isSelected,
-	                                             int row, int column) {
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 
 		throw new RuntimeException("LDEditor cannot be used as a normal editor!");
 	}
@@ -133,7 +136,7 @@ public class LDEditor extends AbstractCellEditor implements TableCellEditor {
 		//ldWindow.setBase(framebase);
 		//ldWindow.setOffset(offset);
 
-        ldWindow.centerWindow(width, ldWindow.getHeight());
+		ldWindow.centerWindow(width, ldWindow.getHeight());
 		ldWindow.show();
 	}
 

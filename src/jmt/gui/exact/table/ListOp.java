@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.table;
 
 /**
@@ -34,7 +34,7 @@ public class ListOp {
 	private static final int RESIZE_OP = 0;
 	private static final int DELETE_OP = 1;
 
-	private static final String[] NAMES = {"resize", "delete"};
+	private static final String[] NAMES = { "resize", "delete" };
 
 	private int type;
 	private int data;

@@ -15,22 +15,13 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.table;
 
-import jmt.gui.common.resources.JMTImageLoader;
-
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableModelEvent;
-import javax.swing.plaf.UIResource;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
@@ -41,6 +32,33 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.StringTokenizer;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.ActionMap;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPopupMenu;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JViewport;
+import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.TableModelEvent;
+import javax.swing.plaf.UIResource;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
+
+import jmt.gui.common.resources.JMTImageLoader;
 
 /**
 
@@ -60,6 +78,11 @@ import java.util.StringTokenizer;
  * <li>can fill cells with the value from a cell (if using an ExactTableModel) - CTRL+F
  */
 public class ExactTable extends JTable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private static final boolean DEBUG = false;
 
@@ -84,6 +107,11 @@ public class ExactTable extends JTable {
 	protected String moreRowsTooltip;//"Scroll down to see more rows...";
 
 	protected AbstractAction selectAction = new AbstractAction() {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		{
 			if (getRowSelectionAllowed() || getColumnSelectionAllowed()) {
 				putValue(Action.SHORT_DESCRIPTION, selectAllTooltip);
@@ -134,10 +162,10 @@ public class ExactTable extends JTable {
 		setColumnSelectionAllowed(true);
 		setRowSelectionAllowed(true);
 
-        //Dall'Orso 20/12/2004
-        //BEGIN
-        setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
-        //END
+		//Dall'Orso 20/12/2004
+		//BEGIN
+		setAutoResizeMode(JTable.AUTO_RESIZE_LAST_COLUMN);
+		//END
 
 		installKeyboard();
 		installMouse();
@@ -189,7 +217,6 @@ public class ExactTable extends JTable {
 		return menu;
 	}
 
-
 	/**
 	 * Overridden to make sure column sizes are mantained
 	 */
@@ -216,26 +243,22 @@ public class ExactTable extends JTable {
 			ptm = (PrototypedTableModel) dataModel;
 		}
 
-		if (tableHeader == null) return; // hack: skip column sizing until we actually have a header
+		if (tableHeader == null) {
+			return; // hack: skip column sizing until we actually have a header
+		}
 
 		for (int i = 0; i < colnum; i++) {
 			col = columnModel.getColumn(i);
 
-			comp = tableHeader.getDefaultRenderer().
-			        getTableCellRendererComponent(
-			                null, col.getHeaderValue(),
-			                false, false, 0, i);
+			comp = tableHeader.getDefaultRenderer().getTableCellRendererComponent(null, col.getHeaderValue(), false, false, 0, i);
 			autoWidth = comp.getPreferredSize().width;
 
 			if (hasPrototypes) {
-/*                comp = getDefaultRenderer(dataModel.getColumnClass(i)).
-				        getTableCellRendererComponent(
-				                this, ptm.getPrototype(i),
-				                false, false, 0, i);
-*/                comp = getDefaultRenderer(Object.class).
-				        getTableCellRendererComponent(
-				                this, ptm.getPrototype(i),
-				                false, false, 0, i);
+				/*                comp = getDefaultRenderer(dataModel.getColumnClass(i)).
+								        getTableCellRendererComponent(
+								                this, ptm.getPrototype(i),
+								                false, false, 0, i);
+				*/comp = getDefaultRenderer(Object.class).getTableCellRendererComponent(this, ptm.getPrototype(i), false, false, 0, i);
 
 				autoWidth = Math.max(autoWidth, comp.getPreferredSize().width);
 			}
@@ -244,18 +267,21 @@ public class ExactTable extends JTable {
 		}
 	}
 
-
 	public void setColumnSelectionAllowed(boolean allowed) {
 		super.setColumnSelectionAllowed(allowed);
 		allowed = getColumnSelectionAllowed();
-		if (tableHeader instanceof ClickableTableHeader) ((ClickableTableHeader) tableHeader).setAllowsClickColumnSelection(allowed);
+		if (tableHeader instanceof ClickableTableHeader) {
+			((ClickableTableHeader) tableHeader).setAllowsClickColumnSelection(allowed);
+		}
 		setSelectAllStatus(allowed || getRowSelectionAllowed());
 	}
 
 	public void setRowSelectionAllowed(boolean allowed) {
 		super.setRowSelectionAllowed(allowed);
 		allowed = getRowSelectionAllowed();
-		if (rowHeader != null) rowHeader.setAllowsClickRowSelection(allowed);
+		if (rowHeader != null) {
+			rowHeader.setAllowsClickRowSelection(allowed);
+		}
 		setSelectAllStatus(allowed || getColumnSelectionAllowed());
 	}
 
@@ -335,13 +361,12 @@ public class ExactTable extends JTable {
 			}
 		}
 
-
 	}
 
 	private void installSelectAllButton(JScrollPane scrollPane) {
 		selectAllButton.setFocusable(false);
 		selectAllButton.setBorder(UIManager.getBorder("TableHeader.cellBorder"));
-		scrollPane.setCorner(JScrollPane.UPPER_LEFT_CORNER, selectAllButton);
+		scrollPane.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, selectAllButton);
 	}
 
 	private void installLabels(JScrollPane scrollPane) {
@@ -355,10 +380,12 @@ public class ExactTable extends JTable {
 		moreRowsLabel.setToolTipText(moreRowsTooltip);
 		moreRowsLabel.setVisible(false);
 
-		scrollPane.setCorner(JScrollPane.UPPER_RIGHT_CORNER, moreColumnsLabel);
-		scrollPane.setCorner(JScrollPane.LOWER_LEFT_CORNER, moreRowsLabel);
+		scrollPane.setCorner(ScrollPaneConstants.UPPER_RIGHT_CORNER, moreColumnsLabel);
+		scrollPane.setCorner(ScrollPaneConstants.LOWER_LEFT_CORNER, moreRowsLabel);
 
-		if (displaysScrollLabels) updateScrollLabels();
+		if (displaysScrollLabels) {
+			updateScrollLabels();
+		}
 
 	}
 
@@ -368,7 +395,9 @@ public class ExactTable extends JTable {
 	 */
 	public void stopEditing() {
 		if (cellEditor != null) {
-			if (!cellEditor.stopCellEditing()) cellEditor.cancelCellEditing();
+			if (!cellEditor.stopCellEditing()) {
+				cellEditor.cancelCellEditing();
+			}
 		}
 	}
 
@@ -387,7 +416,6 @@ public class ExactTable extends JTable {
 		stopEditing();
 		super.selectAll();
 	}
-
 
 	/**
 	 * Updates the state of the actions. called whenever the selection state of the table changes.
@@ -412,12 +440,16 @@ public class ExactTable extends JTable {
 
 	public void updateStructure() {
 		tableChanged(new TableModelEvent(dataModel, TableModelEvent.HEADER_ROW));
-		if (rowHeader != null) rowHeader.update();
+		if (rowHeader != null) {
+			rowHeader.update();
+		}
 	}
 
 	public void update() {
 		tableChanged(new TableModelEvent(dataModel));
-		if (rowHeader != null) rowHeader.update();
+		if (rowHeader != null) {
+			rowHeader.update();
+		}
 	}
 
 	public void updateRow(int row) {
@@ -426,7 +458,9 @@ public class ExactTable extends JTable {
 
 	public void updateRows(int firstRow, int lastRow) {
 		tableChanged(new TableModelEvent(dataModel, firstRow, lastRow));
-		if (rowHeader != null) rowHeader.updateRows(firstRow, lastRow);
+		if (rowHeader != null) {
+			rowHeader.updateRows(firstRow, lastRow);
+		}
 	}
 
 	public int getRowHeaderWidth() {
@@ -455,7 +489,9 @@ public class ExactTable extends JTable {
 
 	public void setMoreRowsTooltip(String moreRowsTooltip) {
 		this.moreRowsTooltip = moreRowsTooltip;
-		if (moreRowsLabel != null) moreRowsLabel.setToolTipText(moreRowsTooltip);
+		if (moreRowsLabel != null) {
+			moreRowsLabel.setToolTipText(moreRowsTooltip);
+		}
 	}
 
 	public String getMoreColumnsTooltip() {
@@ -464,7 +500,9 @@ public class ExactTable extends JTable {
 
 	public void setMoreColumnsTooltip(String moreColumnsTooltip) {
 		this.moreColumnsTooltip = moreColumnsTooltip;
-		if (moreColumnsLabel != null) moreColumnsLabel.setToolTipText(moreColumnsTooltip);
+		if (moreColumnsLabel != null) {
+			moreColumnsLabel.setToolTipText(moreColumnsTooltip);
+		}
 	}
 
 	public boolean displaysScrollLabels() {
@@ -484,8 +522,7 @@ public class ExactTable extends JTable {
 	/**
 	 * Try to keep the viewport aligned on column boundaries in the direction of interest
 	 */
-	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation,
-	                                      int direction) {
+	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
 
 		if (orientation == SwingConstants.HORIZONTAL) {
 			return 80;
@@ -493,8 +530,7 @@ public class ExactTable extends JTable {
 		return getRowHeight();
 	}
 
-	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation,
-	                                       int direction) {
+	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
 		/* borrowed from JTable */
 		if (orientation == SwingConstants.HORIZONTAL) {
 			return 5 * getScrollableUnitIncrement(visibleRect, orientation, direction);
@@ -529,7 +565,9 @@ public class ExactTable extends JTable {
 	/* copy/cut/paste/delete stuff -------------------------------------*/
 
 	public void copyAnchorToSelection() {
-		if ((getSelectedRowCount() == 0) && (getSelectedColumnCount() == 0)) return;
+		if ((getSelectedRowCount() == 0) && (getSelectedColumnCount() == 0)) {
+			return;
+		}
 		if (dataModel instanceof ExactTableModel) {
 			stopEditing();
 			int rowFrom = selectionModel.getMinSelectionIndex();
@@ -555,19 +593,17 @@ public class ExactTable extends JTable {
 		int numrows = getSelectedRowCount();
 		int[] rowsselected = getSelectedRows();
 		int[] colsselected = getSelectedColumns();
-		if (!((numrows - 1 == rowsselected[rowsselected.length - 1] - rowsselected[0] &&
-		        numrows == rowsselected.length) &&
-		        (numcols - 1 == colsselected[colsselected.length - 1] - colsselected[0] &&
-		        numcols == colsselected.length))) {
-			JOptionPane.showMessageDialog(null, "Invalid Copy Selection",
-			        "Invalid Copy Selection",
-			        JOptionPane.ERROR_MESSAGE);
+		if (!((numrows - 1 == rowsselected[rowsselected.length - 1] - rowsselected[0] && numrows == rowsselected.length) && (numcols - 1 == colsselected[colsselected.length - 1]
+				- colsselected[0] && numcols == colsselected.length))) {
+			JOptionPane.showMessageDialog(null, "Invalid Copy Selection", "Invalid Copy Selection", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		for (int i = 0; i < numrows; i++) {
 			for (int j = 0; j < numcols; j++) {
 				sbf.append(getValueAt(rowsselected[i], colsselected[j]));
-				if (j < numcols - 1) sbf.append("\t");
+				if (j < numcols - 1) {
+					sbf.append("\t");
+				}
 			}
 			sbf.append("\n");
 		}
@@ -581,7 +617,9 @@ public class ExactTable extends JTable {
 	}
 
 	public void clearCells() {
-		if (DEBUG) System.out.println("clearCells");
+		if (DEBUG) {
+			System.out.println("clearCells");
+		}
 		boolean hasClear = false;
 		ExactTableModel etm = null;
 		if (dataModel instanceof ExactTableModel) {
@@ -593,13 +631,9 @@ public class ExactTable extends JTable {
 		int numrows = getSelectedRowCount();
 		int[] rowsselected = getSelectedRows();
 		int[] colsselected = getSelectedColumns();
-		if (!((numrows - 1 == rowsselected[rowsselected.length - 1] - rowsselected[0] &&
-		        numrows == rowsselected.length) &&
-		        (numcols - 1 == colsselected[colsselected.length - 1] - colsselected[0] &&
-		        numcols == colsselected.length))) {
-			JOptionPane.showMessageDialog(null, "Invalid Clear Selection",
-			        "Invalid Clear Selection",
-			        JOptionPane.ERROR_MESSAGE);
+		if (!((numrows - 1 == rowsselected[rowsselected.length - 1] - rowsselected[0] && numrows == rowsselected.length) && (numcols - 1 == colsselected[colsselected.length - 1]
+				- colsselected[0] && numcols == colsselected.length))) {
+			JOptionPane.showMessageDialog(null, "Invalid Clear Selection", "Invalid Clear Selection", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		for (int i = 0; i < numrows; i++) {
@@ -620,24 +654,32 @@ public class ExactTable extends JTable {
 	}
 
 	public void pasteCellsAt(int startRow, int startCol) {
-		if (!canPaste()) return;
+		if (!canPaste()) {
+			return;
+		}
 		String rowstring, value;
 
-		int i = 0,j = 0;
-		if (DEBUG) System.out.println("Trying to Paste");
+		int i = 0, j = 0;
+		if (DEBUG) {
+			System.out.println("Trying to Paste");
+		}
 		try {
 			String trstring = (String) (clip.getContents(this).getTransferData(DataFlavor.stringFlavor));
-			if (DEBUG) System.out.println("String is:" + trstring);
+			if (DEBUG) {
+				System.out.println("String is:" + trstring);
+			}
 			StringTokenizer st1 = new StringTokenizer(trstring, "\n");
 			for (i = 0; st1.hasMoreTokens(); i++) {
 				rowstring = st1.nextToken();
 				StringTokenizer st2 = new StringTokenizer(rowstring, "\t");
 				for (j = 0; st2.hasMoreTokens(); j++) {
 					value = st2.nextToken();
-					if (startRow + i < getRowCount() &&
-					        startCol + j < getColumnCount())
+					if (startRow + i < getRowCount() && startCol + j < getColumnCount()) {
 						setValueAt(value, startRow + i, startCol + j);
-					if (DEBUG) System.out.println("Putting " + value + "at row=" + startRow + i + "column=" + startCol + j);
+					}
+					if (DEBUG) {
+						System.out.println("Putting " + value + "at row=" + startRow + i + "column=" + startCol + j);
+					}
 
 				}
 			}
@@ -657,6 +699,11 @@ public class ExactTable extends JTable {
 	}
 
 	public AbstractAction COPY_ACTION = new AbstractAction("Copy") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		{
 			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_C, ActionEvent.CTRL_MASK, false));
 			putValue(Action.SHORT_DESCRIPTION, "Copies selected cells to the system clipboard");
@@ -668,6 +715,11 @@ public class ExactTable extends JTable {
 	};
 
 	public AbstractAction CUT_ACTION = new AbstractAction("Cut") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		{
 			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_X, ActionEvent.CTRL_MASK, false));
 			putValue(Action.SHORT_DESCRIPTION, "Copies selected cells to the system clipboard and clears them");
@@ -680,6 +732,11 @@ public class ExactTable extends JTable {
 	};
 
 	public AbstractAction PASTE_ACTION = new AbstractAction("Paste") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		{
 			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_V, ActionEvent.CTRL_MASK, false));
 			putValue(Action.SHORT_DESCRIPTION, "Pastes cells from the system clipboard, starting from the currently focused cell");
@@ -691,6 +748,11 @@ public class ExactTable extends JTable {
 	};
 
 	public AbstractAction CLEAR_ACTION = new AbstractAction("Clear") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		{
 			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_DELETE, 0, false));
 			putValue(Action.SHORT_DESCRIPTION, "Clears selected cells");
@@ -702,6 +764,11 @@ public class ExactTable extends JTable {
 	};
 
 	public AbstractAction FILL_ACTION = new AbstractAction("Fill") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		{
 			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_F, ActionEvent.CTRL_MASK, false));
 			putValue(Action.SHORT_DESCRIPTION, "Fills selected cells with the value of the focused cell");
@@ -712,7 +779,6 @@ public class ExactTable extends JTable {
 		}
 	};
 
-
 	protected class MouseHandler extends MouseAdapter {
 
 		private boolean isInstalled;
@@ -721,7 +787,6 @@ public class ExactTable extends JTable {
 		public MouseHandler(JPopupMenu menu) {
 			this.menu = menu;
 		}
-
 
 		public void install() {
 			if (!isInstalled) {
@@ -746,7 +811,9 @@ public class ExactTable extends JTable {
 		}
 
 		protected void processME(MouseEvent e) {
-			if (!mouseMenuEnabled) return;
+			if (!mouseMenuEnabled) {
+				return;
+			}
 			if (e.isPopupTrigger()) {
 				updateActions();
 				menu.show(e.getComponent(), e.getX(), e.getY());

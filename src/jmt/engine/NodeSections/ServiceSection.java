@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NodeSections;
 
 import jmt.engine.QueueNet.Job;
@@ -45,8 +45,7 @@ public abstract class ServiceSection extends PipeSection {
 	 * @param delay Scheduling delay.
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendForward(Job job, double delay)
-	        throws jmt.common.exception.NetException {
+	protected void sendForward(Job job, double delay) throws jmt.common.exception.NetException {
 		send(job, delay, NodeSection.OUTPUT);
 	}
 
@@ -55,8 +54,7 @@ public abstract class ServiceSection extends PipeSection {
 	 * @param delay Scheduling delay.
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendForward(int event, Object data, double delay)
-	        throws jmt.common.exception.NetException {
+	protected void sendForward(int event, Object data, double delay) throws jmt.common.exception.NetException {
 		send(event, data, delay, NodeSection.OUTPUT);
 	}
 
@@ -65,8 +63,7 @@ public abstract class ServiceSection extends PipeSection {
 	 * @param delay Scheduling delay.
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendBackward(Job job, double delay)
-	        throws jmt.common.exception.NetException {
+	protected void sendBackward(Job job, double delay) throws jmt.common.exception.NetException {
 		send(job, delay, NodeSection.INPUT);
 	}
 
@@ -75,8 +72,7 @@ public abstract class ServiceSection extends PipeSection {
 	 * @param delay Scheduling delay.
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendBackward(int event, Object data, double delay)
-	        throws jmt.common.exception.NetException {
+	protected void sendBackward(int event, Object data, double delay) throws jmt.common.exception.NetException {
 		send(event, data, delay, NodeSection.INPUT);
 	}
 }

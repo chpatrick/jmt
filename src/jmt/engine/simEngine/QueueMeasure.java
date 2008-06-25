@@ -15,12 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.simEngine;
 
-import org.w3c.dom.Document;
-
 import java.util.Vector;
+
+import org.w3c.dom.Document;
 
 //Todo Verificare la correttezza e il significato di quanto scritto, specie l'ultima frase
 //Viene utilizzata come deposito temporaneo di misure tra engine e gui; è invocata da Getter tramite il mediator della gui.
@@ -36,7 +36,6 @@ import java.util.Vector;
  */
 public class QueueMeasure {
 
-
 	private Vector data;
 	private boolean blocked = false;
 
@@ -47,37 +46,37 @@ public class QueueMeasure {
 		end = false;
 	}
 
-
-    /**
-     * Inserts a new document in the vector.
-     * @param elem The element to be inserted.
-     */
-    public synchronized void put(Document elem) {
-		if (blocked)
+	/**
+	 * Inserts a new document in the vector.
+	 * @param elem The element to be inserted.
+	 */
+	public synchronized void put(Document elem) {
+		if (blocked) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
 		data.add(elem);
-//		valueSet = true;
+		//		valueSet = true;
 		notify();
 	}
 
+	/**
+	 * Deletes and returns all the documents contained in QueueMeasure
+	 *
+	 */
 
-    /**
-     * Deletes and returns all the documents contained in QueueMeasure
-     *
-     */
-
-    public synchronized Document[] get() {
-//		if (!valueSet || blocked)
-		if (blocked)
+	public synchronized Document[] get() {
+		//		if (!valueSet || blocked)
+		if (blocked) {
 			try {
 				wait();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+		}
 		notify();
 		if (data.size() > 0) {
 			Document[] measures = (Document[]) data.toArray(new Document[data.size()]);
@@ -88,33 +87,33 @@ public class QueueMeasure {
 	}
 
 	/**
-     * Blocks the QueueMeasure object for synchronized access to data.
-     */
-    public synchronized void block() {
+	 * Blocks the QueueMeasure object for synchronized access to data.
+	 */
+	public synchronized void block() {
 		blocked = true;
 	}
 
 	/**
-     * Unblocks the QueueMeasure object.
-     */
-    public synchronized void unblock() {
+	 * Unblocks the QueueMeasure object.
+	 */
+	public synchronized void unblock() {
 		blocked = false;
 		notifyAll();
 	}
 
-    /**
-     * Sets the end property, which indicates if the measure has finished.
-     * @param end
-     */
+	/**
+	 * Sets the end property, which indicates if the measure has finished.
+	 * @param end
+	 */
 
 	public void setEnd(boolean end) {
 		this.end = end;
 	}
 
-    /**
-     * Checks if the measure has finished
-     * @return true if finished, false otherwise.
-     */
+	/**
+	 * Checks if the measure has finished
+	 * @return true if finished, false otherwise.
+	 */
 	public boolean isEnd() {
 		return end;
 	}

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.xml;
 
 import org.xml.sax.ErrorHandler;
@@ -50,13 +50,11 @@ public class JmtErrorHandler implements ErrorHandler {
 	 *            wrapping another exception.
 	 * @see org.xml.sax.SAXParseException
 	 */
-	public void warning(SAXParseException exception)
-	        throws SAXException {
+	public void warning(SAXParseException exception) throws SAXException {
 		System.err.println("Warning: " + exception.getMessage());
-//		XMLLoader.success = false;
+		//		XMLLoader.success = false;
 		throw exception;
 	}
-
 
 	/**
 	 * Receive notification of a recoverable error.
@@ -83,14 +81,12 @@ public class JmtErrorHandler implements ErrorHandler {
 	 *            wrapping another exception.
 	 * @see org.xml.sax.SAXParseException
 	 */
-	public void error(SAXParseException exception)
-	        throws SAXException {
-//		System.err.println(exception.getColumnNumber());
-//		throw new SAXException(exception.getSystemId());
+	public void error(SAXParseException exception) throws SAXException {
+		//		System.err.println(exception.getColumnNumber());
+		//		throw new SAXException(exception.getSystemId());
 		System.err.println("Error while parsing: " + exception.getMessage());
 		throw exception;
 	}
-
 
 	/**
 	 * Receive notification of a non-recoverable error.
@@ -112,8 +108,7 @@ public class JmtErrorHandler implements ErrorHandler {
 	 *            wrapping another exception.
 	 * @see org.xml.sax.SAXParseException
 	 */
-	public void fatalError(SAXParseException exception)
-	        throws SAXException {
+	public void fatalError(SAXParseException exception) throws SAXException {
 		System.err.println("Fatal error while parsing: " + exception.getMessage());
 		throw exception;
 	}

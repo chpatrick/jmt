@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * FDistribution.java
  *
@@ -37,10 +37,11 @@ public class FDistribution {
 	 *  @param den denominator degrees of freedom
 	 */
 	public FDistribution(int num, int den) {
-		if ((num <= 0) || (den <= 0))
+		if ((num <= 0) || (den <= 0)) {
 			throw new IllegalArgumentException("the degrees of freedom of a Fisher distribution must be > 0");
-		this.num = (double) num;
-		this.den = (double) den;
+		}
+		this.num = num;
+		this.den = den;
 	}
 
 	/** sets the degrees of freedom of the distribution
@@ -48,10 +49,11 @@ public class FDistribution {
 	 *  @param den denominator degrees of freedom
 	 */
 	public void setParameters(int num, int den) {
-		if ((num <= 0) || (den <= 0))
+		if ((num <= 0) || (den <= 0)) {
 			throw new IllegalArgumentException("the degrees of freedom of a Fisher distribution must be > 0");
-		this.num = (double) num;
-		this.den = (double) den;
+		}
+		this.num = num;
+		this.den = den;
 	}
 
 	/** CDF
@@ -62,10 +64,11 @@ public class FDistribution {
 	 *  @param den denominator degrees of freedom
 	 */
 	public static double CDF(double f, int num, int den) {
-		if ((num <= 0) || (den <= 0))
+		if ((num <= 0) || (den <= 0)) {
 			throw new IllegalArgumentException("the degrees of freedom of a Fisher distribution must be > 0");
-		double df1 = (double) num;
-		double df2 = (double) den;
+		}
+		double df1 = num;
+		double df2 = den;
 		return BetaFun.betaInv(df1 * f / (df1 * f + df2), 0.5 * df1, 0.5 * df2);
 	}
 
@@ -91,22 +94,26 @@ public class FDistribution {
 		double z2 = 10;
 		double zs;
 		double sol;
-		if (p <= 0 || p > 1)
+		if (p <= 0 || p > 1) {
 			throw new IllegalArgumentException("probability p must be 0<p<1");
-		while (CDF(z2) < p)
+		}
+		while (CDF(z2) < p) {
 			z2 *= 2;
-		while (CDF(z1) > p)
+		}
+		while (CDF(z1) > p) {
 			z1 /= 2;
+		}
 
 		zs = z2 / 2;
 		sol = CDF(zs);
 		while (sol > max || sol < min) {
 			/* False position iteration. */
 			zs = z1 + (z2 - z1) * (-(p - CDF(z1))) / ((p - CDF(z2)) - (p - CDF(z1)));
-			if ((p - CDF(zs)) * (p - CDF(z1)) > 0)
+			if ((p - CDF(zs)) * (p - CDF(z1)) > 0) {
 				z1 = zs;
-			else
+			} else {
 				z2 = zs;
+			}
 			sol = CDF(zs);
 		}
 		return zs;
@@ -120,28 +127,30 @@ public class FDistribution {
 		double z2 = 10;
 		double zs;
 		double sol;
-		if (p <= 0 || p >= 1)
+		if (p <= 0 || p >= 1) {
 			throw new IllegalArgumentException("probability p must be 0<p<1");
-		while (CDF(z2, num, den) < p)
+		}
+		while (CDF(z2, num, den) < p) {
 			z2 *= 2;
-		while (CDF(z1, num, den) > p)
+		}
+		while (CDF(z1, num, den) > p) {
 			z1 /= 2;
+		}
 
 		zs = z2 / 2;
 		sol = CDF(zs, num, den);
 		while (sol > max || sol < min) {
 			/* False position iteration. */
 			zs = z1 + (z2 - z1) * (-(p - CDF(z1, num, den))) / ((p - CDF(z2, num, den)) - (p - CDF(z1, num, den)));
-			if ((p - CDF(zs, num, den)) * (p - CDF(z1, num, den)) > 0)
+			if ((p - CDF(zs, num, den)) * (p - CDF(z1, num, den)) > 0) {
 				z1 = zs;
-			else
+			} else {
 				z2 = zs;
+			}
 			sol = CDF(zs, num, den);
 		}
 		return zs;
 	}
-
-
 
 	/** test function */
 	public static void test() {

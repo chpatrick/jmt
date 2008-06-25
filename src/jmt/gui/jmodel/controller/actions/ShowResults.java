@@ -15,14 +15,14 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
  * <p>Title: ShowResults Action</p>
@@ -35,22 +35,27 @@ import java.awt.event.KeyEvent;
  */
 public class ShowResults extends AbstractJmodelAction {
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Defines an <code>Action</code> object with a default
 	 * description string and default icon.
 	 */
 	public ShowResults(Mediator mediator) {
 		super("Show Results", "Results", mediator);
 		this.setTooltipText("show simulation results window");
-        this.setMnemonicKey(KeyEvent.VK_R);
-        this.setAcceleratorKey(KeyEvent.VK_R, KeyEvent.ALT_MASK);
-        this.setSelectable(true);
-        this.setEnabled(false);
+		this.setMnemonicKey(KeyEvent.VK_R);
+		this.setAcceleratorKey(KeyEvent.VK_R, InputEvent.ALT_MASK);
+		this.setSelectable(true);
+		this.setEnabled(false);
 	}
 
 	/**
 	 * Invoked when an action occurs.
 	 */
 	public void actionPerformed(ActionEvent e) {
-	    mediator.showResultsWindow(isSelected());
+		mediator.showResultsWindow(isSelected());
 	}
 }

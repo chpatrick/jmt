@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.resources;
 
 import java.awt.Dimension;
@@ -37,30 +37,30 @@ import jmt.framework.gui.image.ImageLoader;
  * @version 1.2
  */
 public class JMTImageLoader {
-    protected static ImageLoader imageLoader = new ImageLoaderImpl();
+	protected static ImageLoader imageLoader = new ImageLoaderImpl();
 
 	/**  Loads the image from this directory, please put all images in the class
 	 * package.
 	 *
 	 * @param imageName string containing the image name
 	 * @return the icon  of the image
-     *
+	 *
 	 */
 	public static ImageIcon loadImage(String imageName) {
-        return imageLoader.loadIcon(imageName);
+		return imageLoader.loadIcon(imageName);
 	}
 
-    /**  Loads the image from this directory, please put all images in the class
-     * package.
-     *
-     * @param imageName string containing the image name
-     * @param size specific size for the image to be returned
-     * @return the icon  of the image
-     *
-     */
-    public static ImageIcon loadImage(String imageName, Dimension size){
-        return imageLoader.loadIcon(imageName, size);
-    }
+	/**  Loads the image from this directory, please put all images in the class
+	 * package.
+	 *
+	 * @param imageName string containing the image name
+	 * @param size specific size for the image to be returned
+	 * @return the icon  of the image
+	 *
+	 */
+	public static ImageIcon loadImage(String imageName, Dimension size) {
+		return imageLoader.loadIcon(imageName, size);
+	}
 
 	/**  Loads the image from this directory, please put all images in the class
 	 * package.
@@ -69,30 +69,31 @@ public class JMTImageLoader {
 	 * @return the image
 	 */
 	public static Image loadImageAwt(String imageName) {
-        ImageIcon img = imageLoader.loadIcon(imageName);
-        if (img != null)
-            return img.getImage();
-        else
-            return null;
+		ImageIcon img = imageLoader.loadIcon(imageName);
+		if (img != null) {
+			return img.getImage();
+		} else {
+			return null;
+		}
 	}
-    
-    /**
-     * @return incapsulated ImageLoader object
-     */
-    public static ImageLoader getImageLoader() {
-        return imageLoader;
-    }
 
-    /** Loads the image from this directory, and apply a known modifier.
-     * Please put all images in the class
-     * package.
-     *
-     * @param imageName string containing the image name
-     * @param modifier known modifier method
-     * @return the icon image
-     * @see ImageLoader#loadIcon(String, String)
-     */
-    public static ImageIcon loadImage(String imageName, String modifier) {
-        return imageLoader.loadIcon(imageName, modifier);
-    }
+	/**
+	 * @return incapsulated ImageLoader object
+	 */
+	public static ImageLoader getImageLoader() {
+		return imageLoader;
+	}
+
+	/** Loads the image from this directory, and apply a known modifier.
+	 * Please put all images in the class
+	 * package.
+	 *
+	 * @param imageName string containing the image name
+	 * @param modifier known modifier method
+	 * @return the icon image
+	 * @see ImageLoader#loadIcon(String, String)
+	 */
+	public static ImageIcon loadImage(String imageName, String modifier) {
+		return imageLoader.loadIcon(imageName, modifier);
+	}
 }

@@ -15,9 +15,8 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.gui.jwat;
 
+package jmt.gui.jwat;
 
 import javax.swing.JFrame;
 import javax.swing.ProgressMonitor;
@@ -29,28 +28,24 @@ import javax.swing.ProgressMonitor;
  * Time: 9.56.37
  * To change this template use Options | File Templates.
  */
-public class LoadPanel extends SwingWorker
-{
-	public LoadPanel(JFrame frm,String MSG,int MAX)
-	{
-		own=frm;
-		msg=MSG;
-		max=MAX;
+public class LoadPanel extends SwingWorker {
+	public LoadPanel(JFrame frm, String MSG, int MAX) {
+		own = frm;
+		msg = MSG;
+		max = MAX;
 	}
-	
-	public Object construct()
-	{
-		
-		ProgressMonitor pm=new ProgressMonitor(own,msg,"",0,max);
-		
+
+	public Object construct() {
+
+		ProgressMonitor pm = new ProgressMonitor(own, msg, "", 0, max);
+
 		pm.setMillisToDecideToPopup(0);
 		pm.setMillisToPopup(0);
 		pm.setProgress(0);
-		
-		
+
 		return pm;
 	}
-	
+
 	// private JInternalFrame own;
 	private JFrame own;
 	private String msg;

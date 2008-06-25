@@ -22,14 +22,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
- 
+
 package jmt.gui.common.distributions;
 
 //import jmt.gui.common.distributions.Distribution.Parameter;
 //import jmt.gui.common.distributions.Distribution.ValueChecker;
-import jmt.gui.common.resources.JMTImageLoader;
+import javax.swing.ImageIcon;
 
-import javax.swing.*;
+import jmt.gui.common.resources.JMTImageLoader;
 
 /**
 * <p>Title: Constant Distribution</p>
@@ -39,65 +39,58 @@ import javax.swing.*;
 *         Date: 16-Dc-2006
 *         Time: 20.02.30
 */
-public class MAP extends Distribution{
-   /**
-    * Construct a new MAP distribution
-    */
-   public MAP() {
-       super("MAP",
-               "jmt.engine.random.MAP",
-               "jmt.engine.random.MAPPar",
-               "MAP");
-       hasMean = false;
-       isNestable = true;
-   }
+public class MAP extends Distribution {
+	/**
+	 * Construct a new MAP distribution
+	 */
+	public MAP() {
+		super("MAP", "jmt.engine.random.MAP", "jmt.engine.random.MAPPar", "MAP");
+		hasMean = false;
+		isNestable = true;
+	}
 
-   /**
-    * Used to set parameters of this distribution.
-    * @return distribution parameters
-    */
-   protected Parameter[] setParameters() {
-    // Creates parameter array
-    Parameter[] parameters = new Parameter[2];
-    
-    parameters[0] = new Parameter("D0","D0 Matrix",
-            String.class,
-            new String("[-1,0.1;0.5,-1]"));
-    // Checks value of alpha must greater or equal then 2
-    parameters[0].setValueChecker(new ValueChecker() {
-        public boolean checkValue(Object value) {
-                return true; // disable check value
-        }
-    });
+	/**
+	 * Used to set parameters of this distribution.
+	 * @return distribution parameters
+	 */
+	protected Parameter[] setParameters() {
+		// Creates parameter array
+		Parameter[] parameters = new Parameter[2];
 
-    parameters[1] = new Parameter("D1","D1 Matrix",
-    		String.class,
-            new String("[0.9,0;0.1,0.4]"));
-    // Checks value of alpha must greater or equal then 2
-    parameters[1].setValueChecker(new ValueChecker() {
-        public boolean checkValue(Object value) {
-                return true; // disable check value
-        }
-    });
+		parameters[0] = new Parameter("D0", "D0 Matrix", String.class, new String("[-1,0.1;0.5,-1]"));
+		// Checks value of alpha must greater or equal then 2
+		parameters[0].setValueChecker(new ValueChecker() {
+			public boolean checkValue(Object value) {
+				return true; // disable check value
+			}
+		});
 
-    return parameters;
-}
+		parameters[1] = new Parameter("D1", "D1 Matrix", String.class, new String("[0.9,0;0.1,0.4]"));
+		// Checks value of alpha must greater or equal then 2
+		parameters[1].setValueChecker(new ValueChecker() {
+			public boolean checkValue(Object value) {
+				return true; // disable check value
+			}
+		});
 
-   /**
-    * Sets explicative image of this distribution used, together with description, to help the
-    * user to understand meaning of parameters.
-    * @return explicative image
-    */
-   protected ImageIcon setImage() {
-       return JMTImageLoader.loadImage("MMPP2");
-   }
+		return parameters;
+	}
 
-   /**
-    * Returns this distribution's short description
-    * @return distribution's short description
-    */
-   public String toString() {
-       return "MAP(" +(String)parameters[0].getValue()+"," + (String)parameters[1].getValue() + ")";
-   }
+	/**
+	 * Sets explicative image of this distribution used, together with description, to help the
+	 * user to understand meaning of parameters.
+	 * @return explicative image
+	 */
+	protected ImageIcon setImage() {
+		return JMTImageLoader.loadImage("MMPP2");
+	}
+
+	/**
+	 * Returns this distribution's short description
+	 * @return distribution's short description
+	 */
+	public String toString() {
+		return "MAP(" + (String) parameters[0].getValue() + "," + (String) parameters[1].getValue() + ")";
+	}
 
 }

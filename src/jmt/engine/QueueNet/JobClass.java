@@ -15,9 +15,8 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.engine.QueueNet;
 
+package jmt.engine.QueueNet;
 
 /**
  * This class implements the description of a job class.
@@ -25,31 +24,29 @@ package jmt.engine.QueueNet;
  */
 public class JobClass {
 
-    //job class name
+	//job class name
 	private String name;
-    //job class id
+	//job class id
 	private int Id;
 
-    //NEW
-    //@author Stefano Omini
+	//NEW
+	//@author Stefano Omini
 
-    /* Closed class type */
-    public static final int CLOSED_CLASS = 0;
-    /* Open class type */
-    public static final int OPEN_CLASS = 1;
+	/* Closed class type */
+	public static final int CLOSED_CLASS = 0;
+	/* Open class type */
+	public static final int OPEN_CLASS = 1;
 
-    //class type
-    private int type;
-    //class priority
-    private int priority;
+	//class type
+	private int type;
+	//class priority
+	private int priority;
 
-    private String referenceNodeName;
+	private String referenceNodeName;
 
-    //end NEW
+	//end NEW
 
-
-    //----------------------CONSTRUCTORS---------------------------///
-
+	//----------------------CONSTRUCTORS---------------------------///
 
 	/** Creates a new instance of JobClass
 	 * @param Name Symbolic name of the job class.
@@ -57,38 +54,35 @@ public class JobClass {
 	 */
 	public JobClass(String Name) throws jmt.common.exception.NetException {
 		this.name = Name;
-        this.priority = 0;
-        this.referenceNodeName = null;
+		this.priority = 0;
+		this.referenceNodeName = null;
 	}
 
-    /** Creates a new instance of JobClass
+	/** Creates a new instance of JobClass
 	 * @param Name Symbolic name of the job class.
-     * @param priority Priority of this job class. Must be greater than 0.
-     * @param type Class type. See constants.
-     * @param refNode the reference node of this JobClass
+	 * @param priority Priority of this job class. Must be greater than 0.
+	 * @param type Class type. See constants.
+	 * @param refNode the reference node of this JobClass
 	 * @throws jmt.common.exception.NetException
 	 */
-    public JobClass(String Name, int priority, int type, String refNode) throws jmt.common.exception.NetException {
+	public JobClass(String Name, int priority, int type, String refNode) throws jmt.common.exception.NetException {
 		this.name = Name;
-        this.type = type;
-        this.referenceNodeName = refNode;
+		this.type = type;
+		this.referenceNodeName = refNode;
 
-        if (priority < 0) {
-            this.priority = 0;
-        } else {
-            this.priority = priority;
-        }
-    }
+		if (priority < 0) {
+			this.priority = 0;
+		} else {
+			this.priority = priority;
+		}
+	}
 
-
-     //----------------------SETTER AND GETTER---------------------------///
-
-
+	//----------------------SETTER AND GETTER---------------------------///
 
 	/**Sets the Id of this class
-     * @param Id
-     */
-    void setId(int Id) {
+	 * @param Id
+	 */
+	void setId(int Id) {
 		this.Id = Id;
 	}
 
@@ -106,35 +100,33 @@ public class JobClass {
 		return name;
 	}
 
+	//NEW
+	//@author Stefano Omini
 
-    //NEW
-    //@author Stefano Omini
+	public int getPriority() {
+		return priority;
+	}
 
+	public void setPriority(int priority) {
+		this.priority = priority;
+	}
 
-    public int getPriority() {
-        return priority;
-    }
+	public int getType() {
+		return type;
+	}
 
-    public void setPriority(int priority) {
-        this.priority = priority;
-    }
+	public void setType(int type) {
+		this.type = type;
+	}
 
-    public int getType() {
-        return type;
-    }
+	public String getReferenceNodeName() {
+		return referenceNodeName;
+	}
 
-    public void setType(int type) {
-        this.type = type;
-    }
+	public void setReferenceNodeName(String referenceNodeName) {
+		this.referenceNodeName = referenceNodeName;
+	}
 
-    public String getReferenceNodeName() {
-        return referenceNodeName;
-    }
-
-    public void setReferenceNodeName(String referenceNodeName) {
-        this.referenceNodeName = referenceNodeName;
-    }
-
-    //end NEW
+	//end NEW
 
 }

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.JGraphMod;
 
 import java.awt.Dimension;
@@ -51,219 +51,220 @@ import org.jgraph.graph.Port;
 
  */
 public abstract class JmtCell extends DefaultGraphCell {
-    private Dimension imageDimension;
-    // Used to determine if parent of this cell has changed (to detect enter and exit from
-    // blocking regions)
-    private TreeNode parentRef;
-    /**
-     * Different kind of nodes.
-     */
-    public static final int SOURCE = 0;
-    public static final int TERMINAL = 1;
-    public static final int DELAY = 2;
-    public static final int SERVER = 3;
-    public static final int SINK = 4;
-    public static final int FORK = 5;
-    public static final int JOIN = 6;
-    public static final int LDSERVER = 7;
+	private Dimension imageDimension;
+	// Used to determine if parent of this cell has changed (to detect enter and exit from
+	// blocking regions)
+	private TreeNode parentRef;
+	/**
+	 * Different kind of nodes.
+	 */
+	public static final int SOURCE = 0;
+	public static final int TERMINAL = 1;
+	public static final int DELAY = 2;
+	public static final int SERVER = 3;
+	public static final int SINK = 4;
+	public static final int FORK = 5;
+	public static final int JOIN = 6;
+	public static final int LDSERVER = 7;
 
-    private Port[] ports;
+	private Port[] ports;
 
-// Giuseppe De Cicco & Fabio Granara
-    public boolean seen = false;
-    public int in=0;
-    public int out=0;
-    public boolean okin=false;
-    public boolean okout=false;
-    public int sons=1;
-    public int type;
-    private boolean leftInputCell = true;
+	// Giuseppe De Cicco & Fabio Granara
+	public boolean seen = false;
+	public int in = 0;
+	public int out = 0;
+	public boolean okin = false;
+	public boolean okout = false;
+	public int sons = 1;
+	public int type;
+	private boolean leftInputCell = true;
 
-    /**
-     * Tells if this component can be placed on JGraph or has been disabled. This is
-     * useful to load old models with disabled components (like terminals)
-     */
-    public static final boolean canBePlaced = true;
+	/**
+	 * Tells if this component can be placed on JGraph or has been disabled. This is
+	 * useful to load old models with disabled components (like terminals)
+	 */
+	public static final boolean canBePlaced = true;
 
-    /**
-     * Creates a graph cell and initializes it with the specified user object.
-     *
-      * @param userObject an Object provided by the user that constitutes
-     *                   the cell's data
-     *
-     * Conti Andrea  01-09-2003
-     * Bertoli Marco 04-giu-2005
-     */
-    public JmtCell(String icon, Object userObject) {
-        super(userObject);
-        ImageIcon ico = JMTImageLoader.loadImage(icon);
-        GraphConstants.setIcon(attributes, ico);
-        imageDimension = new Dimension(ico.getIconWidth(), ico.getIconHeight());
-        GraphConstants.setSizeable(attributes, false);
-        GraphConstants.setSize(attributes, imageDimension);
-    }
-//	 Giuseppe De Cicco & Fabio Granara
-    public void AddIn(){
-        in +=1;
-    }
-//	 Giuseppe De Cicco & Fabio Granara
-    public void SubIn(){
-        in -=1;
-    }
-//	 Giuseppe De Cicco & Fabio Granara
-    public void AddOut(){
-        out +=1;
-    }
-//	 Giuseppe De Cicco & Fabio Granara
-    public void SubOut(){
-        out -=1;
-    }
+	/**
+	 * Creates a graph cell and initializes it with the specified user object.
+	 *
+	  * @param userObject an Object provided by the user that constitutes
+	 *                   the cell's data
+	 *
+	 * Conti Andrea  01-09-2003
+	 * Bertoli Marco 04-giu-2005
+	 */
+	public JmtCell(String icon, Object userObject) {
+		super(userObject);
+		ImageIcon ico = JMTImageLoader.loadImage(icon);
+		GraphConstants.setIcon(attributes, ico);
+		imageDimension = new Dimension(ico.getIconWidth(), ico.getIconHeight());
+		GraphConstants.setSizeable(attributes, false);
+		GraphConstants.setSize(attributes, imageDimension);
+	}
 
-    /**
-     * Return Cell's real size (this method considers Icon and name size)
-     * @param graph <code>JGraph</code> object to retrive font dimension informations
-     * @return cell's real size
-     *
-     * Bertoli Marco  4-giu-2005
-     */
-    public Dimension getSize(JGraph graph) {
-        Dimension cellDimension = (Dimension) imageDimension.clone();
-        // Gets the graph font
-        Font font = graph.getFont();
-        // Gets the graphical context
-        Graphics2D g2D = (Graphics2D) graph.getGraphics();
-        // Gets the bounds of the cell name
-        FontRenderContext frc = g2D.getFontRenderContext();
-        Rectangle r = font.getStringBounds(getUserObject().toString(), frc).getBounds();
-        // Sets the cell dimension
-        cellDimension.height += r.height + 5;
-        cellDimension.width = Math.max(cellDimension.width, r.width + 10);
-        return cellDimension;
-    }
+	//	 Giuseppe De Cicco & Fabio Granara
+	public void AddIn() {
+		in += 1;
+	}
 
-    /**creats the ports for this vertex
-     *
-     * @return array of ports
-     */
-    public abstract Port[] createPorts();
+	//	 Giuseppe De Cicco & Fabio Granara
+	public void SubIn() {
+		in -= 1;
+	}
 
-    /**
-     * Sets all the attribults like background colour, dimensions, port number
-     * & position
-     * @param pt
-     * @return created map
-     */
-    public Hashtable setAttributes(Point2D pt, JGraph graph) {
-        //contains attribute of the cell & ports
-        Hashtable nest = new Hashtable();
+	//	 Giuseppe De Cicco & Fabio Granara
+	public void AddOut() {
+		out += 1;
+	}
 
-        Dimension cellDimension = getSize(graph);
-        //contains attrib of cell
-        Map attr = getAttributes();
-        GraphConstants.setBounds(attr, new Rectangle2D.Double(pt.getX(), pt.getY(), cellDimension.getWidth(), cellDimension.getHeight()));
-        GraphConstants.setEditable(attr, false);
-        GraphConstants.setBackground(attr, graph.getBackground());
-        nest.put(this, attr);
+	//	 Giuseppe De Cicco & Fabio Granara
+	public void SubOut() {
+		out -= 1;
+	}
 
-        //create ports
-        ports = createPorts();
-        Icon icon = GraphConstants.getIcon(attr);
-        updatePortPositions(nest, icon, cellDimension);
-        for (int i = 0; i < ports.length; i++) {
-            add((DefaultPort) ports[i]);
-        }
-        return nest;
-    }
+	/**
+	 * Return Cell's real size (this method considers Icon and name size)
+	 * @param graph <code>JGraph</code> object to retrive font dimension informations
+	 * @return cell's real size
+	 *
+	 * Bertoli Marco  4-giu-2005
+	 */
+	public Dimension getSize(JGraph graph) {
+		Dimension cellDimension = (Dimension) imageDimension.clone();
+		// Gets the graph font
+		Font font = graph.getFont();
+		// Gets the graphical context
+		Graphics2D g2D = (Graphics2D) graph.getGraphics();
+		// Gets the bounds of the cell name
+		FontRenderContext frc = g2D.getFontRenderContext();
+		Rectangle r = font.getStringBounds(getUserObject().toString(), frc).getBounds();
+		// Sets the cell dimension
+		cellDimension.height += r.height + 5;
+		cellDimension.width = Math.max(cellDimension.width, r.width + 10);
+		return cellDimension;
+	}
 
-    public void updatePortPositions(Map nest, Icon icon, Dimension cellDimension) {
-        for (int i = 0; i < ports.length; i++) {
-            Map attr = new Hashtable();
-            if (ports[i] instanceof InputPort && isLeftInputCell() ||
-                    ports[i] instanceof OutputPort && !isLeftInputCell())
-                GraphConstants.setOffset(attr, getInPortOffset(icon, cellDimension));
-            else {
-                GraphConstants.setOffset(attr, getOutPortoffset(icon, cellDimension));
-            }
-            nest.put(ports[i], attr);
-        }
-    }
+	/**creats the ports for this vertex
+	 *
+	 * @return array of ports
+	 */
+	public abstract Port[] createPorts();
 
-    protected Point getInPortOffset(Icon icon, Dimension cellDimension) {
-        int iconHeight = icon.getIconHeight();
-        int iconWidth = icon.getIconWidth();
-        int xOff = (cellDimension.width - iconWidth)
-                / 2 * 1000 / cellDimension.width;
-        int yOff = iconHeight / 2 * 1000 / cellDimension.height;
-        return new Point(xOff, yOff);
-    }
+	/**
+	 * Sets all the attribults like background colour, dimensions, port number
+	 * & position
+	 * @param pt
+	 * @return created map
+	 */
+	public Hashtable setAttributes(Point2D pt, JGraph graph) {
+		//contains attribute of the cell & ports
+		Hashtable nest = new Hashtable();
 
-    protected Point getOutPortoffset(Icon icon, Dimension cellDimension) {
-        int iconHeight = icon.getIconHeight();
-        int iconWidth = icon.getIconWidth();
-        int xOff = (cellDimension.width - iconWidth)
-                / 2 * 1000 / cellDimension.width
-                + iconWidth * 1000 / cellDimension.width;
-        int yOff = iconHeight / 2 * 1000 / cellDimension.height;
-        return new Point(xOff, yOff);
-    }
+		Dimension cellDimension = getSize(graph);
+		//contains attrib of cell
+		Map attr = getAttributes();
+		GraphConstants.setBounds(attr, new Rectangle2D.Double(pt.getX(), pt.getY(), cellDimension.getWidth(), cellDimension.getHeight()));
+		GraphConstants.setEditable(attr, false);
+		GraphConstants.setBackground(attr, graph.getBackground());
+		nest.put(this, attr);
 
-    /**
-     * is true if the InputPort of this cell is on the left side
-     * @return true if the InputPort of this cell is on the left side
-     */
-//	 Giuseppe De Cicco & Fabio Granara
-    public boolean isLeftInputCell() {
-        return leftInputCell;
-    }
+		//create ports
+		ports = createPorts();
+		Icon icon = GraphConstants.getIcon(attr);
+		updatePortPositions(nest, icon, cellDimension);
+		for (int i = 0; i < ports.length; i++) {
+			add((DefaultPort) ports[i]);
+		}
+		return nest;
+	}
 
-//	 Giuseppe De Cicco & Fabio Granara
-    public void setLeftInputCell(boolean state){
-        leftInputCell=state;
-    }
+	public void updatePortPositions(Map nest, Icon icon, Dimension cellDimension) {
+		for (int i = 0; i < ports.length; i++) {
+			Map attr = new Hashtable();
+			if (ports[i] instanceof InputPort && isLeftInputCell() || ports[i] instanceof OutputPort && !isLeftInputCell()) {
+				GraphConstants.setOffset(attr, getInPortOffset(icon, cellDimension));
+			} else {
+				GraphConstants.setOffset(attr, getOutPortoffset(icon, cellDimension));
+			}
+			nest.put(ports[i], attr);
+		}
+	}
 
-    /**
-     * Resets stored parent information for this cell
-     */
-    public void resetParent() {
-        parentRef = getParent();
-    }
+	protected Point getInPortOffset(Icon icon, Dimension cellDimension) {
+		int iconHeight = icon.getIconHeight();
+		int iconWidth = icon.getIconWidth();
+		int xOff = (cellDimension.width - iconWidth) / 2 * 1000 / cellDimension.width;
+		int yOff = iconHeight / 2 * 1000 / cellDimension.height;
+		return new Point(xOff, yOff);
+	}
 
-    /**
-     * Tells if this cell parent was changed since last call to resetParent() method
-     * @return true if parent changed, false otherwise
-     * @see #resetParent()
-     */
-    public boolean parentChanged() {
-        if (parentRef == null && getParent() == null)
-            return false;
-        else if (parentRef == null || getParent() == null)
-            return true;
-        else
-            return !parentRef.equals(getParent());
-    }
+	protected Point getOutPortoffset(Icon icon, Dimension cellDimension) {
+		int iconHeight = icon.getIconHeight();
+		int iconWidth = icon.getIconWidth();
+		int xOff = (cellDimension.width - iconWidth) / 2 * 1000 / cellDimension.width + iconWidth * 1000 / cellDimension.width;
+		int yOff = iconHeight / 2 * 1000 / cellDimension.height;
+		return new Point(xOff, yOff);
+	}
 
-    /**
-     * Tells if this station generates or destroys jobs (useful for blocking region
-     * management)
-     * @return true if this station generates or destroy jobs, false otherwise
-     */
-    public boolean generateOrDestroyJobs() {
-        return false;
-    }
+	/**
+	 * is true if the InputPort of this cell is on the left side
+	 * @return true if the InputPort of this cell is on the left side
+	 */
+	//	 Giuseppe De Cicco & Fabio Granara
+	public boolean isLeftInputCell() {
+		return leftInputCell;
+	}
 
-    /**
-     * Returns previous parent of this cell (the one present when resetParent()
-     * method was called)
-     * @return previous parent of this cell
-     * @see #resetParent()
-     */
-    public TreeNode getPrevParent() {
-        return parentRef;
-    }
+	//	 Giuseppe De Cicco & Fabio Granara
+	public void setLeftInputCell(boolean state) {
+		leftInputCell = state;
+	}
 
-    /**
-     * Returns the name of the icon of this cell
-     * @return the name of the icon of this cell
-     */
-    public abstract String getIcon();
+	/**
+	 * Resets stored parent information for this cell
+	 */
+	public void resetParent() {
+		parentRef = getParent();
+	}
+
+	/**
+	 * Tells if this cell parent was changed since last call to resetParent() method
+	 * @return true if parent changed, false otherwise
+	 * @see #resetParent()
+	 */
+	public boolean parentChanged() {
+		if (parentRef == null && getParent() == null) {
+			return false;
+		} else if (parentRef == null || getParent() == null) {
+			return true;
+		} else {
+			return !parentRef.equals(getParent());
+		}
+	}
+
+	/**
+	 * Tells if this station generates or destroys jobs (useful for blocking region
+	 * management)
+	 * @return true if this station generates or destroy jobs, false otherwise
+	 */
+	public boolean generateOrDestroyJobs() {
+		return false;
+	}
+
+	/**
+	 * Returns previous parent of this cell (the one present when resetParent()
+	 * method was called)
+	 * @return previous parent of this cell
+	 * @see #resetParent()
+	 */
+	public TreeNode getPrevParent() {
+		return parentRef;
+	}
+
+	/**
+	 * Returns the name of the icon of this cell
+	 * @return the name of the icon of this cell
+	 */
+	public abstract String getIcon();
 }

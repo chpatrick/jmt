@@ -15,12 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
 import java.awt.event.ActionEvent;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
  * <p>Title: Stop Simulation Action</p>
@@ -34,13 +34,18 @@ import java.awt.event.ActionEvent;
 public class StopSimulation extends AbstractJmodelAction {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Defines an <code>Action</code> object with a default
 	 * description string and default icon.
 	 */
 	public StopSimulation(Mediator mediator) {
 		super("Stop Simulation", "Stop", mediator);
 		putValue(SHORT_DESCRIPTION, "stops simulation");
-//		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
+		//		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
 		setEnabled(false);
 	}
 

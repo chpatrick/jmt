@@ -15,9 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.test.engine;
 
+import javax.swing.JFrame;
 
 import jmt.engine.simDispatcher.Dispatcher_jSIMschema;
 import jmt.gui.common.definitions.StoredResultsModel;
@@ -34,16 +35,17 @@ import jmt.gui.common.xml.XMLResultsReader;
  *         Time: 17.36.04
  */
 public class TestLDService {
-    public static final String filename = "LDtest.jmt";
-    public static final String path = "D:\\";
-    public static void main(String[] args) throws Exception {
-        Dispatcher_jSIMschema simulator = new Dispatcher_jSIMschema(""+path + filename);
-        simulator.solveModel();
-        String resfilename = path+"res_sim_" + filename + ".xml";
-        StoredResultsModel srm = new StoredResultsModel();
-        XMLResultsReader.parseXML(XMLReader.loadXML(resfilename), srm);
-        ResultsWindow res = new ResultsWindow(srm);
-        res.setDefaultCloseOperation(ResultsWindow.EXIT_ON_CLOSE);
-        res.show();
-    }
+	public static final String filename = "LDtest.jmt";
+	public static final String path = "D:\\";
+
+	public static void main(String[] args) throws Exception {
+		Dispatcher_jSIMschema simulator = new Dispatcher_jSIMschema("" + path + filename);
+		simulator.solveModel();
+		String resfilename = path + "res_sim_" + filename + ".xml";
+		StoredResultsModel srm = new StoredResultsModel();
+		XMLResultsReader.parseXML(XMLReader.loadXML(resfilename), srm);
+		ResultsWindow res = new ResultsWindow(srm);
+		res.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		res.show();
+	}
 }

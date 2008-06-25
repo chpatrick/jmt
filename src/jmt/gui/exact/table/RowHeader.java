@@ -15,16 +15,24 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.table;
 
-import javax.swing.*;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.*;
-import java.awt.*;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JViewport;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 /**
 
@@ -38,6 +46,11 @@ import java.awt.event.MouseMotionListener;
  * A single-column JTable impersonating a table's row headers and listening to clicks for column selection
  */
 public class RowHeader extends JTable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	private int width = 80; //default header width
 
@@ -62,24 +75,24 @@ public class RowHeader extends JTable {
 	 */
 	public RowHeader(TableModel dm) {
 
-        super(new DefaultRowHeaderModel());
-        if (dm instanceof ModelHandlesRowHeader) {
-            setModel(dm);
-        }
+		super(new DefaultRowHeaderModel());
+		if (dm instanceof ModelHandlesRowHeader) {
+			setModel(dm);
+		}
 
-        cellRenderer = tableHeader.getDefaultRenderer();
-        setFocusable(false);
-        setToolTipText("Click or drag to select rows");
-        mrs = new MouseRowSelector();
+		cellRenderer = tableHeader.getDefaultRenderer();
+		setFocusable(false);
+		setToolTipText("Click or drag to select rows");
+		mrs = new MouseRowSelector();
 
-        installListener();
+		installListener();
 
-        /* try to automatically determine width */
-        if (dataModel instanceof PrototypedTableModel) {
-            PrototypedTableModel pm = (PrototypedTableModel) dataModel;
-            width = cellRenderer.getTableCellRendererComponent(this, pm.getPrototype(-1), false, false, 0, 0).getPreferredSize().width;
-        }
-    }
+		/* try to automatically determine width */
+		if (dataModel instanceof PrototypedTableModel) {
+			PrototypedTableModel pm = (PrototypedTableModel) dataModel;
+			width = cellRenderer.getTableCellRendererComponent(this, pm.getPrototype(-1), false, false, 0, 0).getPreferredSize().width;
+		}
+	}
 
 	public void createDefaultColumnsFromModel() {
 		TableModel m = getModel();
@@ -92,8 +105,8 @@ public class RowHeader extends JTable {
 
 			// Create one column only
 			TableColumn newColumn = new TableColumn(0);
-            addColumn(newColumn);
-        }
+			addColumn(newColumn);
+		}
 	}
 
 	public TableCellRenderer getCellRenderer(int row, int column) {
@@ -110,9 +123,16 @@ public class RowHeader extends JTable {
 	}
 
 	public void install(JTable table, JScrollPane jsp) {
-		if (this.table != null) throw new RuntimeException("already installed");
+		if (this.table != null) {
+			throw new RuntimeException("already installed");
+		}
 
 		JViewport jv = new JViewport() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			/* keeps the #@£$*& thing from growing */
 			public Dimension getPreferredSize() {
 				Dimension d = super.getPreferredSize();
@@ -124,13 +144,17 @@ public class RowHeader extends JTable {
 		jsp.setRowHeader(jv);
 
 		this.table = table;
-		if (dataModel instanceof DefaultRowHeaderModel) ((DefaultRowHeaderModel) dataModel).setTable(table);
+		if (dataModel instanceof DefaultRowHeaderModel) {
+			((DefaultRowHeaderModel) dataModel).setTable(table);
+		}
 		update();
 	}
 
 	public void uninstall() {
 
-		if (dataModel instanceof DefaultRowHeaderModel) ((DefaultRowHeaderModel) dataModel).setTable(null);
+		if (dataModel instanceof DefaultRowHeaderModel) {
+			((DefaultRowHeaderModel) dataModel).setTable(null);
+		}
 		removeMouseMotionListener(mrs);
 		removeMouseListener(mrs);
 
@@ -166,7 +190,9 @@ public class RowHeader extends JTable {
 
 	private void stopEditing(JTable table) {
 		if (table.isEditing()) {
-			if (!table.getCellEditor().stopCellEditing()) table.getCellEditor().cancelCellEditing();
+			if (!table.getCellEditor().stopCellEditing()) {
+				table.getCellEditor().cancelCellEditing();
+			}
 		}
 	}
 
@@ -181,9 +207,7 @@ public class RowHeader extends JTable {
 
 	public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
 		Object value = dataModel.getValueAt(row, -1);
-		return renderer.getTableCellRendererComponent(this, value,
-		        false, false,
-		        row, column);
+		return renderer.getTableCellRendererComponent(this, value, false, false, row, column);
 	}
 
 	public boolean isCellEditable(int row, int col) {
@@ -195,7 +219,12 @@ public class RowHeader extends JTable {
 	 */
 	public static class DefaultRowHeaderModel extends AbstractTableModel implements ModelHandlesRowHeader, PrototypedTableModel {
 
-        protected static final Object prototype = new Integer(999);
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		protected static final Object prototype = new Integer(999);
 
 		protected JTable table;
 
@@ -204,7 +233,9 @@ public class RowHeader extends JTable {
 		}
 
 		public int getRowCount() {
-			if (table != null) return table.getRowCount();
+			if (table != null) {
+				return table.getRowCount();
+			}
 			return 0;
 		}
 
@@ -250,7 +281,9 @@ public class RowHeader extends JTable {
 		}
 
 		public void mouseDragged(MouseEvent e) {
-			if (e.isShiftDown()) return; //ignore drag when shift is pressed
+			if (e.isShiftDown()) {
+				return; //ignore drag when shift is pressed
+			}
 			int row1 = rowAtPoint(e.getPoint());
 			if (row0 >= 0 && row1 >= 0) {
 				table.setRowSelectionInterval(row0, row1);
@@ -261,6 +294,5 @@ public class RowHeader extends JTable {
 		public void mouseMoved(MouseEvent e) {
 		}
 	}
-
 
 }

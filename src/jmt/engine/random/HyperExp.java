@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -33,7 +32,6 @@ import jmt.common.exception.IncorrectDistributionParameterException;
 
 public class HyperExp extends AbstractDistribution implements Distribution {
 
-
 	protected Exponential expDistr;
 
 	/**
@@ -45,8 +43,7 @@ public class HyperExp extends AbstractDistribution implements Distribution {
 		expDistr = new Exponential();
 	}
 
-
-    //TODO: perchè pdf e cdf sono uguali a zero?? Devono essere ancora implementate
+	//TODO: perchè pdf e cdf sono uguali a zero?? Devono essere ancora implementate
 	/**
 	 * it returns the pdf of the distribution.
 	 * This method is used to obtain from the distribution his probability distribution
@@ -85,12 +82,12 @@ public class HyperExp extends AbstractDistribution implements Distribution {
 	 * @return double with the theoretic mean of the distribution.
 	 */
 
-	public double theorMean(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public double theorMean(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			return ((HyperExpPar) p).getMean();
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: parameter mean, variance, lambda1 and lambda 2 must be gtz; p must be a number betwen 0 and 1");
+			throw new IncorrectDistributionParameterException(
+					"Remember: parameter mean, variance, lambda1 and lambda 2 must be gtz; p must be a number betwen 0 and 1");
 		}
 	}
 
@@ -103,12 +100,12 @@ public class HyperExp extends AbstractDistribution implements Distribution {
 	 * @throws IncorrectDistributionParameterException
 	 * @return double with the theoretic variance of the distribution.
 	 */
-	public double theorVariance(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public double theorVariance(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			return ((HyperExpPar) p).getVar();
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: parameter mean, variance, lambda1 and lambda 2 must be gtz; p must be a number betwen 0 and 1");
+			throw new IncorrectDistributionParameterException(
+					"Remember: parameter mean, variance, lambda1 and lambda 2 must be gtz; p must be a number betwen 0 and 1");
 		}
 	}
 
@@ -122,15 +119,16 @@ public class HyperExp extends AbstractDistribution implements Distribution {
 	 * @return double with the next random number of this distribution.
 	 */
 
-	public double nextRand(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public double nextRand(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
-			if (engine.nextDouble() <= ((HyperExpPar) p).getP())
+			if (engine.nextDouble() <= ((HyperExpPar) p).getP()) {
 				return expDistr.nextRand(((HyperExpPar) p).getExpParam1());
-			else
+			} else {
 				return expDistr.nextRand(((HyperExpPar) p).getExpParam2());
+			}
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: parameter mean, variance, lambda1 and lambda 2 must be gtz; p must be a number betwen 0 and 1");
+			throw new IncorrectDistributionParameterException(
+					"Remember: parameter mean, variance, lambda1 and lambda 2 must be gtz; p must be a number betwen 0 and 1");
 		}
 	}
 

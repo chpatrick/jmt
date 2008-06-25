@@ -39,177 +39,177 @@ import jmt.framework.gui.controller.Manager;
  * @version 1.0
  */
 public class JMTFrame extends JFrame {
-    private static final String DEFAULT_LOOK_AND_FEEL = "com.jgoodies.looks.plastic.Plastic3DLookAndFeel";
-    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    
-    /** 
-     * Auto manage closing operation
-     * @see #canBeClosed() to check if window will be closed
-     * @see #doClose() to implement a custom behaviour before window closing
-     */
-    public static final int AUTO_MANAGE_ON_CLOSE = 255;
-    
-    // Window adapter used for automatic window management
-    private WindowAdapter adapter;
-    
-    // Sets the default look and feel and locale
-    static {
-        try {
-            UIManager.setLookAndFeel(DEFAULT_LOOK_AND_FEEL);
-        } catch (Exception ulafe) {
-            ulafe.printStackTrace();
-        }
-        
-        Locale.setDefault(DEFAULT_LOCALE);
-    }
-    
-    /**
-     * Builds a JMTFrame and initialize it. Automatic management is disabled.
-     */
-    public JMTFrame() {
-        this(false);
-    }
-    
-    /**
-     * @return true iff this frame can be closed. Please override this method to
-     * create save on exit behaviours
-     * @see JMTFrame#AUTO_MANAGE_ON_CLOSE
-     */
-    public boolean canBeClosed() {
-        return true;
-    }
-    
-    /**
-     * Builds a new JMTframe
-     * @param autoManage true if this frame must be monitored to tell if JVM has to be terminated
-     */
-    public JMTFrame(boolean autoManage) {
-        init(autoManage);
-    }
-    
-    /**
-     * Builds a new JMTframe
-     * @param autoManage true if this frame must be monitored to tell if JVM has to be terminated
-     * @param title title of the window
-     */
-    public JMTFrame(boolean autoManage, String title) {
-        super(title);
-        init(autoManage);
-    }
-    
-    /**
-     * Initialize JMTFrame
-     */
-    private void init(final boolean autoManage) {
-        // Supports automatic manage to avoid blocked JVMs without open windows.
-        if (autoManage) {
-            // Adds support for Manager to avoid blocked JVM without windows.
-            Manager.addWindow(this);
-        }
-        
-        adapter = new WindowAdapter() {
-            /* (non-Javadoc)
-             * @see java.awt.event.WindowAdapter#windowClosed(java.awt.event.WindowEvent)
-             */
-            public void windowClosed(WindowEvent e) {
-                if (autoManage)
-                    Manager.exit(JMTFrame.this);
-            }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final String DEFAULT_LOOK_AND_FEEL = "com.jgoodies.looks.plastic.Plastic3DLookAndFeel";
+	private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
 
-            /* (non-Javadoc)
-             * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
-             */
-            public void windowClosing(WindowEvent e) {
-                close();
-            }
-        };
-        // Auto manage as default
-        this.setDefaultCloseOperation(AUTO_MANAGE_ON_CLOSE);
-    }
-    
-    /**
-     * Centers this window on the screen
-     */
-    public void centerWindow(){
-        Toolkit tk=Toolkit.getDefaultToolkit();
-        //gets dimensions of the screen to center window.
-        int xOffset = ((int)tk.getScreenSize().getWidth()-getWidth())/2,
-            yOffset = ((int)tk.getScreenSize().getHeight()-getHeight())/2;
+	/** 
+	 * Auto manage closing operation
+	 * @see #canBeClosed() to check if window will be closed
+	 * @see #doClose() to implement a custom behaviour before window closing
+	 */
+	public static final int AUTO_MANAGE_ON_CLOSE = 255;
 
-        setBounds(xOffset, yOffset, this.getWidth(), this.getHeight());
-    }
-    
-    /**
-     * Puts this window in screen lower right corner
-     */
-    public void moveToLowerRightCorner() {
-        Toolkit tk=Toolkit.getDefaultToolkit();
-        //gets dimensions of the screen to center window.
-        int xOffset = ((int)tk.getScreenSize().getWidth()-getWidth()),
-            yOffset = ((int)tk.getScreenSize().getHeight()-getHeight());
+	// Window adapter used for automatic window management
+	private WindowAdapter adapter;
 
-        setBounds(xOffset, yOffset, this.getWidth(), this.getHeight());
-    }
-    
-    /**
-     * Sets size of this window and centers it on the page
-     * @param width width of the window
-     * @param height height of the window
-     */
-    public void centerWindow(int width, int height) {
-        Toolkit tk=Toolkit.getDefaultToolkit();
-        //gets dimensions of the screen to center window.
-        int xOffset = ((int)tk.getScreenSize().getWidth()-width)/2,
-            yOffset = ((int)tk.getScreenSize().getHeight()-height)/2;
+	// Sets the default look and feel and locale
+	static {
+		try {
+			UIManager.setLookAndFeel(DEFAULT_LOOK_AND_FEEL);
+		} catch (Exception ulafe) {
+			ulafe.printStackTrace();
+		}
 
-        setBounds(xOffset, yOffset, width, height);
-    }
-    
-    /**
-     * Closes this window. (after checking if window can be closed).
-     * @return true if window was closed, false otherwise
-     * @see #canBeClosed() to check if window will be closed
-     * @see #doClose() to implement a custom behaviour before window closing
-     */
-    public final boolean close() {
-        if (canBeClosed()) {
-            doClose();
-            this.dispose();
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Override this method to implement a custom behaviour before windows dispose
-     * @see #canBeClosed()
-     * @see JMTFrame#AUTO_MANAGE_ON_CLOSE
-     */
-    protected void doClose() {
-    }
-    
-    /**
-     * Sets default operation to be performed when whif window is closed.
-     * @see WindowConstants#DISPOSE_ON_CLOSE
-     * @see WindowConstants#DO_NOTHING_ON_CLOSE
-     * @see JFrame#EXIT_ON_CLOSE
-     * @see JMTFrame#AUTO_MANAGE_ON_CLOSE
-     */
-    public void setDefaultCloseOperation(int operation) {
-        if (operation == JMTFrame.AUTO_MANAGE_ON_CLOSE) {
-            super.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-            this.addWindowListener(adapter);
-        }
-        else {
-            this.removeWindowListener(adapter);
-            super.setDefaultCloseOperation(operation);
-        }
-    }
+		Locale.setDefault(DEFAULT_LOCALE);
+	}
 
-    public static void main(String[] args) {
-        JMTFrame frame = new JMTFrame(true, "test");
-        frame.centerWindow(640, 480);
-        frame.show();
-    }
+	/**
+	 * Builds a JMTFrame and initialize it. Automatic management is disabled.
+	 */
+	public JMTFrame() {
+		this(false);
+	}
+
+	/**
+	 * @return true iff this frame can be closed. Please override this method to
+	 * create save on exit behaviours
+	 * @see JMTFrame#AUTO_MANAGE_ON_CLOSE
+	 */
+	public boolean canBeClosed() {
+		return true;
+	}
+
+	/**
+	 * Builds a new JMTframe
+	 * @param autoManage true if this frame must be monitored to tell if JVM has to be terminated
+	 */
+	public JMTFrame(boolean autoManage) {
+		init(autoManage);
+	}
+
+	/**
+	 * Builds a new JMTframe
+	 * @param autoManage true if this frame must be monitored to tell if JVM has to be terminated
+	 * @param title title of the window
+	 */
+	public JMTFrame(boolean autoManage, String title) {
+		super(title);
+		init(autoManage);
+	}
+
+	/**
+	 * Initialize JMTFrame
+	 */
+	private void init(final boolean autoManage) {
+		// Supports automatic manage to avoid blocked JVMs without open windows.
+		if (autoManage) {
+			// Adds support for Manager to avoid blocked JVM without windows.
+			Manager.addWindow(this);
+		}
+
+		adapter = new WindowAdapter() {
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowAdapter#windowClosed(java.awt.event.WindowEvent)
+			 */
+			public void windowClosed(WindowEvent e) {
+				if (autoManage) {
+					Manager.exit(JMTFrame.this);
+				}
+			}
+
+			/* (non-Javadoc)
+			 * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
+			 */
+			public void windowClosing(WindowEvent e) {
+				close();
+			}
+		};
+		// Auto manage as default
+		this.setDefaultCloseOperation(AUTO_MANAGE_ON_CLOSE);
+	}
+
+	/**
+	 * Centers this window on the screen
+	 */
+	public void centerWindow() {
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		//gets dimensions of the screen to center window.
+		int xOffset = ((int) tk.getScreenSize().getWidth() - getWidth()) / 2, yOffset = ((int) tk.getScreenSize().getHeight() - getHeight()) / 2;
+
+		setBounds(xOffset, yOffset, this.getWidth(), this.getHeight());
+	}
+
+	/**
+	 * Puts this window in screen lower right corner
+	 */
+	public void moveToLowerRightCorner() {
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		//gets dimensions of the screen to center window.
+		int xOffset = ((int) tk.getScreenSize().getWidth() - getWidth()), yOffset = ((int) tk.getScreenSize().getHeight() - getHeight());
+
+		setBounds(xOffset, yOffset, this.getWidth(), this.getHeight());
+	}
+
+	/**
+	 * Sets size of this window and centers it on the page
+	 * @param width width of the window
+	 * @param height height of the window
+	 */
+	public void centerWindow(int width, int height) {
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		//gets dimensions of the screen to center window.
+		int xOffset = ((int) tk.getScreenSize().getWidth() - width) / 2, yOffset = ((int) tk.getScreenSize().getHeight() - height) / 2;
+
+		setBounds(xOffset, yOffset, width, height);
+	}
+
+	/**
+	 * Closes this window. (after checking if window can be closed).
+	 * @return true if window was closed, false otherwise
+	 * @see #canBeClosed() to check if window will be closed
+	 * @see #doClose() to implement a custom behaviour before window closing
+	 */
+	public final boolean close() {
+		if (canBeClosed()) {
+			doClose();
+			this.dispose();
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Override this method to implement a custom behaviour before windows dispose
+	 * @see #canBeClosed()
+	 * @see JMTFrame#AUTO_MANAGE_ON_CLOSE
+	 */
+	protected void doClose() {
+	}
+
+	/**
+	 * Sets default operation to be performed when whif window is closed.
+	 * @see WindowConstants#DISPOSE_ON_CLOSE
+	 * @see WindowConstants#DO_NOTHING_ON_CLOSE
+	 * @see JFrame#EXIT_ON_CLOSE
+	 * @see JMTFrame#AUTO_MANAGE_ON_CLOSE
+	 */
+	public void setDefaultCloseOperation(int operation) {
+		if (operation == JMTFrame.AUTO_MANAGE_ON_CLOSE) {
+			super.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
+			this.addWindowListener(adapter);
+		} else {
+			this.removeWindowListener(adapter);
+			super.setDefaultCloseOperation(operation);
+		}
+	}
+
+	public static void main(String[] args) {
+		JMTFrame frame = new JMTFrame(true, "test");
+		frame.centerWindow(640, 480);
+		frame.show();
+	}
 }
-

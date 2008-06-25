@@ -15,10 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller;
 
-import java.awt.*;
+import java.awt.Cursor;
 import java.awt.event.MouseEvent;
 
 /**
@@ -32,10 +32,10 @@ import java.awt.event.MouseEvent;
  */
 public class InsertState extends UIStateDefault {
 
-    protected String insertClass; // className of cell to be inserted
+	protected String insertClass; // className of cell to be inserted
 
 	/**
-     * creates the insert state
+	 * creates the insert state
 	 *
 	 * @param mediator
 	 */
@@ -44,7 +44,7 @@ public class InsertState extends UIStateDefault {
 	}
 
 	/**
-     * inserts a new vertex in the graph at the point where the mouse is pressed
+	 * inserts a new vertex in the graph at the point where the mouse is pressed
 	 * the new vertex is selected & then sets the select status.
 	 *
 	 * @param e mouse press event
@@ -59,20 +59,20 @@ public class InsertState extends UIStateDefault {
 		mediator.selectAt(e);
 	}
 
-    public void handleEnter(MouseEvent e) {
-        mediator.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
-    }
+	public void handleEnter(MouseEvent e) {
+		mediator.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+	}
 
 	/**
-     * set vertex, it is used to change the vertex tht will be inserted at next
+	 * set vertex, it is used to change the vertex tht will be inserted at next
 	 * press mouse event
 	 *
 	 * @param className of component to be inserted
-     *
-     * Bertoli Marco
+	 *
+	 * Bertoli Marco
 	 */
 	public void setInsertClass(String className) {
-        this.insertClass = className;
+		this.insertClass = className;
 	}
 
 }

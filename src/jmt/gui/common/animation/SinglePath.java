@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.animation;
 
 /**
@@ -27,33 +27,35 @@ package jmt.gui.common.animation;
  * must be adjacent (in queue net topology) to the starting element, otherwise job will
  * leap from an element to another during the animation.
  */
-public class SinglePath implements JobPath{
+public class SinglePath implements JobPath {
 
-    //Stations and edges this path goes through
-    private JobContainer[] pathElems;
+	//Stations and edges this path goes through
+	private JobContainer[] pathElems;
 
-    //index of currently active container
-    private int currentIndex=0;
+	//index of currently active container
+	private int currentIndex = 0;
 
-    /**creates a new instance of JobPath and initializes it with a list of elements of the
-     * queue net this path must go through, e.g. edges and stations.
-     * @param path: array of elements of the queue net (edges and stations) the job must
-     * pass by*/
-    public SinglePath(JobContainer[] path){
-        pathElems = path;
-    }
+	/**creates a new instance of JobPath and initializes it with a list of elements of the
+	 * queue net this path must go through, e.g. edges and stations.
+	 * @param path: array of elements of the queue net (edges and stations) the job must
+	 * pass by*/
+	public SinglePath(JobContainer[] path) {
+		pathElems = path;
+	}
 
-    /**returns a reference to the next element the job must be added to.
-     * @return the queue net element this job must be added to*/
-    public JobContainer getNext(){
-        currentIndex++;
-        if(currentIndex >= pathElems.length) currentIndex = currentIndex%pathElems.length;
-        return pathElems[currentIndex];
-    }
+	/**returns a reference to the next element the job must be added to.
+	 * @return the queue net element this job must be added to*/
+	public JobContainer getNext() {
+		currentIndex++;
+		if (currentIndex >= pathElems.length) {
+			currentIndex = currentIndex % pathElems.length;
+		}
+		return pathElems[currentIndex];
+	}
 
-    /**Tests wether current element is the last of the list, e.g. job has come to the end of
-     * his path. This can be useful if the job running on this path must run only once.*/
-    public boolean isLast(){
-        return currentIndex==pathElems.length-1;
-    }
+	/**Tests wether current element is the last of the list, e.g. job has come to the end of
+	 * his path. This can be useful if the job running on this path must run only once.*/
+	public boolean isLast() {
+		return currentIndex == pathElems.length - 1;
+	}
 }

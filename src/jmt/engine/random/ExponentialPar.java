@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -52,14 +51,12 @@ public class ExponentialPar extends AbstractParameter implements Parameter {
 	 * @throws IncorrectDistributionParameterException if the value provided is not greater than zero.
 	 *
 	 */
-	public ExponentialPar(double lambda)
-	        throws IncorrectDistributionParameterException {
+	public ExponentialPar(double lambda) throws IncorrectDistributionParameterException {
 		setLambda(lambda);
 
 	}
 
-	public ExponentialPar(Double wlambda)
-	        throws IncorrectDistributionParameterException {
+	public ExponentialPar(Double wlambda) throws IncorrectDistributionParameterException {
 		this(wlambda.doubleValue());
 
 	}
@@ -86,8 +83,7 @@ public class ExponentialPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setLambda(double lambda)
-	        throws IncorrectDistributionParameterException {
+	public void setLambda(double lambda) throws IncorrectDistributionParameterException {
 		if (lambda > 0) //verify that the parameter lambda is gtz, as required.
 		{
 			this.lambda = lambda;
@@ -113,17 +109,18 @@ public class ExponentialPar extends AbstractParameter implements Parameter {
 		}
 	}
 
-    /**
-     * Sets mean for a given distribution parameter. This method is required to adjust distributions
-     * mean values into Load Dependent Service Time Strategy
-     * @param meanValue new mean value for this distribution
-     * Author: Bertoli Marco
-     * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
-     */
-    public void setMean(double meanValue) throws IncorrectDistributionParameterException{
-        if (meanValue <= 0 || Double.isInfinite(meanValue))
-            throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");
-        lambda = 1 / meanValue;
-    }
+	/**
+	 * Sets mean for a given distribution parameter. This method is required to adjust distributions
+	 * mean values into Load Dependent Service Time Strategy
+	 * @param meanValue new mean value for this distribution
+	 * Author: Bertoli Marco
+	 * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
+	 */
+	public void setMean(double meanValue) throws IncorrectDistributionParameterException {
+		if (meanValue <= 0 || Double.isInfinite(meanValue)) {
+			throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");
+		}
+		lambda = 1 / meanValue;
+	}
 
 } // end ExponentialPar

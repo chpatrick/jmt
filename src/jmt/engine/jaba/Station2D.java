@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.jaba;
 
 /**
@@ -27,27 +27,23 @@ package jmt.engine.jaba;
  */
 public class Station2D {
 
-    private newPoint vert;
-    private String name;
+	private newPoint vert;
+	private String name;
 
-    public Station2D(newPoint vert,String name)
-    {
-        this.vert = vert;
-        this.name = name;
-    }
+	public Station2D(newPoint vert, String name) {
+		this.vert = vert;
+		this.name = name;
+	}
 
-    public String getName()
-    {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public newPoint getVert()
-    {
-        return vert;
-    }
+	public newPoint getVert() {
+		return vert;
+	}
 
-    public String toString()
-    {
-        return name;
-    }
+	public String toString() {
+		return name;
+	}
 }

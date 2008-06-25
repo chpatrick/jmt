@@ -15,14 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.JGraphMod;
 
-import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.jmodel.controller.Mediator;
-import org.jgraph.graph.Port;
 
-import javax.swing.*;
+import org.jgraph.graph.Port;
 
 // 03/08/03 - end /////////////////////////////////////////////////////
 
@@ -34,13 +32,18 @@ import javax.swing.*;
 
  */
 public class SinkCell extends JmtCell {
-    /**
-     * Tells if this component can be placed on JGraph or has been disabled. This is
-     * useful to load old models with disabled components (like terminals)
-     */
-    public static final boolean canBePlaced = true;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    // Do not change this as it is accessed by reflection to forecast new cell dimensions (Bertoli Marco)
+	/**
+	 * Tells if this component can be placed on JGraph or has been disabled. This is
+	 * useful to load old models with disabled components (like terminals)
+	 */
+	public static final boolean canBePlaced = true;
+
+	// Do not change this as it is accessed by reflection to forecast new cell dimensions (Bertoli Marco)
 	public static final String ICON = Mediator.advanced ? "bh" : "sink";
 
 	/**
@@ -51,8 +54,8 @@ public class SinkCell extends JmtCell {
 	 */
 	public SinkCell(Object userObject) {
 		super(ICON, userObject);
-//		this.add(new InputPort(userObject));
-//		this.add(new OutputPort(userObject));
+		//		this.add(new InputPort(userObject));
+		//		this.add(new OutputPort(userObject));
 		type = SINK;
 	}
 
@@ -66,22 +69,22 @@ public class SinkCell extends JmtCell {
 		return ports;
 	}
 
-    /**
-     * Tells if this station generates or destroys jobs (useful for blocking region
-     * management)
-     * @return true if this station generates or destroy jobs, false otherwise
-     */
-    public boolean generateOrDestroyJobs() {
-        return true;
-    }
+	/**
+	 * Tells if this station generates or destroys jobs (useful for blocking region
+	 * management)
+	 * @return true if this station generates or destroy jobs, false otherwise
+	 */
+	public boolean generateOrDestroyJobs() {
+		return true;
+	}
 
-    /**
-     * Returns the name of the icon of this cell
-     *
-     * @return the name of the icon of this cell
-     */
-    public String getIcon() {
-        return ICON;
-    }
-    
+	/**
+	 * Returns the name of the icon of this cell
+	 *
+	 * @return the name of the icon of this cell
+	 */
+	public String getIcon() {
+		return ICON;
+	}
+
 }

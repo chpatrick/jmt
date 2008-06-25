@@ -27,10 +27,16 @@ public class FastQSort implements SortAlgorithm {
 			pivot = a[r];
 			i = l - 1;
 			j = r;
-			for (; ;) {
-				while (a[++i] < pivot) ;
-				while (a[--j] > pivot) ;
-				if (i >= j) break;
+			for (;;) {
+				while (a[++i] < pivot) {
+					;
+				}
+				while (a[--j] > pivot) {
+					;
+				}
+				if (i >= j) {
+					break;
+				}
 				//swap
 				temp = a[i];
 				a[i] = a[j];
@@ -49,6 +55,4 @@ public class FastQSort implements SortAlgorithm {
 		quickSort(a, 0, a.length - 1);
 	}
 
-
 }
-

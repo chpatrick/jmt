@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * SampleMean.java
  *
@@ -44,7 +44,6 @@ public class SampleMean {
 		min = 0;
 	}
 
-
 	/** Creates a new instance of SampleMean calculating the parameters with the
 	 * initializing data sequence
 	 *  @param  data initial data sequence;
@@ -55,8 +54,9 @@ public class SampleMean {
 		n = 0;
 		max = 0;
 		min = 0;
-		for (int i = 0; i < data.length; i++)
+		for (int i = 0; i < data.length; i++) {
 			putNewSample(data[i]);
+		}
 	}
 
 	/** initalizes
@@ -71,7 +71,7 @@ public class SampleMean {
 	}
 
 	/** updates the sample mean & variance with the new value.
-     *  it uses stable
+	 *  it uses stable
 	 *  algorithms
 	 *  @param  newValue
 	 */
@@ -125,6 +125,5 @@ public class SampleMean {
 		buf.append("\nSmallest Sample   : " + min);
 		return buf.toString();
 	}
-
 
 }

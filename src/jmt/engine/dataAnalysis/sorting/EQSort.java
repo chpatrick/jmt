@@ -141,9 +141,7 @@ public class EQSort implements SortAlgorithm {
 		sort(a, hi + 1, hi0);
 	}
 
-
 	public void sort(double[] data) {
 		sort(data, 0, data.length - 1);
 	}
 }
-

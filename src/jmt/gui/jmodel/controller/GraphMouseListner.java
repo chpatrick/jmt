@@ -15,16 +15,17 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller;
+
+import java.awt.Cursor;
+import java.awt.event.MouseEvent;
+
+import javax.swing.event.MouseInputListener;
 
 import org.jgraph.graph.BasicMarqueeHandler;
 import org.jgraph.graph.CellHandle;
 import org.jgraph.graph.CellView;
-
-import javax.swing.event.MouseInputListener;
-import java.awt.*;
-import java.awt.event.MouseEvent;
 
 /**
 
@@ -39,7 +40,7 @@ public class GraphMouseListner implements MouseInputListener {
 
 	protected UIState currentState;
 
-	protected UIState connect, delete , insert, paste, select, nothing;
+	protected UIState connect, delete, insert, paste, select, nothing;
 
 	/** The focused cell under the mousepointer. */
 	protected CellView focus;
@@ -66,7 +67,6 @@ public class GraphMouseListner implements MouseInputListener {
 		connect = new ConnectState(mediator, this);
 		marquee = new BasicMarqueeHandler();
 	}
-
 
 	/**
 	 * Invoked when the mouse button has been clicked (pressed
@@ -135,13 +135,13 @@ public class GraphMouseListner implements MouseInputListener {
 		currentState = delete;
 	}
 
-    public void setDefaultState() {
+	public void setDefaultState() {
 		currentState = nothing;
-    }
+	}
 
 	public void setInsertState(String className) {
-        currentState = insert;
-        ((InsertState) insert).setInsertClass(className);
+		currentState = insert;
+		((InsertState) insert).setInsertClass(className);
 	}
 
 	public void setPasteState() {
@@ -152,31 +152,25 @@ public class GraphMouseListner implements MouseInputListener {
 		currentState = select;
 	}
 
-
 	/**
 	 * Invoked after a cell has been selected in the mouseReleased method.
 	 * This can be used to do something interesting if the cell was already
 	 * selected, in which case this implementation selects the parent.
 	 * Override if you want different behaviour, such as start editing.
 	 */
-	protected void postProcessSelection(
-	        MouseEvent e,
-	        Object cell,
-	        boolean wasSelected) {
+	protected void postProcessSelection(MouseEvent e, Object cell, boolean wasSelected) {
 		if (wasSelected && mediator.isCellSelected(cell)) {
 			Object parent = cell;
 			Object nextParent = null;
-			while (((nextParent = mediator.getParent(parent)) != null)
-			        && mediator.isCellVisible(nextParent))
+			while (((nextParent = mediator.getParent(parent)) != null) && mediator.isCellVisible(nextParent)) {
 				parent = nextParent;
+			}
 			mediator.selectCellForEvent(parent, e);
 			focus = mediator.getViewOfCell(parent, false);
 		}
 	}
 
-	protected boolean isDescendant(
-	        CellView parentView,
-	        CellView childView) {
+	protected boolean isDescendant(CellView parentView, CellView childView) {
 		if (parentView == null || childView == null) {
 			return false;
 		}
@@ -186,8 +180,9 @@ public class GraphMouseListner implements MouseInputListener {
 		Object ancestor = child;
 
 		do {
-			if (ancestor == parent)
+			if (ancestor == parent) {
 				return true;
+			}
 		} while ((ancestor = mediator.getParent(ancestor)) != null);
 
 		return false;
@@ -244,6 +239,5 @@ public class GraphMouseListner implements MouseInputListener {
 	public void setPreviousCursor(Cursor cursor) {
 		previousCursor = cursor;
 	}
-
 
 }

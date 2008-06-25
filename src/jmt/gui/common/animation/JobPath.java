@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.animation;
 
 /**
@@ -26,11 +26,11 @@ package jmt.gui.common.animation;
  */
 public interface JobPath {
 
-    /**returns a reference to the next element the job must be added to.
-     * @return the queue net element this job must be added to*/
-    public JobContainer getNext();
+	/**returns a reference to the next element the job must be added to.
+	 * @return the queue net element this job must be added to*/
+	public JobContainer getNext();
 
-    /**Tests wether current element is the last of the list, e.g. job has come to the end of
-     * his path. This can be useful if the job running on this path must run only once.*/
-    public boolean isLast();
+	/**Tests wether current element is the last of the list, e.g. job has come to the end of
+	 * his path. This can be useful if the job running on this path must run only once.*/
+	public boolean isLast();
 }

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 11-mar-2004
  *
@@ -37,48 +37,47 @@ import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
  *
  */
 public interface QueueLogic {
-	
+
 	//methods:
-	
+
 	/**
 	 * Calcola la probabilità che lo stato sia occupato
 	 * @return probabilità che sia occupato
 	 * @param status lo stato in questione
 	 */
 	public double getStatusProbability(int status) throws NonErgodicException;
-	
+
 	/**
 	 * Calcola il tempo che il job rimarrà in esecuzione in [ms]
 	 * @return tempo di esecuzione
 	 */
 	public double getRunTime();
-	
+
 	/**
 	 * Calcola il tempo di interarrivo del prossimo job in [ms]
 	 * @return tempo di interarrivo
 	 */
 	public double getArrivalTime() throws NoJobsException;
-	
+
 	/**
 	 * Restituisce il numero massimo di job ammessi in coda (buffer)
 	 * dopo i quali ogni nuovo job viene scartato
 	 * @return 0 se il buffer è ideale (infinito), un valore > 0, altrimenti
 	 */
 	public int getMaxStates() throws InfiniteBufferException;
-	
-	
+
 	/**
 	 * Calcola il numero medio di jobs in coda (N)
 	 * 
 	 * @return
 	 */
 	public double mediaJobs() throws NonErgodicException;
-	
+
 	/**
 	 * Calcola l'Utilizzo medio della coda (U)
 	 */
 	public double utilization() throws NonErgodicException;
-	
+
 	/**
 	 * Calcola il Throughput (X) medio
 	 * 

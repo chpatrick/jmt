@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
- 
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
@@ -45,14 +45,14 @@ public abstract class AbstractParameter {
 		return true;
 	}
 
-    /**
-     * Sets mean for a given distribution parameter. This method is required to adjust distributions
-     * mean values into Load Dependent Service Time Strategy
-     * <br>Author: Bertoli Marco
-     * @param meanValue new mean value for this distribution
-     * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
-     */
-    public void setMean(double meanValue) throws IncorrectDistributionParameterException{
-        throw new IncorrectDistributionParameterException("Cannot set mean value for this distribution");
-    }
+	/**
+	 * Sets mean for a given distribution parameter. This method is required to adjust distributions
+	 * mean values into Load Dependent Service Time Strategy
+	 * <br>Author: Bertoli Marco
+	 * @param meanValue new mean value for this distribution
+	 * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
+	 */
+	public void setMean(double meanValue) throws IncorrectDistributionParameterException {
+		throw new IncorrectDistributionParameterException("Cannot set mean value for this distribution");
+	}
 }

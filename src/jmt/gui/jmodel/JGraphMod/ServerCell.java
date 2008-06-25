@@ -15,15 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.JGraphMod;
 
-import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.jmodel.controller.Mediator;
+
 import org.jgraph.graph.Port;
-
-import javax.swing.*;
-
 
 /** Queue Cell, rapresents the default service center of the model.
 
@@ -33,13 +30,18 @@ import javax.swing.*;
 
  */
 public class ServerCell extends JmtCell {
-    /**
-     * Tells if this component can be placed on JGraph or has been disabled. This is
-     * useful to load old models with disabled components (like terminals)
-     */
-    public static final boolean canBePlaced = true;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    // Do not change this as it is accessed by reflection to forecast new cell dimensions (Bertoli Marco)
+	/**
+	 * Tells if this component can be placed on JGraph or has been disabled. This is
+	 * useful to load old models with disabled components (like terminals)
+	 */
+	public static final boolean canBePlaced = true;
+
+	// Do not change this as it is accessed by reflection to forecast new cell dimensions (Bertoli Marco)
 	public static final String ICON = Mediator.advanced ? "usse" : "queue";
 
 	/**
@@ -50,8 +52,8 @@ public class ServerCell extends JmtCell {
 	 */
 	public ServerCell(Object userObject) {
 		super(ICON, userObject);
-//		this.add(new InputPort(userObject));
-//		this.add(new OutputPort(userObject));
+		//		this.add(new InputPort(userObject));
+		//		this.add(new OutputPort(userObject));
 		type = SERVER;
 	}
 
@@ -66,15 +68,13 @@ public class ServerCell extends JmtCell {
 		return ports;
 	}
 
-    /**
-     * Returns the name of the icon of this cell
-     *
-     * @return the name of the icon of this cell
-     */
-    public String getIcon() {
-        return ICON;
-    }
-    
+	/**
+	 * Returns the name of the icon of this cell
+	 *
+	 * @return the name of the icon of this cell
+	 */
+	public String getIcon() {
+		return ICON;
+	}
 
 }
-

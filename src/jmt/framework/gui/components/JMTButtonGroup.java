@@ -34,57 +34,61 @@ import javax.swing.JToggleButton;
  * @version 1.0
  */
 public class JMTButtonGroup extends ButtonGroup {
-    /** Dummy button used to clear selection */
-    private JToggleButton dummy;
-    
-    /**
-     * Builds a new JMTButton group
-     */
-    public JMTButtonGroup() {
-        init();
-    }
-    
-    /**
-     * Initialize this class
-     */
-    private void init() {
-        dummy = new JToggleButton();
-        dummy.setVisible(false);
-        add(dummy);
-        clearSelection();
-    }
-    
-    /**
-     * Unselects all buttons in this group
-     */
-    public void clearSelection() {
-        setSelected(dummy.getModel(), true);
-    }
-    
-    /**
-     * Enables/disables all buttons of this group
-     * @param value true to enable all buttons, false to disable them.
-     */
-    public void setEnabled(boolean value) {
-        if (!value)
-            clearSelection();
-        
-        Enumeration buttons = getElements();
-        while (buttons.hasMoreElements()) {
-            AbstractButton button = (AbstractButton) buttons.nextElement();
-            if (button != dummy) {
-                button.getAction().setEnabled(value);
-            }
-        }
-    }
-    
-    /* (non-Javadoc)
-     * @see javax.swing.ButtonGroup#getButtonCount()
-     */
-    public int getButtonCount() {
-        // Removes dummy button from count.
-        return super.getButtonCount() - 1;
-    }
-    
-    
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/** Dummy button used to clear selection */
+	private JToggleButton dummy;
+
+	/**
+	 * Builds a new JMTButton group
+	 */
+	public JMTButtonGroup() {
+		init();
+	}
+
+	/**
+	 * Initialize this class
+	 */
+	private void init() {
+		dummy = new JToggleButton();
+		dummy.setVisible(false);
+		add(dummy);
+		clearSelection();
+	}
+
+	/**
+	 * Unselects all buttons in this group
+	 */
+	public void clearSelection() {
+		setSelected(dummy.getModel(), true);
+	}
+
+	/**
+	 * Enables/disables all buttons of this group
+	 * @param value true to enable all buttons, false to disable them.
+	 */
+	public void setEnabled(boolean value) {
+		if (!value) {
+			clearSelection();
+		}
+
+		Enumeration buttons = getElements();
+		while (buttons.hasMoreElements()) {
+			AbstractButton button = (AbstractButton) buttons.nextElement();
+			if (button != dummy) {
+				button.getAction().setEnabled(value);
+			}
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.ButtonGroup#getButtonCount()
+	 */
+	public int getButtonCount() {
+		// Removes dummy button from count.
+		return super.getButtonCount() - 1;
+	}
+
 }

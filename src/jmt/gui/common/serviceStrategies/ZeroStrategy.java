@@ -15,7 +15,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
- package jmt.gui.common.serviceStrategies;
+package jmt.gui.common.serviceStrategies;
 
 /**
  * <p><b>Name:</b> ZeroStrategy</p> 
@@ -29,28 +29,27 @@
  */
 public class ZeroStrategy implements ServiceStrategy {
 
-    /**
-     * Return engine classpacth for Zero Service strategy
-     * @return
-     */
-    public static String getEngineClassPath() {
-        return "jmt.engine.NetStrategies.ServiceStrategies.ZeroServiceTimeStrategy";
-    }
+	/**
+	 * Return engine classpacth for Zero Service strategy
+	 * @return
+	 */
+	public static String getEngineClassPath() {
+		return "jmt.engine.NetStrategies.ServiceStrategies.ZeroServiceTimeStrategy";
+	}
 
-    /* 
-     * Clones this strategy. In this case it simply returns a new ZeroStrategy
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        return new ZeroStrategy();
-    }
-    
-    
-    /* 
-     * Returns the value of this strategy
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        return "0";
-    }
+	/* 
+	 * Clones this strategy. In this case it simply returns a new ZeroStrategy
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() {
+		return new ZeroStrategy();
+	}
+
+	/* 
+	 * Returns the value of this strategy
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return "0";
+	}
 }

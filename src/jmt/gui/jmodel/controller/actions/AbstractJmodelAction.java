@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller.actions;
 
 import jmt.framework.gui.listeners.AbstractJMTAction;
@@ -49,7 +49,7 @@ public abstract class AbstractJmodelAction extends AbstractJMTAction {
 	 */
 	public AbstractJmodelAction(String name, Mediator mediator) {
 		this.setName(name);
-        this.mediator = mediator;
+		this.mediator = mediator;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public abstract class AbstractJmodelAction extends AbstractJMTAction {
 	 */
 	public AbstractJmodelAction(String name, String iconName, Mediator mediator) {
 		this(name, mediator);
-        this.setIcon(iconName, JMTImageLoader.getImageLoader());
+		this.setIcon(iconName, JMTImageLoader.getImageLoader());
 	}
 
 }

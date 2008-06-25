@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * SampleMeanVar.java
  *
@@ -49,7 +49,6 @@ public class SampleMeanVar {
 		confInt = 0;
 	}
 
-
 	/** Creates a new instance of SampleMeanVar calculating the parameters with
 	 * the initializing data sequence
 	 *  @param data the initial data sequence;
@@ -63,8 +62,9 @@ public class SampleMeanVar {
 		min = 0;
 		S = 0;
 		confInt = 0;
-		for (int i = 0; i < data.length; i++)
+		for (int i = 0; i < data.length; i++) {
 			putNewSample(data[i]);
+		}
 	}
 
 	/** initalize a new SampleMeanVar with parameters all zero
@@ -155,7 +155,7 @@ public class SampleMeanVar {
 	}
 
 	/** get the actual conf int
-     * it is 0 if the variance has not been calculated
+	 * it is 0 if the variance has not been calculated
 	 *  @param  perc    the percentile required
 	 *  @return the confidence interval requested
 	 */
@@ -182,6 +182,5 @@ public class SampleMeanVar {
 		buf.append("\nSmallest Sample   : " + min);
 		return buf.toString();
 	}
-
 
 }

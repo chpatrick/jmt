@@ -35,45 +35,45 @@ import java.awt.event.KeyListener;
  * @version 1.0
  */
 public abstract class KeyFocusAdapter implements KeyListener, FocusListener {
-    
-    /**
-     * Performs an action when components lose focus or ENTER key is typed.
-     * @param e event that triggered the listener
-     */
-    protected abstract void updateValues(ComponentEvent e);
-    
-    /* (non-Javadoc)
-     * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
-     */
-    public void focusGained(FocusEvent e) {
-    }
 
-    /* (non-Javadoc)
-     * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
-     */
-    public void focusLost(FocusEvent e) {
-        updateValues(e);
-    }
+	/**
+	 * Performs an action when components lose focus or ENTER key is typed.
+	 * @param e event that triggered the listener
+	 */
+	protected abstract void updateValues(ComponentEvent e);
 
-    /* (non-Javadoc)
-     * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
-     */
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            updateValues(e);
-            e.consume();
-        }
-    }
+	/* (non-Javadoc)
+	 * @see java.awt.event.FocusListener#focusGained(java.awt.event.FocusEvent)
+	 */
+	public void focusGained(FocusEvent e) {
+	}
 
-    /* (non-Javadoc)
-     * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
-     */
-    public void keyReleased(KeyEvent e) {
-    }
+	/* (non-Javadoc)
+	 * @see java.awt.event.FocusListener#focusLost(java.awt.event.FocusEvent)
+	 */
+	public void focusLost(FocusEvent e) {
+		updateValues(e);
+	}
 
-    /* (non-Javadoc)
-     * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
-     */
-    public void keyTyped(KeyEvent e) {
-    }
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyPressed(java.awt.event.KeyEvent)
+	 */
+	public void keyPressed(KeyEvent e) {
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+			updateValues(e);
+			e.consume();
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyReleased(java.awt.event.KeyEvent)
+	 */
+	public void keyReleased(KeyEvent e) {
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.KeyListener#keyTyped(java.awt.event.KeyEvent)
+	 */
+	public void keyTyped(KeyEvent e) {
+	}
 }

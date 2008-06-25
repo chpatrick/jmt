@@ -15,15 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 29-mar-2004 by Ernesto
  *
  */
 package jmt.jmarkov.Graphics;
 
-import javax.swing.table.AbstractTableModel;
 import java.util.Vector;
+
+import javax.swing.table.AbstractTableModel;
 
 /**
  * MMQueues
@@ -33,6 +34,10 @@ import java.util.Vector;
  * @author Ernesto
  */
 class DataInfoModel extends AbstractTableModel {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected int NUM_COLUMNS = 3;
 	protected int START_NUM_ROWS = 10;
 	protected int nextEmptyRow = 0;
@@ -49,15 +54,15 @@ class DataInfoModel extends AbstractTableModel {
 	}
 
 	public String getColumnName(int column) {
-	switch (column) {
-	  case 0:
-		return job;
-	  case 1:
-		return operation;
-	  case 2:
-		return time;
-	}
-	return "";
+		switch (column) {
+			case 0:
+				return job;
+			case 1:
+				return operation;
+			case 2:
+				return time;
+		}
+		return "";
 	}
 
 	//XXX Should this really be synchronized?
@@ -74,42 +79,42 @@ class DataInfoModel extends AbstractTableModel {
 	}
 
 	public synchronized Object getValueAt(int row, int column) {
-	try {
-			Vector p = (Vector)data.elementAt(row);
+		try {
+			Vector p = (Vector) data.elementAt(row);
 			switch (column) {
-			  case 0:
-				return p.elementAt(0);
-			  case 1:
-				return p.elementAt(1);
-			  case 2:
-				return p.elementAt(2);
+				case 0:
+					return p.elementAt(0);
+				case 1:
+					return p.elementAt(1);
+				case 2:
+					return p.elementAt(2);
 			}
-	} catch (Exception e) {
-	}
-	return "";
+		} catch (Exception e) {
+		}
+		return "";
 	}
 
 	public synchronized void addData(Vector playerRecord) {
-	
+
 		data.addElement(playerRecord);
-		int index = nextEmptyRow;    		
+		int index = nextEmptyRow;
 		nextEmptyRow++;
 
-	//Notify listeners that the data changed.
+		//Notify listeners that the data changed.
 		fireTableRowsInserted(index, index);
 
 	}
 
 	public synchronized void clear() {
-	int oldNumRows = numRows;
+		int oldNumRows = numRows;
 
 		numRows = START_NUM_ROWS;
-	data.removeAllElements();
+		data.removeAllElements();
 		nextEmptyRow = 0;
 
-	if (oldNumRows > START_NUM_ROWS) {
-		fireTableRowsDeleted(START_NUM_ROWS, oldNumRows - 1);
-	}
-	fireTableRowsUpdated(0, START_NUM_ROWS - 1);
+		if (oldNumRows > START_NUM_ROWS) {
+			fireTableRowsDeleted(START_NUM_ROWS, oldNumRows - 1);
+		}
+		fireTableRowsUpdated(0, START_NUM_ROWS - 1);
 	}
 }

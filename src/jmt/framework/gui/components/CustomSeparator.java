@@ -15,11 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.framework.gui.components;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+
+import javax.swing.JComponent;
+import javax.swing.JToolBar;
+import javax.swing.SwingConstants;
 
 /**
  * <p>Title: Custom Toolbar Separator</p>
@@ -32,48 +37,49 @@ import java.awt.*;
  *         Time: 21.52.53
  */
 public class CustomSeparator extends JComponent {
-    private static final Dimension Horizontal = new Dimension(9,50);
-    private static final Dimension Vertical = new Dimension(50,9);
-    private int orientation;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static final Dimension Horizontal = new Dimension(9, 50);
+	private static final Dimension Vertical = new Dimension(50, 9);
+	private int orientation;
 
-    /**
-     * Default constructor
-     */
-    public CustomSeparator() {
-        super();
-        setMaximumSize(Horizontal);
-        orientation = JToolBar.HORIZONTAL;
-    }
+	/**
+	 * Default constructor
+	 */
+	public CustomSeparator() {
+		super();
+		setMaximumSize(Horizontal);
+		orientation = SwingConstants.HORIZONTAL;
+	}
 
-    /**
-     * Override default paint method to draw separating line
-     * @param g Graphics object to be painted
-     */
-    public void paint(Graphics g) {
-        try {
-            JToolBar parent = (JToolBar) this.getParent();
-            Dimension d = this.getSize();
-            g.setColor(Color.gray);
-            if (parent.getOrientation() == JToolBar.HORIZONTAL) {
-                if (orientation != JToolBar.HORIZONTAL) {
-                    setMaximumSize(Horizontal);
-                    orientation = JToolBar.HORIZONTAL;
-                    parent.revalidate();
-                }
-                g.drawLine(d.width/2,0,d.width/2,d.height);
-            }
-            else {
-                if (orientation != JToolBar.VERTICAL) {
-                    setMaximumSize(Vertical);
-                    orientation = JToolBar.VERTICAL;
-                    parent.revalidate();
-                }
-                g.drawLine(0,d.height/2,d.width,d.height/2);
-            }
-        }
-        catch (ClassCastException ex) {
-            super.paint(g);
-        }
-    }
+	/**
+	 * Override default paint method to draw separating line
+	 * @param g Graphics object to be painted
+	 */
+	public void paint(Graphics g) {
+		try {
+			JToolBar parent = (JToolBar) this.getParent();
+			Dimension d = this.getSize();
+			g.setColor(Color.gray);
+			if (parent.getOrientation() == SwingConstants.HORIZONTAL) {
+				if (orientation != SwingConstants.HORIZONTAL) {
+					setMaximumSize(Horizontal);
+					orientation = SwingConstants.HORIZONTAL;
+					parent.revalidate();
+				}
+				g.drawLine(d.width / 2, 0, d.width / 2, d.height);
+			} else {
+				if (orientation != SwingConstants.VERTICAL) {
+					setMaximumSize(Vertical);
+					orientation = SwingConstants.VERTICAL;
+					parent.revalidate();
+				}
+				g.drawLine(0, d.height / 2, d.width, d.height / 2);
+			}
+		} catch (ClassCastException ex) {
+			super.paint(g);
+		}
+	}
 }
-

@@ -15,12 +15,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
- 
+
 package jmt.engine.random;
+
 import java.util.Vector;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
 *
@@ -33,29 +33,28 @@ import jmt.common.exception.IncorrectDistributionParameterException;
 *
 */
 
-
 public class MAPPar extends AbstractParameter implements Parameter {
 
 	private double mean;
 	private double var;
-	
+
 	private int numStates;
 	private Vector trProbs;
-	private Vector hlTimes; 
+	private Vector hlTimes;
 	protected Vector expParam;
 
-	public MAPPar(String D0, String D1)
-	        throws IncorrectDistributionParameterException {
-	
+	public MAPPar(String D0, String D1) throws IncorrectDistributionParameterException {
+
 		testParameters();
 		this.mean = 0;
 		this.var = 0;
 		// creates 2 ExponentialPar objects
-		numStates=2;		
-		
+		numStates = 2;
+
 		expParam = new Vector(numStates);
-		for (int i=0;i<numStates;i++)
-			expParam.addElement(new ExponentialPar(1.0));		
+		for (int i = 0; i < numStates; i++) {
+			expParam.addElement(new ExponentialPar(1.0));
+		}
 	}
 
 	/**
@@ -64,10 +63,10 @@ public class MAPPar extends AbstractParameter implements Parameter {
 	 * @throws IncorrectDistributionParameterException if p is not betwen zero and one or if lambda1 and labda2 are not both greater than zero.
 	 *
 	 */
-	private void testParameters()
-	        throws IncorrectDistributionParameterException {
-		if (0 > 1)
+	private void testParameters() throws IncorrectDistributionParameterException {
+		if (0 > 1) {
 			throw new IncorrectDistributionParameterException("Error: must be 0 < r1 < 1");
+		}
 	}
 
 	/**
@@ -84,11 +83,11 @@ public class MAPPar extends AbstractParameter implements Parameter {
 	}
 
 	public double getHoldingTime(int curState) {
-		return ((Double)hlTimes.elementAt(curState)).doubleValue();
+		return ((Double) hlTimes.elementAt(curState)).doubleValue();
 	}
 
 	public double getTransitionProb(int curState, int destState) {
-		return ((Double) trProbs.elementAt((curState-1)*numStates + destState)).doubleValue();
+		return ((Double) trProbs.elementAt((curState - 1) * numStates + destState)).doubleValue();
 	}
 
 	/**
@@ -129,29 +128,27 @@ public class MAPPar extends AbstractParameter implements Parameter {
 		return var;
 	}
 
-    public double getR0() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	public double getR0() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    public Parameter getExpParam1() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	public Parameter getExpParam1() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-    public double getR1() {
-        // TODO Auto-generated method stub
-        return 0;
-    }
+	public double getR1() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 
-    public Parameter getExpParam2() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	public Parameter getExpParam2() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 } // end HyperExpPar
-
-
 
 //%%%%%%%%%%%%%%%%%%%%%%%%%
 /*
@@ -162,7 +159,8 @@ int BMAP::get_input(FILE* input, int& index)
         
         err = fscanf(input, "%d %d", &numState, &numBulk);
         
-        *//***        INITIALIZATION      ***//*
+        *//***        INITIALIZATION      ***/
+/*
         states = new struct STATE[numState];
         for (i = 0; i < numState; i++) {
             states[i].mean       = 0.0;
@@ -172,7 +170,8 @@ int BMAP::get_input(FILE* input, int& index)
             states[i].p          = new double    [(numBulk+1) * numState];
         }
         
-        *//***        INPUT               ***//*
+        *//***        INPUT               ***/
+/*
         for (j = 0; j < numBulk + 1 && err >= 0; j++) {
             for (i = 0; i < numState && err >= 0; i++) {
                 for (k = 0; k < numState && err >= 0; k++) {
@@ -205,7 +204,8 @@ int BMAP::get_input(FILE* input, int& index)
  * PURPOSE:     Generate interarrival time for BMAP
  * RETURN:      the number which follows BMAP distribution
                 bulk -- number of arrivals
- ************************************************************************//*
+ ************************************************************************/
+/*
 double BMAP::gen_interval(int & bulk)
 {
     double  interval    = 0.0;

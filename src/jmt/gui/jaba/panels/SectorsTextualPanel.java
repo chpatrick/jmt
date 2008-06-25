@@ -17,17 +17,32 @@
  */
 package jmt.gui.jaba.panels;
 
-import jmt.framework.gui.wizard.WizardPanel;
-import jmt.gui.jaba.JabaWizard;
-import jmt.gui.exact.panels.SynopsisPanel;
-
-import javax.swing.*;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.*;
-import java.io.*;
-import java.awt.*;
+import java.awt.GridLayout;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
+
+import javax.swing.Box;
+import javax.swing.JEditorPane;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
+import jmt.framework.gui.wizard.WizardPanel;
+import jmt.gui.exact.panels.SynopsisPanel;
+import jmt.gui.jaba.JabaWizard;
 
 /**
  * <p>Title: Sectors Textual Panel</p>
@@ -39,106 +54,111 @@ import java.net.URL;
  */
 public class SectorsTextualPanel extends WizardPanel {
 
-    //constant for transformer path
-    private static final String XSLT_FILE = "report.xslt";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    //GUI components
-    private JEditorPane synView;
-    private JScrollPane synScroll;
+	//constant for transformer path
+	private static final String XSLT_FILE = "report.xslt";
 
-    //data source
-    private JabaWizard jabawizard;
+	//GUI components
+	private JEditorPane synView;
+	private JScrollPane synScroll;
 
-    public SectorsTextualPanel(JabaWizard jabawizard){
-        super();
-        this.jabawizard = jabawizard;
-        initComponents();
-    }
+	//data source
+	private JabaWizard jabawizard;
 
-    private void initComponents(){
-        Box vBox = Box.createVerticalBox();
-        Box hBox = Box.createHorizontalBox();
-        synView = new JTextPane();
-        synView.setContentType("text/html");
-        synView.setEditable(false);
-        synScroll = new JScrollPane(synView);
-        synScroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        synScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        vBox.add(Box.createVerticalStrut(20));
-        vBox.add(hBox);
-        vBox.add(Box.createVerticalStrut(20));
-        hBox.add(Box.createHorizontalStrut(20));
-        hBox.add(synScroll);
-        hBox.add(Box.createHorizontalStrut(20));
-        this.setLayout(new GridLayout(1,1));
-        this.add(vBox);
-        synView.setText("<html><body><center><font face=\"bold\" size=\"3\">Saturation Sectors will be here displayed once you solve the model.</font></center></body></html>");
-    }
+	public SectorsTextualPanel(JabaWizard jabawizard) {
+		super();
+		this.jabawizard = jabawizard;
+		initComponents();
+	}
 
-    public String getName(){
-        return "Saturation Sectors - Text";
-    }
+	private void initComponents() {
+		Box vBox = Box.createVerticalBox();
+		Box hBox = Box.createHorizontalBox();
+		synView = new JTextPane();
+		synView.setContentType("text/html");
+		synView.setEditable(false);
+		synScroll = new JScrollPane(synView);
+		synScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		synScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		vBox.add(Box.createVerticalStrut(20));
+		vBox.add(hBox);
+		vBox.add(Box.createVerticalStrut(20));
+		hBox.add(Box.createHorizontalStrut(20));
+		hBox.add(synScroll);
+		hBox.add(Box.createHorizontalStrut(20));
+		this.setLayout(new GridLayout(1, 1));
+		this.add(vBox);
+		synView
+				.setText("<html><body><center><font face=\"bold\" size=\"3\">Saturation Sectors will be here displayed once you solve the model.</font></center></body></html>");
+	}
 
-    public void setDoc(InputStream xmlFile){
-        BufferedInputStream bufIS = new BufferedInputStream(xmlFile);
-        StreamSource sSource = new StreamSource(bufIS);
-        Transformer fileTransf;
-        File tempFile;
-        StreamResult sResult;
-        try {
-            InputStream transfUrlStream = SynopsisPanel.class.getResourceAsStream(XSLT_FILE);
-            //System.out.println(transfUrlStream);
-            if(transfUrlStream!=null){
-                synView.setText("<html><body><center><font face=\"bold\" size=\"2\">Saturation Sectors will be here.</font></center></body></html>");
-                return;
-            }
-            fileTransf = TransformerFactory.newInstance().newTransformer(new StreamSource(transfUrlStream));
-            tempFile = File.createTempFile("~temp"+new Long((long)(Math.random()*10E16)),".html");
-            tempFile.deleteOnExit();
-            sResult = new StreamResult(tempFile);
-            fileTransf.transform(sSource, sResult);
-            synView.setPage(new URL("file","localhost",tempFile.getPath()));
-            synScroll.setViewportView(synView);
-        } catch (TransformerConfigurationException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Transform Exception", JOptionPane.ERROR_MESSAGE);
-        } catch (TransformerFactoryConfigurationError tfce) {
-            JOptionPane.showMessageDialog(null, tfce.getMessage(), "Transform Error", JOptionPane.ERROR_MESSAGE);
-        }catch (IOException ioe){
-            JOptionPane.showMessageDialog(null, ioe.getMessage(), "File Exception", JOptionPane.ERROR_MESSAGE);
-        } catch (TransformerException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Transform Exception", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+	public String getName() {
+		return "Saturation Sectors - Text";
+	}
 
-    public void setDoc(File xmlFile){
-        try {
-            setDoc(new FileInputStream(xmlFile));
-        } catch (FileNotFoundException e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
-        }
-    }
+	public void setDoc(InputStream xmlFile) {
+		BufferedInputStream bufIS = new BufferedInputStream(xmlFile);
+		StreamSource sSource = new StreamSource(bufIS);
+		Transformer fileTransf;
+		File tempFile;
+		StreamResult sResult;
+		try {
+			InputStream transfUrlStream = SynopsisPanel.class.getResourceAsStream(XSLT_FILE);
+			//System.out.println(transfUrlStream);
+			if (transfUrlStream != null) {
+				synView.setText("<html><body><center><font face=\"bold\" size=\"2\">Saturation Sectors will be here.</font></center></body></html>");
+				return;
+			}
+			fileTransf = TransformerFactory.newInstance().newTransformer(new StreamSource(transfUrlStream));
+			tempFile = File.createTempFile("~temp" + new Long((long) (Math.random() * 10E16)), ".html");
+			tempFile.deleteOnExit();
+			sResult = new StreamResult(tempFile);
+			fileTransf.transform(sSource, sResult);
+			synView.setPage(new URL("file", "localhost", tempFile.getPath()));
+			synScroll.setViewportView(synView);
+		} catch (TransformerConfigurationException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Transform Exception", JOptionPane.ERROR_MESSAGE);
+		} catch (TransformerFactoryConfigurationError tfce) {
+			JOptionPane.showMessageDialog(null, tfce.getMessage(), "Transform Error", JOptionPane.ERROR_MESSAGE);
+		} catch (IOException ioe) {
+			JOptionPane.showMessageDialog(null, ioe.getMessage(), "File Exception", JOptionPane.ERROR_MESSAGE);
+		} catch (TransformerException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Transform Exception", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
-    public void gotFocus(){
-            redraw();
-            repaint();
-        }
+	public void setDoc(File xmlFile) {
+		try {
+			setDoc(new FileInputStream(xmlFile));
+		} catch (FileNotFoundException e) {
+			JOptionPane.showMessageDialog(null, e.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 
-    public void redraw() {
-            if (jabawizard.getData().hasResults() && jabawizard.getData().areResultsOK() && jabawizard.getData().getResults().size()>0 &&
-                    jabawizard.getData().getClasses() >= 2 && jabawizard.getData().getClasses() <= 3) {
-                String res = "<html>" + "<body align=\"Left\">";
-                for (int i=0;i<(jabawizard.getData().getResults()).size();i++)
-                {
-                    String temp = ((jabawizard.getData().getResults().get(i))).toString();
-                    res=res.concat(temp);
-                    res=res.concat("<br><br>");
-                }
-                res=res.concat("</body>" +"</html>");
-                synView.setText(res);
-            }
-            else {
-                synView.setText("<html><body><center><font face=\"bold\" size=\"3\">Saturation Sectors will be here displayed once you solve the model.</font></center></body></html>");
-            }
-        }
+	public void gotFocus() {
+		redraw();
+		repaint();
+	}
+
+	public void redraw() {
+		if (jabawizard.getData().hasResults() && jabawizard.getData().areResultsOK() && jabawizard.getData().getResults().size() > 0
+				&& jabawizard.getData().getClasses() >= 2 && jabawizard.getData().getClasses() <= 3) {
+			String res = "<html>" + "<body align=\"Left\">";
+			for (int i = 0; i < (jabawizard.getData().getResults()).size(); i++) {
+				String temp = ((jabawizard.getData().getResults().get(i))).toString();
+				res = res.concat(temp);
+				res = res.concat("<br><br>");
+			}
+			res = res.concat("</body>" + "</html>");
+			synView.setText(res);
+		} else {
+			synView
+					.setText("<html><body><center><font face=\"bold\" size=\"3\">Saturation Sectors will be here displayed once you solve the model.</font></center></body></html>");
+		}
+	}
 
 }

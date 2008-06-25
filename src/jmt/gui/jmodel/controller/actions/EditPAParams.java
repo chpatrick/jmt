@@ -17,10 +17,10 @@
  */
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
  * <p>Title:</p>
@@ -30,25 +30,30 @@ import java.awt.event.KeyEvent;
  *         Date: 7-mar-2006
  *         Time: 13.32.43
  */
-public class EditPAParams extends AbstractJmodelAction{
+public class EditPAParams extends AbstractJmodelAction {
 
-    /**
-     * Defines an <code>Action</code> object with a default
-     * description string and default icon.
-     */
-    public EditPAParams(Mediator mediator) {
-        super("What-if analysis...", "whatif", mediator);
-        putValue(SHORT_DESCRIPTION, "Define What-if analysis parameters");
-        putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
-        setEnabled(false);
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Invoked when an action occurs.
-     */
-    public void actionPerformed(ActionEvent e) {
-        // Edits
-        mediator.editPAParameters();
-    }
+	/**
+	 * Defines an <code>Action</code> object with a default
+	 * description string and default icon.
+	 */
+	public EditPAParams(Mediator mediator) {
+		super("What-if analysis...", "whatif", mediator);
+		putValue(SHORT_DESCRIPTION, "Define What-if analysis parameters");
+		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
+		setEnabled(false);
+	}
+
+	/**
+	 * Invoked when an action occurs.
+	 */
+	public void actionPerformed(ActionEvent e) {
+		// Edits
+		mediator.editPAParameters();
+	}
 
 }

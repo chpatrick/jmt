@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.panels;
 
 import jmt.gui.exact.ExactConstants;
@@ -35,11 +35,16 @@ import jmt.gui.exact.table.ExactTableModel;
  */
 public final class QueueLenPanel extends SolutionPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private double[][][] queueLen;
-    //NEW Dall'Orso
-    double[][] classAggs, stationAggs;
-    double[] globalAgg;
-    //END
+	//NEW Dall'Orso
+	double[][] classAggs, stationAggs;
+	double[] globalAgg;
+
+	//END
 
 	public QueueLenPanel(ExactWizard ew) {
 		super(ew);
@@ -53,26 +58,31 @@ public final class QueueLenPanel extends SolutionPanel {
 	protected void sync() {
 		super.sync();
 		queueLen = data.getQueueLen();
-        //NEW Federico Dall'Orso
-        classAggs = data.getPerClassQ();
-        stationAggs = data.getPerStationQ();
-        globalAgg = data.getGlobalQ();
-        //END
+		//NEW Federico Dall'Orso
+		classAggs = data.getPerClassQ();
+		stationAggs = data.getPerStationQ();
+		globalAgg = data.getGlobalQ();
+		//END
 	}
 
 	protected ExactTableModel getTableModel() {
 		return new QLTableModel();
 	}
 
-    protected String getDescriptionMessage() {
-        return ExactConstants.DESCRIPTION_QUEUELENGTHS;
-    }
+	protected String getDescriptionMessage() {
+		return ExactConstants.DESCRIPTION_QUEUELENGTHS;
+	}
 
-    /**
+	/**
 	 * the model backing the visit table.
 	 * Rows represent stations, columns classes.
 	 */
 	private class QLTableModel extends ExactTableModel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		QLTableModel() {
 			prototype = new Double(1000);
@@ -80,52 +90,69 @@ public final class QueueLenPanel extends SolutionPanel {
 		}
 
 		public int getRowCount() {
-			if (queueLen == null) return 0;
+			if (queueLen == null) {
+				return 0;
+			}
 			//OLD
-            /*
-            return stations;
-            */
-            //NEW Federico Dall'Orso
-            return stations+1;
-            //END
+			/*
+			return stations;
+			*/
+			//NEW Federico Dall'Orso
+			return stations + 1;
+			//END
 		}
 
 		public int getColumnCount() {
-			if (queueLen == null) return 0;
-            //OLD
-            /*
-            if (isSingle) return 1;
-            return classes;
-            */
-            //NEW
-            //@author Dall'Orso
-            return classes + 1;
-            //end NEW
+			if (queueLen == null) {
+				return 0;
+			}
+			//OLD
+			/*
+			if (isSingle) return 1;
+			return classes;
+			*/
+			//NEW
+			//@author Dall'Orso
+			return classes + 1;
+			//end NEW
 		}
 
 		protected Object getRowName(int rowIndex) {
-			if (rowIndex == 0) return "<html><i>Aggregate</i></html>";
-			else return stationNames[rowIndex-1];
+			if (rowIndex == 0) {
+				return "<html><i>Aggregate</i></html>";
+			} else {
+				return stationNames[rowIndex - 1];
+			}
 		}
 
 		public String getColumnName(int index) {
-			if (index == 0) return "<html><i>Aggregate</i></html>";
-			else return classNames[index-1];
+			if (index == 0) {
+				return "<html><i>Aggregate</i></html>";
+			} else {
+				return classNames[index - 1];
+			}
 		}
 
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
-			double d=0;
-            //OLD
-            /*
-            d = queueLen[rowIndex][columnIndex];
-            */
-            //NEW Federico Dall'Orso
-            if(rowIndex>0 && columnIndex>0) d = queueLen[rowIndex-1][columnIndex-1][iteration];
-            else if(rowIndex==0 && columnIndex>0) d = classAggs[columnIndex-1][iteration];
-            else if(rowIndex>0 && columnIndex==0) d = stationAggs[rowIndex-1][iteration];
-            else d = globalAgg[iteration];
-            //END
-			if (d < 0) return null; //causes the renderer to display a gray cell
+			double d = 0;
+			//OLD
+			/*
+			d = queueLen[rowIndex][columnIndex];
+			*/
+			//NEW Federico Dall'Orso
+			if (rowIndex > 0 && columnIndex > 0) {
+				d = queueLen[rowIndex - 1][columnIndex - 1][iteration];
+			} else if (rowIndex == 0 && columnIndex > 0) {
+				d = classAggs[columnIndex - 1][iteration];
+			} else if (rowIndex > 0 && columnIndex == 0) {
+				d = stationAggs[rowIndex - 1][iteration];
+			} else {
+				d = globalAgg[iteration];
+			}
+			//END
+			if (d < 0) {
+				return null; //causes the renderer to display a gray cell
+			}
 			return new Double(d);
 		}
 

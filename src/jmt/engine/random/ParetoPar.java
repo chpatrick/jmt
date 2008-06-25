@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -38,7 +37,6 @@ public class ParetoPar extends AbstractParameter implements Parameter {
 	private double alpha;
 	private double k;
 
-
 	/**
 	 * It creates a new pareto parameter according with the data provided by the user.
 	 * The user provides the value of the parameter k and alpha of the new pareto
@@ -50,20 +48,20 @@ public class ParetoPar extends AbstractParameter implements Parameter {
 	 * @throws IncorrectDistributionParameterException if k or alpha are not both greater than zero.
 	 *
 	 */
-	public ParetoPar(double alpha, double k)
-	        throws IncorrectDistributionParameterException {
+	public ParetoPar(double alpha, double k) throws IncorrectDistributionParameterException {
 		this.alpha = alpha;
 		this.k = k;
 		if (!check()) {
-			if (k <= 0)
+			if (k <= 0) {
 				throw new IncorrectDistributionParameterException("k must be gtz");
-			if (alpha <= 0)
+			}
+			if (alpha <= 0) {
 				throw new IncorrectDistributionParameterException("alpha must be gtz");
+			}
 		}
 	}
 
-	public ParetoPar(Double walpha, Double wk)
-	        throws IncorrectDistributionParameterException {
+	public ParetoPar(Double walpha, Double wk) throws IncorrectDistributionParameterException {
 		this(walpha.doubleValue(), wk.doubleValue());
 	}
 
@@ -94,7 +92,6 @@ public class ParetoPar extends AbstractParameter implements Parameter {
 		return alpha;
 	}
 
-
 	/**
 	 * It returns the value of the parameter k of the pareto distribution.
 	 *
@@ -117,8 +114,7 @@ public class ParetoPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setAlpha(double alpha)
-	        throws IncorrectDistributionParameterException {
+	public void setAlpha(double alpha) throws IncorrectDistributionParameterException {
 		if (alpha <= 0) {
 			throw new IncorrectDistributionParameterException("alpha must be gtz");
 		} else {
@@ -137,8 +133,7 @@ public class ParetoPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setK(double k)
-	        throws IncorrectDistributionParameterException {
+	public void setK(double k) throws IncorrectDistributionParameterException {
 		if (k <= 0) {
 			throw new IncorrectDistributionParameterException("k must be gtz");
 		} else {
@@ -146,17 +141,18 @@ public class ParetoPar extends AbstractParameter implements Parameter {
 		}
 	}
 
-    /**
-     * Sets mean for a given distribution parameter. This method is required to adjust distributions
-     * mean values into Load Dependent Service Time Strategy
-     * @param meanValue new mean value for this distribution
-     * Author: Bertoli Marco
-     * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
-     */
-    public void setMean(double meanValue) throws IncorrectDistributionParameterException{
-        if (meanValue <= 0 || Double.isInfinite(meanValue))
-            throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");
-        k = meanValue * (alpha - 1) / alpha;
-    }
+	/**
+	 * Sets mean for a given distribution parameter. This method is required to adjust distributions
+	 * mean values into Load Dependent Service Time Strategy
+	 * @param meanValue new mean value for this distribution
+	 * Author: Bertoli Marco
+	 * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
+	 */
+	public void setMean(double meanValue) throws IncorrectDistributionParameterException {
+		if (meanValue <= 0 || Double.isInfinite(meanValue)) {
+			throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");
+		}
+		k = meanValue * (alpha - 1) / alpha;
+	}
 
 } // end ParetoPar

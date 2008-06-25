@@ -15,15 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.table;
 
-import javax.swing.*;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableColumnModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+
+import javax.swing.JTable;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumnModel;
 
 /**
 
@@ -38,6 +39,11 @@ import java.awt.event.MouseMotionListener;
  */
 public class ClickableTableHeader extends JTableHeader {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected boolean listenerInstalled;
 
 	protected MouseColumnSelector mcs;
@@ -50,10 +56,10 @@ public class ClickableTableHeader extends JTableHeader {
 		super(cm);
 		reorderingAllowed = false;
 
-        //Dall'Orso 21/12/2004
-        //BEGIN
+		//Dall'Orso 21/12/2004
+		//BEGIN
 		resizingAllowed = true;
-        //END
+		//END
 
 		mcs = new MouseColumnSelector();
 
@@ -88,7 +94,9 @@ public class ClickableTableHeader extends JTableHeader {
 
 	private void stopEditing(JTable table) {
 		if (table.isEditing()) {
-			if (!table.getCellEditor().stopCellEditing()) table.getCellEditor().cancelCellEditing();
+			if (!table.getCellEditor().stopCellEditing()) {
+				table.getCellEditor().cancelCellEditing();
+			}
 		}
 	}
 
@@ -116,7 +124,9 @@ public class ClickableTableHeader extends JTableHeader {
 		}
 
 		public void mouseDragged(MouseEvent e) {
-			if (e.isShiftDown()) return; //ignore drag when shift is pressed
+			if (e.isShiftDown()) {
+				return; //ignore drag when shift is pressed
+			}
 			int col1 = columnAtPoint(e.getPoint());
 			if (col0 >= 0 && col1 >= 0) {
 				table.setColumnSelectionInterval(col0, col1);

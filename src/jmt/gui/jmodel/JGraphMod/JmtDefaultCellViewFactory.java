@@ -28,12 +28,16 @@ import org.jgraph.graph.DefaultCellViewFactory;
  * 
  */
 
-public class JmtDefaultCellViewFactory extends DefaultCellViewFactory{
+public class JmtDefaultCellViewFactory extends DefaultCellViewFactory {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected Mediator mediator;
 
 	public JmtDefaultCellViewFactory(Mediator mediator) {
 		super();
-		this.mediator=mediator;
+		this.mediator = mediator;
 
 	}
 }

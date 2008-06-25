@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -36,7 +35,6 @@ public class StudentTPar extends AbstractParameter implements Parameter {
 
 	private double freedom;
 
-
 	/**
 	 * It creates a new student T parameter with the provided degrees of freedom.
 	 * @param freedom double containing the degrees of freedom of the new student T
@@ -46,8 +44,7 @@ public class StudentTPar extends AbstractParameter implements Parameter {
 	 * not an integer greater than zero.
 	 *
 	 */
-	public StudentTPar(double freedom)
-	        throws IncorrectDistributionParameterException {
+	public StudentTPar(double freedom) throws IncorrectDistributionParameterException {
 		if (freedom <= 0 || Math.floor(freedom) != freedom) {
 			throw new IncorrectDistributionParameterException("The number of degrees of freedom must be an integer gtz");
 		} else {
@@ -55,8 +52,7 @@ public class StudentTPar extends AbstractParameter implements Parameter {
 		}
 	}
 
-	public StudentTPar(Double wfreedom)
-	        throws IncorrectDistributionParameterException {
+	public StudentTPar(Double wfreedom) throws IncorrectDistributionParameterException {
 		this(wfreedom.doubleValue());
 	}
 
@@ -96,8 +92,7 @@ public class StudentTPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setFreedom(double freedom)
-	        throws IncorrectDistributionParameterException {
+	public void setFreedom(double freedom) throws IncorrectDistributionParameterException {
 		this.freedom = freedom;
 		if (!check()) {
 			throw new IncorrectDistributionParameterException("The number of degrees of freedom must be an integer >0");

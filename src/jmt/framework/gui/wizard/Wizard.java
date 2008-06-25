@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.framework.gui.wizard;
 
 import java.awt.BorderLayout;
@@ -42,54 +42,85 @@ import jmt.framework.gui.listeners.AbstractJMTAction;
 
  */
 //Modified by Federico Dall'Orso
-
 /**
  * a generic Wizard framework
  */
 public class Wizard extends JMTFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/* button Actions */
 	protected AbstractJMTAction ACTION_NEXT = new AbstractJMTAction("Next >") {
-        {
-            setAcceleratorKey(KeyEvent.VK_RIGHT, ActionEvent.CTRL_MASK);
-            setTooltipText("Go to next screen");
-        }
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		{
+			setAcceleratorKey(KeyEvent.VK_RIGHT, ActionEvent.CTRL_MASK);
+			setTooltipText("Go to next screen");
+		}
+
 		public void actionPerformed(ActionEvent e) {
 			showNext();
 		}
 	};
 
 	protected AbstractJMTAction ACTION_PREV = new AbstractJMTAction("< Back") {
-        {
-            setAcceleratorKey(KeyEvent.VK_LEFT, ActionEvent.CTRL_MASK);
-            setTooltipText("Go to previous screen");
-        }
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		{
+			setAcceleratorKey(KeyEvent.VK_LEFT, ActionEvent.CTRL_MASK);
+			setTooltipText("Go to previous screen");
+		}
+
 		public void actionPerformed(ActionEvent e) {
 			showPrev();
 		}
 	};
 
 	protected AbstractJMTAction ACTION_CANCEL = new AbstractJMTAction("Cancel") {
-        {
-            setTooltipText("Exit discarding all changes");
-        }
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		{
+			setTooltipText("Exit discarding all changes");
+		}
+
 		public void actionPerformed(ActionEvent e) {
 			close();
 		}
 	};
 
 	protected AbstractJMTAction ACTION_FINISH = new AbstractJMTAction("Solve") {
-        {
-            setTooltipText("Solve this Model");
-        }
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		{
+			setTooltipText("Solve this Model");
+		}
+
 		public void actionPerformed(ActionEvent e) {
-			if (checkFinish()) finish();
+			if (checkFinish()) {
+				finish();
+			}
 		}
 	};
 
 	protected AbstractJMTAction ACTION_HELP = new AbstractJMTAction("Help") {
-        {
-            setTooltipText("Show quick help screen");
-        }
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		{
+			setTooltipText("Show quick help screen");
+		}
+
 		public void actionPerformed(ActionEvent e) {
 			help();
 		}
@@ -105,7 +136,7 @@ public class Wizard extends JMTFrame {
 	protected List panels;
 
 	public Wizard() {
-        super(true);
+		super(true);
 		panels = new ArrayList();
 		currentIndex = -1;
 		panelCount = 0;
@@ -151,6 +182,11 @@ public class Wizard extends JMTFrame {
 
 	protected JTabbedPane makeTabbedPane() {
 		return new JTabbedPane() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+
 			/* we hook into the tabbedpane's tab switching method and make the change
 			only if the current panel agrees */
 			public void setSelectedIndex(int index) {
@@ -158,22 +194,25 @@ public class Wizard extends JMTFrame {
 				if (index != oldIndex) { //ignore useless requests
 					if (currentPanel != null) {
 						if (index > oldIndex) {
-							if (!currentPanel.canGoForward()) return;
+							if (!currentPanel.canGoForward()) {
+								return;
+							}
 						} else {
-							if (!currentPanel.canGoBack()) return;
+							if (!currentPanel.canGoBack()) {
+								return;
+							}
 						}
 						currentPanel.lostFocus();
 					}
 					super.setSelectedIndex(index);
-                    currentIndex = model.getSelectedIndex();
-                    currentPanel = (WizardPanel) getComponentAt(currentIndex);
-                    if(oldIndex >= 0 && oldIndex<getTabCount()){
-                        WizardPanel oldPanel = (WizardPanel) getComponentAt(oldIndex);
-                        setTitleAt(oldIndex, oldPanel.getName());
-                    }
-                    setTitleAt(index, "<html><body align=\"center\"><font color=\"000000\"><b>"+
-                            currentPanel.getName()+
-                            "</b></font></body></html>");
+					currentIndex = model.getSelectedIndex();
+					currentPanel = (WizardPanel) getComponentAt(currentIndex);
+					if (oldIndex >= 0 && oldIndex < getTabCount()) {
+						WizardPanel oldPanel = (WizardPanel) getComponentAt(oldIndex);
+						setTitleAt(oldIndex, oldPanel.getName());
+					}
+					setTitleAt(index, "<html><body align=\"center\"><font color=\"000000\"><b>" + currentPanel.getName()
+							+ "</b></font></body></html>");
 					currentPanel.gotFocus();
 					updateActions();
 				}
@@ -182,9 +221,13 @@ public class Wizard extends JMTFrame {
 	}
 
 	protected boolean checkFinish() {
-		if (currentPanel != null) currentPanel.lostFocus();
+		if (currentPanel != null) {
+			currentPanel.lostFocus();
+		}
 		for (int i = 0; i < panelCount; i++) {
-			if (!((WizardPanel) panels.get(i)).canFinish()) return false;
+			if (!((WizardPanel) panels.get(i)).canFinish()) {
+				return false;
+			}
 		}
 		return true;
 	}
@@ -200,32 +243,40 @@ public class Wizard extends JMTFrame {
 
 	/**
 	 * Called when the "Cancel" button is pressed. Should be overridden in subclasses
-     * @return true if window can be closed, false otherwise.
+	 * @return true if window can be closed, false otherwise.
 	 */
 	protected boolean cancel() {
 		return true;
 	}
-    
-	/* (non-Javadoc)
-     * @see jmt.framework.gui.components.JMTFrame#canBeClosed()
-     */
-    public boolean canBeClosed() {
-        return cancel();
-    }
 
-    private void help() {
+	/* (non-Javadoc)
+	 * @see jmt.framework.gui.components.JMTFrame#canBeClosed()
+	 */
+	public boolean canBeClosed() {
+		return cancel();
+	}
+
+	private void help() {
 		currentPanel.help();
 	}
 
 	protected void showNext() {
-		if (currentIndex == -1) return;
-		if (currentIndex == panels.size() - 1) return; //should not happen anyway
+		if (currentIndex == -1) {
+			return;
+		}
+		if (currentIndex == panels.size() - 1) {
+			return; //should not happen anyway
+		}
 		tabbedPane.setSelectedIndex(currentIndex + 1);
 	}
 
 	protected void showPrev() {
-		if (currentIndex == -1) return;
-		if (currentIndex == 0) return; //should not happen anyway
+		if (currentIndex == -1) {
+			return;
+		}
+		if (currentIndex == 0) {
+			return; //should not happen anyway
+		}
 		tabbedPane.setSelectedIndex(currentIndex - 1);
 	}
 
@@ -240,44 +291,44 @@ public class Wizard extends JMTFrame {
 		ACTION_HELP.setEnabled(panelCount > 0);
 	}
 
-    /**
-     * Add a new WizardPanel to the Wizard
-     */
-    public void addPanel(WizardPanel p) {
-        p.setParentWizard(this);
-        panels.add(p);
-        tabbedPane.add(p.getName(), p);
-        panelCount = tabbedPane.getTabCount();
-        if (panelCount == 1) {
-            tabbedPane.setSelectedIndex(0);
-        }
-        updateActions();
-    }
+	/**
+	 * Add a new WizardPanel to the Wizard
+	 */
+	public void addPanel(WizardPanel p) {
+		p.setParentWizard(this);
+		panels.add(p);
+		tabbedPane.add(p.getName(), p);
+		panelCount = tabbedPane.getTabCount();
+		if (panelCount == 1) {
+			tabbedPane.setSelectedIndex(0);
+		}
+		updateActions();
+	}
 
-    /**
-     * Add a new WizardPanel to the Wizard
-     */
-    public void addPanel(WizardPanel p, int index) {
-        p.setParentWizard(this);
-        panels.add(p);
-        tabbedPane.insertTab(p.getName(), null, p, "",index);
-        panelCount = tabbedPane.getTabCount();
-        if (panelCount == 1) {
-            tabbedPane.setSelectedIndex(0);
-        }else{
-            tabbedPane.setSelectedIndex(index-1);
-            tabbedPane.setSelectedIndex(index);
-        }
-        updateActions();
-    }
+	/**
+	 * Add a new WizardPanel to the Wizard
+	 */
+	public void addPanel(WizardPanel p, int index) {
+		p.setParentWizard(this);
+		panels.add(p);
+		tabbedPane.insertTab(p.getName(), null, p, "", index);
+		panelCount = tabbedPane.getTabCount();
+		if (panelCount == 1) {
+			tabbedPane.setSelectedIndex(0);
+		} else {
+			tabbedPane.setSelectedIndex(index - 1);
+			tabbedPane.setSelectedIndex(index);
+		}
+		updateActions();
+	}
 
-   /**
-     * Removes a WizardPanel to the Wizard
-     */
-    public void removePanel(WizardPanel p) {
-       tabbedPane.remove(p);
-       panelCount = tabbedPane.getTabCount();
-       panels.remove(p);
-       updateActions();
-    }
+	/**
+	  * Removes a WizardPanel to the Wizard
+	  */
+	public void removePanel(WizardPanel p) {
+		tabbedPane.remove(p);
+		panelCount = tabbedPane.getTabCount();
+		panels.remove(p);
+		updateActions();
+	}
 }

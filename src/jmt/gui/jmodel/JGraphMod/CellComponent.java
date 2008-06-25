@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.JGraphMod;
 
 import jmt.gui.jmodel.definitions.JmodelStationDefinition;
@@ -31,31 +31,32 @@ import jmt.gui.jmodel.definitions.JmodelStationDefinition;
  *         Time: 10.48.11
  */
 public class CellComponent {
-    protected Object key;
-    protected JmodelStationDefinition sd;
-    /**
-     * Creates a new data structure with given key and referencing given StationDefinition
-     * @param key station key
-     * @param sd referencing station definition
-     */
-    public CellComponent(Object key, JmodelStationDefinition sd) {
-        this.key = key;
-        this.sd = sd;
-    }
+	protected Object key;
+	protected JmodelStationDefinition sd;
 
-    /**
-     * Returns name of this station
-     * @return Name of this station
-     */
-    public String toString() {
-        return sd.getStationName(key);
-    }
+	/**
+	 * Creates a new data structure with given key and referencing given StationDefinition
+	 * @param key station key
+	 * @param sd referencing station definition
+	 */
+	public CellComponent(Object key, JmodelStationDefinition sd) {
+		this.key = key;
+		this.sd = sd;
+	}
 
-    /**
-     * Returns key referencing this station
-     * @return this station's key
-     */
-    public Object getKey() {
-        return key;
-    }
+	/**
+	 * Returns name of this station
+	 * @return Name of this station
+	 */
+	public String toString() {
+		return sd.getStationName(key);
+	}
+
+	/**
+	 * Returns key referencing this station
+	 * @return this station's key
+	 */
+	public Object getKey() {
+		return key;
+	}
 }

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.panels;
 
 import jmt.gui.exact.ExactConstants;
@@ -35,9 +35,13 @@ import jmt.gui.exact.table.ExactTableModel;
  */
 public final class ThroughputPanel extends SolutionPanel {
 
-    private double[][][] throughput;
-    private double[][] classAggr, stationAggr;
-    private double[] globalAggr;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private double[][][] throughput;
+	private double[][] classAggr, stationAggr;
+	private double[] globalAggr;
 
 	public ThroughputPanel(ExactWizard ew) {
 		super(ew);
@@ -51,20 +55,25 @@ public final class ThroughputPanel extends SolutionPanel {
 	protected void sync() {
 		super.sync();
 		throughput = data.getThroughput();
-        classAggr = data.getPerClassX();
-        stationAggr = data.getPerStationX();
-        globalAggr = data.getGlobalX();
+		classAggr = data.getPerClassX();
+		stationAggr = data.getPerStationX();
+		globalAggr = data.getGlobalX();
 	}
 
 	protected ExactTableModel getTableModel() {
 		return new TPTableModel();
 	}
 
-    protected String getDescriptionMessage() {
-        return ExactConstants.DESCRIPTION_THROUGHPUTS;
-    }
+	protected String getDescriptionMessage() {
+		return ExactConstants.DESCRIPTION_THROUGHPUTS;
+	}
 
-    private class TPTableModel extends ExactTableModel {
+	private class TPTableModel extends ExactTableModel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		TPTableModel() {
 			prototype = new Double(1000);
@@ -72,52 +81,67 @@ public final class ThroughputPanel extends SolutionPanel {
 		}
 
 		public int getRowCount() {
-			if (throughput == null) return 0;
+			if (throughput == null) {
+				return 0;
+			}
 			//OLD
-            /*
-            if (stations == 1) return 1;
+			/*
+			if (stations == 1) return 1;
 			return stations;
-            */
-            //NEW
-            //@author Dall'Orso
-            return stations+1;
-            //end NEW
+			*/
+			//NEW
+			//@author Dall'Orso
+			return stations + 1;
+			//end NEW
 		}
 
 		public int getColumnCount() {
-			if (throughput == null) return 0;
-            //OLD
-            /*
-            if (isSingle) return 1;
-            return classes;
-            */
-            //NEW
-            //@author Dall'Orso
-            return classes+1;
-            //end NEW
+			if (throughput == null) {
+				return 0;
+			}
+			//OLD
+			/*
+			if (isSingle) return 1;
+			return classes;
+			*/
+			//NEW
+			//@author Dall'Orso
+			return classes + 1;
+			//end NEW
 		}
 
 		protected Object getRowName(int rowIndex) {
-			if (rowIndex == 0) return "<html><i>Aggregate</i></html>";
-			else return stationNames[rowIndex-1];
+			if (rowIndex == 0) {
+				return "<html><i>Aggregate</i></html>";
+			} else {
+				return stationNames[rowIndex - 1];
+			}
 		}
 
 		public String getColumnName(int index) {
-			if (index == 0) return "<html><i>Aggregate</i></html>";
-			else return classNames[index-1];
+			if (index == 0) {
+				return "<html><i>Aggregate</i></html>";
+			} else {
+				return classNames[index - 1];
+			}
 		}
 
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
-            double d;
-            if(rowIndex==0 && columnIndex==0){
-                d=globalAggr[iteration];
-            }
-            else if(rowIndex==0 && columnIndex>0) d = classAggr[columnIndex-1][iteration];
-            else if(rowIndex>0 && columnIndex==0) d = stationAggr[rowIndex-1][iteration];
-            else d = throughput[rowIndex-1][columnIndex-1][iteration];
-            if (d < 0) return null; //causes the renderer to display a gray cell
+			double d;
+			if (rowIndex == 0 && columnIndex == 0) {
+				d = globalAggr[iteration];
+			} else if (rowIndex == 0 && columnIndex > 0) {
+				d = classAggr[columnIndex - 1][iteration];
+			} else if (rowIndex > 0 && columnIndex == 0) {
+				d = stationAggr[rowIndex - 1][iteration];
+			} else {
+				d = throughput[rowIndex - 1][columnIndex - 1][iteration];
+			}
+			if (d < 0) {
+				return null; //causes the renderer to display a gray cell
+			}
 			return new Double(d);
-        }
+		}
 
 	}
 }

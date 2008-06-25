@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.QueueNet;
 
 /**
@@ -43,16 +43,14 @@ public class NetEvent {
 	/** Event ID: Keeps node awake.*/
 	public static final int EVENT_KEEP_AWAKE = 0x0010;
 	//todo: eventualmente chiamarlo fork-join?? Oppure dividere in due eventi distinti
-    /** Event ID: join ack.*/
+	/** Event ID: join ack.*/
 	public static final int EVENT_JOIN = 0x0020;
 
-    //todo: evento per job che lasciano regione critica
-    /** Event ID: join ack.*/
+	//todo: evento per job che lasciano regione critica
+	/** Event ID: join ack.*/
 	public static final int EVENT_JOB_OUT_OF_REGION = 0x0040;
 
 	/** Event ID: Distribution change event.*/
-	public static final int EVENT_DISTRIBUTION_CHANGE = 0x0080; 
-
-
+	public static final int EVENT_DISTRIBUTION_CHANGE = 0x0080;
 
 }

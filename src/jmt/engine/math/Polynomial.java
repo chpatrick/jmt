@@ -76,7 +76,9 @@ public class Polynomial extends Constants {
 		double ans;
 		ans = coef[0];
 
-		for (int i = 1; i <= N; i++) ans = ans * x + coef[i];
+		for (int i = 1; i <= N; i++) {
+			ans = ans * x + coef[i];
+		}
 
 		return ans;
 	}

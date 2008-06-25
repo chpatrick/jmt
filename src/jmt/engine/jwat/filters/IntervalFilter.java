@@ -26,20 +26,24 @@ import jmt.engine.jwat.Observation;
  * 
  */
 public class IntervalFilter implements FilterOnVariable {
-	private int min,max;
-	
+	private int min, max;
+
 	/**
 	 * Il valore di indice della prima osservazione e' 0
 	 * @param obsMin 
 	 * @param obsMax
 	 */
-	public IntervalFilter(int obsMin,int obsMax){
+	public IntervalFilter(int obsMin, int obsMax) {
 		min = obsMin;
-		max=obsMax;
+		max = obsMax;
 	}
+
 	public boolean isMatching(Observation o, int pos) {
-		if(pos < min || pos > max) return false;
-		else return true;
+		if (pos < min || pos > max) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 }

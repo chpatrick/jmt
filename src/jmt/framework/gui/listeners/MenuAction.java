@@ -32,57 +32,61 @@ import java.util.Collection;
  * @version 1.0
  */
 public class MenuAction extends AbstractJMTAction {
-    /**
-     * Builds a new Menu Action
-     * @param name name of the menu
-     * @param mnemonicKey mnemonic key for the menu
-     * @param actions menu items to be added
-     */
-    public MenuAction(String name, int mnemonicKey, AbstractJMTAction[] actions) {
-        this.setName(name);
-        this.setMnemonicKey(mnemonicKey);
-        this.setMenuActions(actions);
-    }
-    
-    /**
-     * Builds a new Menu Action
-     * @param name name of the menu
-     * @param mnemonicKey mnemonic key for the menu
-     * @param actions a collection of AbstractJMTAction of menu items to be added
-     */
-    public MenuAction(String name, int mnemonicKey, Collection actions) {
-        this.setName(name);
-        this.setMnemonicKey(mnemonicKey);
-        this.setMenuActions(actions);
-    }
-    
-    /**
-     * Builds a new Menu Action. Mnemonic key is the first letter of name.
-     * @param name name of the menu
-     * @param actions menu items to be added
-     */
-    public MenuAction(String name, AbstractJMTAction[] actions) {
-        this.setName(name);
-        this.setMnemonicKey(name.charAt(0));
-        this.setMenuActions(actions);
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Builds a new Menu Action. Mnemonic key is the first letter of name.
-     * @param name name of the menu
-     * @param actions a collection of AbstractJMTAction of menu items to be added
-     */
-    public MenuAction(String name, Collection actions) {
-        this.setName(name);
-        this.setMnemonicKey(name.charAt(0));
-        this.setMenuActions(actions);
-    }
-    
-    
-    /* (non-Javadoc)
-     * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
-     */
-    public void actionPerformed(ActionEvent e) {
-        // Override this to perform an action
-    }
+	/**
+	 * Builds a new Menu Action
+	 * @param name name of the menu
+	 * @param mnemonicKey mnemonic key for the menu
+	 * @param actions menu items to be added
+	 */
+	public MenuAction(String name, int mnemonicKey, AbstractJMTAction[] actions) {
+		this.setName(name);
+		this.setMnemonicKey(mnemonicKey);
+		this.setMenuActions(actions);
+	}
+
+	/**
+	 * Builds a new Menu Action
+	 * @param name name of the menu
+	 * @param mnemonicKey mnemonic key for the menu
+	 * @param actions a collection of AbstractJMTAction of menu items to be added
+	 */
+	public MenuAction(String name, int mnemonicKey, Collection actions) {
+		this.setName(name);
+		this.setMnemonicKey(mnemonicKey);
+		this.setMenuActions(actions);
+	}
+
+	/**
+	 * Builds a new Menu Action. Mnemonic key is the first letter of name.
+	 * @param name name of the menu
+	 * @param actions menu items to be added
+	 */
+	public MenuAction(String name, AbstractJMTAction[] actions) {
+		this.setName(name);
+		this.setMnemonicKey(name.charAt(0));
+		this.setMenuActions(actions);
+	}
+
+	/**
+	 * Builds a new Menu Action. Mnemonic key is the first letter of name.
+	 * @param name name of the menu
+	 * @param actions a collection of AbstractJMTAction of menu items to be added
+	 */
+	public MenuAction(String name, Collection actions) {
+		this.setName(name);
+		this.setMnemonicKey(name.charAt(0));
+		this.setMenuActions(actions);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	public void actionPerformed(ActionEvent e) {
+		// Override this to perform an action
+	}
 }

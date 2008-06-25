@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -33,7 +32,6 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  */
 
 public class Pareto extends AbstractDistribution implements Distribution {
-
 
 	/**
 	 * This is the constructor. It creates a new empty pareto distribution which
@@ -56,16 +54,17 @@ public class Pareto extends AbstractDistribution implements Distribution {
 	 * @return double with the probability distribution function evaluated in x.
 	 */
 	//OLD
-    //public double pdf(double x, ParetoPar p)
-    public double pdf(double x, Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double pdf(double x, ParetoPar p)
+	public double pdf(double x, Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			//OLD
-            //double alfa = p.getAlpha();
+			//double alfa = p.getAlpha();
 			//double k = p.getK();
-            double alfa = ((ParetoPar) p).getAlpha();
-            double k = ((ParetoPar) p).getK();
-			if (x <= alfa) throw new IncorrectDistributionParameterException("Error: x must be >alpha.");
+			double alfa = ((ParetoPar) p).getAlpha();
+			double k = ((ParetoPar) p).getK();
+			if (x <= alfa) {
+				throw new IncorrectDistributionParameterException("Error: x must be >alpha.");
+			}
 			return (alfa * Math.pow(k, alfa) / Math.pow(x, (alfa + 1)));
 		} else {
 			throw new IncorrectDistributionParameterException("Remember: parameter alpha and k must be gtz");
@@ -84,22 +83,22 @@ public class Pareto extends AbstractDistribution implements Distribution {
 	 */
 
 	//OLD
-    //public double cdf(double x, ParetoPar p)
-    public double cdf(double x, Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double cdf(double x, ParetoPar p)
+	public double cdf(double x, Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			//OLD
-            //double alfa = p.getAlpha();
+			//double alfa = p.getAlpha();
 			//double k = p.getK();
-            double alfa = ((ParetoPar) p).getAlpha();
-            double k = ((ParetoPar) p).getK();
-			if (x <= alfa) return 0.0;
+			double alfa = ((ParetoPar) p).getAlpha();
+			double k = ((ParetoPar) p).getK();
+			if (x <= alfa) {
+				return 0.0;
+			}
 			return 1.0 - Math.pow((k / x), alfa);
 		} else {
 			throw new IncorrectDistributionParameterException("Remember: parameter alpha and k must be gtz");
 		}
 	}
-
 
 	/**
 	 * it returns the mean of the distribution.
@@ -114,15 +113,14 @@ public class Pareto extends AbstractDistribution implements Distribution {
 	 */
 
 	//OLD
-    //public double theorMean(ParetoPar p)
-    public double theorMean(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double theorMean(ParetoPar p)
+	public double theorMean(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			//OLD
-            //double alfa = p.getAlpha();
+			//double alfa = p.getAlpha();
 			//double k = p.getK();
-            double alfa = ((ParetoPar) p).getAlpha();
-            double k = ((ParetoPar) p).getK();
+			double alfa = ((ParetoPar) p).getAlpha();
+			double k = ((ParetoPar) p).getK();
 			return (alfa * k / (alfa - 1));
 		} else {
 			throw new IncorrectDistributionParameterException("Remember: parameter alpha and k must be gtz");
@@ -142,15 +140,14 @@ public class Pareto extends AbstractDistribution implements Distribution {
 	 */
 
 	//OLD
-    //public double theorVariance(ParetoPar p)
-    public double theorVariance(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double theorVariance(ParetoPar p)
+	public double theorVariance(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			//OLD
-            //double alfa = p.getAlpha();
+			//double alfa = p.getAlpha();
 			//double k = p.getK();
-            double alfa = ((ParetoPar) p).getAlpha();
-            double k = ((ParetoPar) p).getK();
+			double alfa = ((ParetoPar) p).getAlpha();
+			double k = ((ParetoPar) p).getK();
 			return (alfa * k * k / ((alfa - 1) * (alfa - 1) * (alfa - 2)));
 		} else {
 			throw new IncorrectDistributionParameterException("Remember: parameter alpha and k must be gtz");
@@ -167,8 +164,7 @@ public class Pareto extends AbstractDistribution implements Distribution {
 	 * @return double with the next random number of this distribution.
 	 */
 
-	public double nextRand(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public double nextRand(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			double alpha = ((ParetoPar) p).getAlpha();
 			double k = ((ParetoPar) p).getK();
@@ -177,6 +173,5 @@ public class Pareto extends AbstractDistribution implements Distribution {
 			throw new IncorrectDistributionParameterException("Remember: parameter alpha and k must be gtz");
 		}
 	}
-
 
 } // end Pareto

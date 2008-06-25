@@ -15,8 +15,26 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.panels;
+
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
+import javax.swing.border.EmptyBorder;
+import javax.swing.event.TableModelEvent;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 import jmt.framework.gui.table.editors.ButtonCellEditor;
 import jmt.framework.gui.wizard.WizardPanel;
@@ -29,16 +47,6 @@ import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.exact.table.DisabledCellRenderer;
 import jmt.gui.exact.table.ExactCellEditor;
 
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.event.TableModelEvent;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-
 /**
  * Created by IntelliJ IDEA.
  * User: orsotronIII
@@ -49,290 +57,318 @@ import java.awt.event.KeyEvent;
  */
 public class MeasurePanel extends WizardPanel implements CommonConstants {
 
-    //Interfaces for model data exchange
-    protected ClassDefinition classData;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	//Interfaces for model data exchange
+	protected ClassDefinition classData;
 
-    /**
-     * called by the Wizard before when switching to another panel
-     */
-    public void lostFocus() {
-        // Aborts editing of table
-        TableCellEditor editor = measureTable.getCellEditor();
-        if (editor != null)
-            editor.stopCellEditing();
-    }
+	/**
+	 * called by the Wizard before when switching to another panel
+	 */
+	public void lostFocus() {
+		// Aborts editing of table
+		TableCellEditor editor = measureTable.getCellEditor();
+		if (editor != null) {
+			editor.stopCellEditing();
+		}
+	}
 
-    protected StationDefinition stationData;
-    protected SimulationDefinition simData;
+	protected StationDefinition stationData;
+	protected SimulationDefinition simData;
 
-    protected WarningScrollTable warningPanel;
+	protected WarningScrollTable warningPanel;
 
-    //label containing description of this panel's purpose
-    private JLabel descrLabel = new JLabel(MEASURES_DESCRIPTION);
+	//label containing description of this panel's purpose
+	private JLabel descrLabel = new JLabel(MEASURES_DESCRIPTION);
 
-    //table containing measure data
-    protected MeasureTable measureTable;
+	//table containing measure data
+	protected MeasureTable measureTable;
 
-    //button for measure addition
-    private JButton addMeasureButton;
+	//button for measure addition
+	private JButton addMeasureButton;
 
-    //types of measures selectable
-    protected static final String[] measureTypes = new String[]{
-        SimulationDefinition.MEASURE_QL,
-        SimulationDefinition.MEASURE_QT,
-        SimulationDefinition.MEASURE_RD,
-        SimulationDefinition.MEASURE_RP,
-        SimulationDefinition.MEASURE_U,
-        SimulationDefinition.MEASURE_X,
-        SimulationDefinition.MEASURE_DR,
-        SimulationDefinition.MEASURE_S_X,
-        SimulationDefinition.MEASURE_S_RP,
-        SimulationDefinition.MEASURE_S_DR,
-        SimulationDefinition.MEASURE_S_CN,
-    };
+	//types of measures selectable
+	protected static final String[] measureTypes = new String[] { SimulationDefinition.MEASURE_QL, SimulationDefinition.MEASURE_QT,
+			SimulationDefinition.MEASURE_RD, SimulationDefinition.MEASURE_RP, SimulationDefinition.MEASURE_U, SimulationDefinition.MEASURE_X,
+			SimulationDefinition.MEASURE_DR, SimulationDefinition.MEASURE_S_X, SimulationDefinition.MEASURE_S_RP, SimulationDefinition.MEASURE_S_DR,
+			SimulationDefinition.MEASURE_S_CN, };
 
-    // Measure selection ComboBox
-    protected JComboBox measureSelection = new JComboBox(measureTypes);
+	// Measure selection ComboBox
+	protected JComboBox measureSelection = new JComboBox(measureTypes);
 
-    /** Editors and renderers for table */
-    protected ImagedComboBoxCellEditorFactory stationsCombos, classesCombos;
+	/** Editors and renderers for table */
+	protected ImagedComboBoxCellEditorFactory stationsCombos, classesCombos;
 
-    //deletes a measure from list
-    protected AbstractAction deleteMeasure = new AbstractAction("") {
-            {
-                putValue(Action.SHORT_DESCRIPTION, "Deletes this measure");
-                putValue(Action.SMALL_ICON, JMTImageLoader.loadImage("Delete"));
-            }
+	//deletes a measure from list
+	protected AbstractAction deleteMeasure = new AbstractAction("") {
+		/**
+		* 
+		*/
+		private static final long serialVersionUID = 1L;
 
-            public void actionPerformed(ActionEvent e) {
-                int index = measureTable.getSelectedRow();
-                if(index>=0 && index<measureTable.getRowCount())deleteMeasure(index);
-            }
-        };
+		{
+			putValue(Action.SHORT_DESCRIPTION, "Deletes this measure");
+			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage("Delete"));
+		}
 
-    //addition of a class one by one
-    protected AbstractAction addMeasure = new AbstractAction("Add selected index") {
-        {
-            putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, ActionEvent.ALT_MASK));
-            putValue(Action.SHORT_DESCRIPTION, "Adds a new measure with selected performance index");
-        }
+		public void actionPerformed(ActionEvent e) {
+			int index = measureTable.getSelectedRow();
+			if (index >= 0 && index < measureTable.getRowCount()) {
+				deleteMeasure(index);
+			}
+		}
+	};
 
-        public void actionPerformed(ActionEvent e) {
-            addMeasure();
-        }
-    };
+	//addition of a class one by one
+	protected AbstractAction addMeasure = new AbstractAction("Add selected index") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
+		{
+			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_PLUS, ActionEvent.ALT_MASK));
+			putValue(Action.SHORT_DESCRIPTION, "Adds a new measure with selected performance index");
+		}
 
-    public MeasurePanel(ClassDefinition classes,
-                        StationDefinition stations,
-                        SimulationDefinition simParams){
-        stationsCombos = new ImagedComboBoxCellEditorFactory(stations);
-        classesCombos = new ImagedComboBoxCellEditorFactory(classes);
-        classesCombos.setAllowsNull(true);
-        setData(classes, stations, simParams);
-        initComponents();
-    }
+		public void actionPerformed(ActionEvent e) {
+			addMeasure();
+		}
+	};
 
-    private void initComponents(){
-        this.setBorder(new EmptyBorder(20,20,20,20));
-        this.setLayout(new BorderLayout(5,5));
+	public MeasurePanel(ClassDefinition classes, StationDefinition stations, SimulationDefinition simParams) {
+		stationsCombos = new ImagedComboBoxCellEditorFactory(stations);
+		classesCombos = new ImagedComboBoxCellEditorFactory(classes);
+		classesCombos.setAllowsNull(true);
+		setData(classes, stations, simParams);
+		initComponents();
+	}
 
-        addMeasureButton = new JButton(addMeasure);
-        JPanel rightPanel = new JPanel(new BorderLayout(5,5));
-        rightPanel.add(addMeasureButton, BorderLayout.SOUTH);
-        rightPanel.add(measureSelection, BorderLayout.CENTER);
+	private void initComponents() {
+		this.setBorder(new EmptyBorder(20, 20, 20, 20));
+		this.setLayout(new BorderLayout(5, 5));
 
-        measureTable = new MeasureTable();
+		addMeasureButton = new JButton(addMeasure);
+		JPanel rightPanel = new JPanel(new BorderLayout(5, 5));
+		rightPanel.add(addMeasureButton, BorderLayout.SOUTH);
+		rightPanel.add(measureSelection, BorderLayout.CENTER);
 
-        JPanel headPanel = new JPanel(new BorderLayout(5,5));
-        headPanel.add(descrLabel, BorderLayout.CENTER);
-        headPanel.add(rightPanel, BorderLayout.EAST);
-        addMeasureButton.setMaximumSize(DIM_BUTTON_M);
-        this.add(headPanel, BorderLayout.NORTH);
-        warningPanel = new WarningScrollTable(measureTable, WARNING_CLASS_STATION);
-        warningPanel.addCheckVector(classData.getClassKeys());
-        warningPanel.addCheckVector(stationData.getStationRegionKeysNoSourceSink());
-        this.add(warningPanel, BorderLayout.CENTER);
-    }
+		measureTable = new MeasureTable();
 
-    /**Updates data contained in this panel's components*/
-    public void setData(ClassDefinition classes,
-                           StationDefinition stations,
-                           SimulationDefinition simParams){
-        classData = classes;
-        stationData = stations;
-        simData = simParams;
-        stationsCombos.setData(stations);
-        classesCombos.setData(classes);
-        refreshComponents();
-    }
+		JPanel headPanel = new JPanel(new BorderLayout(5, 5));
+		headPanel.add(descrLabel, BorderLayout.CENTER);
+		headPanel.add(rightPanel, BorderLayout.EAST);
+		addMeasureButton.setMaximumSize(DIM_BUTTON_M);
+		this.add(headPanel, BorderLayout.NORTH);
+		warningPanel = new WarningScrollTable(measureTable, WARNING_CLASS_STATION);
+		warningPanel.addCheckVector(classData.getClassKeys());
+		warningPanel.addCheckVector(stationData.getStationRegionKeysNoSourceSink());
+		this.add(warningPanel, BorderLayout.CENTER);
+	}
 
-    /**
-     * called by the Wizard when the panel becomes active
-     */
-    public void gotFocus() {
-        stationsCombos.clearCache();
-        classesCombos.clearCache();
-        refreshComponents();
-    }
+	/**Updates data contained in this panel's components*/
+	public void setData(ClassDefinition classes, StationDefinition stations, SimulationDefinition simParams) {
+		classData = classes;
+		stationData = stations;
+		simData = simParams;
+		stationsCombos.setData(stations);
+		classesCombos.setData(classes);
+		refreshComponents();
+	}
 
-    public void repaint(){
-        refreshComponents();
-        super.repaint();
-    }
+	/**
+	 * called by the Wizard when the panel becomes active
+	 */
+	public void gotFocus() {
+		stationsCombos.clearCache();
+		classesCombos.clearCache();
+		refreshComponents();
+	}
 
-    private void refreshComponents(){
-        if(measureTable != null){
-            measureTable.tableChanged(new TableModelEvent(measureTable.getModel()));
-        }
-        if (warningPanel != null) {
-            warningPanel.clearCheckVectors();
-            warningPanel.addCheckVector(classData.getClassKeys());
-            warningPanel.addCheckVector(stationData.getStationRegionKeysNoSourceSink());
-        }
-    }
+	public void repaint() {
+		refreshComponents();
+		super.repaint();
+	}
 
-    private void addMeasure(){
-        if(stationData.getStationRegionKeysNoSourceSink().size() == 0 ||
-                classData.getClassKeys().size()==0) return;
+	private void refreshComponents() {
+		if (measureTable != null) {
+			measureTable.tableChanged(new TableModelEvent(measureTable.getModel()));
+		}
+		if (warningPanel != null) {
+			warningPanel.clearCheckVectors();
+			warningPanel.addCheckVector(classData.getClassKeys());
+			warningPanel.addCheckVector(stationData.getStationRegionKeysNoSourceSink());
+		}
+	}
 
-        simData.addMeasure((String)measureSelection.getSelectedItem(), null, null);
-        measureTable.tableChanged(new TableModelEvent(measureTable.getModel()));
-    }
+	private void addMeasure() {
+		if (stationData.getStationRegionKeysNoSourceSink().size() == 0 || classData.getClassKeys().size() == 0) {
+			return;
+		}
 
-    private void deleteMeasure(int index){
-        simData.removeMeasure(simData.getMeasureKeys().get(index));
-        measureTable.tableChanged(new TableModelEvent(measureTable.getModel()));
-    }
+		simData.addMeasure((String) measureSelection.getSelectedItem(), null, null);
+		measureTable.tableChanged(new TableModelEvent(measureTable.getModel()));
+	}
 
-    public String getName(){
-        return "Performance Indices";
-    }
+	private void deleteMeasure(int index) {
+		simData.removeMeasure(simData.getMeasureKeys().get(index));
+		measureTable.tableChanged(new TableModelEvent(measureTable.getModel()));
+	}
 
-    protected class MeasureTable extends JTable{
+	public String getName() {
+		return "Performance Indices";
+	}
 
-        private JButton deleteButton = new JButton(deleteMeasure);
+	protected class MeasureTable extends JTable {
 
-        public MeasureTable(){
-            setModel(new MeasureTableModel());
-            setRowHeight(ROW_HEIGHT);
-            sizeColumns();
-            setDefaultEditor(Double.class, new ExactCellEditor());
-            setDefaultRenderer(Object.class, new DisabledCellRenderer());
-        }
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private JButton deleteButton = new JButton(deleteMeasure);
 
-        private void sizeColumns(){
-            int[] columnWidths = ((MeasureTableModel)getModel()).columnWidths;
-            for(int i=0; i< columnWidths.length; i++){
-                int prefWidth = columnWidths[i];
-                if(i == columnWidths.length-1){
-                    getColumnModel().getColumn(i).setMaxWidth(getRowHeight());
-                }else{
-                    getColumnModel().getColumn(i).setPreferredWidth(prefWidth);
-                }
-            }
-        }
+		public MeasureTable() {
+			setModel(new MeasureTableModel());
+			setRowHeight(ROW_HEIGHT);
+			sizeColumns();
+			setDefaultEditor(Double.class, new ExactCellEditor());
+			setDefaultRenderer(Object.class, new DisabledCellRenderer());
+		}
 
-        public TableCellEditor getCellEditor(int row, int column){
-            if(column == 5) return new ButtonCellEditor(deleteButton);
-            else if(column == 2) return stationsCombos.getEditor(stationData.getStationRegionKeysNoSourceSink());
-            else if(column == 1) return classesCombos.getEditor(classData.getClassKeys());
-            else return super.getCellEditor(row, column);
-        }
+		private void sizeColumns() {
+			int[] columnWidths = ((MeasureTableModel) getModel()).columnWidths;
+			for (int i = 0; i < columnWidths.length; i++) {
+				int prefWidth = columnWidths[i];
+				if (i == columnWidths.length - 1) {
+					getColumnModel().getColumn(i).setMaxWidth(getRowHeight());
+				} else {
+					getColumnModel().getColumn(i).setPreferredWidth(prefWidth);
+				}
+			}
+		}
 
-        public TableCellRenderer getCellRenderer(int row, int column){
-            if(column==5) return new ButtonCellEditor(deleteButton);
-            else if(column == 2 && !simData.isGlobalMeasure(simData.getMeasureKeys().get(row)))
-                return stationsCombos.getRenderer();
-            else if(column == 1) return classesCombos.getRenderer();
-            else return super.getCellRenderer(row, column);
-        }
+		public TableCellEditor getCellEditor(int row, int column) {
+			if (column == 5) {
+				return new ButtonCellEditor(deleteButton);
+			} else if (column == 2) {
+				return stationsCombos.getEditor(stationData.getStationRegionKeysNoSourceSink());
+			} else if (column == 1) {
+				return classesCombos.getEditor(classData.getClassKeys());
+			} else {
+				return super.getCellEditor(row, column);
+			}
+		}
 
+		public TableCellRenderer getCellRenderer(int row, int column) {
+			if (column == 5) {
+				return new ButtonCellEditor(deleteButton);
+			} else if (column == 2 && !simData.isGlobalMeasure(simData.getMeasureKeys().get(row))) {
+				return stationsCombos.getRenderer();
+			} else if (column == 1) {
+				return classesCombos.getRenderer();
+			} else {
+				return super.getCellRenderer(row, column);
+			}
+		}
 
-    }
+	}
 
-    protected class MeasureTableModel extends AbstractTableModel{
+	protected class MeasureTableModel extends AbstractTableModel {
 
-        private String[] columnNames = new String[]{
-            "Performance Index", "Class", "Station/Region", "Confidence Interval(0-1)", "Max Relative Error(0-1)", ""
-        };
-        private Class[] columnClasses = new Class[]{
-            String.class, String.class, String.class, Double.class, Double.class, Object.class
-        };
-        public int[] columnWidths = new int[]{120, 80, 80, 80, 80, 20};
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private String[] columnNames = new String[] { "Performance Index", "Class", "Station/Region", "Confidence Interval(0-1)",
+				"Max Relative Error(0-1)", "" };
+		private Class[] columnClasses = new Class[] { String.class, String.class, String.class, Double.class, Double.class, Object.class };
+		public int[] columnWidths = new int[] { 120, 80, 80, 80, 80, 20 };
 
+		public int getRowCount() {
+			return simData.getMeasureKeys().size();
+		}
 
-        public int getRowCount() {
-            return simData.getMeasureKeys().size();
-        }
+		public int getColumnCount() {
+			return columnNames.length;
+		}
 
-        public int getColumnCount() {
-            return columnNames.length;
-        }
+		public String getColumnName(int columnIndex) {
+			return columnNames[columnIndex];
+		}
 
-        public String getColumnName(int columnIndex) {
-            return columnNames[columnIndex];
-        }
+		public Class getColumnClass(int columnIndex) {
+			return columnClasses[columnIndex];
+		}
 
-        public Class getColumnClass(int columnIndex) {
-            return columnClasses[columnIndex];
-        }
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			// Avoid editing of Measure type
+			if (columnIndex == 0) {
+				return false;
+			}
+			// Avoid set reference station for global measures
+			if (columnIndex == 2 && simData.isGlobalMeasure(simData.getMeasureKeys().get(rowIndex))) {
+				return false;
+			}
+			return true;
+		}
 
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            // Avoid editing of Measure type
-            if (columnIndex == 0)
-                return false;
-            // Avoid set reference station for global measures
-            if (columnIndex == 2 &&
-                    simData.isGlobalMeasure(simData.getMeasureKeys().get(rowIndex)))
-                return false;
-            return true;
-        }
+		public Object getValueAt(int rowIndex, int columnIndex) {
+			Object key = simData.getMeasureKeys().get(rowIndex);
+			switch (columnIndex) {
+				case 0: {
+					return simData.getMeasureType(key);
+				}
+				case 1: {
+					return simData.getMeasureClass(key);
+				}
+				case 2: {
+					return simData.getMeasureStation(key);
+				}
+				case 3: {
+					return simData.getMeasureAlpha(key);
+				}
+				case 4: {
+					return simData.getMeasurePrecision(key);
+				}
+			}
+			return null;
+		}
 
-        public Object getValueAt(int rowIndex, int columnIndex) {
-            Object key = simData.getMeasureKeys().get(rowIndex);
-            switch(columnIndex){
-                case 0:{
-                    return simData.getMeasureType(key);
-                }case 1:{
-                    return simData.getMeasureClass(key);
-                }case 2:{
-                    return simData.getMeasureStation(key);
-                }case 3:{
-                    return simData.getMeasureAlpha(key);
-                }case 4:{
-                    return simData.getMeasurePrecision(key);
-                }
-            }return null;
-        }
+		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+			Object key = simData.getMeasureKeys().get(rowIndex);
+			switch (columnIndex) {
+				case 0: {
+					simData.setMeasureType((String) aValue, key);
+					break;
+				}
+				case 1: {
+					simData.setMeasureClass(aValue, key);
+					break;
+				}
+				case 2: {
+					simData.setMeasureStation(aValue, key);
+					break;
+				}
+				case 3: {
+					try {
+						String doubleVal = (String) aValue;
+						simData.setMeasureAlpha(Double.valueOf(doubleVal), key);
+						break;
+					} catch (NumberFormatException e) {
+					}
+				}
+				case 4: {
+					try {
+						String doubleVal = (String) aValue;
+						simData.setMeasurePrecision(Double.valueOf(doubleVal), key);
+						break;
+					} catch (NumberFormatException e) {
+					}
+				}
+			}
+		}
 
-        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            Object key = simData.getMeasureKeys().get(rowIndex);
-            switch(columnIndex){
-                case 0:{
-                    simData.setMeasureType((String)aValue, key);
-                    break;
-                }case 1:{
-                    simData.setMeasureClass(aValue, key);
-                    break;
-                }case 2:{
-                    simData.setMeasureStation(aValue, key);
-                    break;
-                }case 3:{
-                    try{
-                        String doubleVal = (String)aValue;
-                        simData.setMeasureAlpha(Double.valueOf(doubleVal), key);
-                        break;
-                    }catch(NumberFormatException e){}
-                }case 4:{
-                    try{
-                        String doubleVal = (String)aValue;
-                        simData.setMeasurePrecision(Double.valueOf(doubleVal), key);
-                        break;
-                    }catch(NumberFormatException e){}
-                }
-            }
-        }
-
-    }
+	}
 }

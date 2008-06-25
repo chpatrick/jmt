@@ -15,14 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+
+import javax.swing.KeyStroke;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
 
@@ -34,6 +36,11 @@ import java.awt.event.KeyEvent;
 public class OpenModel extends AbstractJmodelAction {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Defines an <code>Action</code> object with a default
 	 * description string and default icon.
 	 */
@@ -42,7 +49,7 @@ public class OpenModel extends AbstractJmodelAction {
 		putValue(SHORT_DESCRIPTION, "open a previosly saved model");
 		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_O));
 		// 25/09/03 - Massimo Cattai //////////////////////////////////////////
-		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, KeyEvent.CTRL_MASK));
+		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_O, InputEvent.CTRL_MASK));
 		// 25/09/03 - end /////////////////////////////////////////////////////
 	}
 
@@ -50,6 +57,6 @@ public class OpenModel extends AbstractJmodelAction {
 	 * Invoked when an action occurs.
 	 */
 	public void actionPerformed(ActionEvent e) {
-        mediator.openModel();
+		mediator.openModel();
 	}
 }

@@ -14,31 +14,33 @@ import javax.swing.JScrollPane;
 
 import jmt.gui.jwat.JWATConstants;
 
-public class LogVisualizer extends JPanel implements JWATConstants{
+public class LogVisualizer extends JPanel implements JWATConstants {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JList logList;
 	private JDialog d;
-	
-	public LogVisualizer(JDialog d)
-	{
-		this.d=d;
+
+	public LogVisualizer(JDialog d) {
+		this.d = d;
 		this.setLayout(new BorderLayout());
-		logList=new JList(new DefaultListModel());
-		JScrollPane p=new JScrollPane(logList);
-		this.add(p,BorderLayout.CENTER);
+		logList = new JList(new DefaultListModel());
+		JScrollPane p = new JScrollPane(logList);
+		this.add(p, BorderLayout.CENTER);
 		loadData();
 	}
-	
-	private void loadData()
-	{
-		BufferedReader br=null;
-		String line=null;
-		DefaultListModel model=(DefaultListModel)logList.getModel();
+
+	private void loadData() {
+		BufferedReader br = null;
+		String line = null;
+		DefaultListModel model = (DefaultListModel) logList.getModel();
 		try {
-			br=new BufferedReader(new FileReader(LogFileName));
-			line=br.readLine();
-			while (line!=null){
+			br = new BufferedReader(new FileReader(LogFileName));
+			line = br.readLine();
+			while (line != null) {
 				model.addElement(line);
-				line=br.readLine();
+				line = br.readLine();
 			}
 		} catch (FileNotFoundException e) {
 			d.dispose();
@@ -49,6 +51,6 @@ public class LogVisualizer extends JPanel implements JWATConstants{
 		try {
 			br.close();
 		} catch (IOException e) {
-		}		
+		}
 	}
 }

@@ -15,43 +15,41 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jwat;
 
 import java.text.DecimalFormat;
 
-public class DinamicFormat
-{
-	public DinamicFormat(String pattern,int limit)
-	{
-		formato=new DecimalFormat(pattern);
-		maxValVis=limit;
+public class DinamicFormat {
+	public DinamicFormat(String pattern, int limit) {
+		formato = new DecimalFormat(pattern);
+		maxValVis = limit;
 	}
-	
-	public String format(double Val)
-	{
-		String ret=String.valueOf(Val);
-		
-		if(ret.length()>maxValVis) ret=formato.format(Val);
-		
+
+	public String format(double Val) {
+		String ret = String.valueOf(Val);
+
+		if (ret.length() > maxValVis) {
+			ret = formato.format(Val);
+		}
+
 		return ret;
 	}
-	
-	public String format(long Val)
-	{
-		String ret=String.valueOf(Val);
-		
-		if(ret.length()>maxValVis) ret=formato.format(Val);
-		
-		
+
+	public String format(long Val) {
+		String ret = String.valueOf(Val);
+
+		if (ret.length() > maxValVis) {
+			ret = formato.format(Val);
+		}
+
 		return ret;
 	}
-	
-	public void setLimit(int limit)
-	{
-		maxValVis=limit;
+
+	public void setLimit(int limit) {
+		maxValVis = limit;
 	}
-	
+
 	private int maxValVis;
 	private DecimalFormat formato;
 }

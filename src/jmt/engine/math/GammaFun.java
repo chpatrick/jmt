@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * InvFDistribution.java
  *
@@ -33,34 +33,37 @@ public class GammaFun {
 
 	/** return the Log of the Gamma function */
 	public static double lnGamma(double c) {
-		double[] cof = {76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5};
+		double[] cof = { 76.18009172947146, -86.50532032941677, 24.01409824083091, -1.231739572450155, 0.1208650973866179e-2, -0.5395239384953e-5 };
 		double xx = c;
 		double yy = c;
 		double tmp = xx + 5.5 - (xx + 0.5) * Math.log(xx + 5.5);
 		double ser = 1.000000000190015;
-		for (int j = 0; j <= 5; j++)
+		for (int j = 0; j <= 5; j++) {
 			ser += (cof[j] / ++yy);
+		}
 		return (Math.log(2.5066282746310005 * ser / xx) - tmp);
 	}
-
-
 
 	/** some tests */
 	public static void test() {
 		boolean OK = true;
-		if (lnGamma(1.96) != -0.01639106214800501)
+		if (lnGamma(1.96) != -0.01639106214800501) {
 			OK = false;
-		if (lnGamma(4) != 1.791759469228055)
+		}
+		if (lnGamma(4) != 1.791759469228055) {
 			OK = false;
-		if (lnGamma(1.3) != -0.10817480950786562)
+		}
+		if (lnGamma(1.3) != -0.10817480950786562) {
 			OK = false;
-		if (lnGamma(1.6) != -0.112591765696759)
+		}
+		if (lnGamma(1.6) != -0.112591765696759) {
 			OK = false;
-		if (OK)
+		}
+		if (OK) {
 			System.out.println("OK. all tests passed!");
-		else
+		} else {
 			System.out.println("There is a problem!");
+		}
 	}
-
 
 }

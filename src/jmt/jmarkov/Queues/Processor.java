@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 11-mar-2004
  *
@@ -24,8 +24,8 @@
  */
 package jmt.jmarkov.Queues;
 
-import jmt.jmarkov.Graphics.Notifier;
 import jmt.jmarkov.MMQueues;
+import jmt.jmarkov.Graphics.Notifier;
 
 /**
  * Rappresenta il "Processore" vero e proprio:
@@ -34,18 +34,18 @@ import jmt.jmarkov.MMQueues;
  * @author Ernesto
  *
  */
-public final class Processor implements Runnable{
+public final class Processor implements Runnable {
 
-    //NEW
-    //@author Stefano Omini
-    // introduced DEBUG var to skip System.out.println() calls in final release
-    private static final boolean DEBUG = false;
-    //end NEW
+	//NEW
+	//@author Stefano Omini
+	// introduced DEBUG var to skip System.out.println() calls in final release
+	private static final boolean DEBUG = false;
+	//end NEW
 
 	private MMQueues frame;
 
 	private boolean limited, nomorework;
-	
+
 	private int jobsToDo;
 
 	private Notifier[] n;
@@ -55,55 +55,56 @@ public final class Processor implements Runnable{
 	private QueueLogic ql;
 
 	private long rt = 0; //current process execution time (millisecondi)
-	
+
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
 		try {
-			while(true){
-					//System.out.println("Processor started!");
-				if ((jobsToDo > 0)||(!limited)){
+			while (true) {
+				//System.out.println("Processor started!");
+				if ((jobsToDo > 0) || (!limited)) {
 					removeFromQueue();
-				}
-				else 
-				{
+				} else {
 					if (DEBUG) {
-                        System.out.println("I've ended my work!");
-                    }
+						System.out.println("I've ended my work!");
+					}
 					nomorework = true;
-                    
+
 					frame.stopProcessing();
 					break;
-				} 
+				}
 			}
 
 		} catch (Exception e) {
-            //TODO sometimes exception are thrown here, when a finite number of steps is chosen.
+			//TODO sometimes exception are thrown here, when a finite number of steps is chosen.
 			if (DEBUG) {
-                System.out.println("Exception in 'Processor.java': " + e.getLocalizedMessage());
-            }
+				System.out.println("Exception in 'Processor.java': " + e.getLocalizedMessage());
+			}
 		}
 	}
-	
-	public Processor(QueueLogic ql, QueueStack q){
+
+	public Processor(QueueLogic ql, QueueStack q) {
 		this.ql = ql;
 		this.q = q;
 		this.jobsToDo = 0;
 		this.limited = false;
 		this.nomorework = false;
 	}
-	
-	public Processor(QueueLogic ql, QueueStack q, Notifier n[], int jobsToDo){
+
+	public Processor(QueueLogic ql, QueueStack q, Notifier n[], int jobsToDo) {
 		this.ql = ql;
 		this.q = q;
 		this.n = n;
 		this.jobsToDo = jobsToDo;
-		if(jobsToDo == 0) this.limited = false;
-		else this.limited = true;
+		if (jobsToDo == 0) {
+			this.limited = false;
+		} else {
+			this.limited = true;
+		}
 		this.nomorework = false;
 	}
-	
+
 	/**
 	 * Rimuove un processo dalla coda per eseguirlo in un tempo dato da
 	 * @link getExecutionTime
@@ -115,32 +116,33 @@ public final class Processor implements Runnable{
 			q.removeFromQueue();
 			notifyGraphics("");
 			Thread.sleep(rt);
-			if (jobsToDo > 0) jobsToDo--;
+			if (jobsToDo > 0) {
+				jobsToDo--;
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-			
+
 	}
 
 	private void getExecutionTime() {
 		rt = (long) ql.getRunTime();
 	}
 
-	
 	/**
 	 * Notifica un cambiamento alla parte grafica della simulazione
 	 * @param gi
 	 */
 	private void notifyGraphics(String gi) {
-		for (int i = 0; i < n.length; i++){
+		for (int i = 0; i < n.length; i++) {
 			n[i].removingFromQ();
-			n[i].runningIn((double)rt);
+			n[i].runningIn(rt);
 			//System.out.print("P: runtime: " + rt);
 		}
 	}
 
-	public boolean haveMoreWorkToDo(){
+	public boolean haveMoreWorkToDo() {
 		return !nomorework;
 	}
 
@@ -148,6 +150,6 @@ public final class Processor implements Runnable{
 	 * @param mf
 	 */
 	public void setEndAction(MMQueues mf) {
-		this.frame = mf;		
+		this.frame = mf;
 	}
 }

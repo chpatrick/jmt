@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.routingStrategies;
 
 import java.util.HashMap;
@@ -27,39 +27,37 @@ import java.util.HashMap;
  * Time: 15.54.42
  * To change this template use Options | File Templates.
  */
-public class RoundRobinRouting extends RoutingStrategy{
+public class RoundRobinRouting extends RoutingStrategy {
 
-    public RoundRobinRouting(){
-        description ="Jobs are routed to the stations connected to the current one " +
-            "according to a cyclic algorithm.";
-    }
+	public RoundRobinRouting() {
+		description = "Jobs are routed to the stations connected to the current one " + "according to a cyclic algorithm.";
+	}
 
-    public String getName() {
-        return "Round Robin";
-    }
+	public String getName() {
+		return "Round Robin";
+	}
 
-    public HashMap getValues() {
-        return null;
-    }
+	public HashMap getValues() {
+		return null;
+	}
 
-    public Object clone() {
-        return new RoundRobinRouting();
-    }
+	public Object clone() {
+		return new RoundRobinRouting();
+	}
 
+	public String getClassPath() {
+		return "jmt.engine.NetStrategies.RoutingStrategies.RoundRobinStrategy";
+	}
 
-    public String getClassPath() {
-        return "jmt.engine.NetStrategies.RoutingStrategies.RoundRobinStrategy";
-    }
-
-    /**
-     * Returns true if the routing strategy is dependent from the state of
-     * the model
-     * @return  true if the routing strategy is dependent from the state of
-     * the model
-     *
-     * Author: Francesco D'Aquino
-     */
-    public boolean isModelStateDependent() {
-        return false;
-    }
+	/**
+	 * Returns true if the routing strategy is dependent from the state of
+	 * the model
+	 * @return  true if the routing strategy is dependent from the state of
+	 * the model
+	 *
+	 * Author: Francesco D'Aquino
+	 */
+	public boolean isModelStateDependent() {
+		return false;
+	}
 }

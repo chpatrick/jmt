@@ -15,12 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
 import java.awt.event.ActionEvent;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
 
@@ -32,13 +32,18 @@ import java.awt.event.ActionEvent;
 public class SolveAnalytic extends AbstractJmodelAction {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	/**
 	 * Defines an <code>Action</code> object with a default
 	 * description string and default icon.
 	 */
 	public SolveAnalytic(Mediator mediator) {
 		super("Approx", mediator);
 		putValue(SHORT_DESCRIPTION, "solve the model with analytic tecnique");
-//		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
+		//		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
 		setEnabled(false);
 	}
 

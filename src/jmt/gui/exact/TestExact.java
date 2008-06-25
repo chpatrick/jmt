@@ -15,12 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact;
 
-import jmt.analytical.SolverDispatcher;
-
 import java.io.File;
+
+import jmt.analytical.SolverDispatcher;
 
 /**
  * @author Stefano
@@ -28,20 +28,18 @@ import java.io.File;
  */
 public class TestExact {
 
+	public static void Test1() {
 
-    public static void Test1() {
+		SolverDispatcher sd = new SolverDispatcher();
+		String path = "D://provaLD.xml";
+		File fileXML = new File(path);
+		try {
+			sd.solve(fileXML);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return;
 
-        SolverDispatcher sd = new SolverDispatcher();
-        String path = "D://provaLD.xml";
-        File fileXML = new File(path);
-        try {
-            sd.solve(fileXML);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return;
-
-    }
-
+	}
 
 }

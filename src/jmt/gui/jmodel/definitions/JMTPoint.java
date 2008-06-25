@@ -30,100 +30,96 @@ import java.awt.geom.Point2D;
  * @version 1.0
  */
 public class JMTPoint extends Point2D {
-    private double x,y;
-    private boolean rotate;
-    
-    /**
-     * Builds a new JMTPoint at position (0,0) and no rotation.
-     */
-    public JMTPoint() {
-        x = 0;
-        y = 0;
-        rotate = false;
-    }
-    
-    /**
-     * Builds a new JMTPoint
-     * @param x x coordinate
-     * @param y y coordinate
-     * @param rotate true if station is rotated
-     */
-    public JMTPoint(double x, double y, boolean rotate) {
-        this.x = x;
-        this.y = y;
-        this.rotate = rotate;
-    }
-    
-    /**
-     * Builds a new JMTPoint from a given point
-     * @param point point for coordinates
-     * @param rotate true if station is rotated
-     */
-    public JMTPoint(Point2D point, boolean rotate) {
-        this.x = point.getX();
-        this.y = point.getY();
-        this.rotate = rotate;
-    }
-    
-    /* (non-Javadoc)
-     * @see java.awt.geom.Point2D#getX()
-     */
-    public double getX() {
-        return x;
-    }
+	private double x, y;
+	private boolean rotate;
 
-    /* (non-Javadoc)
-     * @see java.awt.geom.Point2D#getY()
-     */
-    public double getY() {
-        return y;
-    }
+	/**
+	 * Builds a new JMTPoint at position (0,0) and no rotation.
+	 */
+	public JMTPoint() {
+		x = 0;
+		y = 0;
+		rotate = false;
+	}
 
-    /* (non-Javadoc)
-     * @see java.awt.geom.Point2D#setLocation(double, double)
-     */
-    public void setLocation(double x, double y) {
-        this.x = x;
-        this.y = y;
-    }
+	/**
+	 * Builds a new JMTPoint
+	 * @param x x coordinate
+	 * @param y y coordinate
+	 * @param rotate true if station is rotated
+	 */
+	public JMTPoint(double x, double y, boolean rotate) {
+		this.x = x;
+		this.y = y;
+		this.rotate = rotate;
+	}
 
-    /* (non-Javadoc)
-     * @see java.awt.geom.Point2D#clone()
-     */
-    public Object clone() {
-        return new JMTPoint(x,y,rotate);
-    }
+	/**
+	 * Builds a new JMTPoint from a given point
+	 * @param point point for coordinates
+	 * @param rotate true if station is rotated
+	 */
+	public JMTPoint(Point2D point, boolean rotate) {
+		this.x = point.getX();
+		this.y = point.getY();
+		this.rotate = rotate;
+	}
 
-    /**
-     * @return true if station is rotated
-     */
-    public boolean isRotate() {
-        return rotate;
-    }
+	/* (non-Javadoc)
+	 * @see java.awt.geom.Point2D#getX()
+	 */
+	public double getX() {
+		return x;
+	}
 
-    /**
-     * @param rotate true if station is rotated
-     */
-    public void setRotate(boolean rotate) {
-        this.rotate = rotate;
-    }
+	/* (non-Javadoc)
+	 * @see java.awt.geom.Point2D#getY()
+	 */
+	public double getY() {
+		return y;
+	}
 
-    /**
-     * @param x x coordinate
-     */
-    public void setX(double x) {
-        this.x = x;
-    }
+	/* (non-Javadoc)
+	 * @see java.awt.geom.Point2D#setLocation(double, double)
+	 */
+	public void setLocation(double x, double y) {
+		this.x = x;
+		this.y = y;
+	}
 
-    /**
-     * @param y y coordinate
-     */
-    public void setY(double y) {
-        this.y = y;
-    }
-    
-    
-    
-    
+	/* (non-Javadoc)
+	 * @see java.awt.geom.Point2D#clone()
+	 */
+	public Object clone() {
+		return new JMTPoint(x, y, rotate);
+	}
+
+	/**
+	 * @return true if station is rotated
+	 */
+	public boolean isRotate() {
+		return rotate;
+	}
+
+	/**
+	 * @param rotate true if station is rotated
+	 */
+	public void setRotate(boolean rotate) {
+		this.rotate = rotate;
+	}
+
+	/**
+	 * @param x x coordinate
+	 */
+	public void setX(double x) {
+		this.x = x;
+	}
+
+	/**
+	 * @param y y coordinate
+	 */
+	public void setY(double y) {
+		this.y = y;
+	}
 
 }

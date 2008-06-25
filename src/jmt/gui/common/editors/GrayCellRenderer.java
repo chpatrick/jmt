@@ -15,13 +15,15 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.editors;
 
-import jmt.gui.exact.table.DisabledCellRenderer;
+import java.awt.Component;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JTable;
+import javax.swing.SwingConstants;
+
+import jmt.gui.exact.table.DisabledCellRenderer;
 
 /**
  * <p>Title: Gray Cell Renderer</p>
@@ -33,23 +35,25 @@ import java.awt.*;
  *         Date: 14-ott-2005
  *         Time: 19.16.29
  */
-public class GrayCellRenderer extends DisabledCellRenderer{
-    public Component getTableCellRendererComponent(JTable table, Object value,
-                                                   boolean isSelected, boolean hasFocus,
-                                                   int row, int col) {
-        Component renderer = super.getTableCellRendererComponent(table, value,
-                isSelected, hasFocus, row, col);
+public class GrayCellRenderer extends DisabledCellRenderer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-        // Paints infinity symbol as a number
-        if (value instanceof String && "\u221E".equals(value))
-            super.setHorizontalAlignment(SwingConstants.RIGHT);
-        if (!table.isCellEditable(row, col)) {
-            renderer.setEnabled(false);
-        }
-        else {
-            renderer.setEnabled(true);
-        }
-        return renderer;
-    }
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
+		Component renderer = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
+
+		// Paints infinity symbol as a number
+		if (value instanceof String && "\u221E".equals(value)) {
+			super.setHorizontalAlignment(SwingConstants.RIGHT);
+		}
+		if (!table.isCellEditable(row, col)) {
+			renderer.setEnabled(false);
+		} else {
+			renderer.setEnabled(true);
+		}
+		return renderer;
+	}
 
 }

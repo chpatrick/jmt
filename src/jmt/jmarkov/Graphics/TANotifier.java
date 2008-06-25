@@ -15,18 +15,19 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 16-mar-2004 by Ernesto
  *
  */
 package jmt.jmarkov.Graphics;
 
+import java.util.Date;
+
+import javax.swing.JTextArea;
+
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
-
-import javax.swing.*;
-import java.util.Date;
 
 /**
  * MMQueues
@@ -36,15 +37,20 @@ import java.util.Date;
  * @author Ernesto
  */
 public class TANotifier extends JTextArea implements Notifier {
-	
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	static final int ROWS = 100, COLS = 40;
-	long processes,runningProcess,runningTime;
+	long processes, runningProcess, runningTime;
 	Date d = new Date();
+
 	/**
 	 * 
 	 */
 	public TANotifier() {
-		super(ROWS,COLS);
+		super(ROWS, COLS);
 		this.setFont(new DrawNormal().getFont());
 	}
 
@@ -55,8 +61,7 @@ public class TANotifier extends JTextArea implements Notifier {
 		this.setRows(ROWS + 1);
 		processes++;
 		d = new Date();
-		this.append("at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds()
-					+ " - job n." + intToString((int) processes) + " is added\n");		
+		this.append("at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + " - job n." + intToString((int) processes) + " is added\n");
 	}
 
 	/* (non-Javadoc)
@@ -66,8 +71,8 @@ public class TANotifier extends JTextArea implements Notifier {
 		this.setRows(ROWS + 1);
 		runningProcess++;
 		d = new Date();
-		this.append("at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds()
-					+ " - job n." + intToString((int) runningProcess) + " is removed\n");
+		this.append("at " + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + " - job n." + intToString((int) runningProcess)
+				+ " is removed\n");
 
 	}
 
@@ -90,15 +95,17 @@ public class TANotifier extends JTextArea implements Notifier {
 		super.setText("");
 		this.setRows(1);
 	}
-	
-	private void verifyFull(){
-		if (super.getLineCount() > ROWS - 1) super.setText("");
+
+	private void verifyFull() {
+		if (super.getLineCount() > ROWS - 1) {
+			super.setText("");
+		}
 	}
-	
-	private String intToString(int i){
+
+	private String intToString(int i) {
 		String s = "";
-		for(int j = 1000000;j > 0;j = j/10){
-			if((int)i < j ){
+		for (int j = 1000000; j > 0; j = j / 10) {
+			if (i < j) {
 				s = s + "0";
 			}
 		}

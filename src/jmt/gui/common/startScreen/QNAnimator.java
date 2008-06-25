@@ -15,12 +15,14 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.startScreen;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.util.Vector;
+
+import javax.swing.JPanel;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,118 +32,110 @@ import java.util.Vector;
  * This component shows an animation representing a queue network.
  * Only for graphical purposes.
  */
-public class QNAnimator extends JPanel{
+public class QNAnimator extends JPanel {
 
-    //this inner class is a thread that must repaint every 0.033 seconds the qnanimator.
-    class Mover extends Thread{
-        //animation to be repainted
-        QNAnimator qna;
-        //flag representing execution state of this thread
-        boolean fRunning=false;
-        //time of this animation
-        long time;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-        public Mover(QNAnimator animator){
-            qna=animator;
-        }
+	//this inner class is a thread that must repaint every 0.033 seconds the qnanimator.
+	class Mover extends Thread {
+		//animation to be repainted
+		QNAnimator qna;
+		//flag representing execution state of this thread
+		boolean fRunning = false;
+		//time of this animation
+		long time;
 
-        public void start(){
-            fRunning=true;
-        }
+		public Mover(QNAnimator animator) {
+			qna = animator;
+		}
 
-        public void run(){
-            while(fRunning){
-                //while this trhead is running, repaints the animation every 0.033 seconds
-                try{
-                    time += 33;
-                    qna.repaint(time);
-                    sleep(33);
-                }catch(InterruptedException e){ qna.repaint();}
-            }
-        }
+		public void start() {
+			fRunning = true;
+		}
 
-        //pauses execution of this thread
-        public void freeze(){
-            fRunning=false;
-        }
+		public void run() {
+			while (fRunning) {
+				//while this trhead is running, repaints the animation every 0.033 seconds
+				try {
+					time += 33;
+					qna.repaint(time);
+					sleep(33);
+				} catch (InterruptedException e) {
+					qna.repaint();
+				}
+			}
+		}
 
-        //resumes execution
-        public void wakeUp(){
-            fRunning=true;
-        }
+		//pauses execution of this thread
+		public void freeze() {
+			fRunning = false;
+		}
 
-        //stops this thread
-        public void kill(){
-            fRunning=false;
-        }
-    }
+		//resumes execution
+		public void wakeUp() {
+			fRunning = true;
+		}
 
-    //reference to the thread that must repaint this animation
-    Mover mover;
+		//stops this thread
+		public void kill() {
+			fRunning = false;
+		}
+	}
 
-    interface ConsumerProducer {
-        public void addJob(Job j);
-        public void addConsumer(ConsumerProducer cp);
-    }
+	//reference to the thread that must repaint this animation
+	Mover mover;
 
-    //represents an edge of the queue network
-    class Path {
-        //time this instance was created, used set animation frames
-        private long birthTime = System.currentTimeMillis();
-        //speed for the jobs on this path
-        private double jobSpeed;
-        //angles of this path
-        private int[] xPoints, yPoints;
+	interface ConsumerProducer {
+		public void addJob(Job j);
 
-        public Path(int[] xCoords, int[] yCoords, double speed){
-            xPoints=xCoords;
-            yPoints=yCoords;
-            jobSpeed=speed;
-        }
-    }
+		public void addConsumer(ConsumerProducer cp);
+	}
 
-    //represents a station
-    class Station {
-        //jobs that are currently in this station
-        Vector jobs=new Vector();
+	//represents an edge of the queue network
+	class Path {
+		//time this instance was created, used set animation frames
+		private long birthTime = System.currentTimeMillis();
+		//speed for the jobs on this path
+		private double jobSpeed;
+		//angles of this path
+		private int[] xPoints, yPoints;
 
-    }
+		public Path(int[] xCoords, int[] yCoords, double speed) {
+			xPoints = xCoords;
+			yPoints = yCoords;
+			jobSpeed = speed;
+		}
+	}
 
-    //represents a job
-    class Job{
-        Image i;
+	//represents a station
+	class Station {
+		//jobs that are currently in this station
+		Vector jobs = new Vector();
 
-        public Job(){
+	}
 
-        }
+	//represents a job
+	class Job {
+		Image i;
 
-        public Job(Image jobImg){
-            i = jobImg;
-        }
+		public Job() {
 
-        public void paint(Graphics g, int x, int y){
+		}
 
-        }
-    }
+		public Job(Image jobImg) {
+			i = jobImg;
+		}
 
-    public QNAnimator(java.awt.LayoutManager lm){
-        super(lm);
-    }
+		public void paint(Graphics g, int x, int y) {
+
+		}
+	}
+
+	public QNAnimator(java.awt.LayoutManager lm) {
+		super(lm);
+	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

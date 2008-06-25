@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.ld;
 
 import java.awt.BorderLayout;
@@ -51,35 +51,45 @@ import jmt.gui.exact.ld.eval.Evaluator;
  */
 public class LDHelpDialog extends JMTDialog {
 
-	private static final String generalHelp = "<html>To enter values, single-click on the desired cell" +
-	        " and start typing.<br> To select multiple cells drag the mouse on them; click or drag on" +
-	        " row/column headers to select whole rows/columns.<br> <b>For a list of the available operations right-click" +
-	        " on the table</b>; all operations except pasting affect selected cells.<br>" +
-	        " To copy one value to multiple cells click on the cell containing the value, select the" +
-	        " target cells by dragging and select <b>Fill</b>.<br>" +
-	        " <b>Copy down</b> copies the value in the focused cell down to all cells in the same column." +
-	        "<br><br>The expression evaluator allows you to automatically set service times as a function of the number of" +
-	        " customers. Just select the cells you want to fill, enter an expression and press Enter or click <b>Evaluate</b>.<br>" +
-	        " For detailed information on expression syntax and supported functions select the <b>Evaluator</b> tab above.</html>";
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private static final String generalHelp = "<html>To enter values, single-click on the desired cell"
+			+ " and start typing.<br> To select multiple cells drag the mouse on them; click or drag on"
+			+ " row/column headers to select whole rows/columns.<br> <b>For a list of the available operations right-click"
+			+ " on the table</b>; all operations except pasting affect selected cells.<br>"
+			+ " To copy one value to multiple cells click on the cell containing the value, select the"
+			+ " target cells by dragging and select <b>Fill</b>.<br>"
+			+ " <b>Copy down</b> copies the value in the focused cell down to all cells in the same column."
+			+ "<br><br>The expression evaluator allows you to automatically set service times as a function of the number of"
+			+ " customers. Just select the cells you want to fill, enter an expression and press Enter or click <b>Evaluate</b>.<br>"
+			+ " For detailed information on expression syntax and supported functions select the <b>Evaluator</b> tab above.</html>";
 	/*" Cells can be filled by evaluating a mathematical expression:<br> enter it in the text field,"+
 	" make sure the desired cells are selected and click on <b>\"Evaluate\"</b>.<br><br>";*/
 
 	private URL evalHelp;
 
 	private AbstractAction close = new AbstractAction("OK") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public void actionPerformed(ActionEvent e) {
 			hide();
 		}
 	};
 
 	public LDHelpDialog(Dialog owner, Evaluator eval) {
-        super(owner, true);
-        this.setTitle("Help");
+		super(owner, true);
+		this.setTitle("Help");
 
-        evalHelp = eval.getHelpURL();
+		evalHelp = eval.getHelpURL();
 
 		setResizable(false);
-        this.centerWindow(600, 400);
+		this.centerWindow(600, 400);
 		initComponents();
 		setDefaultCloseOperation(HIDE_ON_CLOSE);
 	}
@@ -109,8 +119,8 @@ public class LDHelpDialog extends JMTDialog {
 		jtp.add("General", general);
 
 		JPanel evaluator = new JPanel(new BorderLayout());
-		
-        HtmlPanel ehelp = new HtmlPanel(evalHelp);
+
+		HtmlPanel ehelp = new HtmlPanel(evalHelp);
 
 		evaluator.add(Box.createHorizontalStrut(10), BorderLayout.WEST);
 		evaluator.add(new JScrollPane(ehelp), BorderLayout.CENTER);

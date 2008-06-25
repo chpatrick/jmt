@@ -17,11 +17,9 @@
  */
 package jmt.gui.jmodel.JGraphMod;
 
-import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.jmodel.controller.Mediator;
-import org.jgraph.graph.Port;
 
-import javax.swing.*;
+import org.jgraph.graph.Port;
 
 /**
  * <p>Title: Router Cell</p>
@@ -33,41 +31,46 @@ import javax.swing.*;
  *         Time: 17.53.21
  */
 public class RoutingStationCell extends JmtCell {
-    // Disables this component
-    public static final boolean canBePlaced = true;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    // Do not change this as it is accessed by reflection to forecast new cell dimensions (Bertoli Marco)
-    public static final String ICON = Mediator.advanced ?"bc" : "Router";
+	// Disables this component
+	public static final boolean canBePlaced = true;
 
-    /**
-     * Creates a graph cell and initializes it with the specified user object.
-     *
-     * @param userObject an Object provided by the user that constitutes
-     *                   the cell's data
-     */
-    public RoutingStationCell(Object userObject) {
-        super(RoutingStationCell.ICON, userObject);
-        type = TERMINAL;
-    }
+	// Do not change this as it is accessed by reflection to forecast new cell dimensions (Bertoli Marco)
+	public static final String ICON = Mediator.advanced ? "bc" : "Router";
 
-    /**
-     * creats the ports for this vertex
-     * @return array of ports
-     */
-    public Port[] createPorts() {
-        Port[] ports = new Port[2];
-        ports[0] = new InputPort(this);
-        ports[1] = new OutputPort(this);
-        return ports;
-    }
+	/**
+	 * Creates a graph cell and initializes it with the specified user object.
+	 *
+	 * @param userObject an Object provided by the user that constitutes
+	 *                   the cell's data
+	 */
+	public RoutingStationCell(Object userObject) {
+		super(RoutingStationCell.ICON, userObject);
+		type = TERMINAL;
+	}
 
-    /**
-     * Returns the name of the icon of this cell
-     *
-     * @return the name of the icon of this cell
-     */
-    public String getIcon() {
-        return ICON;
-    }
-    
+	/**
+	 * creats the ports for this vertex
+	 * @return array of ports
+	 */
+	public Port[] createPorts() {
+		Port[] ports = new Port[2];
+		ports[0] = new InputPort(this);
+		ports[1] = new OutputPort(this);
+		return ports;
+	}
+
+	/**
+	 * Returns the name of the icon of this cell
+	 *
+	 * @return the name of the icon of this cell
+	 */
+	public String getIcon() {
+		return ICON;
+	}
+
 }

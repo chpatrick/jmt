@@ -41,97 +41,101 @@ import jmt.framework.gui.listeners.SelectedActionButtonChangeListener;
  * @version 1.0
  */
 public class JMTMenuBar extends JMenuBar {
-    /** Component used to load images */
-    protected ImageLoader imageLoader;
-    
-    /**
-     * Builds a new JMTMenuBar
-     * @param loader component used to load images
-     */
-    public JMTMenuBar(ImageLoader loader) {
-        init(loader);
-    }
-    
-    /**
-     * Initialize this toolbar
-     * @param loader component used to load images
-     */
-    private void init(ImageLoader loader) {
-        this.imageLoader = loader;
-    }
-    
-    /**
-     * Adds a menu (or menu item) to this 
-     * @param action action of the menu to be added
-     * @return created menu item
-     */
-    public JMenuItem addMenu(AbstractJMTAction action) {
-        JMenuItem menu = generateItem(action);
-        add(menu);
-        return menu;
-    }
-    
-    /**
-     * Populates this menu bar
-     * @param actions an array of AbstractJMTAction with all actions to be added
-     */
-    public void populateMenu(AbstractJMTAction[] actions) {
-        for (int i=0; i<actions.length;i++) {
-            AbstractJMTAction action = actions[i];
-            addMenu(action);
-        }
-    }
-    
-    /**
-     * Populates this menu bar
-     * @param actions a collection of AbstractJMTAction with all actions to be added
-     */
-    public void populateMenu(Collection actions) {
-        for (Iterator it = actions.iterator(); it.hasNext(); ) {
-            AbstractJMTAction action = (AbstractJMTAction) it.next();
-            addMenu(action);
-        }
-    }
-    
-    /**
-     * Generates a menu item given an action
-     * @param action action associated with menu item
-     * @return generated item
-     */
-    protected JMenuItem generateItem(AbstractJMTAction action) {
-        JMenuItem item;
-        Collection items = action.getMenuActions();
-        if (items != null) {
-            // If this is a menu
-            JMenu menu = new JMenu(action);
-            item = menu;
-            for (Iterator it = items.iterator(); it.hasNext(); ) {
-                AbstractJMTAction current = (AbstractJMTAction) it.next();
-                if (current == null) {
-                    // Add a separator
-                    menu.addSeparator();
-                } else {
-                    // Add a menu item (or a submenu)
-                    menu.add(generateItem(current));
-                }
-            }
-        } else {
-            // This is a menuitem
-            Boolean selectable = (Boolean) action.getValue(AbstractJMTAction.SELECTABLE);
-            if (selectable != null && selectable.booleanValue()) {
-                // item is selectable
-                item = new JCheckBoxMenuItem(action);
-                // Sets selected icon
-                String iconName = (String) action.getValue(AbstractJMTAction.IMAGE_NAME);
-                if (iconName != null) {
-                    item.setSelectedIcon(imageLoader.loadIcon(iconName,ImageLoader.MODIFIER_SELECTED));
-                }
-                // Adds a listener to both item and action to synchronize their selected state
-                new SelectedActionButtonChangeListener(action, item);
-            } else {
-                item = new JMenuItem(action);
-            }
-        }
-        return item;
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/** Component used to load images */
+	protected ImageLoader imageLoader;
+
+	/**
+	 * Builds a new JMTMenuBar
+	 * @param loader component used to load images
+	 */
+	public JMTMenuBar(ImageLoader loader) {
+		init(loader);
+	}
+
+	/**
+	 * Initialize this toolbar
+	 * @param loader component used to load images
+	 */
+	private void init(ImageLoader loader) {
+		this.imageLoader = loader;
+	}
+
+	/**
+	 * Adds a menu (or menu item) to this 
+	 * @param action action of the menu to be added
+	 * @return created menu item
+	 */
+	public JMenuItem addMenu(AbstractJMTAction action) {
+		JMenuItem menu = generateItem(action);
+		add(menu);
+		return menu;
+	}
+
+	/**
+	 * Populates this menu bar
+	 * @param actions an array of AbstractJMTAction with all actions to be added
+	 */
+	public void populateMenu(AbstractJMTAction[] actions) {
+		for (int i = 0; i < actions.length; i++) {
+			AbstractJMTAction action = actions[i];
+			addMenu(action);
+		}
+	}
+
+	/**
+	 * Populates this menu bar
+	 * @param actions a collection of AbstractJMTAction with all actions to be added
+	 */
+	public void populateMenu(Collection actions) {
+		for (Iterator it = actions.iterator(); it.hasNext();) {
+			AbstractJMTAction action = (AbstractJMTAction) it.next();
+			addMenu(action);
+		}
+	}
+
+	/**
+	 * Generates a menu item given an action
+	 * @param action action associated with menu item
+	 * @return generated item
+	 */
+	protected JMenuItem generateItem(AbstractJMTAction action) {
+		JMenuItem item;
+		Collection items = action.getMenuActions();
+		if (items != null) {
+			// If this is a menu
+			JMenu menu = new JMenu(action);
+			item = menu;
+			for (Iterator it = items.iterator(); it.hasNext();) {
+				AbstractJMTAction current = (AbstractJMTAction) it.next();
+				if (current == null) {
+					// Add a separator
+					menu.addSeparator();
+				} else {
+					// Add a menu item (or a submenu)
+					menu.add(generateItem(current));
+				}
+			}
+		} else {
+			// This is a menuitem
+			Boolean selectable = (Boolean) action.getValue(AbstractJMTAction.SELECTABLE);
+			if (selectable != null && selectable.booleanValue()) {
+				// item is selectable
+				item = new JCheckBoxMenuItem(action);
+				// Sets selected icon
+				String iconName = (String) action.getValue(AbstractJMTAction.IMAGE_NAME);
+				if (iconName != null) {
+					item.setSelectedIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_SELECTED));
+				}
+				// Adds a listener to both item and action to synchronize their selected state
+				new SelectedActionButtonChangeListener(action, item);
+			} else {
+				item = new JMenuItem(action);
+			}
+		}
+		return item;
+	}
 }

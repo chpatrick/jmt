@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.routingStrategies;
 
 import java.lang.reflect.Field;
@@ -33,70 +33,75 @@ import java.util.Vector;
  *
  * Modified by Francesco D'Aquino
  */
-public abstract class RoutingStrategy{
-    protected static RoutingStrategy[] all = null; // Used to store all strategies
+public abstract class RoutingStrategy {
+	protected static RoutingStrategy[] all = null; // Used to store all strategies
 
-    protected String description;
+	protected String description;
 
-    public abstract String getName();
+	public abstract String getName();
 
-    public String getDescription(){
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public abstract HashMap getValues();
+	public abstract HashMap getValues();
 
-    public String toString(){
-        return getName();
-    }
+	public String toString() {
+		return getName();
+	}
 
-    public abstract Object clone();
+	public abstract Object clone();
 
-    public boolean equals(Object o){
-        if(o instanceof RoutingStrategy){
-            return this.getName().equals(((RoutingStrategy)o).getName());
-        }else return false;
-    }
+	public boolean equals(Object o) {
+		if (o instanceof RoutingStrategy) {
+			return this.getName().equals(((RoutingStrategy) o).getName());
+		} else {
+			return false;
+		}
+	}
 
-    public abstract String getClassPath();
+	public abstract String getClassPath();
 
-    /**
-     * Return an array with an istance of every allowed Routing Strategy. Uses Reflection on
-     * <code>JMODELConstants</code> field to find all strategies and uses internal
-     * caching to search for strategiess only the first time that this method is called.
-     * <br>
-     * Author: Bertoli Marco
-     *
-     * @return an array with an istance of every allowed RoutingStrategy
-     */
-    public static RoutingStrategy[] findAll() {
-        if (all != null)
-            return all;
-        Vector strategies = new Vector();
-        Field[] fields = jmt.gui.jmodel.JMODELConstants.class.getFields();
-         try {
-         for (int i=0; i<fields.length; i++)
-            if (fields[i].getName().startsWith("ROUTING_"))
-                strategies.add(fields[i].get(null));
-         } catch (IllegalAccessException ex) {
-            System.err.println("A security manager has blocked reflection");
-            ex.printStackTrace();
-        }
-        RoutingStrategy[] ret = new RoutingStrategy[strategies.size()];
-        for (int i=0; i<strategies.size(); i++) {
-            ret[i] = (RoutingStrategy)strategies.get(i);
-        }
-        all = ret;
-        return ret;
-    }
+	/**
+	 * Return an array with an istance of every allowed Routing Strategy. Uses Reflection on
+	 * <code>JMODELConstants</code> field to find all strategies and uses internal
+	 * caching to search for strategiess only the first time that this method is called.
+	 * <br>
+	 * Author: Bertoli Marco
+	 *
+	 * @return an array with an istance of every allowed RoutingStrategy
+	 */
+	public static RoutingStrategy[] findAll() {
+		if (all != null) {
+			return all;
+		}
+		Vector strategies = new Vector();
+		Field[] fields = jmt.gui.jmodel.JMODELConstants.class.getFields();
+		try {
+			for (int i = 0; i < fields.length; i++) {
+				if (fields[i].getName().startsWith("ROUTING_")) {
+					strategies.add(fields[i].get(null));
+				}
+			}
+		} catch (IllegalAccessException ex) {
+			System.err.println("A security manager has blocked reflection");
+			ex.printStackTrace();
+		}
+		RoutingStrategy[] ret = new RoutingStrategy[strategies.size()];
+		for (int i = 0; i < strategies.size(); i++) {
+			ret[i] = (RoutingStrategy) strategies.get(i);
+		}
+		all = ret;
+		return ret;
+	}
 
-    /**
-     * Returns true if the routing strategy is dependent from the state of
-     * the model
-     * @return  true if the routing strategy is dependent from the state of
-     * the model
-     *
-     * Author: Francesco D'Aquino
-     */
-    public abstract boolean isModelStateDependent();
+	/**
+	 * Returns true if the routing strategy is dependent from the state of
+	 * the model
+	 * @return  true if the routing strategy is dependent from the state of
+	 * the model
+	 *
+	 * Author: Francesco D'Aquino
+	 */
+	public abstract boolean isModelStateDependent();
 }

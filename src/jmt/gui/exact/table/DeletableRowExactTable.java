@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.table;
 
 import javax.swing.table.TableModel;
@@ -29,10 +29,13 @@ import javax.swing.table.TableModel;
  */
 public class DeletableRowExactTable extends ExactTable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    public DeletableRowExactTable(TableModel dm){
-        super(dm);
-    }
-
+	public DeletableRowExactTable(TableModel dm) {
+		super(dm);
+	}
 
 }

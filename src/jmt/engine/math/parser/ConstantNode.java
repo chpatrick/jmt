@@ -26,117 +26,120 @@ package jmt.engine.math.parser;
  * @version 1.0
  */
 public class ConstantNode implements ExpressionNode {
-    /** List of built-in constant names */
-    public static final String[] CONSTANTS = new String[] {"pi", "e"};
-    /** List of built-in constant values */
-    public static final double[] VALUES = new double[] {Math.PI, Math.E};
-    /** Value of the constant */
-    protected double constant;
-    /** Name of the constant. Only if it's built-in */
-    protected String name;
-    /** An empty array with children */
-    protected ExpressionNode[] children = new ExpressionNode[0];
-    
-    /**
-     * Builds a constant node
-     * @param constant constant to be put in node
-     */
-    public ConstantNode(double constant) {
-        this.constant = constant;
-        name = null;
-    }
-    
-    /**
-     * Builds a constant node, with an unique constant
-     * @param name name of the constant in the CONSTANTS array
-     */
-    public ConstantNode(String name) {
-        this.name = name;
-        for (int i=0; i<CONSTANTS.length;i++)
-            if (CONSTANTS[i].equals(name)) {
-                constant = VALUES[i];
-                return;
-            }
-        throw new IllegalArgumentException("Unrecognized constant");
-    }
+	/** List of built-in constant names */
+	public static final String[] CONSTANTS = new String[] { "pi", "e" };
+	/** List of built-in constant values */
+	public static final double[] VALUES = new double[] { Math.PI, Math.E };
+	/** Value of the constant */
+	protected double constant;
+	/** Name of the constant. Only if it's built-in */
+	protected String name;
+	/** An empty array with children */
+	protected ExpressionNode[] children = new ExpressionNode[0];
 
-    /**
-     * Builds a constant node, with an unique constant
-     * @param pos position of the constant in the CONSTANTS array
-     * @see ConstantNode#CONSTANTS
-     */
-    public ConstantNode(int pos) {
-        this.name = CONSTANTS[pos];
-        this.constant = VALUES[pos];
-    }
+	/**
+	 * Builds a constant node
+	 * @param constant constant to be put in node
+	 */
+	public ConstantNode(double constant) {
+		this.constant = constant;
+		name = null;
+	}
 
-    /* (non-Javadoc)
-     * @see jmt.engine.math.parser.ExpressionNode#count()
-     */
-    public int count() {
-        return 1;
-    }
+	/**
+	 * Builds a constant node, with an unique constant
+	 * @param name name of the constant in the CONSTANTS array
+	 */
+	public ConstantNode(String name) {
+		this.name = name;
+		for (int i = 0; i < CONSTANTS.length; i++) {
+			if (CONSTANTS[i].equals(name)) {
+				constant = VALUES[i];
+				return;
+			}
+		}
+		throw new IllegalArgumentException("Unrecognized constant");
+	}
 
-    /* (non-Javadoc)
-     * @see jmt.engine.math.parser.ExpressionNode#getDepth()
-     */
-    public int getDepth() {
-        return 1; // This is a leaf node
-    }
+	/**
+	 * Builds a constant node, with an unique constant
+	 * @param pos position of the constant in the CONSTANTS array
+	 * @see ConstantNode#CONSTANTS
+	 */
+	public ConstantNode(int pos) {
+		this.name = CONSTANTS[pos];
+		this.constant = VALUES[pos];
+	}
 
-    /* (non-Javadoc)
-     * @see jmt.engine.math.parser.ExpressionNode#getSubtype()
-     */
-    public String getSubtype() {
-        // Checks if this is integer or double
-        if (Math.floor(constant) == constant)
-            return Long.toString(Math.round(constant));
-        else
-            return Double.toString(constant);
-    }
+	/* (non-Javadoc)
+	 * @see jmt.engine.math.parser.ExpressionNode#count()
+	 */
+	public int count() {
+		return 1;
+	}
 
-    /* (non-Javadoc)
-     * @see jmt.engine.math.parser.ExpressionNode#getType()
-     */
-    public int getType() {
-        return ExpressionNode.CONSTANT_NODE;
-    }
+	/* (non-Javadoc)
+	 * @see jmt.engine.math.parser.ExpressionNode#getDepth()
+	 */
+	public int getDepth() {
+		return 1; // This is a leaf node
+	}
 
-    /* (non-Javadoc)
-     * @see jmt.engine.math.parser.ExpressionNode#getValue()
-     */
-    public double getValue() {
-        return constant;
-    }
+	/* (non-Javadoc)
+	 * @see jmt.engine.math.parser.ExpressionNode#getSubtype()
+	 */
+	public String getSubtype() {
+		// Checks if this is integer or double
+		if (Math.floor(constant) == constant) {
+			return Long.toString(Math.round(constant));
+		} else {
+			return Double.toString(constant);
+		}
+	}
 
-    /* (non-Javadoc)
-     * @see jmt.engine.math.parser.ExpressionNode#setVariable(java.lang.String, double)
-     */
-    public void setVariable(String name, double value) {
-        // Nothing to be done here...
-    }
-    
-    /* (non-Javadoc)
-     * @see org.mbertoli.jfep.ExpressionNode#getChildrenNodes()
-     */
-    public ExpressionNode[] getChildrenNodes() {
-        return children;
-    }
+	/* (non-Javadoc)
+	 * @see jmt.engine.math.parser.ExpressionNode#getType()
+	 */
+	public int getType() {
+		return ExpressionNode.CONSTANT_NODE;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#clone()
-     */
-    public Object clone() {
-        return new ConstantNode(constant);
-    }
+	/* (non-Javadoc)
+	 * @see jmt.engine.math.parser.ExpressionNode#getValue()
+	 */
+	public double getValue() {
+		return constant;
+	}
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-        if (name == null)
-            return getSubtype();
-        else
-            return name;
-    }
+	/* (non-Javadoc)
+	 * @see jmt.engine.math.parser.ExpressionNode#setVariable(java.lang.String, double)
+	 */
+	public void setVariable(String name, double value) {
+		// Nothing to be done here...
+	}
+
+	/* (non-Javadoc)
+	 * @see org.mbertoli.jfep.ExpressionNode#getChildrenNodes()
+	 */
+	public ExpressionNode[] getChildrenNodes() {
+		return children;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#clone()
+	 */
+	public Object clone() {
+		return new ConstantNode(constant);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		if (name == null) {
+			return getSubtype();
+		} else {
+			return name;
+		}
+	}
 }

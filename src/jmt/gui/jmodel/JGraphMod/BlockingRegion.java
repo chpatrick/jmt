@@ -17,14 +17,15 @@
  */
 package jmt.gui.jmodel.JGraphMod;
 
+import java.awt.Color;
+
+import javax.swing.BorderFactory;
+import javax.swing.border.TitledBorder;
+
 import jmt.gui.jmodel.controller.Mediator;
+
 import org.jgraph.graph.DefaultGraphCell;
 import org.jgraph.graph.GraphConstants;
-
-import javax.swing.*;
-import javax.swing.border.TitledBorder;
-import java.awt.*;
-
 
 /**
  * <p>Title: Blocking Region Component</p>
@@ -36,74 +37,80 @@ import java.awt.*;
  *         Time: 14.15.00
  */
 public class BlockingRegion extends DefaultGraphCell {
-    // Reference to Mediator
-    private Mediator mediator;
-    // Search's key for this blocking region
-    private Object key;
-    // Name of this region
-    private String name;
-    // border with name of this region
-    private TitledBorder titledBorder;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	// Reference to Mediator
+	private Mediator mediator;
+	// Search's key for this blocking region
+	private Object key;
+	// Name of this region
+	private String name;
+	// border with name of this region
+	private TitledBorder titledBorder;
 
-    /**
-     * Creates a new blocking region cell to be placed inside current graph
-     * @param mediator reference to current mediator
-     * @param key search's key for this region
-     */
-    public BlockingRegion(Mediator mediator, Object key) {
-        this.mediator = mediator;
-        this.key = key;
-        name = mediator.getBlockingRegionDefinition().getRegionName(key);
-        setLayout();
-    }
+	/**
+	 * Creates a new blocking region cell to be placed inside current graph
+	 * @param mediator reference to current mediator
+	 * @param key search's key for this region
+	 */
+	public BlockingRegion(Mediator mediator, Object key) {
+		this.mediator = mediator;
+		this.key = key;
+		name = mediator.getBlockingRegionDefinition().getRegionName(key);
+		setLayout();
+	}
 
-    /**
-     * Define apparence of this component
-     */
-    private void setLayout() {
-        GraphConstants.setSizeable(attributes, false);
-        GraphConstants.setGroupOpaque(attributes, true);
-        GraphConstants.setOpaque(attributes, true);
-        GraphConstants.setGradientColor(attributes, new Color(.1F, .1F, .9F, .3F));
-        titledBorder = BorderFactory.createTitledBorder(" "+name+" ");
-        GraphConstants.setBorder(attributes, titledBorder);
-        GraphConstants.setInset(attributes, 15);
-        GraphConstants.setEditable(attributes, false);
-    }
+	/**
+	 * Define apparence of this component
+	 */
+	private void setLayout() {
+		GraphConstants.setSizeable(attributes, false);
+		GraphConstants.setGroupOpaque(attributes, true);
+		GraphConstants.setOpaque(attributes, true);
+		GraphConstants.setGradientColor(attributes, new Color(.1F, .1F, .9F, .3F));
+		titledBorder = BorderFactory.createTitledBorder(" " + name + " ");
+		GraphConstants.setBorder(attributes, titledBorder);
+		GraphConstants.setInset(attributes, 15);
+		GraphConstants.setEditable(attributes, false);
+	}
 
-    /**
-     * Adds a list of station to this blocking region and inserts this into current graph
-     * @param cells cells to be added
-     */
-    public void addStations(Object[] cells) {
-        mediator.getGraph().getGraphLayoutCache().insertGroup(this, cells);
-        // Resets parent for added cells
-        for (int i=0; i<cells.length; i++)
-            if (cells[i] instanceof JmtCell)
-                ((JmtCell)cells[i]).resetParent();
-    }
+	/**
+	 * Adds a list of station to this blocking region and inserts this into current graph
+	 * @param cells cells to be added
+	 */
+	public void addStations(Object[] cells) {
+		mediator.getGraph().getGraphLayoutCache().insertGroup(this, cells);
+		// Resets parent for added cells
+		for (int i = 0; i < cells.length; i++) {
+			if (cells[i] instanceof JmtCell) {
+				((JmtCell) cells[i]).resetParent();
+			}
+		}
+	}
 
-    /**
-     * Return search's key for this component
-     * @return search's key for this blocking station
-     */
-    public Object getKey() {
-        return key;
-    }
+	/**
+	 * Return search's key for this component
+	 * @return search's key for this blocking station
+	 */
+	public Object getKey() {
+		return key;
+	}
 
-    /**
-     * Whenever name of this cell is asked, controls if displayed name is correct.
-     * if it's not, changes it. This is a bit dirty but avoids to add a special listener
-     * to this component that will be even more dirty.
-     * @return an empty String
-     */
-    public String toString() {
-        String newName = mediator.getBlockingRegionDefinition().getRegionName(key);
-        if (newName != null && !newName.equals(name)) {
-            titledBorder.setTitle(" "+newName+" ");
-            name = newName;
-        }
+	/**
+	 * Whenever name of this cell is asked, controls if displayed name is correct.
+	 * if it's not, changes it. This is a bit dirty but avoids to add a special listener
+	 * to this component that will be even more dirty.
+	 * @return an empty String
+	 */
+	public String toString() {
+		String newName = mediator.getBlockingRegionDefinition().getRegionName(key);
+		if (newName != null && !newName.equals(name)) {
+			titledBorder.setTitle(" " + newName + " ");
+			name = newName;
+		}
 
-        return "";
-    }
+		return "";
+	}
 }

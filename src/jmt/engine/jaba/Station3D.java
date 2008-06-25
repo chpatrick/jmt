@@ -15,11 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.jaba;
-import jmt.engine.jaba.Hull.Vertex;
 
 import java.util.Vector;
+
+import jmt.engine.jaba.Hull.Vertex;
 
 /**
  * Created by IntelliJ IDEA.
@@ -30,49 +31,41 @@ import java.util.Vector;
  */
 public class Station3D {
 
-    private String nome;
-    private Vertex v3d;
-    private int[] coord;
+	private String nome;
+	private Vertex v3d;
+	private int[] coord;
 
-    public Station3D()
-    {
+	public Station3D() {
 
-    }
+	}
 
-    public Station3D(String nome,Vertex v3d)
-    {
+	public Station3D(String nome, Vertex v3d) {
 
-        this.nome = nome;
-        this.v3d = v3d;
-        coord = v3d.getCoords();
+		this.nome = nome;
+		this.v3d = v3d;
+		coord = v3d.getCoords();
 
-    }
+	}
 
+	public String getName() {
+		return nome;
+	}
 
-    public String getName()
-    {
-        return nome;
-    }
-    public Vertex getV3D()
-    {
-        return v3d;
-    }
-    public int[] getcoord(){
-        return coord;
-    }
+	public Vertex getV3D() {
+		return v3d;
+	}
 
+	public int[] getcoord() {
+		return coord;
+	}
 
-
-    public Vector CreateStations(Vector vertices)
-    {
-        Vector out = new Vector();
-        for (int i=0;i<vertices.size();i++)
-        {
-            Station3D st3d = new Station3D("Stazione "+i,((Vertex)vertices.get(i)));
-            out.addElement(st3d);
-        }
-        return out;
-    }
-
+	public Vector CreateStations(Vector vertices) {
+		Vector out = new Vector();
+		for (int i = 0; i < vertices.size(); i++) {
+			Station3D st3d = new Station3D("Stazione " + i, ((Vertex) vertices.get(i)));
+			out.addElement(st3d);
+		}
+		return out;
+	}
 
 }

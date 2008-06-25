@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.panels;
 
 /**
@@ -30,15 +30,14 @@ package jmt.gui.exact.panels;
  */
 public interface ForceUpdatablePanel {
 
-    /**This method force a stream of data from application to GUI panel. This grants application
-     * user to be working on perfectly updated data as far as <code>retrieveData()</code> was called.*/
-    public void retrieveData();
+	/**This method force a stream of data from application to GUI panel. This grants application
+	 * user to be working on perfectly updated data as far as <code>retrieveData()</code> was called.*/
+	public void retrieveData();
 
-    /**This method force a stream of data from GUI panel to application. This must grant other GUI
-     * panels to be working on the most recently updated version of the data this GUI panel was working
-     * on, so that when other implementing classes call retrieveData() they will have coherent data with
-     * this class.*/
-    public void commitData();
-
+	/**This method force a stream of data from GUI panel to application. This must grant other GUI
+	 * panels to be working on the most recently updated version of the data this GUI panel was working
+	 * on, so that when other implementing classes call retrieveData() they will have coherent data with
+	 * this class.*/
+	public void commitData();
 
 }

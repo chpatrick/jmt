@@ -15,14 +15,15 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
-import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+
+import javax.swing.KeyStroke;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
 
@@ -32,6 +33,11 @@ import java.awt.event.KeyEvent;
 
  */
 public class ActionDelete extends AbstractJmodelAction {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	public ActionDelete(Mediator mediator) {
 		super("Delete", "Delete2", mediator);
@@ -49,11 +55,11 @@ public class ActionDelete extends AbstractJmodelAction {
 	 */
 	public void actionPerformed(ActionEvent e) {
 		mediator.deleteSelected();
-        if (!mediator.isSomethingSelected()) {
-            mediator.enableCopyAction(false);
-		    mediator.enableCutAction(false);
-		    mediator.enableDeleteAction(false);
-        }
-    }
+		if (!mediator.isSomethingSelected()) {
+			mediator.enableCopyAction(false);
+			mediator.enableCutAction(false);
+			mediator.enableDeleteAction(false);
+		}
+	}
 
 }

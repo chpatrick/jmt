@@ -22,26 +22,24 @@ import java.util.Date;
 import jmt.engine.jwat.input.VariableMapping;
 
 public class VariableDate extends VariableNumber {
-	
-	
+
 	public VariableDate(Observation[] valObs, String vName, int pos, short type, VariableMapping varMapping) {
 		super(valObs, vName, pos, type, varMapping);
 		mapping = varMapping;
 	}
-	
+
 	/**
 	 * Returns Index-th value of the variable
 	 * @param Index index of variable's value desired
 	 * @return value of Index-th value
 	 * @throws ArrayIndexOutOfBoundsException throws if Index is < 0 or > numbero of observations
 	 */
-	public Date getOriginalValue(int Index) throws ArrayIndexOutOfBoundsException
-	{
-		if(Index < 0 || Index > obsValue.length){
+	public Date getOriginalValue(int Index) throws ArrayIndexOutOfBoundsException {
+		if (Index < 0 || Index > obsValue.length) {
 			throw new ArrayIndexOutOfBoundsException();
+		} else {
+			return (Date) mapping.getValue(obsValue[Index].getIndex(nVar));
 		}
-		else
-			return (Date)mapping.getValue(obsValue[Index].getIndex(nVar));
 	}
 
 	/**
@@ -52,13 +50,12 @@ public class VariableDate extends VariableNumber {
 	 * @throws ArrayIndexOutOfBoundsException throws if Index is < 0 or > numbero of observations 
 	 * or var < 0 or > number of variables ( elements of observation )
 	 */
-	public Date getOriginalValue(int Index, int var) throws ArrayIndexOutOfBoundsException
-	{
-		if(Index < 0 || Index > obsValue.length){
+	public Date getOriginalValue(int Index, int var) throws ArrayIndexOutOfBoundsException {
+		if (Index < 0 || Index > obsValue.length) {
 			throw new ArrayIndexOutOfBoundsException();
+		} else {
+			return (Date) mapping.getValue(obsValue[Index].getIndex(var));
 		}
-		else
-			return (Date)mapping.getValue(obsValue[Index].getIndex(var));
 	}
 
 }

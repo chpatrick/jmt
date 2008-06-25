@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.QueueNet;
 
 /**
@@ -24,53 +24,47 @@ package jmt.engine.QueueNet;
  */
 public class Job implements Cloneable {
 
-    //counter used to generate id
+	//counter used to generate id
 	private static int counter;
-    //job ID
+	//job ID
 	private int Id;
 
 	//Class of this job
 	private JobClass JobClass;
-    //used to compute residence time: born time is reset when a job enters a station
+	//used to compute residence time: born time is reset when a job enters a station
 	private double BornTime;
-    //used to compute system response time
-    protected double systemEnteringTime;
+	//used to compute system response time
+	protected double systemEnteringTime;
 
+	//NEW
+	//@author Stefano Omini
+	/*
+	This fields are used with blocking region.
+	The presence of an input station, in fact, modifies the route of some jobs:
+	instead of being processed directly by the destination node, they are first
+	redirected to the region input station (which check the capability of the
+	blocking region) and then returned to the destination node, using the
+	informations contained in this object.
+	*/
 
+	//true if this job has been redirected
+	private boolean redirected = false;
+	// the original destination of the job message
+	private NetNode originalDestinationNode = null;
 
+	//end NEW
 
-    //NEW
-    //@author Stefano Omini
-    /*
-    This fields are used with blocking region.
-    The presence of an input station, in fact, modifies the route of some jobs:
-    instead of being processed directly by the destination node, they are first
-    redirected to the region input station (which check the capability of the
-    blocking region) and then returned to the destination node, using the
-    informations contained in this object.
-    */
+	//NEW
+	//@author Stefano Omini
 
-    //true if this job has been redirected
-    private boolean redirected = false;
-    // the original destination of the job message
-    private NetNode originalDestinationNode = null;
+	//this feature is not very clean
+	//it has been introduced to solve the problem of classes with zero service
+	//time. it should be replaced or deleted
 
-    //end NEW
+	//true if this job must be tunnelled in the service section
+	private boolean tunnelThisJob = false;
 
-
-    //NEW
-    //@author Stefano Omini
-
-    //this feature is not very clean
-    //it has been introduced to solve the problem of classes with zero service
-    //time. it should be replaced or deleted
-
-    //true if this job must be tunnelled in the service section
-    private boolean tunnelThisJob = false;
-
-    //end NEW
-
-
+	//end NEW
 
 	/** Creates a new instance of Job.
 	 *  @param JobClass Reference to the class of the job.
@@ -80,11 +74,10 @@ public class Job implements Cloneable {
 		// Job Id is used only for logging
 		this.Id = counter++;
 
-
-        //NEW
-        //@author Stefano Omini
-        resetSystemEnteringTime();
-        //end NEW
+		//NEW
+		//@author Stefano Omini
+		resetSystemEnteringTime();
+		//end NEW
 	}
 
 	/** Gets the class of this job.
@@ -106,7 +99,7 @@ public class Job implements Cloneable {
 		return BornTime;
 	}
 
-    /** Resets born time of the job. */
+	/** Resets born time of the job. */
 	void reborn() {
 		BornTime = NetSystem.getTime();
 	}
@@ -118,75 +111,70 @@ public class Job implements Cloneable {
 		return Id;
 	}
 
+	//NEW
+	//@author Stefano Omini
+	public void resetSystemEnteringTime() {
+		systemEnteringTime = NetSystem.getTime();
+	}
 
+	public double getSystemEnteringTime() {
+		return systemEnteringTime;
+	}
 
-    //NEW
-    //@author Stefano Omini
-    public void resetSystemEnteringTime() {
-        systemEnteringTime = NetSystem.getTime();
-    }
+	//end NEW
 
-    public double getSystemEnteringTime() {
-        return systemEnteringTime;
-    }
-    //end NEW
+	//NEW
+	//@author Stefano Omini
 
+	/**
+	 * Tells whether this job has been redirected (used for blocking regions)
+	 * @return true if the job has been redirected
+	 */
+	public boolean isRedirected() {
+		return redirected;
+	}
 
+	/**
+	 * Sets <tt>redirected</tt> attribute
+	 * @param redirected true to mark the job as redirected
+	 */
+	public void setRedirected(boolean redirected) {
+		this.redirected = redirected;
+	}
 
-    //NEW
-    //@author Stefano Omini
+	/**
+	 * Gets the destination node of this redirected job
+	 * @return the destination node, if this job has been redirected, null otherwise
+	 */
+	public NetNode getOriginalDestinationNode() {
+		if (redirected) {
+			return originalDestinationNode;
+		} else {
+			return null;
+		}
+	}
 
-    /**
-     * Tells whether this job has been redirected (used for blocking regions)
-     * @return true if the job has been redirected
-     */
-    public boolean isRedirected() {
-        return redirected;
-    }
+	/**
+	 * Sets the destination node of a redirected job and sets <tt>redirected</tt> to true
+	 * @param originalDestinationNode the destination node
+	 */
+	public void setOriginalDestinationNode(NetNode originalDestinationNode) {
+		this.originalDestinationNode = originalDestinationNode;
+		redirected = true;
+	}
 
-    /**
-     * Sets <tt>redirected</tt> attribute
-     * @param redirected true to mark the job as redirected
-     */
-    public void setRedirected(boolean redirected) {
-        this.redirected = redirected;
-    }
+	//end NEW
 
+	//NEW
+	//@author Stefano Omini
 
-    /**
-     * Gets the destination node of this redirected job
-     * @return the destination node, if this job has been redirected, null otherwise
-     */
-    public NetNode getOriginalDestinationNode() {
-        if (redirected) {
-            return originalDestinationNode;
-        } else {
-            return null;
-        }
-    }
+	public void setTunnelThisJob(boolean tunnelThisJob) {
+		this.tunnelThisJob = tunnelThisJob;
+	}
 
-    /**
-     * Sets the destination node of a redirected job and sets <tt>redirected</tt> to true
-     * @param originalDestinationNode the destination node
-     */
-    public void setOriginalDestinationNode(NetNode originalDestinationNode) {
-        this.originalDestinationNode = originalDestinationNode;
-        redirected = true;
-    }
-
-    //end NEW
-
-
-    //NEW
-    //@author Stefano Omini
-
-    public void setTunnelThisJob(boolean tunnelThisJob) {
-        this.tunnelThisJob = tunnelThisJob;
-    }
-
-    public boolean TunnelThisJob() {
-        return tunnelThisJob;
-    }
-    //end NEW
+	public boolean TunnelThisJob() {
+		return tunnelThisJob;
+	}
+	//end NEW
 
 }

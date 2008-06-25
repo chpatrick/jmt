@@ -15,18 +15,21 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jsim.panels;
+
+import java.awt.BorderLayout;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
 
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.definitions.ClassDefinition;
 import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.definitions.StationDefinition;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,78 +40,76 @@ import java.awt.*;
  */
 public class RSPLPanel extends WizardPanel implements CommonConstants {
 
-    private RefSourcePanel rsPanel;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    private ClassDefinition classData;
-    private StationDefinition stationData;
-    private SimulationDefinition simData;
+	private RefSourcePanel rsPanel;
 
+	private ClassDefinition classData;
+	private StationDefinition stationData;
+	private SimulationDefinition simData;
 
-    public RSPLPanel(ClassDefinition classes,
-                     StationDefinition stations,
-                     SimulationDefinition sim){
-        super();
-        setData(classes, stations, sim);
-        initComponents();
-        refreshComponents();
-    }
+	public RSPLPanel(ClassDefinition classes, StationDefinition stations, SimulationDefinition sim) {
+		super();
+		setData(classes, stations, sim);
+		initComponents();
+		refreshComponents();
+	}
 
-    public void setData(ClassDefinition classes,
-                     StationDefinition stations,
-                     SimulationDefinition sim){
-        classData = classes;
-        stationData = stations;
-        simData = sim;
-        refreshComponents();
-    }
+	public void setData(ClassDefinition classes, StationDefinition stations, SimulationDefinition sim) {
+		classData = classes;
+		stationData = stations;
+		simData = sim;
+		refreshComponents();
+	}
 
-    public void initComponents(){
-        setLayout(new BorderLayout(5,5));
-        setBorder(new EmptyBorder(20,20,20,20));
-        JPanel upperPanel = new JPanel(new BorderLayout());
-        JLabel descrLabel = new JLabel(REFSOURCE_DESCRIPTION);
-        upperPanel.add(descrLabel, BorderLayout.CENTER);
-        upperPanel.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
-        add(upperPanel, BorderLayout.NORTH);
+	public void initComponents() {
+		setLayout(new BorderLayout(5, 5));
+		setBorder(new EmptyBorder(20, 20, 20, 20));
+		JPanel upperPanel = new JPanel(new BorderLayout());
+		JLabel descrLabel = new JLabel(REFSOURCE_DESCRIPTION);
+		upperPanel.add(descrLabel, BorderLayout.CENTER);
+		upperPanel.add(Box.createVerticalStrut(10), BorderLayout.SOUTH);
+		add(upperPanel, BorderLayout.NORTH);
 
-        rsPanel = new RefSourcePanel(classData, stationData, simData);
-        add(rsPanel, BorderLayout.CENTER);
-    }
+		rsPanel = new RefSourcePanel(classData, stationData, simData);
+		add(rsPanel, BorderLayout.CENTER);
+	}
 
-    /**
-     * called by the Wizard when the panel becomes active
-     */
-    public void gotFocus() {
-        if(rsPanel!=null){
-            rsPanel.gotFocus();
-        }
-    }
+	/**
+	 * called by the Wizard when the panel becomes active
+	 */
+	public void gotFocus() {
+		if (rsPanel != null) {
+			rsPanel.gotFocus();
+		}
+	}
 
-    public void repaint(){
-        refreshComponents();
-        super.repaint();
-    }
+	public void repaint() {
+		refreshComponents();
+		super.repaint();
+	}
 
-    private void refreshComponents(){
-        if(rsPanel!=null){
-            rsPanel.setData(classData, stationData, simData);
-        }
-    }
+	private void refreshComponents() {
+		if (rsPanel != null) {
+			rsPanel.setData(classData, stationData, simData);
+		}
+	}
 
-    public String getName(){
-        return "Reference Stations";
-    }
+	public String getName() {
+		return "Reference Stations";
+	}
 
-    /**
-     * called by the Wizard before when switching to another panel
-     */
-    public void lostFocus() {
-        if(rsPanel!=null){
-            rsPanel.lostFocus();
-        }
-        simData.manageJobs();
-    }
-
-
+	/**
+	 * called by the Wizard before when switching to another panel
+	 */
+	public void lostFocus() {
+		if (rsPanel != null) {
+			rsPanel.lostFocus();
+		}
+		simData.manageJobs();
+	}
 
 }

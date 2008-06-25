@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.QueueNet;
 
 //import eduni.simjava.*;
@@ -30,7 +30,7 @@ import jmt.engine.simEngine.SimSystem;
 
 class NetController {
 
-    private final boolean DEBUG = false;
+	private final boolean DEBUG = false;
 
 	private boolean running;
 
@@ -38,39 +38,37 @@ class NetController {
 
 	private int stopLevel, abortLevel;
 
-    //NEW
-    //@author Stefano Omini
+	//NEW
+	//@author Stefano Omini
 
-    //number of system "ticks"
-    private int n;
-    //check measures every refreshPeriod system ticks
-    private int refreshPeriod = 12000;
+	//number of system "ticks"
+	private int n;
+	//check measures every refreshPeriod system ticks
+	private int refreshPeriod = 12000;
 
-    //check if some measures have not receive any sample yet
-    //WARNING: this samples number must be a multiple of refreshPeriod!!
-    private int reachabilityTest = refreshPeriod * 10;
+	//check if some measures have not receive any sample yet
+	//WARNING: this samples number must be a multiple of refreshPeriod!!
+	private int reachabilityTest = refreshPeriod * 10;
 
-    //log object
-    //private NetLog log;
-    //end NEW
+	//log object
+	//private NetLog log;
+	//end NEW
 
+	//NEW
+	//@author Stefano Omini
+	private boolean blocked = false;
 
-    //NEW
-    //@author Stefano Omini
-    private boolean blocked = false;
-    //end NEW
+	//end NEW
 
+	NetController() {
 
-    NetController() {
-
-        running = false;
-        //NEW
-        //@author Stefano Omini
-        //initializes tick counter
-        n = 0;
-        //end NEW
+		running = false;
+		//NEW
+		//@author Stefano Omini
+		//initializes tick counter
+		n = 0;
+		//end NEW
 	}
-
 
 	/** This is the run method of the NetController (thread). */
 	public void run() {
@@ -78,48 +76,45 @@ class NetController {
 		//Date dateTime;
 		//dateTime = new Date();
 
-
-        try {
+		try {
 			SimSystem.runStart();
 			startTime = NetSystem.getElapsedTime();
 
 			while (SimSystem.runTick()) {
 
-                synchronized (this) {
+				synchronized (this) {
 
-                    //NEW
-                    //@author Stefano Omini
-                    //the presence of this "if" allows pause control
-                    if (blocked) {
-                        try {
-                            wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    //end NEW
+					//NEW
+					//@author Stefano Omini
+					//the presence of this "if" allows pause control
+					if (blocked) {
+						try {
+							wait();
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+					//end NEW
 
-                
+					n++;
 
-                    n++;
+					if (n % refreshPeriod == 0) {
 
-                    if (n % refreshPeriod == 0) {
+						//User may have defined measures that will not receive any sample
+						if (n % reachabilityTest == 0) {
+							//stop measures which haven't collected samples yet
+							NetSystem.stopNoSamplesMeasures();
+						}
+						//refresh measures
+						NetSystem.checkMeasures();
+					}
 
-                        //User may have defined measures that will not receive any sample
-                        if (n % reachabilityTest == 0) {
-                            //stop measures which haven't collected samples yet
-                            NetSystem.stopNoSamplesMeasures();
-                        }
-                        //refresh measures
-                        NetSystem.checkMeasures();
-                    }
-
-                }
+				}
 
 			}
-            //sim is finished: get stop time
+			//sim is finished: get stop time
 			stopTime = NetSystem.getElapsedTime();
-            SimSystem.runStop();
+			SimSystem.runStop();
 			running = false;
 
 		} catch (Exception Exc) {
@@ -161,18 +156,17 @@ class NetController {
 		this.abortLevel = AbortLevel;
 	}
 
-
-    /**
-     * Blocks NetController for synchronized access to data.
-     */
-    public synchronized void block() {
+	/**
+	 * Blocks NetController for synchronized access to data.
+	 */
+	public synchronized void block() {
 		blocked = true;
 	}
 
 	/**
-     * Unblocks the object.
-     */
-    public synchronized void unblock() {
+	 * Unblocks the object.
+	 */
+	public synchronized void unblock() {
 		blocked = false;
 		notifyAll();
 	}

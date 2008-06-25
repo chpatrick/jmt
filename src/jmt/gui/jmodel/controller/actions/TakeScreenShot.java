@@ -17,10 +17,10 @@
  */
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
-import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
  * <p>Title: Take Screen Shot Action</p>
@@ -30,23 +30,28 @@ import java.awt.event.ActionEvent;
  *         Date: Jun 16, 2006
  *         Time: 2:41:28 PM
  */
-public class TakeScreenShot extends AbstractJmodelAction{
-    /**
-     * Defines an <code>Action</code> object with a default
-     * description string and default icon.
-     */
-    public TakeScreenShot(Mediator mediator) {
-        super("Export as image...", "sshot", mediator);
-        putValue(SHORT_DESCRIPTION, "Exports a ScreenShot of current graph in vectorial or raster format");
-        putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
-        setEnabled(false);
-    }
+public class TakeScreenShot extends AbstractJmodelAction {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Invoked when an action occurs.
-     */
-    public void actionPerformed(ActionEvent e) {
-        mediator.takeScreenShot();
-    }
+	/**
+	 * Defines an <code>Action</code> object with a default
+	 * description string and default icon.
+	 */
+	public TakeScreenShot(Mediator mediator) {
+		super("Export as image...", "sshot", mediator);
+		putValue(SHORT_DESCRIPTION, "Exports a ScreenShot of current graph in vectorial or raster format");
+		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_E));
+		setEnabled(false);
+	}
+
+	/**
+	 * Invoked when an action occurs.
+	 */
+	public void actionPerformed(ActionEvent e) {
+		mediator.takeScreenShot();
+	}
 
 }

@@ -23,15 +23,17 @@ public class FilterOnNumeric implements FilterOnVariable {
 	private double minV;
 	private double maxV;
 	private int index;
-	
-	public FilterOnNumeric(double min,double max,int nVar){
+
+	public FilterOnNumeric(double min, double max, int nVar) {
 		minV = min;
 		maxV = max;
 		index = nVar;
 	}
+
 	public boolean isMatching(Observation o, int pos) {
-		if(o.getIndex(index) >= minV && o.getIndex(index) <= maxV)
+		if (o.getIndex(index) >= minV && o.getIndex(index) <= maxV) {
 			return true;
+		}
 		return false;
 	}
 

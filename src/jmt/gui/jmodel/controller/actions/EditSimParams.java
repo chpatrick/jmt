@@ -15,13 +15,13 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
+package jmt.gui.jmodel.controller.actions;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
  * <p>Title: Edit Simulation Parameters</p>
@@ -32,6 +32,11 @@ import java.awt.event.KeyEvent;
  *         Time: 13.29.00
  */
 public class EditSimParams extends AbstractJmodelAction {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Defines an <code>Action</code> object with a default

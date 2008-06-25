@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -37,7 +36,6 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  */
 
 public class Uniform extends AbstractDistribution implements Distribution {
-
 
 	/**
 	 * A new uniform distribution is defined from is pdf:
@@ -61,19 +59,21 @@ public class Uniform extends AbstractDistribution implements Distribution {
 	 */
 
 	//OLD
-    //public double pdf(double x, UniformPar p)
-    public double pdf(double x, Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double pdf(double x, UniformPar p)
+	public double pdf(double x, Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			//OLD
-            //double max = p.getMax();
+			//double max = p.getMax();
 			//double min = p.getMin();
-            double max = ((UniformPar) p).getMax();
+			double max = ((UniformPar) p).getMax();
 			double min = ((UniformPar) p).getMin();
-			if (x <= min || x >= max) return 0.0; //if x is out of bound return 0
+			if (x <= min || x >= max) {
+				return 0.0; //if x is out of bound return 0
+			}
 			return 1.0 / (max - min);
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
+			throw new IncorrectDistributionParameterException(
+					"Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
 		}
 	}
 
@@ -89,20 +89,24 @@ public class Uniform extends AbstractDistribution implements Distribution {
 	 */
 
 	//OLD
-    //public double cdf(double x, UniformPar p)
-    public double cdf(double x, Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double cdf(double x, UniformPar p)
+	public double cdf(double x, Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			//OLD
-            //double max = p.getMax();
+			//double max = p.getMax();
 			//double min = p.getMin();
-            double max = ((UniformPar) p).getMax();
+			double max = ((UniformPar) p).getMax();
 			double min = ((UniformPar) p).getMin();
-			if (x <= min) return 0.0; //if x is lower than the min bound return 0
-			if (x >= max) return 1.0; //if x is greater than the max bound return 1
+			if (x <= min) {
+				return 0.0; //if x is lower than the min bound return 0
+			}
+			if (x >= max) {
+				return 1.0; //if x is greater than the max bound return 1
+			}
 			return (x - min) / (max - min);
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
+			throw new IncorrectDistributionParameterException(
+					"Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
 		}
 	}
 
@@ -118,18 +122,18 @@ public class Uniform extends AbstractDistribution implements Distribution {
 	 *
 	 */
 	//OLD
-    //public double theorMean(UniformPar p)
-    public double theorMean(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double theorMean(UniformPar p)
+	public double theorMean(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			//OLD
-            //double max = p.getMax();
+			//double max = p.getMax();
 			//double min = p.getMin();
-            double max = ((UniformPar) p).getMax();
+			double max = ((UniformPar) p).getMax();
 			double min = ((UniformPar) p).getMin();
 			return (max + min) / 2;
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
+			throw new IncorrectDistributionParameterException(
+					"Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
 		}
 	}
 
@@ -146,18 +150,18 @@ public class Uniform extends AbstractDistribution implements Distribution {
 	 */
 
 	//OLD
-    //public double theorVariance(UniformPar p)
-    public double theorVariance(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	//public double theorVariance(UniformPar p)
+	public double theorVariance(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			//OLD
-            //double max = p.getMax();
+			//double max = p.getMax();
 			//double min = p.getMin();
-            double max = ((UniformPar) p).getMax();
+			double max = ((UniformPar) p).getMax();
 			double min = ((UniformPar) p).getMin();
 			return Math.pow((max - min), 2) / 12;
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
+			throw new IncorrectDistributionParameterException(
+					"Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
 		}
 	}
 
@@ -171,8 +175,7 @@ public class Uniform extends AbstractDistribution implements Distribution {
 	 * @return double with the next random number of this distribution.
 	 */
 
-	public double nextLong(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public double nextLong(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			/* Doing the thing turns out to be more tricky than expected.
 			   Avoids overflows and underflows.
@@ -199,7 +202,7 @@ public class Uniform extends AbstractDistribution implements Distribution {
 				if (diff <= Long.MAX_VALUE) {
 					param.setMin(0.0);
 					param.setMax(diff);
-					return (long) min + (long) (nextRand(((UniformPar) p)));
+					return (long) min + (long) (nextRand((p)));
 				}
 				// now the pathologic boundary cases.
 				// they are handled rather slow.
@@ -214,18 +217,23 @@ public class Uniform extends AbstractDistribution implements Distribution {
 					param.setMin(min);
 					param.setMax(max + 1);
 					random = Math.round(nextRand(param));
-					if (random > max) random = (long) min;
+					if (random > max) {
+						random = (long) min;
+					}
 				} else {
 					param.setMin(min - 1);
 					param.setMax(max);
 					random = Math.round(nextRand(param));
-					if (random < min) random = (long) max;
+					if (random < min) {
+						random = (long) max;
+					}
 				}
 			} catch (Exception ex) {
 			}
 			return random;
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
+			throw new IncorrectDistributionParameterException(
+					"Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
 		}
 	}
 
@@ -251,14 +259,14 @@ public class Uniform extends AbstractDistribution implements Distribution {
 	 * @return int with the next random number of this distribution.
 	 */
 
-	public int nextInt(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public int nextInt(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			double min = ((UniformPar) p).getMin();
 			double max = ((UniformPar) p).getMax();
 			return (int) ((long) min + (long) ((1L + (long) max - (long) min) * engine.raw()));
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
+			throw new IncorrectDistributionParameterException(
+					"Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
 		}
 	}
 
@@ -272,14 +280,14 @@ public class Uniform extends AbstractDistribution implements Distribution {
 	 * @return double with the next random number of this distribution.
 	 */
 
-	public double nextRand(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public double nextRand(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
 			double min = ((UniformPar) p).getMin();
 			double max = ((UniformPar) p).getMax();
 			return min + (max - min) * engine.raw();
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
+			throw new IncorrectDistributionParameterException(
+					"Remember: the *max* parameter must be > of the *min* one because min and max reppresent the boud of the distribution");
 		}
 	}
 

@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -33,9 +32,7 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  *
  */
 
-
 public class HyperExpPar extends AbstractParameter implements Parameter {
-
 
 	private double mean;
 	private double var;
@@ -58,8 +55,7 @@ public class HyperExpPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public HyperExpPar(double mean, double var)
-	        throws IncorrectDistributionParameterException {
+	public HyperExpPar(double mean, double var) throws IncorrectDistributionParameterException {
 		this.mean = mean;
 		this.var = var;
 		testParameters();
@@ -71,8 +67,7 @@ public class HyperExpPar extends AbstractParameter implements Parameter {
 		this.expParam2 = new ExponentialPar(lambda2);
 	}
 
-	public HyperExpPar(Double wmean, Double wvar)
-	        throws IncorrectDistributionParameterException {
+	public HyperExpPar(Double wmean, Double wvar) throws IncorrectDistributionParameterException {
 		this(wmean.doubleValue(), wvar.doubleValue());
 	}
 
@@ -89,8 +84,7 @@ public class HyperExpPar extends AbstractParameter implements Parameter {
 	 * @throws IncorrectDistributionParameterException if p is not betwen zero and one and if lambda1 and lambda2 are not both greater than zero.
 	 *
 	 */
-	public HyperExpPar(double p, double lambda1, double lambda2)
-	        throws IncorrectDistributionParameterException {
+	public HyperExpPar(double p, double lambda1, double lambda2) throws IncorrectDistributionParameterException {
 		this.p = p; //set the probability to select one of the two exponential
 		this.lambda1 = lambda1;
 		this.lambda2 = lambda2;
@@ -102,8 +96,7 @@ public class HyperExpPar extends AbstractParameter implements Parameter {
 		expParam2 = new ExponentialPar(lambda2);
 	}
 
-	public HyperExpPar(Double wp, Double wlambda1, Double wlambda2)
-	        throws IncorrectDistributionParameterException {
+	public HyperExpPar(Double wp, Double wlambda1, Double wlambda2) throws IncorrectDistributionParameterException {
 		this(wp.doubleValue(), wlambda1.doubleValue(), wlambda2.doubleValue());
 	}
 
@@ -112,12 +105,13 @@ public class HyperExpPar extends AbstractParameter implements Parameter {
 	 *
 	 * @throws IncorrectDistributionParameterException if mean or variance are not both greater than zero.
 	 */
-	private void testParameters()
-	        throws IncorrectDistributionParameterException {
-		if (mean <= 0)
+	private void testParameters() throws IncorrectDistributionParameterException {
+		if (mean <= 0) {
 			throw new IncorrectDistributionParameterException("Error: mean must be > 0");
-		if (var <= 0)
+		}
+		if (var <= 0) {
 			throw new IncorrectDistributionParameterException("Error: variance must be > 0");
+		}
 	}
 
 	/**
@@ -126,14 +120,16 @@ public class HyperExpPar extends AbstractParameter implements Parameter {
 	 * @throws IncorrectDistributionParameterException if p is not betwen zero and one or if lambda1 and labda2 are not both greater than zero.
 	 *
 	 */
-	private void testParameters1()
-	        throws IncorrectDistributionParameterException {
-		if (p <= 0 || p >= 1)
+	private void testParameters1() throws IncorrectDistributionParameterException {
+		if (p <= 0 || p >= 1) {
 			throw new IncorrectDistributionParameterException("Error: must be 0 < p < 1");
-		if (lambda1 <= 0)
+		}
+		if (lambda1 <= 0) {
 			throw new IncorrectDistributionParameterException("Error: lambda1 must be >= 0");
-		if (lambda2 <= 0)
+		}
+		if (lambda2 <= 0) {
 			throw new IncorrectDistributionParameterException("Error: lambda2 must be >= 0");
+		}
 	}
 
 	/**
@@ -253,8 +249,7 @@ public class HyperExpPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setMean(double mean)
-	        throws IncorrectDistributionParameterException {
+	public void setMean(double mean) throws IncorrectDistributionParameterException {
 		this.mean = mean;
 		try {
 			testParameters();
@@ -276,8 +271,7 @@ public class HyperExpPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setVar(double var)
-	        throws IncorrectDistributionParameterException {
+	public void setVar(double var) throws IncorrectDistributionParameterException {
 		this.var = var;
 		try {
 			testParameters();

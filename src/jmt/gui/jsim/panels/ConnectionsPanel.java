@@ -15,8 +15,21 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jsim.panels;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.GridLayout;
+
+import javax.swing.Box;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.table.TableCellRenderer;
 
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.CommonConstants;
@@ -25,10 +38,6 @@ import jmt.gui.common.panels.WarningScrollTable;
 import jmt.gui.exact.table.DisabledCellRenderer;
 import jmt.gui.exact.table.ExactTable;
 import jmt.gui.exact.table.ExactTableModel;
-
-import javax.swing.*;
-import javax.swing.table.TableCellRenderer;
-import java.awt.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,199 +48,214 @@ import java.awt.*;
  */
 public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private StationDefinition data;
+	private ConnectionTable connTab;
 
-    private StationDefinition data;
-    private ConnectionTable connTab;
+	public ConnectionsPanel(StationDefinition sd) {
+		data = sd;
+		initComponents();
+	}
 
+	/**
+	 * Set up the panel contents and layout
+	 */
+	private void initComponents() {
 
+		connTab = new ConnectionTable();
 
-    public ConnectionsPanel(StationDefinition sd) {
-        data = sd;
-        initComponents();
-    }
+		//create margins for this panel.
+		Box vBox = Box.createVerticalBox();
+		Box hBox = Box.createHorizontalBox();
+		vBox.add(Box.createVerticalStrut(20));
+		vBox.add(hBox);
+		vBox.add(Box.createVerticalStrut(20));
+		hBox.add(Box.createHorizontalStrut(20));
 
+		//build central panel
+		JPanel componentsPanel = new JPanel(new BorderLayout(0, 5));
+		//new BoxLayout(componentsPanel, BoxLayout.Y_AXIS);
 
+		//build upper part of central panel
+		JLabel descrLabel = new JLabel(CONNECTIONS_DESCRIPTION);
 
-    /**
-     * Set up the panel contents and layout
-     */
-    private void initComponents() {
+		//add all panels to the mail panel
+		componentsPanel.add(descrLabel, BorderLayout.NORTH);
+		componentsPanel.add(new WarningScrollTable(connTab, WARNING_STATIONS), BorderLayout.CENTER);
+		hBox.add(componentsPanel);
+		hBox.add(Box.createHorizontalStrut(20));
+		this.setLayout(new GridLayout(1, 1));
+		this.add(vBox);
+	}
 
-        connTab = new ConnectionTable();
+	public String getName() {
+		return "Connections";
+	}
 
-        //create margins for this panel.
-        Box vBox = Box.createVerticalBox();
-        Box hBox = Box.createHorizontalBox();
-        vBox.add(Box.createVerticalStrut(20));
-        vBox.add(hBox);
-        vBox.add(Box.createVerticalStrut(20));
-        hBox.add(Box.createHorizontalStrut(20));
+	public void repaint() {
+		if (connTab != null) {
+			connTab.updateStructure();
+		}
+		super.repaint();
+	}
 
-        //build central panel
-        JPanel componentsPanel = new JPanel(new BorderLayout(0,5));
-        //new BoxLayout(componentsPanel, BoxLayout.Y_AXIS);
+	public void setData(StationDefinition sd) {
+		this.data = sd;
+		repaint();
+	}
 
-        //build upper part of central panel
-        JLabel descrLabel = new JLabel(CONNECTIONS_DESCRIPTION);
+	private class ConnectionTable extends ExactTable {
 
-        //add all panels to the mail panel
-        componentsPanel.add(descrLabel, BorderLayout.NORTH);
-        componentsPanel.add(new WarningScrollTable(connTab, WARNING_STATIONS), BorderLayout.CENTER);
-        hBox.add(componentsPanel);
-        hBox.add(Box.createHorizontalStrut(20));
-        this.setLayout(new GridLayout(1,1));
-        this.add(vBox);
-    }
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
+		ConnectionTable() {
+			super(new ConnTableModel());
+			autoResizeMode = AUTO_RESIZE_OFF;
 
-    public String getName() {
-        return "Connections";
-    }
+			createRenderers();
+			createEditors();
+			setDisplaysScrollLabels(true);
 
-    public void repaint(){
-        if(connTab!=null)connTab.updateStructure();
-        super.repaint();
-    }
+			setRowSelectionAllowed(false);
+			setColumnSelectionAllowed(false);
+			setClipboardTransferEnabled(false);
 
-    public void setData(StationDefinition sd){
-        this.data = sd;
-        repaint();
-    }
+		}
 
+		protected void createRenderers() {
+			final TableCellRenderer boolRend = getDefaultRenderer(Boolean.class);
+			setDefaultRenderer(Boolean.class, new DisabledCellRenderer() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 
+				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+					Component cbox = boolRend.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+					cbox.setEnabled(true);
+					if (value == null) {
+						Component disabled = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+						cbox.setBackground(disabled.getBackground());
+						cbox.setEnabled(false);
+					}
+					return cbox;
+				}
+			});
+		}
 
-    private class ConnectionTable extends ExactTable {
+		protected void createEditors() {
+			setDefaultEditor(Boolean.class, new DefaultCellEditor(new JCheckBox()) {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
 
-        ConnectionTable() {
-            super(new ConnTableModel());
-            autoResizeMode = AUTO_RESIZE_OFF;
+				public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+					Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+					if (value instanceof Boolean) {
+						c.setBackground(Color.WHITE);
+						c.setVisible(false);
+					}
+					return c;
+				}
+			});
+		}
+	}
 
-            createRenderers();
-            createEditors();
-            setDisplaysScrollLabels(true);
+	/**
+	 * the model backing the service times table.
+	 * Rows represent source stations, columns target stations.
+	 */
+	private class ConnTableModel extends ExactTableModel {
 
-            setRowSelectionAllowed(false);
-            setColumnSelectionAllowed(false);
-            setClipboardTransferEnabled(false);
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
-        }
+		ConnTableModel() {
+			prototype = "Station10000";
+			rowHeaderPrototype = "Station10000";
+		}
 
-        protected void createRenderers(){
-            final TableCellRenderer boolRend = getDefaultRenderer(Boolean.class);
-            setDefaultRenderer(Boolean.class, new DisabledCellRenderer(){
-                public Component getTableCellRendererComponent(JTable table, Object value,
-                                                               boolean isSelected, boolean hasFocus,
-                                                               int row, int column) {
-                    Component cbox = boolRend.getTableCellRendererComponent(
-                                table, value, isSelected, hasFocus, row, column);
-                    cbox.setEnabled(true);
-                    if(value == null){
-                        Component disabled = super.getTableCellRendererComponent(
-                            table, value, isSelected, hasFocus, row, column);
-                        cbox.setBackground(disabled.getBackground());
-                        cbox.setEnabled(false);
-                    }
-                    return cbox;
-                }
-            });
-        }
+		public int getRowCount() {
+			return data.getStationKeys().size();
+		}
 
-        protected void createEditors(){
-            setDefaultEditor(Boolean.class, new DefaultCellEditor(new JCheckBox()){
-                public Component getTableCellEditorComponent(JTable table, Object value,
-                                                             boolean isSelected,
-                                                             int row, int column) {
-                    Component c = super.getTableCellEditorComponent(
-                            table, value, isSelected, row, column
-                    );
-                    if(value instanceof Boolean){
-                        c.setBackground(Color.WHITE);
-                        c.setVisible(false);
-                    }
-                    return c;
-                }
-            });
-        }
-    }
+		public int getColumnCount() {
+			return data.getStationKeys().size();
+		}
 
-    /**
-     * the model backing the service times table.
-     * Rows represent source stations, columns target stations.
-     */
-    private class ConnTableModel extends ExactTableModel {
+		public Class getColumnClass(int columnIndex) {
+			if (columnIndex >= 0) {
+				return Boolean.class;
+			} else {
+				return super.getColumnClass(columnIndex);
+			}
+		}
 
-        ConnTableModel() {
-            prototype = "Station10000";
-            rowHeaderPrototype = "Station10000";
-        }
+		public String getColumnName(int index) {
+			if (index >= 0 && data.getStationKeys().size() > 0) {
+				return data.getStationName(getStationKey(index));
+			} else {
+				return "";
+			}
+		}
 
-        public int getRowCount() {
-            return data.getStationKeys().size();
-        }
+		public Object getPrototype(int i) {
+			if (i == -1) {
+				return rowHeaderPrototype;
+			} else {
+				return prototype;
+			}
+		}
 
-        public int getColumnCount() {
-            return data.getStationKeys().size();
-        }
+		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
+			Object row = getStationKey(rowIndex), col = getStationKey(columnIndex);
+			boolean areConnected = data.areConnected(row, col);
+			boolean areConnectable = data.areConnectable(row, col);
+			if (!areConnectable) {
+				return null;
+			}
+			return new Boolean(areConnected);
+		}
 
+		protected Object getRowName(int rowIndex) {
+			return data.getStationName(getStationKey(rowIndex));
+		}
 
-        public Class getColumnClass(int columnIndex){
-            if(columnIndex >= 0) return Boolean.class;
-            else return super.getColumnClass(columnIndex);
-        }
+		//returns search key of a station given its index in table
+		private Object getStationKey(int index) {
+			return data.getStationKeys().get(index);
+		}
 
-        public String getColumnName(int index) {
-            if(index >= 0 && data.getStationKeys().size()>0) {
-                return data.getStationName(getStationKey(index));
-            }
-            else return "";
-        }
+		public void setValueAt(Object value, int rowIndex, int columnIndex) {
+			if (value instanceof Boolean) {
+				boolean b = ((Boolean) value).booleanValue();
+				data.setConnected(getStationKey(rowIndex), getStationKey(columnIndex), b);
+			}
+		}
 
-        public Object getPrototype(int i){
-            if(i==-1) return rowHeaderPrototype;
-            else return prototype;
-        }
+		public void clear(int row, int col) {
+			data.setConnected(getStationKey(row), getStationKey(col), false);
+		}
 
-        protected Object getValueAtImpl(int rowIndex, int columnIndex) {
-            Object row = getStationKey(rowIndex),
-                    col = getStationKey(columnIndex);
-            boolean areConnected = data.areConnected(row, col);
-            boolean areConnectable = data.areConnectable(row, col);
-            if(!areConnectable) return null;
-            return new Boolean(areConnected);
-        }
+		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			Object row = getStationKey(rowIndex), col = getStationKey(columnIndex);
+			boolean areConnectable = data.areConnectable(row, col);
+			if (!areConnectable) {
+				return false;
+			} else {
+				return true;
+			}
+		}
 
-        protected Object getRowName(int rowIndex) {
-            return data.getStationName(getStationKey(rowIndex));
-        }
-
-        //returns search key of a station given its index in table
-        private Object getStationKey(int index){
-            return data.getStationKeys().get(index);
-        }
-
-        public void setValueAt(Object value, int rowIndex, int columnIndex) {
-            if(value instanceof Boolean){
-                boolean b = ((Boolean)value).booleanValue();
-                data.setConnected(getStationKey(rowIndex),
-                        getStationKey(columnIndex),
-                        b);
-            }
-        }
-
-        public void clear(int row, int col) {
-            data.setConnected(getStationKey(row),
-                    getStationKey(col),
-                    false);
-        }
-
-        public boolean isCellEditable(int rowIndex, int columnIndex) {
-            Object row = getStationKey(rowIndex),
-                    col = getStationKey(columnIndex);
-            boolean areConnectable = data.areConnectable(row, col);
-            if(!areConnectable) return false;
-            else return true;
-        }
-
-    }
+	}
 
 }

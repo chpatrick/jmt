@@ -18,24 +18,20 @@
 
 package jmt.gui.jmodel.mainGui;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+
 import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.components.JMTMenuBar;
 import jmt.framework.gui.components.JMTToolBar;
-import jmt.framework.gui.controller.Manager;
 import jmt.framework.gui.layouts.MultiBorderLayout;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.jmodel.controller.GraphMouseListner;
 import jmt.gui.jmodel.controller.Mediator;
-import jmt.gui.jmodel.controller.actions.AbstractJmodelAction;
 
 import org.jgraph.JGraph;
-
-import javax.swing.*;
-
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.Locale;
 
 /**
  * MainWindow contains the main window of the jmodel project, it implements the
@@ -48,8 +44,13 @@ import java.util.Locale;
 
  */
 public class MainWindow extends JMTFrame {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static final String TITLE = "JSIMgraph - Advanced queuing network design tool";
-	
+
 	protected Mediator mediator;// mediator between components of the application
 	protected JMTToolBar toolbar;//main toolbar
 	protected JMTMenuBar menu;//main menu
@@ -65,19 +66,19 @@ public class MainWindow extends JMTFrame {
 	 */
 	public MainWindow() {
 		super(true);
-        this.setIconImage(JMTImageLoader.loadImage("JMODELIcon").getImage());
+		this.setIconImage(JMTImageLoader.loadImage("JMODELIcon").getImage());
 		setTitle(TITLE);
 		mediator = new Mediator(null, this);
 		Mediator.advanced = advanced;
 
 		//menu = new Menu(mediator);
 		menu = mediator.createMenu();
-        setJMenuBar(menu);
+		setJMenuBar(menu);
 
 		toolbar = mediator.createToolbar();
 		getContentPane().setLayout(new MultiBorderLayout());
-        getContentPane().add(toolbar, BorderLayout.NORTH);
-        getContentPane().add(mediator.getComponentBar(), BorderLayout.NORTH);
+		getContentPane().add(toolbar, BorderLayout.NORTH);
+		getContentPane().add(mediator.getComponentBar(), BorderLayout.NORTH);
 		mainPane = new JPanel(new BorderLayout());
 		getContentPane().add(mainPane, BorderLayout.CENTER);
 
@@ -86,7 +87,7 @@ public class MainWindow extends JMTFrame {
 
 		scroll = new JScrollPane();
 		mainPane.add(scroll, BorderLayout.CENTER);
-		centerWindow(800,600);
+		centerWindow(800, 600);
 		setVisible(true);
 	}
 
@@ -107,32 +108,31 @@ public class MainWindow extends JMTFrame {
 		// 23/07/03 - end /////////////////////////////////////////////////////
 		getContentPane().validate();
 	}
-    
-    
 
 	/* (non-Javadoc)
-     * @see jmt.framework.gui.components.JMTFrame#canBeClosed()
-     */
-    public boolean canBeClosed() {
-        return !mediator.checkForSave("<html>Save changes before closing?</html>");
-    }
+	 * @see jmt.framework.gui.components.JMTFrame#canBeClosed()
+	 */
+	public boolean canBeClosed() {
+		return !mediator.checkForSave("<html>Save changes before closing?</html>");
+	}
 
-    /* (non-Javadoc)
-     * @see jmt.framework.gui.components.JMTFrame#doClose()
-     */
-    protected void doClose() {
-        // Ends simulation process if active
-        mediator.stopSimulation();
-        // Disposes resultsWindow (if present) and mainwindow
-        if (mediator.getResultsWindow() != null)
-            mediator.getResultsWindow().dispose();
-        if (mediator.getPAProgressWindow() != null) {
-            mediator.getPAProgressWindow().stopAnimation();
-            mediator.getPAProgressWindow().dispose();
-        }
-    }
+	/* (non-Javadoc)
+	 * @see jmt.framework.gui.components.JMTFrame#doClose()
+	 */
+	protected void doClose() {
+		// Ends simulation process if active
+		mediator.stopSimulation();
+		// Disposes resultsWindow (if present) and mainwindow
+		if (mediator.getResultsWindow() != null) {
+			mediator.getResultsWindow().dispose();
+		}
+		if (mediator.getPAProgressWindow() != null) {
+			mediator.getPAProgressWindow().stopAnimation();
+			mediator.getPAProgressWindow().dispose();
+		}
+	}
 
-    /** Removes the current graph from the main window.
+	/** Removes the current graph from the main window.
 	 *
 	 */
 	public void removeGraph() {
@@ -149,13 +149,12 @@ public class MainWindow extends JMTFrame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if ((args != null && args.length > 0)
-		        && (args[0] != null)
-		        && (args[0].equals("trek")))
+		if ((args != null && args.length > 0) && (args[0] != null) && (args[0].equals("trek"))) {
 			advanced = true;
+		}
 		new MainWindow();
 	}
-	
+
 	/**
 	 * Updates this window title adding the file name
 	 * @param filename the file name or null to remove it.

@@ -15,9 +15,8 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.engine.dataAnalysis.sorting;
 
+package jmt.engine.dataAnalysis.sorting;
 
 /**
 
@@ -33,13 +32,15 @@ public class HeapSort implements SortAlgorithm {
 	 * @param data
 	 */
 	public void sort(double[] data) {
-		int i, ir, j ,l;
+		int i, ir, j, l;
 		double rra;
-		if ((data.length - 1) < 2) return;
+		if ((data.length - 1) < 2) {
+			return;
+		}
 		l = ((data.length - 1) >> 1) + 1;
 		ir = (data.length - 1);
 
-		for (; ;) {
+		for (;;) {
 			if (l > 1) {
 				rra = data[--l];
 			} else {
@@ -53,17 +54,19 @@ public class HeapSort implements SortAlgorithm {
 			i = l;
 			j = l + l;
 			while (j <= ir) {
-				if (j < ir && data[j] < data[j + 1]) j++;
+				if (j < ir && data[j] < data[j + 1]) {
+					j++;
+				}
 				if (rra < data[j]) {
 					data[i] = data[j];
 					i = j;
 					j <<= 1;
-				} else
+				} else {
 					break;
+				}
 			}
 			data[i] = rra;
 		}
 	}
-
 
 }

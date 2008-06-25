@@ -15,23 +15,21 @@ import jmt.common.exception.IncorrectDistributionParameterException;
  * Window - Preferences - Java - Code Style - Code Templates
  */
 public class MMPP2 extends AbstractDistribution implements Distribution {
-	
+
 	private int curState;
 	protected Exponential expDistr;
 
 	public MMPP2() {
-		curState=0;
+		curState = 0;
 		expDistr = new Exponential();
 	}
 
-	public int getCurState()
-	{
+	public int getCurState() {
 		return curState;
 	}
 
-	public void setCurState(int newState)
-	{
-		curState=newState;
+	public void setCurState(int newState) {
+		curState = newState;
 	}
 
 	public double pdf(double x, Parameter p) { //other implementation may use p.check()
@@ -42,13 +40,11 @@ public class MMPP2 extends AbstractDistribution implements Distribution {
 		return 0.0;
 	}
 
-	public double theorMean(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public double theorMean(Parameter p) throws IncorrectDistributionParameterException {
 		return 0.0;
 	}
 
-	public double theorVariance(Parameter p)
-	        throws IncorrectDistributionParameterException {
+	public double theorVariance(Parameter p) throws IncorrectDistributionParameterException {
 		return 0.0;
 	}
 
@@ -64,21 +60,21 @@ public class MMPP2 extends AbstractDistribution implements Distribution {
 
 	public double nextRand(Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
-			if (this.getCurState()==0)
-			{
-				if(engine.nextDouble() <= ((MMPP2Par) p).getR0())
+			if (this.getCurState() == 0) {
+				if (engine.nextDouble() <= ((MMPP2Par) p).getR0()) {
 					this.setCurState(1);
+				}
 				return expDistr.nextRand(((MMPP2Par) p).getExpParam1());
-			}
-			else
-			{
-					if(engine.nextDouble() <= ((MMPP2Par) p).getR1())
-						this.setCurState(0);
-					return expDistr.nextRand(((MMPP2Par) p).getExpParam2());
+			} else {
+				if (engine.nextDouble() <= ((MMPP2Par) p).getR1()) {
+					this.setCurState(0);
+				}
+				return expDistr.nextRand(((MMPP2Par) p).getExpParam2());
 			}
 		} else {
-			throw new IncorrectDistributionParameterException("Remember: parameter mean, variance, lambda1 and lambda 2 must be gtz; p must be a number betwen 0 and 1");
-		}		
+			throw new IncorrectDistributionParameterException(
+					"Remember: parameter mean, variance, lambda1 and lambda 2 must be gtz; p must be a number betwen 0 and 1");
+		}
 	}
 
 }

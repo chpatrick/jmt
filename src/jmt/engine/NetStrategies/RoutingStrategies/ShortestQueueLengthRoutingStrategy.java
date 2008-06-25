@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NetStrategies.RoutingStrategies;
 
 import jmt.common.exception.NetException;
@@ -32,79 +32,84 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Bertoli Marco
  */
 public class ShortestQueueLengthRoutingStrategy extends RoutingStrategy {
-    private int CLOSED_CLASS = JobClass.CLOSED_CLASS;
-    private int infinity = Integer.MAX_VALUE;
-    private byte inputSection = NodeSection.INPUT;
-    private byte serviceSection = NodeSection.SERVICE;
-    private int property = NodeSection.PROPERTY_ID_RESIDENT_JOBS;
-    private RandomEngine random = RandomEngine.makeDefault();
+	private int CLOSED_CLASS = JobClass.CLOSED_CLASS;
+	private int infinity = Integer.MAX_VALUE;
+	private byte inputSection = NodeSection.INPUT;
+	private byte serviceSection = NodeSection.SERVICE;
+	private int property = NodeSection.PROPERTY_ID_RESIDENT_JOBS;
+	private RandomEngine random = RandomEngine.makeDefault();
 
 	/** This strategy selects the resource with the shortest queue
-     * among the output nodes.
+	 * among the output nodes.
 	 * @param Nodes List of nodes.
-     * @param jobClass class ofcurrent job to be routed
+	 * @param jobClass class ofcurrent job to be routed
 	 * @return Selected node.
 	 */
 	public NetNode getOutNode(NodeList Nodes, JobClass jobClass) {
-		if (Nodes.size() == 0)
-            return null;
-        // next nodes candidates... Holds an array of them as on equality of queue lenght they
-        // will be chosen randomly
-        NetNode[] next = new NetNode[Nodes.size()];
-        next[0] = Nodes.get(0);
-        int nextLength = 1;
+		if (Nodes.size() == 0) {
+			return null;
+		}
+		// next nodes candidates... Holds an array of them as on equality of queue lenght they
+		// will be chosen randomly
+		NetNode[] next = new NetNode[Nodes.size()];
+		next[0] = Nodes.get(0);
+		int nextLength = 1;
 
-        int shortestQueue;
-        try {
-            // Sets shortest queue to first node. Note that queue length is job queuing + job served
-            // Checks if output is a sink... If class is open, sinks are preferred as have 0 queue length.
-            // if class il closed, avoid it
-            if (next[0].isSink()) {
-                if (jobClass.getType() == CLOSED_CLASS)
-                    shortestQueue = infinity;
-                else
-                    shortestQueue = 0;
-            }
-            else
-                shortestQueue = next[0].getSection(inputSection).getIntSectionProperty(property)
-                    + next[0].getSection(serviceSection).getIntSectionProperty(property);
+		int shortestQueue;
+		try {
+			// Sets shortest queue to first node. Note that queue length is job queuing + job served
+			// Checks if output is a sink... If class is open, sinks are preferred as have 0 queue length.
+			// if class il closed, avoid it
+			if (next[0].isSink()) {
+				if (jobClass.getType() == CLOSED_CLASS) {
+					shortestQueue = infinity;
+				} else {
+					shortestQueue = 0;
+				}
+			} else {
+				shortestQueue = next[0].getSection(inputSection).getIntSectionProperty(property)
+						+ next[0].getSection(serviceSection).getIntSectionProperty(property);
+			}
 
-            int tmp;
-            for (int i=1; i < Nodes.size(); i++) {
-                // Stores new node in last free space
-                next[nextLength] = Nodes.get(i);
-                // Checks if output is a sink... If class is open, sinks are preferred as have 0 queue length.
-                // if class il closed, avoid it
-                if (next[nextLength].isSink()) {
-                    if (jobClass.getType() == CLOSED_CLASS)
-                        tmp = infinity;
-                    else
-                        tmp = 0;
-                }
-                else
-                    tmp = next[nextLength].getSection(inputSection).getIntSectionProperty(property)
-                        + next[nextLength].getSection(serviceSection).getIntSectionProperty(property);
-                if (tmp < shortestQueue) {
-                    // New minimum value found, put it in position 0 and reset nextLength
-                    shortestQueue = tmp;
-                    next[0] = next[nextLength];
-                    nextLength = 1;
-                }
-                else if (tmp == shortestQueue)
-                    // This is minimum too, so increase nextLength
-                    nextLength++;
-            }
-        } catch (NetException e) {
-            System.out.println("Shortest Queue Routing Error: Cannot read queue length from output node");
-            e.printStackTrace();
-            return null;
-        }
-        if (shortestQueue == infinity)
-            return null;
-        if (nextLength > 1)
-            return next[(int)Math.floor(random.raw() * nextLength)];
-        else // Only one minimum value found, returns it.
-            return next[0];
+			int tmp;
+			for (int i = 1; i < Nodes.size(); i++) {
+				// Stores new node in last free space
+				next[nextLength] = Nodes.get(i);
+				// Checks if output is a sink... If class is open, sinks are preferred as have 0 queue length.
+				// if class il closed, avoid it
+				if (next[nextLength].isSink()) {
+					if (jobClass.getType() == CLOSED_CLASS) {
+						tmp = infinity;
+					} else {
+						tmp = 0;
+					}
+				} else {
+					tmp = next[nextLength].getSection(inputSection).getIntSectionProperty(property)
+							+ next[nextLength].getSection(serviceSection).getIntSectionProperty(property);
+				}
+				if (tmp < shortestQueue) {
+					// New minimum value found, put it in position 0 and reset nextLength
+					shortestQueue = tmp;
+					next[0] = next[nextLength];
+					nextLength = 1;
+				} else if (tmp == shortestQueue) {
+					// This is minimum too, so increase nextLength
+					nextLength++;
+				}
+			}
+		} catch (NetException e) {
+			System.out.println("Shortest Queue Routing Error: Cannot read queue length from output node");
+			e.printStackTrace();
+			return null;
+		}
+		if (shortestQueue == infinity) {
+			return null;
+		}
+		if (nextLength > 1) {
+			return next[(int) Math.floor(random.raw() * nextLength)];
+		} else {
+			return next[0];
+		}
 	}
 
 }

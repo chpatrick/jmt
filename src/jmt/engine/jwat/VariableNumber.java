@@ -79,8 +79,7 @@ public class VariableNumber implements JWATConstants {
 	 * @param varMapping
 	 *            mapping object (null)
 	 */
-	public VariableNumber(Observation[] valObs, String vName, int pos,
-			short type, VariableMapping varMapping) {
+	public VariableNumber(Observation[] valObs, String vName, int pos, short type, VariableMapping varMapping) {
 		name = vName;
 		nVar = pos;
 		numOss = valObs.length;
@@ -90,14 +89,14 @@ public class VariableNumber implements JWATConstants {
 		for (int i = 0; i < numOss; i++) {
 			originalValue[i] = valObs[i];
 		}
-		mapping=varMapping;
+		mapping = varMapping;
 		obsValue = originalValue;
 		// Initializes remaining parameters
 		varUniStatsTransf.add(new UnivariateStatistics(obsValue, nVar));
 		calculateIntervals();
 	}
-	
-	public VariableMapping getMapping(){
+
+	public VariableMapping getMapping() {
 		return mapping;
 	}
 
@@ -112,8 +111,9 @@ public class VariableNumber implements JWATConstants {
 	public double getValue(int Index) throws ArrayIndexOutOfBoundsException {
 		if (Index < 0 || Index > obsValue.length) {
 			throw new ArrayIndexOutOfBoundsException();
-		} else
+		} else {
 			return obsValue[Index].getIndex(nVar);
+		}
 	}
 
 	/**
@@ -127,12 +127,12 @@ public class VariableNumber implements JWATConstants {
 	 *             throws if Index is < 0 or > numbero of observations or var <
 	 *             0 or > number of variables ( elements of observation )
 	 */
-	public double getValue(int Index, int var)
-			throws ArrayIndexOutOfBoundsException {
+	public double getValue(int Index, int var) throws ArrayIndexOutOfBoundsException {
 		if (Index < 0 || Index > obsValue.length) {
 			throw new ArrayIndexOutOfBoundsException();
-		} else
+		} else {
 			return obsValue[Index].getIndex(var);
+		}
 	}
 
 	/**
@@ -153,10 +153,11 @@ public class VariableNumber implements JWATConstants {
 		double quant = 0;
 		int[] quantili = ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getQuantili();
 
-		if (this.Size() % 2 == 0)
+		if (this.Size() % 2 == 0) {
 			quant = (obsValue[quantili[ind - 1]].getIndex(nVar) + obsValue[quantili[ind - 1] - 1].getIndex(nVar)) / 2;
-		else
+		} else {
 			quant = obsValue[quantili[ind - 1]].getIndex(nVar);
+		}
 		return quant;
 	}
 
@@ -214,11 +215,11 @@ public class VariableNumber implements JWATConstants {
 				nInsG = 0;
 				i--;
 			}
-			if(posIntG == 1001){
+			if (posIntG == 1001) {
 				break;
 			}
 		}
-		for(;posIntG < 1001;posIntG++){
+		for (; posIntG < 1001; posIntG++) {
 			intervalGraph[posIntG] = obsValue.length - 1;
 		}
 		intervalGraph[1000] = obsValue.length - 1;
@@ -237,15 +238,15 @@ public class VariableNumber implements JWATConstants {
 		// Checks if this is a numeric variable otherwise no transformation
 		if (varType == NUMERIC) {
 			switch (index) {
-			case LOGARITHMIC:
-				setLogTransformation();
-				break;
-			case STDEV:
-				setStandardTransformation();
-				break;
-			case MINMAX:
-				setMaxMinTransformation();
-				break;
+				case LOGARITHMIC:
+					setLogTransformation();
+					break;
+				case STDEV:
+					setStandardTransformation();
+					break;
+				case MINMAX:
+					setMaxMinTransformation();
+					break;
 			}
 		} else {
 			throw new TrasformException("This in not a NUMERIC variable");
@@ -260,8 +261,9 @@ public class VariableNumber implements JWATConstants {
 	 */
 	private void setLogTransformation() throws TrasformException {
 		if (isLogTrasformable()) {
-			for (int i = 0; i < numOss; i++)
-				obsValue[i].setIndex(nVar, Math.log(obsValue[i].getIndex(nVar))	/ Math.log(10));
+			for (int i = 0; i < numOss; i++) {
+				obsValue[i].setIndex(nVar, Math.log(obsValue[i].getIndex(nVar)) / Math.log(10));
+			}
 			addTrasf(LOGARITHMIC);
 		} else {
 			throw new TrasformException("Logarithmic transformation not allowed");
@@ -272,10 +274,11 @@ public class VariableNumber implements JWATConstants {
 	 * Performs min/max transformation (value - minimum) / (maximum - minimum)
 	 */
 	private void setMaxMinTransformation() {
-		for (int i = 0; i < numOss; i++)
-			obsValue[i].setIndex(nVar,(obsValue[i].getIndex(nVar) - 
-						((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getMinValue()) / (
-								((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getRangeValue()));
+		for (int i = 0; i < numOss; i++) {
+			obsValue[i].setIndex(nVar, (obsValue[i].getIndex(nVar) - ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf))
+					.getMinValue())
+					/ (((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getRangeValue()));
+		}
 		addTrasf(MINMAX);
 	}
 
@@ -283,10 +286,11 @@ public class VariableNumber implements JWATConstants {
 	 * Performs the following transformation (value - mean) / (standard deviation)
 	 */
 	private void setStandardTransformation() {
-		for (int i = 0; i < numOss; i++)
-			obsValue[i].setIndex(nVar,(obsValue[i].getIndex(nVar) - 
-					((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getMean()) / 
-						((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getDevStd());	
+		for (int i = 0; i < numOss; i++) {
+			obsValue[i].setIndex(nVar, (obsValue[i].getIndex(nVar) - ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf))
+					.getMean())
+					/ ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getDevStd());
+		}
 		addTrasf(STDEV);
 	}
 
@@ -308,23 +312,23 @@ public class VariableNumber implements JWATConstants {
 	public boolean undoLastTrasf() {
 		if (listOfTransfs.size() > 0) {
 			switch (((Integer) listOfTransfs.get(listOfTransfs.size() - 1)).intValue()) {
-			case LOGARITHMIC:
-				undoLogTrasformation();
-				calculateIntervals();
-				break;
-			case STDEV:
-				undoStandardTransformation();
-				calculateIntervals();
-				break;
-			case MINMAX:
-				undoMaxMinTransformation();
-				calculateIntervals();
-				break;
-			case SAMPLING:
-				undoSampling();
-				undoLastTrasf();
-				calculateIntervals();
-				return true;
+				case LOGARITHMIC:
+					undoLogTrasformation();
+					calculateIntervals();
+					break;
+				case STDEV:
+					undoStandardTransformation();
+					calculateIntervals();
+					break;
+				case MINMAX:
+					undoMaxMinTransformation();
+					calculateIntervals();
+					break;
+				case SAMPLING:
+					undoSampling();
+					undoLastTrasf();
+					calculateIntervals();
+					return true;
 			}
 		}
 		return false;
@@ -335,8 +339,9 @@ public class VariableNumber implements JWATConstants {
 	 */
 	private void undoLogTrasformation() {
 		// Removes last Log transformation
-		for (int i = 0; i < numOss; i++)
+		for (int i = 0; i < numOss; i++) {
 			obsValue[i].setIndex(nVar, Math.pow(10, obsValue[i].getIndex(nVar)));
+		}
 		listOfTransfs.remove(listOfTransfs.size() - 1);
 		// Removes associated statistics
 		varUniStatsTransf.remove(varUniStatsTransf.size() - 1);
@@ -350,8 +355,9 @@ public class VariableNumber implements JWATConstants {
 		double oldMin = ((UnivariateStatistics) varUniStatsTransf.get(varUniStatsTransf.size() - 2)).getMinValue();
 		double oldMax = ((UnivariateStatistics) varUniStatsTransf.get(varUniStatsTransf.size() - 2)).getMaxValue();
 
-		for (int i = 0; i < numOss; i++)
+		for (int i = 0; i < numOss; i++) {
 			obsValue[i].setIndex(nVar, obsValue[i].getIndex(nVar) * (oldMax - oldMin) + oldMin);
+		}
 		listOfTransfs.remove(listOfTransfs.size() - 1);
 		// Removes associated statistics
 		varUniStatsTransf.remove(varUniStatsTransf.size() - 1);
@@ -365,8 +371,9 @@ public class VariableNumber implements JWATConstants {
 		double oldDevStd = ((UnivariateStatistics) varUniStatsTransf.get(varUniStatsTransf.size() - 2)).getDevStd();
 		double oldMean = ((UnivariateStatistics) varUniStatsTransf.get(varUniStatsTransf.size() - 2)).getMean();
 
-		for (int i = 0; i < numOss; i++)
-			obsValue[i].setIndex(nVar, (obsValue[i].getIndex(nVar) * oldDevStd)	+ oldMean);
+		for (int i = 0; i < numOss; i++) {
+			obsValue[i].setIndex(nVar, (obsValue[i].getIndex(nVar) * oldDevStd) + oldMean);
+		}
 		listOfTransfs.remove(listOfTransfs.size() - 1);
 		// Removes associated statistics
 		varUniStatsTransf.remove(varUniStatsTransf.size() - 1);
@@ -380,6 +387,7 @@ public class VariableNumber implements JWATConstants {
 	private boolean isLogTrasformable() {
 		return ((obsValue[0].getIndex(nVar) > 0));
 	}
+
 	/**
 	 * Returns names of transformations
 	 * @return Array of transformation's names
@@ -388,6 +396,7 @@ public class VariableNumber implements JWATConstants {
 		String[] ret = { "Logarithmic", "MinMax", "StandardDev" };
 		return ret;
 	}
+
 	/**
 	 * 
 	 * @return
@@ -399,13 +408,15 @@ public class VariableNumber implements JWATConstants {
 		int i;
 
 		for (i = 0; i < listOfTransfs.size(); i++) {
-			if (((Integer) listOfTransfs.get(i)).intValue() != SAMPLING){
+			if (((Integer) listOfTransfs.get(i)).intValue() != SAMPLING) {
 				ret += trasfName[((Integer) listOfTransfs.get(i)).intValue()] + "(";
-				j++;	//D
+				j++; //D
 			}
 		}
 		ret += "X";
-		for(i= 0; i < j; i++) ret += ")";
+		for (i = 0; i < j; i++) {
+			ret += ")";
+		}
 		return ret;
 	}
 
@@ -420,8 +431,7 @@ public class VariableNumber implements JWATConstants {
 	private double maxV;
 
 	public double getDimInt() {
-		return ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf))
-				.getRangeValue() / 1000;
+		return ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getRangeValue() / 1000;
 	}
 
 	public int getNumeroOssPerInt() {
@@ -429,11 +439,11 @@ public class VariableNumber implements JWATConstants {
 	}
 
 	public int getStartInt(int j) {
-		return intervalGraph[(j - 1)*10];
+		return intervalGraph[(j - 1) * 10];
 	}
 
 	public int getEndInt(int j) {
-		return intervalGraph[j*10];
+		return intervalGraph[j * 10];
 	}
 
 	/**
@@ -487,13 +497,15 @@ public class VariableNumber implements JWATConstants {
 	 * @return indice che soddisfa le condizioni
 	 */
 	public int getNextInt() throws Exception {
-		while (obsValue[PosS].getIndex(val) < minV	|| obsValue[PosS].getIndex(val) > maxV) {
+		while (obsValue[PosS].getIndex(val) < minV || obsValue[PosS].getIndex(val) > maxV) {
 			PosS++;
-			if (PosS > PosE)
+			if (PosS > PosE) {
 				throw new Exception();
+			}
 		}
-		if (PosS > PosE)
+		if (PosS > PosE) {
 			throw new Exception();
+		}
 		return PosS++;
 
 	}
@@ -534,8 +546,9 @@ public class VariableNumber implements JWATConstants {
 	public int getIndex(double value) {
 		int i = 0;
 		for (i = 0; i < intervalGraph.length; i++) {
-			if (value <= obsValue[intervalGraph[i]].getIndex(nVar))
+			if (value <= obsValue[intervalGraph[i]].getIndex(nVar)) {
 				return i;
+			}
 		}
 		return i - 1;
 	}
@@ -543,8 +556,9 @@ public class VariableNumber implements JWATConstants {
 	public int getIndexMin(double value) {
 		int i = 0;
 		for (i = 0; i < intervalGraph.length; i++) {
-			if (value <= obsValue[intervalGraph[i]].getIndex(nVar))
+			if (value <= obsValue[intervalGraph[i]].getIndex(nVar)) {
 				return i;
+			}
 		}
 		return i - 1;
 	}
@@ -552,8 +566,9 @@ public class VariableNumber implements JWATConstants {
 	public int getIndexMax(double value) {
 		int i = 0;
 		for (i = 0; i < intervalGraph.length; i++) {
-			if (value < obsValue[intervalGraph[i]].getIndex(nVar))
+			if (value < obsValue[intervalGraph[i]].getIndex(nVar)) {
 				return i;
+			}
 		}
 		return i - 1;
 	}
@@ -569,8 +584,8 @@ public class VariableNumber implements JWATConstants {
 	 * @return
 	 */
 	public int applySampling(FilterOnVariable filter) {
-		int j=1;
-		
+		int j = 1;
+
 		sampled = true;
 		listOfTransfs.add(new Integer(SAMPLING));
 		ArrayList temp = new ArrayList(); //Observation
@@ -579,15 +594,15 @@ public class VariableNumber implements JWATConstants {
 				temp.add(obsValue[i]);
 				obsValue[i].setID(j++);
 			} else {
-				obsValue[i].setValid(false);		
+				obsValue[i].setValid(false);
 			}
 		}
 		obsValue = new Observation[temp.size()];
 		temp.toArray(obsValue);
-		
+
 		temp.clear();
 		temp = null;
-		
+
 		numOss = obsValue.length;
 		varUniStatsTransf.add(new UnivariateStatistics(obsValue, nVar));
 		statsUniCurrentIndexTransf += 1;
@@ -606,12 +621,13 @@ public class VariableNumber implements JWATConstants {
 		Observation[] temp = new Observation[size];
 		// obsValue = new Observation[size];
 		for (int j = 0; j < obsValue.length; j++) {
-			if (obsValue[j].isValid())
+			if (obsValue[j].isValid()) {
 				temp[i++] = obsValue[j];
+			}
 		}
 		obsValue = temp;
 		temp = null;
-		
+
 		numOss = obsValue.length;
 		varUniStatsTransf.add(new UnivariateStatistics(obsValue, nVar));
 		statsUniCurrentIndexTransf += 1;
@@ -624,7 +640,7 @@ public class VariableNumber implements JWATConstants {
 	}
 
 	private void resetValidity() {
-		for (int i = 0; i < originalValue.length; i++){
+		for (int i = 0; i < originalValue.length; i++) {
 			originalValue[i].setValid(true);
 			originalValue[i].setID(i);
 		}
@@ -645,59 +661,61 @@ public class VariableNumber implements JWATConstants {
 		for (int i = p; i >= 0; i--) {
 			if (((Integer) listOfTransfs.get(i)).intValue() == SAMPLING) {
 				listOfTransfs.remove(i);
-				varUniStatsTransf.remove(i+1);
+				varUniStatsTransf.remove(i + 1);
 				statsUniCurrentIndexTransf -= 1;
 			}
 		}
 		calculateIntervals();
 	}
-	
-	public boolean isSampled(){
+
+	public boolean isSampled() {
 		return sampled;
 	}
-	
-	public Observation[] getCurObs(){
+
+	public Observation[] getCurObs() {
 		return obsValue;
 	}
-	
-	public int getObsID(int Index){
+
+	public int getObsID(int Index) {
 		if (Index < 0 || Index > obsValue.length) {
 			throw new ArrayIndexOutOfBoundsException();
-		} else
+		} else {
 			return obsValue[Index].getID();
+		}
 	}
-	
+
 	//Update 28/10/2006: + aggiunta funzione per recupero numero trasformazioni esistenti per la variabile
 	//					 + spostamento reset della validity a ID in matrixOsservazioni
 	//					 + aggiunte funzioni separate per operazione trasformazione variabili per clustering
 	//					 ? controllare con Fuma se le statistiche sono necessarie dopo la trasf altrimenti non si ricalcolano
-	public int getNumOfTransf(){
+	public int getNumOfTransf() {
 		return listOfTransfs.size();
 	}
-	
+
 	/* These two functions are used only to transform and antitransform variable 
 	 * for the clutering operation.As you can see aonly STDEV and MINMAX tranformations
 	 * are allowed and no control on variable's type are performed.
 	 */
-	public void doClusteringTrasformation(int index){
+	public void doClusteringTrasformation(int index) {
 		switch (index) {
-		case STDEV:
-			setStandardTransformation();
-			break;
-		case MINMAX:
-			setMaxMinTransformation();
-			break;
-		default:
+			case STDEV:
+				setStandardTransformation();
+				break;
+			case MINMAX:
+				setMaxMinTransformation();
+				break;
+			default:
 		}
 	}
-	public void undoClueringTrasformation(){
+
+	public void undoClueringTrasformation() {
 		switch (((Integer) listOfTransfs.get(listOfTransfs.size() - 1)).intValue()) {
-		case STDEV:
-			undoStandardTransformation();
-			break;
-		case MINMAX:
-			undoMaxMinTransformation();
-			break;
+			case STDEV:
+				undoStandardTransformation();
+				break;
+			case MINMAX:
+				undoMaxMinTransformation();
+				break;
 		}
 	}
 }

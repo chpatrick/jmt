@@ -15,8 +15,18 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.panels;
+
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 import jmt.framework.data.ArrayUtils;
 import jmt.framework.gui.help.HoverHelp;
@@ -26,9 +36,6 @@ import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.ExactWizard;
 import jmt.gui.exact.table.ExactTable;
 import jmt.gui.exact.table.ExactTableModel;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
 
@@ -41,17 +48,21 @@ import java.awt.*;
 /**
  * 3rd panel: visits
  */
-public final class VisitsPanel extends WizardPanel implements ExactConstants, ForceUpdatablePanel{
+public final class VisitsPanel extends WizardPanel implements ExactConstants, ForceUpdatablePanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ExactWizard ew;
 	private HoverHelp help;
-	private static final String helpText = "<html>In this panel you can edit the station visits for each class.<br><br>" +
-	        " To enter values, single-click on the desired cell" +
-	        " and start typing.<br> To select multiple cells drag the mouse on them; click or drag on" +
-	        " row/column headers to select whole rows/columns.<br> <b>For a list of the available operations right-click" +
-	        " on the table</b>; all operations except pasting affect selected cells.<br>" +
-	        " To copy one value to multiple cells click on the cell containing the value, select the" +
-	        " target cells by dragging and select <b>\"Fill\"</b>.<br><br></html>";
+	private static final String helpText = "<html>In this panel you can edit the station visits for each class.<br><br>"
+			+ " To enter values, single-click on the desired cell"
+			+ " and start typing.<br> To select multiple cells drag the mouse on them; click or drag on"
+			+ " row/column headers to select whole rows/columns.<br> <b>For a list of the available operations right-click"
+			+ " on the table</b>; all operations except pasting affect selected cells.<br>"
+			+ " To copy one value to multiple cells click on the cell containing the value, select the"
+			+ " target cells by dragging and select <b>\"Fill\"</b>.<br><br></html>";
 
 	private int classes, stations;
 	private String[] classNames;
@@ -59,7 +70,6 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 	private double[][] visits;
 
 	private VisitTable visitTable;
-
 
 	public VisitsPanel(ExactWizard ew) {
 		this.ew = ew;
@@ -93,30 +103,29 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 
 		visitTable = new VisitTable();
 
-        JPanel totalBox = new JPanel(new BorderLayout(10,10));
+		JPanel totalBox = new JPanel(new BorderLayout(10, 10));
 
-        //Horizontal box containing Description label and buttons
-        JLabel descrLabel = new JLabel(DESCRIPTION_VISITS);
-        JPanel descrBox = new JPanel(new BorderLayout());
-        descrBox.setPreferredSize(new Dimension(200,1000));
-        descrBox.add(descrLabel, BorderLayout.NORTH);
+		//Horizontal box containing Description label and buttons
+		JLabel descrLabel = new JLabel(DESCRIPTION_VISITS);
+		JPanel descrBox = new JPanel(new BorderLayout());
+		descrBox.setPreferredSize(new Dimension(200, 1000));
+		descrBox.add(descrLabel, BorderLayout.NORTH);
 
-        JScrollPane visitTablePane = new JScrollPane(visitTable);
-        visitTablePane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		visitTablePane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane visitTablePane = new JScrollPane(visitTable);
+		visitTablePane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+		visitTablePane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
-        totalBox.add(visitTablePane, BorderLayout.CENTER);
-        totalBox.add(descrBox, BorderLayout.WEST);
+		totalBox.add(visitTablePane, BorderLayout.CENTER);
+		totalBox.add(descrBox, BorderLayout.WEST);
 
 		setLayout(new BorderLayout());
-        add(totalBox, BorderLayout.CENTER);
-        add(Box.createVerticalStrut(20), BorderLayout.NORTH);
-        add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
-        add(Box.createHorizontalStrut(20), BorderLayout.EAST);
-        add(Box.createHorizontalStrut(20), BorderLayout.WEST);
+		add(totalBox, BorderLayout.CENTER);
+		add(Box.createVerticalStrut(20), BorderLayout.NORTH);
+		add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
+		add(Box.createHorizontalStrut(20), BorderLayout.EAST);
+		add(Box.createHorizontalStrut(20), BorderLayout.WEST);
 
 	}
-
 
 	public String getName() {
 		return "Visits";
@@ -146,24 +155,30 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 	}
 
-    /**{@see ForceUpdatablePanel} for further details*/
-    public void retrieveData() {
-        this.sync();
-    }
+	/**{@see ForceUpdatablePanel} for further details*/
+	public void retrieveData() {
+		this.sync();
+	}
 
-    /**{@see ForceUpdatablePanel} for further details*/
-    public void commitData() {
-        this.commit();
-    }
+	/**{@see ForceUpdatablePanel} for further details*/
+	public void commitData() {
+		this.commit();
+	}
 
-    private class VisitTable extends ExactTable {
+	private class VisitTable extends ExactTable {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		VisitTable() {
 			super(new VisitTableModel());
 			autoResizeMode = AUTO_RESIZE_OFF;
 
 			setDisplaysScrollLabels(true);
-			help.addHelp(this, "Click or drag to select cells; to edit data single-click and start typing. Right-click for a list of available operations");
+			help.addHelp(this,
+					"Click or drag to select cells; to edit data single-click and start typing. Right-click for a list of available operations");
 			help.addHelp(moreColumnsLabel, "There are more classes: scroll right to see them");
 			help.addHelp(moreRowsLabel, "There are more stations: scroll down to see them");
 			help.addHelp(selectAllButton, "Click to select all cells");
@@ -185,6 +200,11 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 	 * Rows represent stations, columns classes.
 	 */
 	private class VisitTableModel extends ExactTableModel {
+
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
 
 		VisitTableModel() {
 			prototype = new Double(1000);
@@ -214,7 +234,9 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			try {
 				double newVal = Double.parseDouble((String) value);
-				if (newVal >= 0) visits[rowIndex][columnIndex] = newVal;
+				if (newVal >= 0) {
+					visits[rowIndex][columnIndex] = newVal;
+				}
 			} catch (NumberFormatException e) {
 			}
 		}

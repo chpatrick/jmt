@@ -33,6 +33,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.table.AbstractTableModel;
 
@@ -43,8 +44,12 @@ import jmt.gui.common.CommonConstants;
 import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.workloadAnalysis.chart.DispFuzzyMatrix;
 
-public class FuzzyInfoClustering extends JPanel implements CommonConstants,JWATConstants{
-	private ClusteringInfosFuzzy infos = null; 
+public class FuzzyInfoClustering extends JPanel implements CommonConstants, JWATConstants {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private ClusteringInfosFuzzy infos = null;
 	private DispFuzzyMatrix matrix;
 	private JTable clusteringFinalTable = null;
 	private JLabel infoClustering = null;
@@ -55,15 +60,14 @@ public class FuzzyInfoClustering extends JPanel implements CommonConstants,JWATC
 	private double entropy = 0.0;
 	private MatrixOsservazioni m;
 	private FuzzyInfoCluster fPanel = null;
-	
-	private String INFO_CLUSTERING = HTML_START + HTML_FONT_TITLE
-		+ "CLUSTERING INFORMATION " + HTML_FONT_TIT_END + HTML_FONT_NORM + 
-		"This clustering has been performed searching X clusters and the entropy for this<p>result is Y" + HTML_FONT_NOR_END + HTML_END;
-	private String DESCR_ERRROR = HTML_START + HTML_FONT_TITLE
-		+ "ERROR SETTING INFORMATION " + HTML_FONT_TIT_END + HTML_FONT_NORM + 
-		"You can select which error to use to create each<p>single cluster according to Fuzzy K-Means<p>clustering results" + HTML_FONT_NOR_END + HTML_END;
-	
-	public FuzzyInfoClustering(MatrixOsservazioni m,DispFuzzyMatrix f,int numC,double ent,ClusteringInfosFuzzy c){
+
+	private String INFO_CLUSTERING = HTML_START + HTML_FONT_TITLE + "CLUSTERING INFORMATION " + HTML_FONT_TIT_END + HTML_FONT_NORM
+			+ "This clustering has been performed searching X clusters and the entropy for this<p>result is Y" + HTML_FONT_NOR_END + HTML_END;
+	private String DESCR_ERRROR = HTML_START + HTML_FONT_TITLE + "ERROR SETTING INFORMATION " + HTML_FONT_TIT_END + HTML_FONT_NORM
+			+ "You can select which error to use to create each<p>single cluster according to Fuzzy K-Means<p>clustering results" + HTML_FONT_NOR_END
+			+ HTML_END;
+
+	public FuzzyInfoClustering(MatrixOsservazioni m, DispFuzzyMatrix f, int numC, double ent, ClusteringInfosFuzzy c) {
 		matrix = f;
 		numClust = numC;
 		entropy = ent;
@@ -71,120 +75,134 @@ public class FuzzyInfoClustering extends JPanel implements CommonConstants,JWATC
 		this.m = m;
 		initPanel();
 	}
-	
-	public void setPanelCluster(FuzzyInfoCluster f){
+
+	public void setPanelCluster(FuzzyInfoCluster f) {
 		fPanel = f;
 	}
-	
-	private void initPanel(){
-		this.setLayout(new GridLayout(1,1));
+
+	private void initPanel() {
+		this.setLayout(new GridLayout(1, 1));
 		Box mainPanel = Box.createHorizontalBox();
 		mainPanel.add(Box.createHorizontalStrut(5));
 		/** Pannello principale centrale **/
-		JPanel centralMainP = new JPanel(new BorderLayout(5,10));
+		JPanel centralMainP = new JPanel(new BorderLayout(5, 10));
 		/** Upper Panel **/
-		JPanel upperP = new JPanel(new BorderLayout(5,5));
+		JPanel upperP = new JPanel(new BorderLayout(5, 5));
 		/** Stringa infos clustering **/
 		String current = new String(INFO_CLUSTERING);
-		current = current.replaceFirst("X",Integer.toString(numClust));
-		current = current.replaceFirst("Y",defaultFormat.format(entropy));
+		current = current.replaceFirst("X", Integer.toString(numClust));
+		current = current.replaceFirst("Y", defaultFormat.format(entropy));
 		infoClustering = new JLabel(current);
-		upperP.add(infoClustering,BorderLayout.NORTH);
+		upperP.add(infoClustering, BorderLayout.NORTH);
 		/** Pannello selezione fuzzy error**/
-		JPanel fuzzyErrorP = new JPanel(new GridLayout(1,2));
+		JPanel fuzzyErrorP = new JPanel(new GridLayout(1, 2));
 		/** Pannello text,spinner,button fuzzy error**/
-		JPanel leftFuzzy = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+		JPanel leftFuzzy = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		JLabel testoSpinner = new JLabel("Select the error: ");
-		fuzzyError = new JSpinner(new SpinnerNumberModel(0.1,0.01,0.99,0.01));
+		fuzzyError = new JSpinner(new SpinnerNumberModel(0.1, 0.01, 0.99, 0.01));
 		fuzzyError.setValue(new Double(infos.getError()));
-		fuzzyError.setPreferredSize(new Dimension(60,25));
+		fuzzyError.setPreferredSize(new Dimension(60, 25));
 		selectErrore = new JButton("Apply error");
-		selectErrore.addActionListener(new ActionListener(){
+		selectErrore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				/** Impostazione errore per visualizzazione matrice dispersione **/
-				infos.setError(m,((Double)fuzzyError.getValue()).doubleValue());
-				matrix.setFuzzyNess(((Double)fuzzyError.getValue()).doubleValue());
-				((clustDetModel)clusteringFinalTable.getModel()).setInfos(infos.numElem,infos.percent);
+				infos.setError(m, ((Double) fuzzyError.getValue()).doubleValue());
+				matrix.setFuzzyNess(((Double) fuzzyError.getValue()).doubleValue());
+				((clustDetModel) clusteringFinalTable.getModel()).setInfos(infos.numElem, infos.percent);
 				fPanel.setInfos();
 				/** Impostazioni valori per tabella **/
 			}
 		});
 		leftFuzzy.add(testoSpinner);
 		leftFuzzy.add(fuzzyError);
-		leftFuzzy.add(selectErrore);		
+		leftFuzzy.add(selectErrore);
 		/** Pannello con testo descrizione error **/
 		descrSetError = new JLabel(DESCR_ERRROR);
 		fuzzyErrorP.add(leftFuzzy);
 		fuzzyErrorP.add(descrSetError);
-		upperP.add(fuzzyErrorP,BorderLayout.SOUTH);
+		upperP.add(fuzzyErrorP, BorderLayout.SOUTH);
 		/** Table results **/
-		centralMainP.add(getUpperTable(),BorderLayout.CENTER);
-		centralMainP.add(new JLabel("<HTML><b><font size = 4>WARNING</font></b><br><font size=3>The sum can be greater than 100% due to multiple observations assignement<br></font>"),BorderLayout.SOUTH);
-		centralMainP.add(upperP,BorderLayout.NORTH);
+		centralMainP.add(getUpperTable(), BorderLayout.CENTER);
+		centralMainP
+				.add(
+						new JLabel(
+								"<HTML><b><font size = 4>WARNING</font></b><br><font size=3>The sum can be greater than 100% due to multiple observations assignement<br></font>"),
+						BorderLayout.SOUTH);
+		centralMainP.add(upperP, BorderLayout.NORTH);
 		mainPanel.add(centralMainP);
 		mainPanel.add(Box.createHorizontalStrut(5));
 		this.add(mainPanel);
 	}
-	private JScrollPane getUpperTable(){
-		clusteringFinalTable = new JTable(new clustDetModel(infos.numElem,infos.percent));
-		clusteringFinalTable.setSelectionBackground(new Color(83,126,126));
+
+	private JScrollPane getUpperTable() {
+		clusteringFinalTable = new JTable(new clustDetModel(infos.numElem, infos.percent));
+		clusteringFinalTable.setSelectionBackground(new Color(83, 126, 126));
 		clusteringFinalTable.setSelectionForeground(Color.BLACK);
 		clusteringFinalTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		return new JScrollPane(clusteringFinalTable,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		return new JScrollPane(clusteringFinalTable, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 	}
-	
-	private class clustDetModel extends AbstractTableModel{
-		private String[] colHeader={"Cluster","Num. observations","Percentage"};
+
+	private class clustDetModel extends AbstractTableModel {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		private String[] colHeader = { "Cluster", "Num. observations", "Percentage" };
 		private int[] Elem = null;
 		private double[] Perc = null;
-		DinamicFormat f = new DinamicFormat("###.###%",0);	//????? CONTROLLARE A COSA E SE SERVE 
-		
-		public clustDetModel(int[] el,double perc[]){
+		DinamicFormat f = new DinamicFormat("###.###%", 0); //????? CONTROLLARE A COSA E SE SERVE 
+
+		public clustDetModel(int[] el, double perc[]) {
 			Elem = el;
 			Perc = perc;
 		}
-		
+
 		public int getRowCount() {
-			return Elem.length; 
+			return Elem.length;
 		}
-		
+
 		public int getColumnCount() {
 			return colHeader.length;
 		}
-		
-		public void setInfos(int[] el,double[] perc){
+
+		public void setInfos(int[] el, double[] perc) {
 			Elem = el;
 			Perc = perc;
 			fireTableDataChanged();
 		}
-		
+
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			if(rowIndex >= 0){
-				if(columnIndex == 0) {
-					if(rowIndex==Elem.length-1)return "Not assigned";
-					else return "Cluster " + (rowIndex+1);
+			if (rowIndex >= 0) {
+				if (columnIndex == 0) {
+					if (rowIndex == Elem.length - 1) {
+						return "Not assigned";
+					} else {
+						return "Cluster " + (rowIndex + 1);
+					}
 				}
-				if(columnIndex == 1) {
+				if (columnIndex == 1) {
 					return Integer.toString(Elem[rowIndex]);
 				}
-				if(columnIndex == 2) {
+				if (columnIndex == 2) {
 					return f.format(Perc[rowIndex]);
 				}
 			}
 			return null;
 		}
-		
+
 		/**
 		 * Returns name for each column (given its index) to be displayed inside
 		 * table header
 		 */
 		public String getColumnName(int columnIndex) {
-			if (columnIndex < colHeader.length)
+			if (columnIndex < colHeader.length) {
 				return colHeader[columnIndex];
-			else
+			} else {
 				return null;
+			}
 		}
-		
+
 		/**
 		 * Tells wether data contained in a specific cell(given row and column
 		 * index) is editable or not. In this case distribution column is not

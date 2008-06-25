@@ -15,16 +15,23 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jaba.panels;
+
+import java.awt.BorderLayout;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextPane;
+import javax.swing.ScrollPaneConstants;
 
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.jaba.JabaConstants;
 import jmt.gui.jaba.JabaWizard;
-
-import javax.swing.*;
-import java.awt.*;
 
 /**
 
@@ -37,8 +44,12 @@ import java.awt.*;
 /**
  * description panel
  */
-public final class DescriptionPanel extends WizardPanel implements JabaConstants{
+public final class DescriptionPanel extends WizardPanel implements JabaConstants {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private JabaWizard ew;
 	private HoverHelp help;
 	private static final String helpText = "<html>In this panel you can enter any text describing this model</html>";
@@ -69,46 +80,45 @@ public final class DescriptionPanel extends WizardPanel implements JabaConstants
 		textPane = new JTextPane();
 		help.addHelp(textPane, "Enter any text describing this model");
 
-        //BEGIN Federico Dall'Orso 14/3/2005
-        //OLD
-        /*
-        setLayout(new BorderLayout());
-        JScrollPane esp = new JScrollPane(textPane);
-        esp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        add(esp, BorderLayout.CENTER);
-        add(Box.createVerticalStrut(20), BorderLayout.NORTH);
-        add(Box.createHorizontalStrut(20), BorderLayout.EAST);
-        add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
-        add(Box.createHorizontalStrut(20), BorderLayout.WEST);
-        */
-        //NEW
+		//BEGIN Federico Dall'Orso 14/3/2005
+		//OLD
+		/*
+		setLayout(new BorderLayout());
+		JScrollPane esp = new JScrollPane(textPane);
+		esp.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		add(esp, BorderLayout.CENTER);
+		add(Box.createVerticalStrut(20), BorderLayout.NORTH);
+		add(Box.createHorizontalStrut(20), BorderLayout.EAST);
+		add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
+		add(Box.createHorizontalStrut(20), BorderLayout.WEST);
+		*/
+		//NEW
+		JPanel intPanel = new JPanel(new BorderLayout(10, 10));
+		//Box intPanel = Box.createVerticalBox();
 
-        JPanel intPanel = new JPanel(new BorderLayout(10,10));
-        //Box intPanel = Box.createVerticalBox();
+		JScrollPane jsp = new JScrollPane(textPane, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		JLabel descrLabel = new JLabel(DESCRIPTION_COMMENT);
 
-        JScrollPane jsp = new JScrollPane(textPane,
-                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        JLabel descrLabel = new JLabel(DESCRIPTION_COMMENT);
+		intPanel.add(descrLabel, BorderLayout.NORTH);
+		intPanel.add(jsp, BorderLayout.CENTER);
+		//intPanel.add(jsp);
 
-        intPanel.add(descrLabel, BorderLayout.NORTH);
-        intPanel.add(jsp, BorderLayout.CENTER);
-        //intPanel.add(jsp);
+		setLayout(new BorderLayout());
+		add(intPanel, BorderLayout.CENTER);
+		add(Box.createVerticalStrut(20), BorderLayout.NORTH);
+		add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
+		add(Box.createHorizontalStrut(20), BorderLayout.EAST);
+		add(Box.createHorizontalStrut(20), BorderLayout.WEST);
 
-        setLayout(new BorderLayout());
-        add(intPanel, BorderLayout.CENTER);
-        add(Box.createVerticalStrut(20), BorderLayout.NORTH);
-        add(Box.createVerticalStrut(20), BorderLayout.SOUTH);
-        add(Box.createHorizontalStrut(20), BorderLayout.EAST);
-        add(Box.createHorizontalStrut(20), BorderLayout.WEST);
-
-        //END Federico Dall'Orso 14/3/2005
+		//END Federico Dall'Orso 14/3/2005
 
 	}
 
 	private void commit() {
 		String text = textPane.getText();
-		if (text == null) text = "";
+		if (text == null) {
+			text = "";
+		}
 		ew.getData().setDescription(text);
 	}
 

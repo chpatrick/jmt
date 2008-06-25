@@ -14,9 +14,9 @@
 // IMPLIED, INCLUDING, WITHOUT LIMITATION, WARRANTY OF MERCHANTABILITY OR
 // FITNESS FOR A PARTICULAR PURPOSE.
 package jmt.engine.jaba.Hull;
+
 import java.util.Enumeration;
 import java.util.Vector;
-
 
 /**
  * A class representing a dynamic surface.
@@ -24,41 +24,33 @@ import java.util.Vector;
  * @author  Chris Pudney <mailto:cpudney@alphapharm.pharm.uwa.edu.au>
  * @version 1.1
  */
-public class DSurface extends Surface	
-{
-  /**
-   * Add a polygonal face to a surface.
-   *
-   * @param p  a polygon representing the face
-   */
-public void addFace(Polygon p)
-  {
-    getFaces().addElement(p);
-  }
+public class DSurface extends Surface {
+	/**
+	 * Add a polygonal face to a surface.
+	 *
+	 * @param p  a polygon representing the face
+	 */
+	public void addFace(Polygon p) {
+		getFaces().addElement(p);
+	}
 
+	/**
+	 * Add a set of polygonal faces to a surface.
+	 *
+	 * @param v  vector of polygonal faces
+	 */
+	public void addFaces(Vector v) {
+		for (Enumeration e = v.elements(); e.hasMoreElements();) {
+			addFace((Polygon) e.nextElement());
+		}
+	}
 
-  /**
-   * Add a set of polygonal faces to a surface.
-   *
-   * @param v  vector of polygonal faces
-   */
-public void addFaces(Vector v)
-  {
-    for (Enumeration e = v.elements();
-	 e.hasMoreElements();)
-      {
-	addFace((Polygon)e.nextElement());
-      }
-  }
-
-
-  /**
-   * Delete a polygonal face from a surface.
-   *
-   * @param  a polygon representing the face
-   */
-public boolean deleteFace(Polygon p)
-  {
-    return getFaces().removeElement(p);
-  }
+	/**
+	 * Delete a polygonal face from a surface.
+	 *
+	 * @param  a polygon representing the face
+	 */
+	public boolean deleteFace(Polygon p) {
+		return getFaces().removeElement(p);
+	}
 }

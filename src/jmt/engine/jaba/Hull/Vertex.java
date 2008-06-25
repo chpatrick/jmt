@@ -22,250 +22,191 @@ package jmt.engine.jaba.Hull;
  * @author  Chris Pudney <cpudney@alphapharm.pharm.uwa.edu.au>
  * @version 1.1
  */
-public class Vertex
-{
-  /**
-   * The 3D coordinates (x, y, z) of the vertex.
-   */
-  private int x, y, z;
+public class Vertex {
+	/**
+	 * The 3D coordinates (x, y, z) of the vertex.
+	 */
+	private int x, y, z;
 
+	/**
+	 * Construct the vertex at (0, 0, 0).
+	 */
+	public Vertex() {
+		x = 0;
+		y = 0;
+		z = 0;
+	}
 
-  /**
-   * Construct the vertex at (0, 0, 0).
-   */
-  public Vertex()
-    {
-      x = 0;
-      y = 0;
-      z = 0;
-    }
+	/**
+	 * Construct a vertex given a set of coordinates.
+	 *
+	 * @param x, y, z  The coordinates.
+	 */
+	public Vertex(int x, int y, int z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+	}
 
+	/**
+	 * Get the coordinates of the vertex.
+	 *
+	 * @return An array of three integers containing the coordinates (x, y, z).
+	 */
+	public int[] getCoords() {
+		int[] c = new int[3];
 
-  /**
-   * Construct a vertex given a set of coordinates.
-   *
-   * @param x, y, z  The coordinates.
-   */
-  public Vertex(int x, int y, int z)
-    {
-      this.x = x;
-      this.y = y;
-      this.z = z;
-    }
+		c[0] = x;
+		c[1] = y;
+		c[2] = z;
+		return c;
+	}
 
+	/**
+	 * Tests whether two vertices are the same point.
+	 *
+	 * @param  v1, v2  the vertices to compare
+	 * @return True/false if the vertices are the same/different.
+	 */
+	public static boolean sameVertex(Vertex v1, Vertex v2) {
+		return v1 == v2 || (v1.x == v2.x && v1.y == v2.y && v1.z == v2.z);
+	}
 
-  /**
-   * Get the coordinates of the vertex.
-   *
-   * @return An array of three integers containing the coordinates (x, y, z).
-   */
-  public int[] getCoords()
-    {
-      int[] c = new int[3];
+	/**
+	 * Tests whether three vertices are collinear.
+	 *
+	 * @param  v1, v2, v3  the vertices to test
+	 * @return True/false if the vertices are collinear/non-collinear
+	 */
+	public static boolean collinear(Vertex v1, Vertex v2, Vertex v3) {
+		long x1 = v1.x, y1 = v1.y, z1 = v1.z;
+		long x2 = v2.x, y2 = v2.y, z2 = v2.z;
+		long x3 = v3.x, y3 = v3.y, z3 = v3.z;
+		return (z3 - z1) * (y2 - y1) - (z2 - z1) * (y3 - y1) == 0 && (z2 - z1) * (x3 - x1) - (x2 - x1) * (z3 - z1) == 0
+				&& (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1) == 0;
+	}
 
-      c[0] = x;
-      c[1] = y;
-      c[2] = z;
-      return c;
-    }
+	/**
+	 * Returns the pair of vertices that bound three collinear vertices.
+	 * 
+	 * @param  v1, v2, v3  the vertices to test
+	 * @return An array of two vertices that bound the tested vertices
+	 */
+	public static Vertex[] bounds(Vertex v1, Vertex v2, Vertex v3) {
+		Vertex min12, max12;
 
-
-  /**
-   * Tests whether two vertices are the same point.
-   *
-   * @param  v1, v2  the vertices to compare
-   * @return True/false if the vertices are the same/different.
-   */
-  public static boolean sameVertex(Vertex v1, Vertex v2)
-    {
-      return v1 == v2 ||
-	(v1.x == v2.x &&
-	 v1.y == v2.y &&
-	 v1.z == v2.z);
-    }
-
-
-  /**
-   * Tests whether three vertices are collinear.
-   *
-   * @param  v1, v2, v3  the vertices to test
-   * @return True/false if the vertices are collinear/non-collinear
-   */
-  public static boolean collinear(Vertex v1, Vertex v2, Vertex v3)
-    {
-      long x1 = v1.x, y1 = v1.y, z1 = v1.z;
-      long x2 = v2.x, y2 = v2.y, z2 = v2.z;
-      long x3 = v3.x, y3 = v3.y, z3 = v3.z;
-      return (z3 - z1) * (y2 - y1) - (z2 - z1) * (y3 - y1) == 0 &&
-	(z2 - z1) * (x3 - x1) - (x2 - x1) * (z3 - z1) == 0 &&
-	  (x2 - x1) * (y3 - y1) - (y2 - y1) * (x3 - x1) == 0;
-    }
-
-
-  /**
-   * Returns the pair of vertices that bound three collinear vertices.
-   * 
-   * @param  v1, v2, v3  the vertices to test
-   * @return An array of two vertices that bound the tested vertices
-   */
-  public static Vertex[] bounds(Vertex v1, Vertex v2, Vertex v3)
-    {
-      Vertex min12, max12;
-
-      // Compare v1 and v2    
-      if (v1.x == v2.x)
-	{
-	  if (v1.y == v2.y)
-	    {
-	      if (v1.z <= v2.z)
-		{
-		  min12 = v1;
-		  max12 = v2;
+		// Compare v1 and v2    
+		if (v1.x == v2.x) {
+			if (v1.y == v2.y) {
+				if (v1.z <= v2.z) {
+					min12 = v1;
+					max12 = v2;
+				} else {
+					min12 = v2;
+					max12 = v1;
+				}
+			} else if (v1.y < v2.y) {
+				min12 = v1;
+				max12 = v2;
+			} else {
+				min12 = v2;
+				max12 = v1;
+			}
+		} else if (v1.x < v2.x) {
+			min12 = v1;
+			max12 = v2;
+		} else {
+			min12 = v2;
+			max12 = v1;
 		}
-	      else
-		{
-		  min12 = v2;
-		  max12 = v1;
+
+		Vertex[] bounds = new Vertex[2];
+
+		// Compare min of v1, v2 with v3
+		if (min12.x == v3.x) {
+			if (min12.y == v3.y) {
+				bounds[0] = min12.z <= v3.z ? min12 : v3;
+			} else {
+				bounds[0] = min12.y < v3.y ? min12 : v3;
+			}
+		} else {
+			bounds[0] = min12.x < v3.x ? min12 : v3;
 		}
-	    }
-	  else if (v1.y < v2.y)
-	    {
-	      min12 = v1;
-	      max12 = v2;
-	    }
-	  else
-	    {
-	      min12 = v2;
-	      max12 = v1;
-	    }
-	}
-      else if (v1.x < v2.x)
-	{
-	  min12 = v1;
-	  max12 = v2;
-	}
-      else
-	{
-	  min12 = v2;
-	  max12 = v1;
+
+		// Compare max of v1, v2 with v3
+		if (max12.x == v3.x) {
+			if (max12.y == v3.y) {
+				bounds[1] = max12.z >= v3.z ? max12 : v3;
+			} else {
+				bounds[1] = max12.y > v3.y ? max12 : v3;
+			}
+		} else {
+			bounds[1] = max12.x > v3.x ? max12 : v3;
+		}
+		return bounds;
 	}
 
-      Vertex[] bounds = new Vertex[2];
-
-      // Compare min of v1, v2 with v3
-      if (min12.x == v3.x)
-	{
-	  if (min12.y == v3.y)
-	    {
-	      bounds[0] = min12.z <= v3.z ? min12 : v3;
-	    }
-	  else
-	    {
-	      bounds[0] = min12.y < v3.y ? min12 : v3;
-	    }
-	}
-      else
-	{
-	  bounds[0] = min12.x < v3.x ? min12 : v3;
+	/** 
+	 * Returns the square of the distance between two vertices.
+	 *
+	 * @param v1, v2  the vertices
+	 * @return        the distance squared between them
+	 */
+	public static long distanceSquared(Vertex v1, Vertex v2) {
+		long x1 = v1.x, y1 = v1.y, z1 = v1.z;
+		long x2 = v2.x, y2 = v2.y, z2 = v2.z;
+		return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) + (z1 - z2) * (z1 - z2);
 	}
 
-
-      // Compare max of v1, v2 with v3
-      if (max12.x == v3.x)
-	{
-	  if (max12.y == v3.y)
-	    {
-	      bounds[1] = max12.z >= v3.z ? max12 : v3;
-	    }
-	  else
-	    {
-	      bounds[1] = max12.y > v3.y ? max12 : v3;
-	    }
+	/**
+	  * Returns the square of the norm of a vector
+	  *
+	  * @param v  the vector
+	  * @return   the square of the norm of v
+	  */
+	public long normSq() {
+		long x = this.x;
+		long y = this.y;
+		long z = this.z;
+		return x * x + y * y + z * z;
 	}
-      else
-	{
-	  bounds[1] = max12.x > v3.x ? max12 : v3;
+
+	/**
+	 * Returns the dot product of two vectors
+	 *
+	 * @param v1, v2  the vectors
+	 * @return        v1.v2
+	 */
+	public static long dotProduct(Vertex v1, Vertex v2) {
+		long x1 = v1.x, y1 = v1.y, z1 = v1.z;
+		long x2 = v2.x, y2 = v2.y, z2 = v2.z;
+		return x1 * x2 + y1 * y2 + z1 * z2;
 	}
-      return bounds;
-    }
 
-  /** 
-   * Returns the square of the distance between two vertices.
-   *
-   * @param v1, v2  the vertices
-   * @return        the distance squared between them
-   */
-  public static long distanceSquared(Vertex v1,
-			     Vertex v2)
-    {
-      long x1 = v1.x, y1 = v1.y, z1 = v1.z;
-      long x2 = v2.x, y2 = v2.y, z2 = v2.z;
-      return (x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) +
-	(z1 - z2) * (z1 - z2);
-    }
+	/**
+	  * Returns the vector difference between two vertices
+	  *
+	  * @param v1, v2  the vertices
+	  * @return        v1 - v2
+	  */
+	public static Vertex vectorDiff(Vertex v1, Vertex v2) {
+		return new Vertex(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
+	}
 
-  /**
-    * Returns the square of the norm of a vector
-    *
-    * @param v  the vector
-    * @return   the square of the norm of v
-    */
-  public long normSq()
-    {
-      long x = this.x;
-      long y = this.y;
-      long z = this.z;
-      return x * x + y * y + z * z;
-    }
+	/**
+	  * Returns the cross product of two vectors
+	  *
+	  * @param v1, v2  the vectors
+	  * @return        v1 x v2
+	  */
+	public static Vertex crossProduct(Vertex v1, Vertex v2) {
+		return new Vertex(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x);
+	}
 
-
-  /**
-   * Returns the dot product of two vectors
-   *
-   * @param v1, v2  the vectors
-   * @return        v1.v2
-   */
-  public static long dotProduct(Vertex v1,
-			       Vertex v2)
-    {
-      long x1 = v1.x, y1 = v1.y, z1 = v1.z;
-      long x2 = v2.x, y2 = v2.y, z2 = v2.z; 
-      return x1 * x2 + y1 * y2 + z1 * z2;
-    }
-
-  /**
-    * Returns the vector difference between two vertices
-    *
-    * @param v1, v2  the vertices
-    * @return        v1 - v2
-    */
-  public static Vertex vectorDiff(Vertex v1,
-			       Vertex v2)
-    {
-      return new Vertex(v1.x - v2.x,
-			v1.y - v2.y,
-			v1.z - v2.z);
-    }
-
-  /**
-    * Returns the cross product of two vectors
-    *
-    * @param v1, v2  the vectors
-    * @return        v1 x v2
-    */
-  public static Vertex crossProduct(Vertex v1,
-				    Vertex v2)
-    {
-      return new Vertex(v1.y * v2.z - v1.z * v2.y,
-			v1.z * v2.x - v1.x * v2.z,
-			v1.x * v2.y - v1.y * v2.x);
-    }
-
-  /**
-   * Returns a string that describes a vertex.
-   */
-  public String toString()
-    {
-      return ("(" + x + ", " + y + ", " + z + ")");
-    }
+	/**
+	 * Returns a string that describes a vertex.
+	 */
+	public String toString() {
+		return ("(" + x + ", " + y + ", " + z + ")");
+	}
 }

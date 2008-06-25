@@ -15,12 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.jaba;
 
-import jmt.engine.jaba.Hull.Vertex;
-
 import java.util.Vector;
+
+import jmt.engine.jaba.Hull.Vertex;
 
 /**
  * Created by IntelliJ IDEA.
@@ -31,45 +31,36 @@ import java.util.Vector;
  */
 public class OneDominator {
 
-    private Vector vertices; // = new Vector();
-    private Vertex dominator; // = new Vertex(-1,-1,-1);
+	private Vector vertices; // = new Vector();
+	private Vertex dominator; // = new Vertex(-1,-1,-1);
 
-    public boolean IsOneDominator()
-    {
-        boolean out = false;
-        for (int i = 0; i < vertices.size(); i++)
-        {
-            int k=0;
-            int[] coordi = ((Vertex)vertices.get(i)).getCoords();
-            for (int j = 0; j < vertices.size(); j++)
-            {
+	public boolean IsOneDominator() {
+		boolean out = false;
+		for (int i = 0; i < vertices.size(); i++) {
+			int k = 0;
+			int[] coordi = ((Vertex) vertices.get(i)).getCoords();
+			for (int j = 0; j < vertices.size(); j++) {
 
-                int[] coordj = ((Vertex)vertices.get(j)).getCoords();
-                if (
-                        coordi[0]>coordj[0]&&
-                        coordi[1]>coordj[1]&&
-                        coordi[2]>coordj[2]
-                        )
-                    k++;
+				int[] coordj = ((Vertex) vertices.get(j)).getCoords();
+				if (coordi[0] > coordj[0] && coordi[1] > coordj[1] && coordi[2] > coordj[2]) {
+					k++;
+				}
 
-            }
-            if (k==(vertices.size()-1))
-                {
-                    out = true;
-                    dominator = (Vertex)vertices.get(i);
-                }
-        }
-        return out;
-    }
+			}
+			if (k == (vertices.size() - 1)) {
+				out = true;
+				dominator = (Vertex) vertices.get(i);
+			}
+		}
+		return out;
+	}
 
-    public void setVertices(Vector verts)
-    {
-        vertices=verts;
-    }
+	public void setVertices(Vector verts) {
+		vertices = verts;
+	}
 
-    public Vertex getDominator()
-    {
-        return dominator;
-    }
+	public Vertex getDominator() {
+		return dominator;
+	}
 
 }

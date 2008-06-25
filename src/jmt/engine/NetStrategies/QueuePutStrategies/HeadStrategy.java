@@ -15,11 +15,15 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NetStrategies.QueuePutStrategies;
 
 import jmt.engine.NetStrategies.QueuePutStrategy;
-import jmt.engine.QueueNet.*;
+import jmt.engine.QueueNet.Job;
+import jmt.engine.QueueNet.JobInfo;
+import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.NetNode;
+import jmt.engine.QueueNet.NodeSection;
 
 /**
  * This class implements a specific queue put strategy: all arriving jobs
@@ -29,15 +33,14 @@ import jmt.engine.QueueNet.*;
 public class HeadStrategy extends QueuePutStrategy {
 
 	/**
-     * all arriving jobs are put at the beginning of the queue.
+	 * all arriving jobs are put at the beginning of the queue.
 	 * @param job Job to be added to the queue.
-     * @param queue Queue.
-     * @param sourceSection Job source section.
-     * @param sourceNode Job source node.
-     * @param callingSection The section which calls this strategy.
-     */
-	public void put(Job job, JobInfoList queue, byte sourceSection,
-	                         NetNode sourceNode, NodeSection callingSection) {
+	 * @param queue Queue.
+	 * @param sourceSection Job source section.
+	 * @param sourceNode Job source node.
+	 * @param callingSection The section which calls this strategy.
+	 */
+	public void put(Job job, JobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) {
 		queue.addFirst(new JobInfo(job));
 	}
 }

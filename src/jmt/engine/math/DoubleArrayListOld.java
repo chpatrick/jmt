@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * DoubleArrayList.java
  *
@@ -30,6 +30,11 @@ package jmt.engine.math;
  */
 public class DoubleArrayListOld extends java.util.ArrayList {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** Creates a new instance of DoubleArrayList */
 	public DoubleArrayListOld() {
 	}
@@ -39,8 +44,9 @@ public class DoubleArrayListOld extends java.util.ArrayList {
 	 */
 	public DoubleArrayListOld(double[] data) {
 		this.ensureCapacity(data.length);
-		for (int i = 0; i < data.length; i++)
+		for (int i = 0; i < data.length; i++) {
 			this.add(data[i]);
+		}
 	}
 
 	/** add a new element at the end of the list
@@ -89,8 +95,9 @@ public class DoubleArrayListOld extends java.util.ArrayList {
 		double[] arrayD;
 		Object[] arrayDouble = toArray();
 		arrayD = new double[arrayDouble.length];
-		for (int i = 0; i < arrayDouble.length; i++)
+		for (int i = 0; i < arrayDouble.length; i++) {
 			arrayD[i] = ((Double) arrayDouble[i]).doubleValue();
+		}
 		return arrayD;
 	}
 
@@ -115,8 +122,9 @@ public class DoubleArrayListOld extends java.util.ArrayList {
 	 */
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
-		for (int i = 0; i < size(); i++)
+		for (int i = 0; i < size(); i++) {
 			buf.append(getD(i) + "\n");
+		}
 		return buf.toString();
 	}
 

@@ -15,15 +15,17 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.controller.actions;
 
-import jmt.gui.jmodel.controller.Mediator;
-
-import javax.swing.*;
-import javax.swing.undo.UndoManager;
 import java.awt.event.ActionEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
+
+import javax.swing.KeyStroke;
+import javax.swing.undo.UndoManager;
+
+import jmt.gui.jmodel.controller.Mediator;
 
 /**
 
@@ -40,12 +42,16 @@ import java.awt.event.KeyEvent;
 
 public class ActionRedo extends AbstractUndoRedoAction {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected UndoManager um;
 
 	public ActionRedo(Mediator mediator, UndoManager um) {
 		super("Redo", mediator);
 		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_R));
-		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Y, KeyEvent.CTRL_MASK));
+		putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Y, InputEvent.CTRL_MASK));
 		this.um = um;
 		update();
 	}
@@ -59,7 +65,7 @@ public class ActionRedo extends AbstractUndoRedoAction {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-        mediator.redo();
+		mediator.redo();
 		updateAll();
 	}
 }

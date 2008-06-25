@@ -3,7 +3,6 @@
 
 package jmt.engine.simEngine;
 
-
 /**
  * This class represents events which are passed between the entities
  * in the simulation.
@@ -11,12 +10,12 @@ package jmt.engine.simEngine;
 
 public class SimEvent implements Cloneable {
 	// Private data members
-	private int etype;      // internal event type
-	private double time;    // simulation time in which event should occur
-	private int entSrc;    // id of entity which scheduled event
-	private int entDst;    // id of entity which event will be sent to
-	private int tag;        // the user defined type of event
-	private Object data;    // any data the event is carrying
+	private int etype; // internal event type
+	private double time; // simulation time in which event should occur
+	private int entSrc; // id of entity which scheduled event
+	private int entDst; // id of entity which event will be sent to
+	private int tag; // the user defined type of event
+	private Object data; // any data the event is carrying
 
 	//
 	// Public library interface
@@ -24,14 +23,14 @@ public class SimEvent implements Cloneable {
 
 	// Internal event types
 
-    //initial value when the event has just been created
-    static final int ENULL = 0;
+	//initial value when the event has just been created
+	static final int ENULL = 0;
 	//the event is a message to another entity
-    static final int SEND = 1;
-    //used to let an entity know that its waiting time has finished
+	static final int SEND = 1;
+	//used to let an entity know that its waiting time has finished
 	static final int HOLD_DONE = 2;
 	//this event creates dinamically a new entity
-    static final int CREATE = 3;
+	static final int CREATE = 3;
 
 	// Constructors
 	/** Contructor, create a blank event. Useful for fetching events
@@ -47,8 +46,7 @@ public class SimEvent implements Cloneable {
 	}
 
 	// Package level constructors
-	SimEvent(int evtype, double time, int src,
-	         int dest, int tag, Object edata) {
+	SimEvent(int evtype, double time, int src, int dest, int tag, Object edata) {
 		etype = evtype;
 		this.time = time;
 		entSrc = src;
@@ -93,7 +91,7 @@ public class SimEvent implements Cloneable {
 	 */
 	public int type() {
 		return tag;
-	}             // The user defined type
+	} // The user defined type
 
 	/** Get the unique id number of the entity which scheduled this event.
 	 * @return the id number
@@ -144,7 +142,7 @@ public class SimEvent implements Cloneable {
 
 	int getType() {
 		return etype;
-	}       // The internal type
+	} // The internal type
 
 	void copy(SimEvent ev) {
 		entDst = ev.getDest();

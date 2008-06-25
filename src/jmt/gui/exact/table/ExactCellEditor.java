@@ -15,11 +15,14 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.table;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Component;
+
+import javax.swing.DefaultCellEditor;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 
 /**
 
@@ -36,6 +39,11 @@ import java.awt.*;
  */
 public class ExactCellEditor extends DefaultCellEditor {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public ExactCellEditor() {
 		super(new JTextField());
 	}
@@ -43,9 +51,7 @@ public class ExactCellEditor extends DefaultCellEditor {
 	/**
 	 * calls JTextField.selectAll() before returning it
 	 */
-	public Component getTableCellEditorComponent(JTable table, Object value,
-	                                             boolean isSelected,
-	                                             int row, int column) {
+	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 		JTextField c = (JTextField) super.getTableCellEditorComponent(table, value, isSelected, row, column);
 		c.selectAll();
 		return c;

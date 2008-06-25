@@ -14,11 +14,11 @@
 // IMPLIED, INCLUDING, WITHOUT LIMITATION, WARRANTY OF MERCHANTABILITY OR
 // FITNESS FOR A PARTICULAR PURPOSE.
 package jmt.engine.jaba.Hull;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Enumeration;
 import java.util.Vector;
-
 
 /**
  * A class representing a surface.
@@ -26,132 +26,103 @@ import java.util.Vector;
  * @author  Chris Pudney <cpudney@alphapharm.pharm.uwa.edu.au>
  * @version 1.1
  */
-public class Surface
-{
-  /**
-   * The list of polygonal faces defining the surface.
-   */
-  private Vector faces;
+public class Surface {
+	/**
+	 * The list of polygonal faces defining the surface.
+	 */
+	private Vector faces;
 
+	/**
+	 * Construct a surface containing no faces.
+	 */
+	public Surface() {
+		faces = new Vector();
+	}
 
-  /**
-   * Construct a surface containing no faces.
-   */
-  public Surface()
-    {
-      faces = new Vector();
-    }
+	/**
+	 * Construct a surface given a list of faces.
+	 *
+	 * @param f  the list of faces
+	 */
+	public Surface(Vector f) {
+		faces = f;
+	}
 
+	/**
+	 * Get the faces of a surfaces.
+	 *
+	 * @return The vector of polygons that make up the surface.
+	 */
+	public Vector getFaces() {
+		return faces;
+	}
 
-  /**
-   * Construct a surface given a list of faces.
-   *
-   * @param f  the list of faces
-   */
-  public Surface(Vector f)
-    {
-      faces = f;
-    }
+	/**
+	 * Set the faces of a surfaces.
+	 */
+	public void setFaces(Vector f) {
+		faces = f;
+	}
 
+	/**
+	 * Get the vertices of a surface.
+	 *
+	 * @return The vector of vertices that make up a surface.
+	 */
+	public Vector getVertices() {
+		Vector vertices = new Vector();
 
-  /**
-   * Get the faces of a surfaces.
-   *
-   * @return The vector of polygons that make up the surface.
-   */
-  public Vector getFaces()
-    {
-      return faces;
-    }
-
-
-  /**
-   * Set the faces of a surfaces.
-   */
-  public void setFaces(Vector f)
-    {
-      faces = f;
-    }
-
-
-  /**
-   * Get the vertices of a surface.
-   *
-   * @return The vector of vertices that make up a surface.
-   */
-  public Vector getVertices()
-    {
-      Vector vertices = new Vector();
-
-      // Get the vertices of each face
-      for (Enumeration e = faces.elements();
-	   e.hasMoreElements();)
-	{
-	  Vector face_verts = ((Polygon)e.nextElement()).getVertices();
-	  for (Enumeration f = face_verts.elements();
-	       f.hasMoreElements();)
-	    {
-	      Vertex vertex = (Vertex)f.nextElement();
-	      if (vertices.indexOf(vertex) == -1)
-		{
-		  vertices.addElement(vertex);
+		// Get the vertices of each face
+		for (Enumeration e = faces.elements(); e.hasMoreElements();) {
+			Vector face_verts = ((Polygon) e.nextElement()).getVertices();
+			for (Enumeration f = face_verts.elements(); f.hasMoreElements();) {
+				Vertex vertex = (Vertex) f.nextElement();
+				if (vertices.indexOf(vertex) == -1) {
+					vertices.addElement(vertex);
+				}
+			}
 		}
-	    }
+		return vertices;
 	}
-      return vertices;
-    }
 
-  /**
-   * Write an OFF file that describes a surface.  OFF files can be viewed
-   * using Geomview http://www.geom.umn.edu/software/download/geomview.html
-   *
-   * @param pw A PrintWriter for the file
-   */
-  public void writeOFF(PrintWriter pw)
-    throws IOException
-      {
-	/* Write header */
-	pw.println("OFF");
-	Vector vertices = getVertices();
-	pw.println(vertices.size() + " " + " " + faces.size() + " " +
-		 (3 * faces.size()));
+	/**
+	 * Write an OFF file that describes a surface.  OFF files can be viewed
+	 * using Geomview http://www.geom.umn.edu/software/download/geomview.html
+	 *
+	 * @param pw A PrintWriter for the file
+	 */
+	public void writeOFF(PrintWriter pw) throws IOException {
+		/* Write header */
+		pw.println("OFF");
+		Vector vertices = getVertices();
+		pw.println(vertices.size() + " " + " " + faces.size() + " " + (3 * faces.size()));
 
-	/* Write vertex list */
-	for (Enumeration v = vertices.elements();
-	     v.hasMoreElements();)
-	  {
-	    int[] c = ((Vertex)v.nextElement()).getCoords();
-	    pw.println(c[0] + " " + c[1] + " " + c[2]);
-	  }
+		/* Write vertex list */
+		for (Enumeration v = vertices.elements(); v.hasMoreElements();) {
+			int[] c = ((Vertex) v.nextElement()).getCoords();
+			pw.println(c[0] + " " + c[1] + " " + c[2]);
+		}
 
-	/* Write polygon list */
-	for (Enumeration f = faces.elements();
-	     f.hasMoreElements();)
-	  {
-	    Vector pV = ((Polygon)f.nextElement()).getVertices();
-	    pw.print(pV.size());
-	    for (Enumeration v = pV.elements();
-		 v.hasMoreElements();)
-	      {
-		pw.print(" " + vertices.indexOf((Vertex)v.nextElement()));
-	      }
-	    pw.println();
-	  }
-      }
-
-
-  /**
-   * Returns a string describing a surface.
-   */
-  public String toString()
-    {
-      String s = new String();
-
-      for (Enumeration e = faces.elements();
-	   e.hasMoreElements();)
-	{
-	  s += (Polygon)e.nextElement() + "\n";
+		/* Write polygon list */
+		for (Enumeration f = faces.elements(); f.hasMoreElements();) {
+			Vector pV = ((Polygon) f.nextElement()).getVertices();
+			pw.print(pV.size());
+			for (Enumeration v = pV.elements(); v.hasMoreElements();) {
+				pw.print(" " + vertices.indexOf(v.nextElement()));
+			}
+			pw.println();
+		}
 	}
-      return s;
-    }
+
+	/**
+	 * Returns a string describing a surface.
+	 */
+	public String toString() {
+		String s = new String();
+
+		for (Enumeration e = faces.elements(); e.hasMoreElements();) {
+			s += e.nextElement() + "\n";
+		}
+		return s;
+	}
 }

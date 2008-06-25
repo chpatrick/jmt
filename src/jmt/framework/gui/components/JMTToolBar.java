@@ -17,12 +17,22 @@
   */
 package jmt.framework.gui.components;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+
+import javax.swing.AbstractButton;
+import javax.swing.Action;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
+
 import jmt.framework.gui.image.ImageLoader;
 import jmt.framework.gui.listeners.AbstractJMTAction;
 import jmt.framework.gui.listeners.SelectedActionButtonChangeListener;
-
-import javax.swing.*;
-import java.util.*;
 
 /**
  * <p><b>Name:</b> JMTToolbar</p> 
@@ -37,366 +47,371 @@ import java.util.*;
  * @version 1.0
  */
 public class JMTToolBar extends JToolBar {
-    /** Component used to load images */
-    protected ImageLoader imageLoader;
-    
-    /** A map with all buttons with associated component and groups */
-    protected HashMap buttons = new HashMap();
-    /** A map with all button groups with associated group */
-    protected HashMap buttonGroups = new HashMap();
-    
-    /**
-     * Builds a new toolbar
-     * @param loader component used to load images
-     */
-    public JMTToolBar(ImageLoader loader) {
-        init(loader);
-    }
-    
-    /**
-     * Initialize this toolbar
-     * @param loader component used to load images
-     */
-    private void init(ImageLoader loader) {
-        this.imageLoader = loader;
-        setRollover(true);
-    }
-    
-    /**
-     * Adds a new button to this toolbar.
-     * @param action action associated to the button
-     * @param iconName image to be displayed on the button. If null the image from the action
-     * is used. If this is unset too, the name is displayed.
-     * @return created button
-     */
-    public JButton addButton(Action action, String iconName) {
-        if (buttons.containsKey(action)) {
-            return (JButton)((ButtonWithGroup)buttons.get(action)).button;
-        }
-        JButton button = new JButton();
-        button.setAction(action);
-        button.setText("");
-        // Finds icon name
-        if (iconName == null) {
-            iconName = (String) action.getValue(AbstractJMTAction.IMAGE_NAME);
-        }
-        if (iconName == null) {
-            // At this point uses name as text
-            button.setText((String)action.getValue(Action.NAME));
-        }
-        else {
-            // Sets images
-            button.setIcon(imageLoader.loadIcon(iconName));
-            button.setRolloverIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_ROLLOVER));
-            button.setPressedIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_PRESSED));
-        }
-        button.setFocusPainted(false);
-        button.setContentAreaFilled(false);
-        button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        add(button);
-        ButtonWithGroup data = new ButtonWithGroup(button, -1);
-        buttons.put(action, data);
-        return button;
-    }
-    
-    /**
-     * Adds a new button to this toolbar.
-     * @param action action associated to the button
-     * @return created button
-     */
-    public JButton addButton(AbstractJMTAction action) {
-        return addButton(action, null);
-    }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * Adds a new button toggle to this toolbar.
-     * @param action action associated to the button
-     * @param iconName image to be displayed on the button. If null the image from the action
-     * is used. If this is unset too, the name is displayed.
-     * @param group identifier of button group. Each button belonging to the same group cannot be pressed together.
-     * Groups are created here, if group is less than zero means no grouping.
-     * @return created button
-     */
-    public JToggleButton addToggleButton(AbstractJMTAction action, String iconName, int group) {
-        if (buttons.containsKey(action)) {
-            return (JToggleButton)((ButtonWithGroup)buttons.get(action)).button;
-        }
-        JToggleButton button = new JToggleButton();
-        button.setAction(action);
-        // Adds a listener to both button and action to synchronize their selected state
-        SelectedActionButtonChangeListener listener = new SelectedActionButtonChangeListener(action, button);
-        button.setText("");
-        // Finds icon name
-        if (iconName == null) {
-            iconName = (String) action.getValue(AbstractJMTAction.IMAGE_NAME);
-        }
-        if (iconName == null) {
-            // At this point uses name as text
-            button.setText((String)action.getValue(Action.NAME));
-        }
-        else {
-            // Sets images
-            button.setIcon(imageLoader.loadIcon(iconName));
-            button.setRolloverIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_ROLLOVER));
-            button.setPressedIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_PRESSED));
-            button.setSelectedIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_SELECTED));
-        }
-        button.setFocusPainted(false);
-        button.setContentAreaFilled(false);
-        button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-        add(button);
-        if (group >= 0) {
-            JMTButtonGroup bGroup = getOrCreateGroup(group);
-            bGroup.add(button);
-        }
-        ButtonWithGroup data = new ButtonWithGroup(button, group);
-        data.listener = listener;
-        buttons.put(action, data);
-        return button;
-    }
-    
-    /**
-     * Adds a new button toggle to this toolbar. This button has no group.
-     * @param action action associated to the button
-     * @param iconName image to be displayed on the button. If null the image from the action
-     * is used. If this is unset too, the name is displayed.
-     * @return created button
-     */
-    public JToggleButton addToggleButton(AbstractJMTAction action, String iconName) {
-        return this.addToggleButton(action, iconName, -1);
-    }
-    
-    /**
-     * Adds a new button toggle to this toolbar.
-     * @param action action associated to the button
-     * @param group identifier of button group. Each button belonging to the same group cannot be pressed together.
-     * Groups are created here, if group is less than zero means no grouping.
-     * @return created button
-     */
-    public JToggleButton addToggleButton(AbstractJMTAction action, int group) {
-        return this.addToggleButton(action, null, group);
-    }
+	/** Component used to load images */
+	protected ImageLoader imageLoader;
 
-    /**
-     * Adds a new button toggle to this toolbar. This button has no group.
-     * @param action action associated to the button
-     * @return created button
-     */
-    public JToggleButton addToggleButton(AbstractJMTAction action){
-        return this.addToggleButton(action, null, -1);
-    }
+	/** A map with all buttons with associated component and groups */
+	protected HashMap buttons = new HashMap();
+	/** A map with all button groups with associated group */
+	protected HashMap buttonGroups = new HashMap();
 
-    /**
-     * Adds a button deriving all properties from specified action
-     * @param action action associated to the button
-     * @return created button
-     * @see AbstractJMTAction#setSelectable(boolean)
-     * @see AbstractJMTAction#setGroup(int)
-     */
-    public AbstractButton addGenericButton(AbstractJMTAction action) {
-        Boolean selectable = (Boolean) action.getValue(AbstractJMTAction.SELECTABLE);
-        Integer group = (Integer) action.getValue(AbstractJMTAction.GROUP);
-        if (selectable != null && selectable.booleanValue()) {
-            // This is a toggle button
-            if (group != null) {
-                return this.addToggleButton(action, group.intValue());
-            } else {
-                return this.addToggleButton(action);
-            }
-        } else {
-            // This is a button
-            return this.addButton(action);
-        }
-    }
+	/**
+	 * Builds a new toolbar
+	 * @param loader component used to load images
+	 */
+	public JMTToolBar(ImageLoader loader) {
+		init(loader);
+	}
 
-    /**
-     * Removes any type of button (including toggle ones) from this toolbar
-     * @param action action of the button to be removed
-     * @return removed button
-     */
-    public AbstractButton removeButton(AbstractJMTAction action) {
-        ButtonWithGroup data = (ButtonWithGroup) buttons.remove(action);
-        if (data != null) {
-            remove(data.button);
-            // Removes from group
-            JMTButtonGroup group = getButtonGroup(data.group);
-            if (group != null) {
-                group.remove(data.button);
-                // Removes group if empty
-                if (group.getButtonCount() == 0)
-                    buttonGroups.remove(new Integer(data.group));
-            }
-            // Removes listener (if any)
-            if (data.listener != null)
-                data.listener.remove();
-            return data.button;
-        }
-        return null;
-    }
+	/**
+	 * Initialize this toolbar
+	 * @param loader component used to load images
+	 */
+	private void init(ImageLoader loader) {
+		this.imageLoader = loader;
+		setRollover(true);
+	}
 
-    /* (non-Javadoc)
-     * @see javax.swing.JToolBar#addSeparator()
-     */
-    public void addSeparator() {
-        add(new CustomSeparator());
-    }
+	/**
+	 * Adds a new button to this toolbar.
+	 * @param action action associated to the button
+	 * @param iconName image to be displayed on the button. If null the image from the action
+	 * is used. If this is unset too, the name is displayed.
+	 * @return created button
+	 */
+	public JButton addButton(Action action, String iconName) {
+		if (buttons.containsKey(action)) {
+			return (JButton) ((ButtonWithGroup) buttons.get(action)).button;
+		}
+		JButton button = new JButton();
+		button.setAction(action);
+		button.setText("");
+		// Finds icon name
+		if (iconName == null) {
+			iconName = (String) action.getValue(AbstractJMTAction.IMAGE_NAME);
+		}
+		if (iconName == null) {
+			// At this point uses name as text
+			button.setText((String) action.getValue(Action.NAME));
+		} else {
+			// Sets images
+			button.setIcon(imageLoader.loadIcon(iconName));
+			button.setRolloverIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_ROLLOVER));
+			button.setPressedIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_PRESSED));
+		}
+		button.setFocusPainted(false);
+		button.setContentAreaFilled(false);
+		button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		add(button);
+		ButtonWithGroup data = new ButtonWithGroup(button, -1);
+		buttons.put(action, data);
+		return button;
+	}
 
-    /**
-     * Returns a button group
-     * @param group identifier of button group
-     * @return the button group or null if it doesn't exists
-     */
-    public JMTButtonGroup getButtonGroup(int group) {
-        return (JMTButtonGroup) buttonGroups.get(new Integer(group));
-    }
+	/**
+	 * Adds a new button to this toolbar.
+	 * @param action action associated to the button
+	 * @return created button
+	 */
+	public JButton addButton(AbstractJMTAction action) {
+		return addButton(action, null);
+	}
 
-    /**
-     * Returns a button, given its name
-     * @param action action of the button to be returned
-     * @return found button
-     */
-    public AbstractButton getButton(AbstractJMTAction action) {
-        ButtonWithGroup data = (ButtonWithGroup) buttons.get(action);
-        if (data != null)
-            return data.button;
-        else
-            return null;
-    }
+	/**
+	 * Adds a new button toggle to this toolbar.
+	 * @param action action associated to the button
+	 * @param iconName image to be displayed on the button. If null the image from the action
+	 * is used. If this is unset too, the name is displayed.
+	 * @param group identifier of button group. Each button belonging to the same group cannot be pressed together.
+	 * Groups are created here, if group is less than zero means no grouping.
+	 * @return created button
+	 */
+	public JToggleButton addToggleButton(AbstractJMTAction action, String iconName, int group) {
+		if (buttons.containsKey(action)) {
+			return (JToggleButton) ((ButtonWithGroup) buttons.get(action)).button;
+		}
+		JToggleButton button = new JToggleButton();
+		button.setAction(action);
+		// Adds a listener to both button and action to synchronize their selected state
+		SelectedActionButtonChangeListener listener = new SelectedActionButtonChangeListener(action, button);
+		button.setText("");
+		// Finds icon name
+		if (iconName == null) {
+			iconName = (String) action.getValue(AbstractJMTAction.IMAGE_NAME);
+		}
+		if (iconName == null) {
+			// At this point uses name as text
+			button.setText((String) action.getValue(Action.NAME));
+		} else {
+			// Sets images
+			button.setIcon(imageLoader.loadIcon(iconName));
+			button.setRolloverIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_ROLLOVER));
+			button.setPressedIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_PRESSED));
+			button.setSelectedIcon(imageLoader.loadIcon(iconName, ImageLoader.MODIFIER_SELECTED));
+		}
+		button.setFocusPainted(false);
+		button.setContentAreaFilled(false);
+		button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+		add(button);
+		if (group >= 0) {
+			JMTButtonGroup bGroup = getOrCreateGroup(group);
+			bGroup.add(button);
+		}
+		ButtonWithGroup data = new ButtonWithGroup(button, group);
+		data.listener = listener;
+		buttons.put(action, data);
+		return button;
+	}
 
-    /**
-     * Enables or disables every button of a button group
-     * @param group group to be enabled or disabled
-     * @param value true to enable the group, false to disable it.
-     */
-    public void enableButtonGroup(int group, boolean value) {
-        JMTButtonGroup bGroup = getButtonGroup(group);
-        if (bGroup != null) {
-            bGroup.setEnabled(value);
-        }
-    }
+	/**
+	 * Adds a new button toggle to this toolbar. This button has no group.
+	 * @param action action associated to the button
+	 * @param iconName image to be displayed on the button. If null the image from the action
+	 * is used. If this is unset too, the name is displayed.
+	 * @return created button
+	 */
+	public JToggleButton addToggleButton(AbstractJMTAction action, String iconName) {
+		return this.addToggleButton(action, iconName, -1);
+	}
 
-    /**
-     * Clears selection of a button group
-     * @param group group to be deselected
-     */
-    public void clearButtonGroupSelection(int group) {
-        JMTButtonGroup bGroup = getButtonGroup(group);
-        if (bGroup != null) {
-            bGroup.clearSelection();
-        }
-    }
+	/**
+	 * Adds a new button toggle to this toolbar.
+	 * @param action action associated to the button
+	 * @param group identifier of button group. Each button belonging to the same group cannot be pressed together.
+	 * Groups are created here, if group is less than zero means no grouping.
+	 * @return created button
+	 */
+	public JToggleButton addToggleButton(AbstractJMTAction action, int group) {
+		return this.addToggleButton(action, null, group);
+	}
 
+	/**
+	 * Adds a new button toggle to this toolbar. This button has no group.
+	 * @param action action associated to the button
+	 * @return created button
+	 */
+	public JToggleButton addToggleButton(AbstractJMTAction action) {
+		return this.addToggleButton(action, null, -1);
+	}
 
-    /**
-     * Clicks a given button
-     * @param action action of the button to be clicked
-     */
-    public void clickButton(AbstractJMTAction action) {
-        AbstractButton button = getButton(action);
-        if (button != null)
-            button.doClick();
-    }
+	/**
+	 * Adds a button deriving all properties from specified action
+	 * @param action action associated to the button
+	 * @return created button
+	 * @see AbstractJMTAction#setSelectable(boolean)
+	 * @see AbstractJMTAction#setGroup(int)
+	 */
+	public AbstractButton addGenericButton(AbstractJMTAction action) {
+		Boolean selectable = (Boolean) action.getValue(AbstractJMTAction.SELECTABLE);
+		Integer group = (Integer) action.getValue(AbstractJMTAction.GROUP);
+		if (selectable != null && selectable.booleanValue()) {
+			// This is a toggle button
+			if (group != null) {
+				return this.addToggleButton(action, group.intValue());
+			} else {
+				return this.addToggleButton(action);
+			}
+		} else {
+			// This is a button
+			return this.addButton(action);
+		}
+	}
 
-    /**
-     * Returns all buttons inside this toolbar
-     * @return a set with all buttons
-     */
-    public HashSet getAllButtons() {
-        HashSet set = new HashSet();
-        for (Iterator it = buttons.values().iterator(); it.hasNext(); ) {
-            ButtonWithGroup bwg = (ButtonWithGroup) it.next();
-            set.add(bwg.button);
-        }
-        return set;
-    }
+	/**
+	 * Removes any type of button (including toggle ones) from this toolbar
+	 * @param action action of the button to be removed
+	 * @return removed button
+	 */
+	public AbstractButton removeButton(AbstractJMTAction action) {
+		ButtonWithGroup data = (ButtonWithGroup) buttons.remove(action);
+		if (data != null) {
+			remove(data.button);
+			// Removes from group
+			JMTButtonGroup group = getButtonGroup(data.group);
+			if (group != null) {
+				group.remove(data.button);
+				// Removes group if empty
+				if (group.getButtonCount() == 0) {
+					buttonGroups.remove(new Integer(data.group));
+				}
+			}
+			// Removes listener (if any)
+			if (data.listener != null) {
+				data.listener.remove();
+			}
+			return data.button;
+		}
+		return null;
+	}
 
-    /**
-     * Enables or disables all buttons of this toolbar
-     * @param enable true to enable every button, false to disable them
-     */
-    public void enableButtons(boolean enable) {
-        for (Iterator it = buttons.keySet().iterator(); it.hasNext(); ) {
-            AbstractJMTAction action = (AbstractJMTAction) it.next();
-            action.setEnabled(enable);
-        }
-    }
+	/* (non-Javadoc)
+	 * @see javax.swing.JToolBar#addSeparator()
+	 */
+	public void addSeparator() {
+		add(new CustomSeparator());
+	}
 
-    /**
-     * Populates this toolbar reading all properties from specified actions. null values
-     * are used to add a separator.
-     * @param abstractJMTactions a collection of AbstractJMTAction with all actions to be added
-     * @return an ArrayList with all added objects (each element is instanceof AbstractButton)
-     * @see AbstractJMTAction
-     */
-    public ArrayList populateToolbar(Collection abstractJMTactions) {
-        ArrayList ret = new ArrayList();
-        for (Iterator it = abstractJMTactions.iterator(); it.hasNext(); ) {
-            AbstractJMTAction action = (AbstractJMTAction) it.next();
-            if (action == null) {
-                addSeparator();
-            } else {
-                ret.add(addGenericButton(action));
-            }
-        }
-        return ret;
-    }
+	/**
+	 * Returns a button group
+	 * @param group identifier of button group
+	 * @return the button group or null if it doesn't exists
+	 */
+	public JMTButtonGroup getButtonGroup(int group) {
+		return (JMTButtonGroup) buttonGroups.get(new Integer(group));
+	}
 
-    /**
-     * Populates this toolbar reading all properties from specified actions. null values
-     * are used to add a separator.
-     * @param abstractJMTactions an array of AbstractJMTAction with all actions to be added
-     * @return an ArrayList with all added objects (each element is instanceof AbstractButton)
-     * @see AbstractJMTAction
-     */
-    public ArrayList populateToolbar(AbstractJMTAction[] abstractJMTactions) {
-        ArrayList ret = new ArrayList();
-        for (int i=0; i< abstractJMTactions.length; i++) {
-            AbstractJMTAction action = abstractJMTactions[i];
-            if (action == null) {
-                addSeparator();
-            } else {
-                ret.add(addGenericButton(action));
-            }
-        }
-        return ret;
-    }
-    
+	/**
+	 * Returns a button, given its name
+	 * @param action action of the button to be returned
+	 * @return found button
+	 */
+	public AbstractButton getButton(AbstractJMTAction action) {
+		ButtonWithGroup data = (ButtonWithGroup) buttons.get(action);
+		if (data != null) {
+			return data.button;
+		} else {
+			return null;
+		}
+	}
 
-// --- Inner helper methods and data structures ------------------------------------------------------------------    
-    
-    /**
-     * Returns a button group if present, otherwise creates and adds it.
-     * @param group group to be get
-     * @return created group
-     */
-    protected JMTButtonGroup getOrCreateGroup(int group) {
-        JMTButtonGroup bGroup = getButtonGroup(group);
-        if (bGroup == null) {
-            bGroup = new JMTButtonGroup();
-            buttonGroups.put(new Integer(group), bGroup);
-        }
-        return bGroup;
-    }
-    
-    /**
-     * Inner class used to store buttons together with their button group (if any)
-     */
-    protected class ButtonWithGroup {
-        /** Button. Always set. */
-        public AbstractButton button;
-        /** Button group. -1 if button has not groups. */
-        public int group;
-        /** A listener to support action select state. This is stored here to be deregistered on button remove. */
-        public SelectedActionButtonChangeListener listener;
-        
-        /**
-         * Creates a new ButtonWithGroup element
-         * @param button reference to button
-         * @param group reference to button group or -1 if button has no groups.
-         */
-        public ButtonWithGroup(AbstractButton button, int group) {
-            this.button = button;
-            this.group = group;
-        }
-    }
+	/**
+	 * Enables or disables every button of a button group
+	 * @param group group to be enabled or disabled
+	 * @param value true to enable the group, false to disable it.
+	 */
+	public void enableButtonGroup(int group, boolean value) {
+		JMTButtonGroup bGroup = getButtonGroup(group);
+		if (bGroup != null) {
+			bGroup.setEnabled(value);
+		}
+	}
+
+	/**
+	 * Clears selection of a button group
+	 * @param group group to be deselected
+	 */
+	public void clearButtonGroupSelection(int group) {
+		JMTButtonGroup bGroup = getButtonGroup(group);
+		if (bGroup != null) {
+			bGroup.clearSelection();
+		}
+	}
+
+	/**
+	 * Clicks a given button
+	 * @param action action of the button to be clicked
+	 */
+	public void clickButton(AbstractJMTAction action) {
+		AbstractButton button = getButton(action);
+		if (button != null) {
+			button.doClick();
+		}
+	}
+
+	/**
+	 * Returns all buttons inside this toolbar
+	 * @return a set with all buttons
+	 */
+	public HashSet getAllButtons() {
+		HashSet set = new HashSet();
+		for (Iterator it = buttons.values().iterator(); it.hasNext();) {
+			ButtonWithGroup bwg = (ButtonWithGroup) it.next();
+			set.add(bwg.button);
+		}
+		return set;
+	}
+
+	/**
+	 * Enables or disables all buttons of this toolbar
+	 * @param enable true to enable every button, false to disable them
+	 */
+	public void enableButtons(boolean enable) {
+		for (Iterator it = buttons.keySet().iterator(); it.hasNext();) {
+			AbstractJMTAction action = (AbstractJMTAction) it.next();
+			action.setEnabled(enable);
+		}
+	}
+
+	/**
+	 * Populates this toolbar reading all properties from specified actions. null values
+	 * are used to add a separator.
+	 * @param abstractJMTactions a collection of AbstractJMTAction with all actions to be added
+	 * @return an ArrayList with all added objects (each element is instanceof AbstractButton)
+	 * @see AbstractJMTAction
+	 */
+	public ArrayList populateToolbar(Collection abstractJMTactions) {
+		ArrayList ret = new ArrayList();
+		for (Iterator it = abstractJMTactions.iterator(); it.hasNext();) {
+			AbstractJMTAction action = (AbstractJMTAction) it.next();
+			if (action == null) {
+				addSeparator();
+			} else {
+				ret.add(addGenericButton(action));
+			}
+		}
+		return ret;
+	}
+
+	/**
+	 * Populates this toolbar reading all properties from specified actions. null values
+	 * are used to add a separator.
+	 * @param abstractJMTactions an array of AbstractJMTAction with all actions to be added
+	 * @return an ArrayList with all added objects (each element is instanceof AbstractButton)
+	 * @see AbstractJMTAction
+	 */
+	public ArrayList populateToolbar(AbstractJMTAction[] abstractJMTactions) {
+		ArrayList ret = new ArrayList();
+		for (int i = 0; i < abstractJMTactions.length; i++) {
+			AbstractJMTAction action = abstractJMTactions[i];
+			if (action == null) {
+				addSeparator();
+			} else {
+				ret.add(addGenericButton(action));
+			}
+		}
+		return ret;
+	}
+
+	// --- Inner helper methods and data structures ------------------------------------------------------------------    
+
+	/**
+	 * Returns a button group if present, otherwise creates and adds it.
+	 * @param group group to be get
+	 * @return created group
+	 */
+	protected JMTButtonGroup getOrCreateGroup(int group) {
+		JMTButtonGroup bGroup = getButtonGroup(group);
+		if (bGroup == null) {
+			bGroup = new JMTButtonGroup();
+			buttonGroups.put(new Integer(group), bGroup);
+		}
+		return bGroup;
+	}
+
+	/**
+	 * Inner class used to store buttons together with their button group (if any)
+	 */
+	protected class ButtonWithGroup {
+		/** Button. Always set. */
+		public AbstractButton button;
+		/** Button group. -1 if button has not groups. */
+		public int group;
+		/** A listener to support action select state. This is stored here to be deregistered on button remove. */
+		public SelectedActionButtonChangeListener listener;
+
+		/**
+		 * Creates a new ButtonWithGroup element
+		 * @param button reference to button
+		 * @param group reference to button group or -1 if button has no groups.
+		 */
+		public ButtonWithGroup(AbstractButton button, int group) {
+			this.button = button;
+			this.group = group;
+		}
+	}
 }

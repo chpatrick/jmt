@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.QueueNet;
 
 /**
@@ -27,7 +27,7 @@ public class JobInfo {
 
 	private Job Job;
 
-    private double Time;
+	private double Time;
 
 	/** Creates a new instance of JobInfo object.
 	 * @param Job Reference to the job to be described.
@@ -51,11 +51,11 @@ public class JobInfo {
 		return Time;
 	}
 
-    /** Sets Time property value .
+	/** Sets Time property value .
 	 * @param time Time property value.
 	 */
-    protected void setTime(double time) {
-        Time = time;
-    }
+	protected void setTime(double time) {
+		Time = time;
+	}
 
 }

@@ -15,14 +15,18 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.engine.NetStrategies.QueuePutStrategies;
 
-import jmt.engine.NetStrategies.QueuePutStrategy;
-import jmt.engine.QueueNet.*;
+package jmt.engine.NetStrategies.QueuePutStrategies;
 
 import java.util.LinkedList;
 import java.util.ListIterator;
+
+import jmt.engine.NetStrategies.QueuePutStrategy;
+import jmt.engine.QueueNet.Job;
+import jmt.engine.QueueNet.JobInfo;
+import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.NetNode;
+import jmt.engine.QueueNet.NodeSection;
 
 /**
  * This class implements a specific queue put strategy: all arriving jobs
@@ -34,58 +38,56 @@ public class HeadStrategyPriority extends QueuePutStrategy {
 
 	/** This method should be overridden to implement a specific job strategy.
 	 * @param job Job to be added to the queue.
-     * @param queue Queue.
-     * @param sourceSection Job source section.
-     * @param sourceNode Job source node.
-     * @param callingSection The section which calls this strategy.
-     */
-	public void put(Job job, JobInfoList queue, byte sourceSection,
-	                         NetNode sourceNode, NodeSection callingSection) {
+	 * @param queue Queue.
+	 * @param sourceSection Job source section.
+	 * @param sourceNode Job source node.
+	 * @param callingSection The section which calls this strategy.
+	 */
+	public void put(Job job, JobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) {
 
-        //priority of this job
-        int priority = job.getJobClass().getPriority();
+		//priority of this job
+		int priority = job.getJobClass().getPriority();
 
-        //list of jobs in queue
-        LinkedList list = (LinkedList) queue.getJobList();
+		//list of jobs in queue
+		LinkedList list = (LinkedList) queue.getJobList();
 
-
-        if (list.size() == 0) {
-            //empty list: add first in general and class lists
-            queue.addFirst(new JobInfo(job), false);
-            return;
-        }
-
-        //else creates an iterator and find the correct position
-        //according to the job priority
-
-        ListIterator iterator = list.listIterator();
-        JobInfo current = null;
-        int currentJobPriority = 0;
-        int index = -1;
-
-        //iterator starts from the first (i.e. the job with highest priority)
-        while (iterator.hasNext()) {
-            index++;
-			current = (JobInfo) iterator.next();
-            currentJobPriority = current.getJob().getJobClass().getPriority();
-
-			if (priority >= currentJobPriority) {
-                //the job to be added must be inserted before the current job
-                //(because has greater priority or has equal priority but it is the last come)
-
-                //index is the position of the current element, which will be shifted together
-                //with the following ones
-
-                queue.add(index, new JobInfo(job), false);
-                return;
-            }
-            //else if priority is lower than current, continue iteration
+		if (list.size() == 0) {
+			//empty list: add first in general and class lists
+			queue.addFirst(new JobInfo(job), false);
+			return;
 		}
 
-        //exiting from the "while" means that the job to be inserted is the job with
-        //lowest priority
-        //add last
-        queue.addLast(new JobInfo(job), false);
-        return;
+		//else creates an iterator and find the correct position
+		//according to the job priority
+
+		ListIterator iterator = list.listIterator();
+		JobInfo current = null;
+		int currentJobPriority = 0;
+		int index = -1;
+
+		//iterator starts from the first (i.e. the job with highest priority)
+		while (iterator.hasNext()) {
+			index++;
+			current = (JobInfo) iterator.next();
+			currentJobPriority = current.getJob().getJobClass().getPriority();
+
+			if (priority >= currentJobPriority) {
+				//the job to be added must be inserted before the current job
+				//(because has greater priority or has equal priority but it is the last come)
+
+				//index is the position of the current element, which will be shifted together
+				//with the following ones
+
+				queue.add(index, new JobInfo(job), false);
+				return;
+			}
+			//else if priority is lower than current, continue iteration
+		}
+
+		//exiting from the "while" means that the job to be inserted is the job with
+		//lowest priority
+		//add last
+		queue.addLast(new JobInfo(job), false);
+		return;
 	}
 }

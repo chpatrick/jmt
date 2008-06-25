@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.QueueNet;
 
 import java.util.LinkedList;
@@ -71,17 +71,18 @@ public class JobClassList {
 	}
 
 	/**Gets, if it exists, the job class with the specified name.
-     *
-     * @param Name The name of the job class
-     * @return the job class. Null if it doesn't exist.
-     */
-    public JobClass get(String Name) {
+	 *
+	 * @param Name The name of the job class
+	 * @return the job class. Null if it doesn't exist.
+	 */
+	public JobClass get(String Name) {
 		ListIterator iterator = JobClasses.listIterator();
 		JobClass jc;
 		while (iterator.hasNext()) {
 			jc = (JobClass) iterator.next();
-			if (jc.getName().compareTo(Name) == 0)
+			if (jc.getName().compareTo(Name) == 0) {
 				return jc;
+			}
 		}
 		return null;
 	}
@@ -101,4 +102,3 @@ public class JobClassList {
 		return JobClasses.indexOf(JobClass);
 	}
 }
-

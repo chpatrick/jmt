@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * inputSection.java
  *
@@ -51,8 +51,7 @@ public abstract class InputSection extends PipeSection {
 	 * @param Delay Scheduling delay.
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendForward(Job Job, double Delay)
-	        throws jmt.common.exception.NetException {
+	protected void sendForward(Job Job, double Delay) throws jmt.common.exception.NetException {
 		send(Job, Delay, NodeSection.SERVICE);
 	}
 
@@ -62,8 +61,7 @@ public abstract class InputSection extends PipeSection {
 	 * @param Delay Scheduling delay.
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendForward(int Event, Object Data, double Delay)
-	        throws jmt.common.exception.NetException {
+	protected void sendForward(int Event, Object Data, double Delay) throws jmt.common.exception.NetException {
 		send(Event, Data, Delay, NodeSection.SERVICE);
 	}
 }

@@ -31,10 +31,12 @@ public class BetaFun {
 		boolean indx;
 		beta = lnBeta(p, q);
 		acu = 1e-14;
-		if (p <= 0 || q <= 0)
+		if (p <= 0 || q <= 0) {
 			throw new IllegalArgumentException("the degrees of freedom of a Fisher distribution must be > 0");
-		if (x1 <= 0 || x1 >= 1)
+		}
+		if (x1 <= 0 || x1 >= 1) {
 			throw new IllegalArgumentException("probability must be > 0 and < 1");
+		}
 		psq = p + q;
 		cx = 1 - x1;
 		if (p < psq * x1) {
@@ -55,7 +57,9 @@ public class BetaFun {
 		ns = qq + cx * psq;
 		rx = x2 / cx;
 		temp = qq - ai;
-		if (ns == 0) rx = x2;
+		if (ns == 0) {
+			rx = x2;
+		}
 		while (temp > acu && temp > acu * betain) {
 			term = term * temp * rx / (pp + ai);
 			betain = betain + term;
@@ -65,8 +69,9 @@ public class BetaFun {
 				ns--;
 				if (ns >= 0) {
 					temp = qq - ai;
-					if (ns == 0)
+					if (ns == 0) {
 						rx = x2;
+					}
 				} else {
 					temp = psq;
 					psq += 1;
@@ -74,9 +79,10 @@ public class BetaFun {
 			}
 		}
 		betain *= Math.exp(pp * Math.log(x2) + (qq - 1) * Math.log(cx) - beta) / pp;
-		if (indx) betain = 1 - betain;
+		if (indx) {
+			betain = 1 - betain;
+		}
 		return betain;
 	}
-
 
 }

@@ -15,11 +15,10 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
  *
@@ -35,10 +34,8 @@ import jmt.common.exception.IncorrectDistributionParameterException;
 
 public class ErlangPar extends AbstractParameter implements Parameter {
 
-
 	private double alpha;
 	private double r;
-
 
 	/**
 	 * creates a new erlang parameter.
@@ -50,15 +47,13 @@ public class ErlangPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public ErlangPar(double alpha, double r)
-	        throws IncorrectDistributionParameterException {
+	public ErlangPar(double alpha, double r) throws IncorrectDistributionParameterException {
 		this.alpha = alpha;
 		this.r = r;
 		testParameters();
 	}
 
-	public ErlangPar(Double walpha, Double wr)
-	        throws IncorrectDistributionParameterException {
+	public ErlangPar(Double walpha, Double wr) throws IncorrectDistributionParameterException {
 		this(walpha.doubleValue(), wr.doubleValue());
 	}
 
@@ -70,12 +65,13 @@ public class ErlangPar extends AbstractParameter implements Parameter {
 	 *
 	 * @throws IncorrectDistributionParameterException if any of the double provided is less or equal to zero.
 	 */
-	private void testParameters()
-	        throws IncorrectDistributionParameterException {
-		if (alpha <= 0)
+	private void testParameters() throws IncorrectDistributionParameterException {
+		if (alpha <= 0) {
 			throw new IncorrectDistributionParameterException("alpha <=0");
-		if (r <= 0)
+		}
+		if (r <= 0) {
 			throw new IncorrectDistributionParameterException("r <=0");
+		}
 	}
 
 	/**
@@ -129,8 +125,7 @@ public class ErlangPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setAlpha(double alpha)
-	        throws IncorrectDistributionParameterException {
+	public void setAlpha(double alpha) throws IncorrectDistributionParameterException {
 		this.alpha = alpha;
 		try {
 			testParameters();
@@ -149,8 +144,7 @@ public class ErlangPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
-	public void setR(double r)
-	        throws IncorrectDistributionParameterException {
+	public void setR(double r) throws IncorrectDistributionParameterException {
 		this.r = r;
 		try {
 			testParameters();
@@ -159,18 +153,18 @@ public class ErlangPar extends AbstractParameter implements Parameter {
 		}
 	}
 
-    /**
-     * Sets mean for a given distribution parameter. This method is required to adjust distributions
-     * mean values into Load Dependent Service Time Strategy
-     * @param meanValue new mean value for this distribution
-     * Author: Bertoli Marco
-     * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
-     */
-    public void setMean(double meanValue) throws IncorrectDistributionParameterException{
-        if (meanValue <= 0 || Double.isInfinite(meanValue))
-            throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");
-        alpha = r / meanValue;
-    }
-
+	/**
+	 * Sets mean for a given distribution parameter. This method is required to adjust distributions
+	 * mean values into Load Dependent Service Time Strategy
+	 * @param meanValue new mean value for this distribution
+	 * Author: Bertoli Marco
+	 * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
+	 */
+	public void setMean(double meanValue) throws IncorrectDistributionParameterException {
+		if (meanValue <= 0 || Double.isInfinite(meanValue)) {
+			throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");
+		}
+		alpha = r / meanValue;
+	}
 
 } // end ErlangPar

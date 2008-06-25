@@ -3,7 +3,6 @@
 
 package jmt.engine.simEngine;
 
-
 /**
  * Predicates are used to select events from the deferred queue.
  * This class is abstract and must be subclassed when writing new

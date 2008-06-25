@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.math;
 
 /** this class creates a dynamic list of double. It's useful to use when you want
@@ -83,20 +83,21 @@ public class DoubleArrayList {
 		return true;
 	}
 
-
 	/**
-     *
-     * Ensures the minimum capacity of the List.
-     * If the lists has more element
+	 *
+	 * Ensures the minimum capacity of the List.
+	 * If the lists has more element
 	 * then dim it throws an exception.
 	 *
 	 * @param dim
 	 */
 	public void ensureCapacity(int dim) {
-		if (dim < size)
+		if (dim < size) {
 			throw new IndexOutOfBoundsException("dim < size");
-		if (dim > size && dim < data.length)
+		}
+		if (dim > size && dim < data.length) {
 			return;
+		}
 		double[] temp = new double[dim];
 		if (end > start) {
 			System.arraycopy(data, start, temp, 0, size);
@@ -117,7 +118,7 @@ public class DoubleArrayList {
 		size = 0;
 		start = 0;
 		end = 0;
-//		System.out.println("Last size = "+data.length);
+		//		System.out.println("Last size = "+data.length);
 		data = new double[100];
 	}
 
@@ -127,16 +128,18 @@ public class DoubleArrayList {
 	 * @return the data
 	 */
 	public double get(int pos) {
-		if (pos >= size)
+		if (pos >= size) {
 			throw new IndexOutOfBoundsException("pos >= size");
+		}
 		if (start < end) {
 			return data[pos + start];
 		} else {
 			int direct = data.length - start;
-			if (pos < direct)
+			if (pos < direct) {
 				return data[pos + start];
-			else
+			} else {
 				return data[pos - direct];
+			}
 		}
 	}
 
@@ -145,8 +148,9 @@ public class DoubleArrayList {
 	 * @param dim
 	 */
 	public void delFirst(int dim) {
-		if (dim > size)
+		if (dim > size) {
 			throw new IndexOutOfBoundsException("dim > size");
+		}
 		if (size - dim == 0) {
 			start = 0;
 			end = -1;
@@ -172,9 +176,9 @@ public class DoubleArrayList {
 		double[] temp;
 		if (endPos > startPos && startPos < size && endPos < size) {
 			temp = new double[endPos - startPos + 1];
-			if (endPos + start < data.length)
+			if (endPos + start < data.length) {
 				System.arraycopy(data, startPos + start, temp, 0, endPos - startPos + 1);
-			else if (startPos + start < data.length) {
+			} else if (startPos + start < data.length) {
 				System.arraycopy(data, startPos + start, temp, 0, data.length - start);
 				System.arraycopy(data, 0, temp, data.length - start, endPos - startPos - (data.length - start));
 			} else {
@@ -183,12 +187,15 @@ public class DoubleArrayList {
 			}
 			return temp;
 		} else {
-			if (endPos < startPos)
+			if (endPos < startPos) {
 				throw new IndexOutOfBoundsException("endPos < startPos");
-			if (startPos > size)
+			}
+			if (startPos > size) {
 				throw new IndexOutOfBoundsException("startPos > size");
-			if (endPos > size)
+			}
+			if (endPos > size) {
 				throw new IndexOutOfBoundsException("endPos > size");
+			}
 			return null;
 		}
 	}
@@ -199,16 +206,18 @@ public class DoubleArrayList {
 	 * @param newD
 	 */
 	public void set(int pos, double newD) {
-		if (pos >= size)
+		if (pos >= size) {
 			throw new IndexOutOfBoundsException("pos >= size");
+		}
 		if (start < end) {
 			data[pos + start] = newD;
 		} else {
 			int direct = data.length - start;
-			if (pos < direct)
+			if (pos < direct) {
 				data[pos + start] = newD;
-			else
+			} else {
 				data[pos - direct] = newD;
+			}
 		}
 	}
 
@@ -230,32 +239,36 @@ public class DoubleArrayList {
 		Class c;
 		try {
 			c = Class.forName("java.lang.IndexOutOfBoundsException");
-			if (dal.getSize() != 0)
+			if (dal.getSize() != 0) {
 				success = false;
-			else {
+			} else {
 				try {
 					dal.get(1);
 				} catch (Exception e) {
-					if (e.getClass() != c)
+					if (e.getClass() != c) {
 						success = false;
+					}
 				}
 				try {
 					dal.delFirst(1);
 				} catch (Exception e) {
-					if (e.getClass() != c)
+					if (e.getClass() != c) {
 						success = false;
+					}
 				}
 				try {
 					dal.toArray(0, 0);
 				} catch (Exception e) {
-					if (e.getClass() != c)
+					if (e.getClass() != c) {
 						success = false;
+					}
 				}
 				try {
 					dal.set(1, 0.0);
 				} catch (Exception e) {
-					if (e.getClass() != c)
+					if (e.getClass() != c) {
 						success = false;
+					}
 				}
 			}
 			try {
@@ -267,30 +280,37 @@ public class DoubleArrayList {
 			}
 
 			try {
-				if (dal.get(100) != 100.0)
+				if (dal.get(100) != 100.0) {
 					success = false;
+				}
 			} catch (Exception e) {
-				if (e.getClass() != c)
+				if (e.getClass() != c) {
 					success = false;
+				}
 			}
 
-			if (dal.getSize() != 1000)
+			if (dal.getSize() != 1000) {
 				success = false;
+			}
 			try {
 				dal.get(1001);
 			} catch (Exception e) {
-				if (e.getClass() != c)
+				if (e.getClass() != c) {
 					success = false;
+				}
 			}
 
 			double[] temp = dal.toArray(10, 20);
-			for (int i = 0; i < 11; i++)
-				if (temp[i] != (double) i + 10)
+			for (int i = 0; i < 11; i++) {
+				if (temp[i] != (double) i + 10) {
 					success = false;
+				}
+			}
 
 			dal.delFirst(50);
-			if (dal.get(0) != 50)
+			if (dal.get(0) != 50) {
 				success = false;
+			}
 			try {
 				for (int i = 0; i < 50; i++) {
 					dal.add(i);
@@ -298,8 +318,9 @@ public class DoubleArrayList {
 			} catch (Exception e) {
 				success = false;
 			}
-			if (dal.get(990) != 40)
+			if (dal.get(990) != 40) {
 				success = false;
+			}
 
 			dal.clear();
 			dal.ensureCapacity(1000);
@@ -311,10 +332,12 @@ public class DoubleArrayList {
 				for (int j = 0; j < 100; j++) {
 					dal.add(j);
 				}
-				if (dal.getSize() != 1000)
+				if (dal.getSize() != 1000) {
 					success = false;
-				if (dal.data.length != 1000)
+				}
+				if (dal.data.length != 1000) {
 					success = false;
+				}
 			}
 
 		} catch (ClassNotFoundException e) {
@@ -369,7 +392,6 @@ public class DoubleArrayList {
 	/*public void add(int pos, double newD) {
 
 	}
-*/
-
+	*/
 
 }

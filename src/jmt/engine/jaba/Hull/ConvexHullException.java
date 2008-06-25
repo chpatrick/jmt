@@ -14,6 +14,7 @@
 // IMPLIED, INCLUDING, WITHOUT LIMITATION, WARRANTY OF MERCHANTABILITY OR
 // FITNESS FOR A PARTICULAR PURPOSE.
 package jmt.engine.jaba.Hull;
+
 /**
  * A class representing exceptions during construction of a convex hull.
  * These can occur for example when all vertices are coplanar.
@@ -21,23 +22,25 @@ package jmt.engine.jaba.Hull;
  * @author Chris Pudney <mailto:cpudney@alphapharm.pharm.uwa.edu.au>
  * @see    ConvexHull
  */
-public class ConvexHullException extends Exception
-{
-  /**
-   * Construct a convex hull exception.
-   */
-  public ConvexHullException()
-    {
-      super();
-    }
+public class ConvexHullException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-  /**
-   * Construct a convex hull exception with a message.
-   *
-   * @param s  a descriptive error message
-   */
-  public ConvexHullException(String s)
-    {
-      super(s);
-    }
+	/**
+	   * Construct a convex hull exception.
+	   */
+	public ConvexHullException() {
+		super();
+	}
+
+	/**
+	 * Construct a convex hull exception with a message.
+	 *
+	 * @param s  a descriptive error message
+	 */
+	public ConvexHullException(String s) {
+		super(s);
+	}
 }

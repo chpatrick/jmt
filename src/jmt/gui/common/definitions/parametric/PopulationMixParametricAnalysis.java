@@ -15,16 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
-package jmt.gui.common.definitions.parametric;
 
-import jmt.gui.common.definitions.ClassDefinition;
-import jmt.gui.common.definitions.SimulationDefinition;
-import jmt.gui.common.definitions.StationDefinition;
+package jmt.gui.common.definitions.parametric;
 
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
+
+import jmt.gui.common.definitions.ClassDefinition;
+import jmt.gui.common.definitions.SimulationDefinition;
+import jmt.gui.common.definitions.StationDefinition;
 
 /**
  * <p>Title: PopulationMixParametricAnalysis</p>
@@ -39,268 +39,274 @@ import java.util.Vector;
  *         Time: 11.51.51
  */
 public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinition {
-    private final double FROM = 1;
-    private final double TO = 0;
+	private final double FROM = 1;
+	private final double TO = 0;
 
-    private Object classKey;
-    private Object otherClassKey;
-    private int popValue;
-    private ValuesTable values;
+	private Object classKey;
+	private Object otherClassKey;
+	private int popValue;
+	private ValuesTable values;
 
+	public PopulationMixParametricAnalysis(ClassDefinition cd, StationDefinition sd, SimulationDefinition simd) {
+		type = PA_TYPE_POPULATION_MIX;
+		classDef = cd;
+		stationDef = sd;
+		simDef = simd;
+		classKey = classDef.getClosedClassKeys().get(0);
+		initialValue = classDef.getClassPopulation(classKey).doubleValue() / classDef.getTotalCloseClassPopulation();
+		finalValue = TO;
+		Vector classSet = classDef.getClosedClassKeys();
+		classSet.remove(classKey);
+		otherClassKey = classSet.get(0);
+		popValue = cd.getTotalCloseClassPopulation();
+		numberOfSteps = this.searchForAvaibleSteps();
+		if (numberOfSteps > MAX_STEP_NUMBER) {
+			numberOfSteps = MAX_STEP_NUMBER;
+		}
+	}
 
+	/**
+	 * Gets the class key of the job class whose number of jobs will be
+	 * increased.
+	 * @return the key of the class whose number of jobs will be increased
+	 */
+	public Object getReferenceClass() {
+		return classKey;
+	}
 
-    public PopulationMixParametricAnalysis(ClassDefinition cd,StationDefinition sd,SimulationDefinition simd) {
-        type = PA_TYPE_POPULATION_MIX;
-        classDef = cd;
-        stationDef = sd;
-        simDef = simd;
-        classKey = classDef.getClosedClassKeys().get(0);
-        initialValue = classDef.getClassPopulation(classKey).doubleValue()/classDef.getTotalCloseClassPopulation();
-        finalValue = TO;
-        Vector classSet = classDef.getClosedClassKeys();
-        classSet.remove(classKey);
-        otherClassKey = classSet.get(0);
-        popValue = cd.getTotalCloseClassPopulation();
-        numberOfSteps = this.searchForAvaibleSteps();
-        if (numberOfSteps > MAX_STEP_NUMBER) numberOfSteps = MAX_STEP_NUMBER;
-    }
+	/**
+	 * Sets the class whose number of jobs will be increased.
+	 * @param classKey the key of the class whose number of job will be
+	 *        increased
+	 */
+	public void setReferenceClass(Object classKey) {
+		if (this.classKey != classKey) {
+			simDef.setSaveChanged();
+		}
+		this.classKey = classKey;
+	}
 
-    /**
-     * Gets the class key of the job class whose number of jobs will be
-     * increased.
-     * @return the key of the class whose number of jobs will be increased
-     */
-    public Object getReferenceClass() {
-        return classKey;
-    }
+	/**
+	 * Sets default initial value
+	 */
+	public void setDefaultInitialValue() {
+		double pop = classDef.getClassPopulation(classKey).doubleValue();
+		double totalPop = classDef.getTotalCloseClassPopulation();
+		initialValue = pop / totalPop;
+	}
 
-    /**
-     * Sets the class whose number of jobs will be increased.
-     * @param classKey the key of the class whose number of job will be
-     *        increased
-     */
-    public void setReferenceClass(Object classKey) {
-        if (this.classKey != classKey)
-            simDef.setSaveChanged();
-        this.classKey = classKey;
-    }
+	/**
+	 * Sets default final value
+	 */
+	public void setDefaultFinalValue() {
+		finalValue = TO;
+	}
 
-    /**
-     * Sets default initial value
-     */
-    public void setDefaultInitialValue() {
-        double pop = classDef.getClassPopulation(classKey).doubleValue();
-        double totalPop = classDef.getTotalCloseClassPopulation();
-        initialValue = pop/totalPop;
-    }
+	/**
+	 * Gets the type of parametric analysis
+	 *
+	 * @return the type of parametric analysis
+	 */
+	public String getType() {
+		return type;
+	}
 
-    /**
-     * Sets default final value
-     */
-    public void setDefaultFinalValue() {
-        finalValue = TO;
-    }
+	/**
+	 * returns the set of values that the varying parameter will assume
+	 * @return a structure containing the set of values that the varying parameter will assume
+	 */
+	public Object getValuesSet() {
+		return values;
+	}
 
-    /**
-     * Gets the type of parametric analysis
-     *
-     * @return the type of parametric analysis
-     */
-    public String getType() {
-        return type;
-    }
+	/**
+	 * Changes the model preparing it for the next step
+	 *
+	 */
+	public void changeModel(int step) {
+		if (step >= numberOfSteps) {
+			return;
+		}
+		if (values != null) {
+			int refPop = (int) values.getValue(classKey, step);
+			int otherClassPop = classDef.getTotalCloseClassPopulation() - refPop;
+			classDef.setClassPopulation(new Integer(refPop), classKey);
+			classDef.setClassPopulation(new Integer(otherClassPop), otherClassKey);
+			simDef.manageJobs();
+		}
+	}
 
-    /**
-     * returns the set of values that the varying parameter will assume
-     * @return a structure containing the set of values that the varying parameter will assume
-     */
-    public Object getValuesSet() {
-        return values;
-    }
+	/**
+	 * Gets the maximum number of steps compatible with the model definition and the type of parametric analysis.
+	 *
+	 * @return the maximum number of steps
+	 */
+	public int searchForAvaibleSteps() {
+		float diff = Math.abs((float) initialValue - (float) finalValue);
+		//diff = diff/100;
+		int totalPop = classDef.getTotalCloseClassPopulation();
+		return ((int) (totalPop * diff)) + 1;
+	}
 
-    /**
-     * Changes the model preparing it for the next step
-     *
-     */
-    public void changeModel(int step) {
-        if (step >= numberOfSteps) return;
-        if (values != null) {
-            int refPop = (int) values.getValue(classKey,step);
-            int otherClassPop = classDef.getTotalCloseClassPopulation() - refPop;
-            classDef.setClassPopulation(new Integer(refPop),classKey);
-            classDef.setClassPopulation(new Integer(otherClassPop),otherClassKey);
-            simDef.manageJobs();
-        }
-    }
+	/**
+	 * Finds the set of possible values of the population on which the
+	 * simulation may be iterated on.
+	 *
+	 */
+	public void createValuesSet() {
+		Vector classSet = classDef.getClosedClassKeys();
+		classSet.remove(classKey);
+		otherClassKey = classSet.get(0);
+		int totalPop = classDef.getTotalCloseClassPopulation();
+		int initialClassPop = (int) Math.round(classDef.getTotalCloseClassPopulation() * initialValue);
+		int initialOtherClassPop = totalPop - initialClassPop;
+		values = new ValuesTable(classDef, classDef.getClosedClassKeys(), numberOfSteps);
+		double p = (finalValue - initialValue) / ((numberOfSteps - 1)) * totalPop;
+		double sum = 0;
+		for (int i = 0; i < numberOfSteps; i++) {
+			double increment = (int) Math.round(sum);
+			double value = initialClassPop + increment;
+			double otherValue = initialOtherClassPop - increment;
+			values.setValue(classKey, value);
+			values.setValue(otherClassKey, otherValue);
+			sum += p;
+		}
+		originalValues = new Vector(2);
+		int thisClassPop = classDef.getClassPopulation(classKey).intValue();
+		int otherClassPop = totalPop - thisClassPop;
+		((Vector) originalValues).add(new Integer(thisClassPop));
+		((Vector) originalValues).add(new Integer(otherClassPop));
+	}
 
-    /**
-     * Gets the maximum number of steps compatible with the model definition and the type of parametric analysis.
-     *
-     * @return the maximum number of steps
-     */
-    public int searchForAvaibleSteps() {
-        float diff = Math.abs((float)initialValue - (float)finalValue);
-        //diff = diff/100;
-        int totalPop = classDef.getTotalCloseClassPopulation();
-        return ((int)(totalPop*diff)) + 1;
-    }
+	/**
+	 * Restore the original values of population
+	 */
+	public void restoreOriginalValues() {
+		Vector vals = (Vector) originalValues;
+		int thisClassPop = ((Integer) vals.get(0)).intValue();
+		int otherClassPop = ((Integer) vals.get(1)).intValue();
+		classDef.setClassPopulation(new Integer(thisClassPop), classKey);
+		classDef.setClassPopulation(new Integer(otherClassPop), otherClassKey);
+		simDef.manageJobs();
+	}
 
-    /**
-     * Finds the set of possible values of the population on which the
-     * simulation may be iterated on.
-     *
-     */
-    public void createValuesSet() {
-        Vector classSet = classDef.getClosedClassKeys();
-        classSet.remove(classKey);
-        otherClassKey = classSet.get(0);
-        int totalPop = classDef.getTotalCloseClassPopulation();
-        int initialClassPop = (int)Math.round(classDef.getTotalCloseClassPopulation()*initialValue);
-        int initialOtherClassPop = totalPop - initialClassPop;
-        values = new ValuesTable(classDef,classDef.getClosedClassKeys(),numberOfSteps);
-        double p = (finalValue - initialValue)/((double)(numberOfSteps-1))*(double)totalPop;
-        double sum = 0;
-        for (int i=0;i<numberOfSteps;i++) {
-            double increment = (int)Math.round(sum);
-            double value = initialClassPop + increment;
-            double otherValue = initialOtherClassPop - increment;
-            values.setValue(classKey,value);
-            values.setValue(otherClassKey,otherValue);
-            sum += p;
-        }
-        originalValues = new Vector(2);
-        int thisClassPop = classDef.getClassPopulation(classKey).intValue();
-        int otherClassPop = totalPop - thisClassPop;
-        ((Vector)originalValues).add(new Integer(thisClassPop));
-        ((Vector)originalValues).add(new Integer(otherClassPop));
-    }
+	/**
+	 * Checks if the PA model is still coherent with simulation model definition. If
+	 * the <code>autocorrect</code> variable is set to true, if the PA model is no more
+	 * valid but it can be corrected it will be changed.
+	 *
+	 * @param autocorrect if true the PA model will be autocorrected 
+	 *
+	 * @return 0 - If the PA model is still valid <br>
+	 *          1 - If the PA model is no more valid, but it will be corrected <br>
+	 *          2 - If the PA model can be no more used
+	 */
+	public int checkCorrectness(boolean autocorrect) {
+		int code = 0;
+		Vector closeClasses = classDef.getClosedClassKeys();
+		int totalPop = classDef.getTotalCloseClassPopulation();
+		if ((closeClasses.size() != 2) || (totalPop < 1)) {
+			code = 2; //This PA model can be no more used
+		} else {
+			//if one of the two classes was changed..
+			if ((!closeClasses.contains(classKey)) || (!closeClasses.contains(otherClassKey))) {
+				code = 1;
+				if (autocorrect) {
+					classKey = closeClasses.get(0);
+					otherClassKey = closeClasses.get(1);
+					setDefaultInitialValue();
+					setDefaultFinalValue();
+					numberOfSteps = searchForAvaibleSteps();
+					if (numberOfSteps > MAX_STEP_NUMBER) {
+						numberOfSteps = MAX_STEP_NUMBER;
+					}
+				}
+			} else {
+				//else, if the total number of jobs has changed re - calculate the number of steps
+				int actualPopValue = classDef.getTotalCloseClassPopulation();
+				if (popValue != actualPopValue) {
+					code = 1;
+					if (autocorrect) {
+						setDefaultInitialValue();
+						setDefaultFinalValue();
+						numberOfSteps = searchForAvaibleSteps();
+						if (numberOfSteps > MAX_STEP_NUMBER) {
+							numberOfSteps = MAX_STEP_NUMBER;
+						}
+						popValue = actualPopValue;
+					}
+				}
+			}
+		}
+		return code;
+	}
 
-    /**
-     * Restore the original values of population
-     */
-    public void restoreOriginalValues() {
-        Vector vals = (Vector)originalValues;
-        int thisClassPop = ((Integer)vals.get(0)).intValue();
-        int otherClassPop = ((Integer)vals.get(1)).intValue();
-        classDef.setClassPopulation(new Integer(thisClassPop),classKey);
-        classDef.setClassPopulation(new Integer(otherClassPop),otherClassKey);
-        simDef.manageJobs();
-    }
+	/**
+	 * Returns the values assumed by the varying parameter
+	 *
+	 * @return a Vector containing the values assumed by the varying parameter
+	 */
+	public Vector getParameterValues() {
+		Vector assumedValues = new Vector(numberOfSteps);
+		for (int i = 0; i < numberOfSteps; i++) {
+			double tempThisClassPop = values.getValue(classKey, i);
+			double tempOtherClassPop = values.getValue(otherClassKey, i);
+			double sum = tempThisClassPop + tempOtherClassPop;
+			double val = tempThisClassPop / sum;
+			assumedValues.add(new Double(val));
+		}
+		return assumedValues;
+	}
 
-    /**
-     * Checks if the PA model is still coherent with simulation model definition. If
-     * the <code>autocorrect</code> variable is set to true, if the PA model is no more
-     * valid but it can be corrected it will be changed.
-     *
-     * @param autocorrect if true the PA model will be autocorrected 
-     *
-     * @return 0 - If the PA model is still valid <br>
-     *          1 - If the PA model is no more valid, but it will be corrected <br>
-     *          2 - If the PA model can be no more used
-     */
-    public int checkCorrectness(boolean autocorrect) {
-        int code = 0;
-        Vector closeClasses = classDef.getClosedClassKeys();
-        int totalPop = classDef.getTotalCloseClassPopulation();
-        if ( (closeClasses.size() != 2) || (totalPop < 1) ) code = 2;    //This PA model can be no more used
-        else {
-            //if one of the two classes was changed..
-            if ( (!closeClasses.contains(classKey)) || (!closeClasses.contains(otherClassKey)) ){
-                code = 1;
-                if (autocorrect) {
-                    classKey = closeClasses.get(0);
-                    otherClassKey = closeClasses.get(1);
-                    setDefaultInitialValue();
-                    setDefaultFinalValue();
-                    numberOfSteps = searchForAvaibleSteps();
-                    if (numberOfSteps > MAX_STEP_NUMBER) numberOfSteps = MAX_STEP_NUMBER;
-                }
-            }
-            else {
-                //else, if the total number of jobs has changed re - calculate the number of steps
-                int actualPopValue = classDef.getTotalCloseClassPopulation();
-                if (popValue != actualPopValue) {
-                    code = 1;
-                    if (autocorrect) {
-                        setDefaultInitialValue();
-                        setDefaultFinalValue();
-                        numberOfSteps = searchForAvaibleSteps();
-                        if (numberOfSteps > MAX_STEP_NUMBER) numberOfSteps = MAX_STEP_NUMBER;
-                        popValue = actualPopValue;
-                    }
-                }
-            }
-        }
-        return code;
-    }
+	/**
+	 * Get the reference class name
+	 *
+	 * @return the name of the class
+	 */
+	public String getReferenceClassName() {
+		return classDef.getClassName(classKey);
+	}
 
-    /**
-     * Returns the values assumed by the varying parameter
-     *
-     * @return a Vector containing the values assumed by the varying parameter
-     */
-    public Vector getParameterValues() {
-        Vector assumedValues = new Vector(numberOfSteps);
-        for (int i=0; i<numberOfSteps; i++) {
-            double tempThisClassPop = values.getValue(classKey,i);
-            double tempOtherClassPop = values.getValue(otherClassKey,i);
-            double sum = tempThisClassPop + tempOtherClassPop;
-            double val = tempThisClassPop/sum;
-            assumedValues.add(new Double(val));
-        }
-        return assumedValues;
-    }
+	/**
+	 * Gets a TreeMap containing for each property its value. The supported properties are
+	 * defined as constants inside this class.
+	 * @return a TreeMap containing the value for each property
+	 */
+	public Map getProperties() {
+		TreeMap properties = new TreeMap();
+		properties.put(TYPE_PROPERTY, getType());
+		properties.put(FROM_PROPERTY, Double.toString(initialValue));
+		properties.put(TO_PROPERTY, Double.toString(finalValue));
+		properties.put(STEPS_PROPERTY, Integer.toString(numberOfSteps));
+		properties.put(REFERENCE_CLASS_PROPERTY, classDef.getClassName(classKey));
+		return properties;
+	}
 
-    /**
-     * Get the reference class name
-     *
-     * @return the name of the class
-     */
-    public String getReferenceClassName() {
-        return classDef.getClassName(classKey);
-    }
-
-    /**
-     * Gets a TreeMap containing for each property its value. The supported properties are
-     * defined as constants inside this class.
-     * @return a TreeMap containing the value for each property
-     */
-    public Map getProperties() {
-        TreeMap properties = new TreeMap();
-        properties.put(TYPE_PROPERTY,getType());
-        properties.put(FROM_PROPERTY,Double.toString(initialValue));
-        properties.put(TO_PROPERTY,Double.toString(finalValue));
-        properties.put(STEPS_PROPERTY,Integer.toString(numberOfSteps));
-        properties.put(REFERENCE_CLASS_PROPERTY,classDef.getClassName(classKey));
-        return properties;
-    }
-
-    /**
-     * Sets the value for the specified property
-     *
-     * @param propertyName the name of the property to be set. The supported properties are: <br>
-     * - FROM_PROPERTY  <br>
-     * - TO_PROPERTY  <br>
-     * - STEPS_PROPERTY <br>
-     * - REFERENCE_CLASS_PROPERTY
-     * @param value the value to be set
-     */
-    public void setProperty(String propertyName, String value) {
-        if (propertyName.equals(FROM_PROPERTY )) {
-            initialValue = Double.parseDouble(value);
-        }
-        else if (propertyName.equals(TO_PROPERTY )) {
-            finalValue = Double.parseDouble(value);
-        }
-        else if (propertyName.equals(STEPS_PROPERTY )) {
-            numberOfSteps = Integer.parseInt(value);
-            if (numberOfSteps > MAX_STEP_NUMBER) numberOfSteps = MAX_STEP_NUMBER;
-        }
-        else if (propertyName.equals(REFERENCE_CLASS_PROPERTY )) {
-            classKey = classDef.getClassByName(value);
-            Vector temp = classDef.getClosedClassKeys();
-            temp.remove(classKey);
-            otherClassKey = temp.get(0);
-        }
-    }
+	/**
+	 * Sets the value for the specified property
+	 *
+	 * @param propertyName the name of the property to be set. The supported properties are: <br>
+	 * - FROM_PROPERTY  <br>
+	 * - TO_PROPERTY  <br>
+	 * - STEPS_PROPERTY <br>
+	 * - REFERENCE_CLASS_PROPERTY
+	 * @param value the value to be set
+	 */
+	public void setProperty(String propertyName, String value) {
+		if (propertyName.equals(FROM_PROPERTY)) {
+			initialValue = Double.parseDouble(value);
+		} else if (propertyName.equals(TO_PROPERTY)) {
+			finalValue = Double.parseDouble(value);
+		} else if (propertyName.equals(STEPS_PROPERTY)) {
+			numberOfSteps = Integer.parseInt(value);
+			if (numberOfSteps > MAX_STEP_NUMBER) {
+				numberOfSteps = MAX_STEP_NUMBER;
+			}
+		} else if (propertyName.equals(REFERENCE_CLASS_PROPERTY)) {
+			classKey = classDef.getClassByName(value);
+			Vector temp = classDef.getClosedClassKeys();
+			temp.remove(classKey);
+			otherClassKey = temp.get(0);
+		}
+	}
 }

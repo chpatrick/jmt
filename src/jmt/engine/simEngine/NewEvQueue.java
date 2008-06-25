@@ -15,13 +15,14 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.simEngine;
 
 import java.util.Enumeration;
 import java.util.List;
 import java.util.NoSuchElementException;
- //TODO: testare mettere a posto...classe di prova!
+
+//TODO: testare mettere a posto...classe di prova!
 /**
  * This class implements an event queue used internally by the Sim_system to
  * manage the list of Sim_events.
@@ -47,10 +48,11 @@ public class NewEvQueue {
 	 * @param initialCapacity	The initial capacity of the queue.
 	 */
 	public NewEvQueue(int initialCapacity) {
-		if (initialCapacity <= 0)
+		if (initialCapacity <= 0) {
 			data = new SimEvent[2];
-		else
+		} else {
 			data = new SimEvent[initialCapacity];
+		}
 	}
 
 	/**
@@ -160,7 +162,7 @@ public class NewEvQueue {
 						//move second part of data
 						System.arraycopy(data, index, data, index - start + 1, end - index + 1);
 						data[index - start] = event;
-//						end = end - start;
+						//						end = end - start;
 						end = size - 1;
 						start = 0;
 					}
@@ -198,15 +200,17 @@ public class NewEvQueue {
 
 			for (i = start; i <= end; i++) {
 				buffer = data[i];
-				if (buffer.eventTime() > evTime)
+				if (buffer.eventTime() > evTime) {
 					break;
+				}
 			}
 		}
 		insertElementAt(new_event, i);
 		if (DEBUG) {
 			for (i = start; i < end - 1; i++) {
-				if (data[i].eventTime() > data[i + 1].eventTime())
+				if (data[i].eventTime() > data[i + 1].eventTime()) {
 					throw new RuntimeException("position incorrect  " + this);
+				}
 			}
 		}
 	}
@@ -215,8 +219,9 @@ public class NewEvQueue {
 		insertElementAt(newEvent, end + 1);
 		if (DEBUG) {
 			for (int i = start; i < end - 1; i++) {
-				if (data[i].eventTime() > data[i + 1].eventTime())
+				if (data[i].eventTime() > data[i + 1].eventTime()) {
 					throw new RuntimeException("position incorrect");
+				}
 			}
 		}
 	}
@@ -233,30 +238,35 @@ public class NewEvQueue {
 				start = -1;
 				end = -1;
 				if (DEBUG) {
-					if (start != -1 && buffer.eventTime() > data[start].eventTime())
+					if (start != -1 && buffer.eventTime() > data[start].eventTime()) {
 						throw new RuntimeException("position incorrect");
+					}
 					for (int i = start; i < end - 1; i++) {
-						if (data[i].eventTime() > data[i + 1].eventTime())
+						if (data[i].eventTime() > data[i + 1].eventTime()) {
 							throw new RuntimeException("position incorrect");
+						}
 					}
 				}
 			} else {//move the start pointer up
 				size--;
 				start++;
 				if (DEBUG) {
-					if (start != -1 && buffer.eventTime() > data[start].eventTime())
+					if (start != -1 && buffer.eventTime() > data[start].eventTime()) {
 						throw new RuntimeException("position incorrect");
+					}
 					for (int i = start; i < end - 1; i++) {
-						if (data[i].eventTime() > data[i + 1].eventTime())
+						if (data[i].eventTime() > data[i + 1].eventTime()) {
 							throw new RuntimeException("position incorrect");
+						}
 					}
 				}
 			}
 
 			//return the last element
 			return buffer;
-		} else
+		} else {
 			return null;
+		}
 	}
 
 	/**
@@ -264,10 +274,11 @@ public class NewEvQueue {
 	 * @return	The next event.
 	 */
 	public final SimEvent top() {
-		if (size != 0)
+		if (size != 0) {
 			return data[start];
-		else
+		} else {
 			return null;
+		}
 	}
 
 	/**
@@ -277,8 +288,9 @@ public class NewEvQueue {
 	public void removeElement(SimEvent event) {
 		int i;
 		for (i = start; i <= end; i++) {
-			if (data[i].equals(event))
+			if (data[i].equals(event)) {
 				break;
+			}
 		}
 		remove(i);
 	}
@@ -365,10 +377,11 @@ public class NewEvQueue {
 		str += "; size = " + size;
 		str += "; length = " + data.length;
 		str += "\n";
-		if (start > -1)
+		if (start > -1) {
 			for (int i = start; i <= end; i++) {
 				str += "pos = " + (i - start) + "  " + data[i];
 			}
+		}
 		return str;
 	}
 
@@ -392,12 +405,7 @@ public class NewEvQueue {
 			System.out.println("");
 		}
 
-
-
-
-
-//	   System.out.println("q = \n" + q);
-
+		//	   System.out.println("q = \n" + q);
 
 	}
 

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.routingStrategies;
 
 import java.util.HashMap;
@@ -27,38 +27,37 @@ import java.util.HashMap;
  * Time: 10.20.14
  * To change this template use Options | File Templates.
  */
-public class FastestServiceRouting extends RoutingStrategy{
+public class FastestServiceRouting extends RoutingStrategy {
 
-    public FastestServiceRouting(){
-        description ="Jobs are routed to the station with the " +
-            "shortest average service time (for the jobs of the same class).";
-    }
+	public FastestServiceRouting() {
+		description = "Jobs are routed to the station with the " + "shortest average service time (for the jobs of the same class).";
+	}
 
-    public String getName() {
-        return "Fastest Service";
-    }
+	public String getName() {
+		return "Fastest Service";
+	}
 
-    public HashMap getValues() {
-        return null;
-    }
+	public HashMap getValues() {
+		return null;
+	}
 
-    public Object clone() {
-        return new FastestServiceRouting();
-    }
+	public Object clone() {
+		return new FastestServiceRouting();
+	}
 
-    public String getClassPath() {
-        return "jmt.engine.NetStrategies.RoutingStrategies.FastestServiceRoutingStrategy";
-    }
+	public String getClassPath() {
+		return "jmt.engine.NetStrategies.RoutingStrategies.FastestServiceRoutingStrategy";
+	}
 
-    /**
-     * Returns true if the routing strategy is dependent from the state of
-     * the model
-     * @return  true if the routing strategy is dependent from the state of
-     * the model
-     *
-     * Author: Francesco D'Aquino
-     */
-    public boolean isModelStateDependent() {
-        return true;
-    }
+	/**
+	 * Returns true if the routing strategy is dependent from the state of
+	 * the model
+	 * @return  true if the routing strategy is dependent from the state of
+	 * the model
+	 *
+	 * Author: Francesco D'Aquino
+	 */
+	public boolean isModelStateDependent() {
+		return true;
+	}
 }

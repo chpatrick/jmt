@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.engine.NetStrategies;
 
 import jmt.common.AutoCheck;
@@ -31,13 +31,13 @@ import jmt.engine.QueueNet.NodeList;
  */
 public abstract class RoutingStrategy implements AutoCheck {
 
-    /**
-     * This method should be overridden to implement a specific strategy.
+	/**
+	 * This method should be overridden to implement a specific strategy.
 	 * @param Nodes List of nodes.
-     * @param jobClass class ofcurrent job to be routed
-     * @return Selected node .
-     */
-    public abstract NetNode getOutNode(NodeList Nodes, JobClass jobClass);
+	 * @param jobClass class ofcurrent job to be routed
+	 * @return Selected node .
+	 */
+	public abstract NetNode getOutNode(NodeList Nodes, JobClass jobClass);
 
 	public boolean check() {
 		return true;

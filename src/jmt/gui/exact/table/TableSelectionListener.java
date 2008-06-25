@@ -15,10 +15,11 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.exact.table;
 
-import javax.swing.*;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -49,8 +50,12 @@ public abstract class TableSelectionListener implements ListSelectionListener {
 	 */
 	public final void valueChanged(ListSelectionEvent e) {
 		Object source = e.getSource();
-		if (source == rowSelectionModel) selectionChanged(table, e, TYPE_ROW);
-		if (source == colSelectionModel) selectionChanged(table, e, TYPE_COLUMN);
+		if (source == rowSelectionModel) {
+			selectionChanged(table, e, TYPE_ROW);
+		}
+		if (source == colSelectionModel) {
+			selectionChanged(table, e, TYPE_COLUMN);
+		}
 	}
 
 	/**

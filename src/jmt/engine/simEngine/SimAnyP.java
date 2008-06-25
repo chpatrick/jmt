@@ -3,7 +3,6 @@
 
 package jmt.engine.simEngine;
 
-
 /**
  * A predicate which will match any event on the deferred event queue.
  * There is a publicly accessible instance of this predicate in the
@@ -20,6 +19,7 @@ public class SimAnyP extends SimPredicate {
 	 */
 	public SimAnyP() {
 	};
+
 	/** The match function called by Sim_system.simSelect(),
 	 * not used directly by the user
 	 */

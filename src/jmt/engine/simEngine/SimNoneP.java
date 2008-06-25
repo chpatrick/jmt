@@ -3,7 +3,6 @@
 
 package jmt.engine.simEngine;
 
-
 /**
  * A predicate which will <strong>not</strong> match any event on the
  * deferred event queue.
@@ -20,6 +19,7 @@ public class SimNoneP extends SimPredicate {
 	 */
 	public SimNoneP() {
 	};
+
 	/** The match function called by Sim_system.simSelect(),
 	 * not used directly by the user
 	 */

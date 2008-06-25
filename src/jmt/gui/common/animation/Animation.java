@@ -15,10 +15,12 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.common.animation;
 
-import java.awt.*;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.Rectangle;
 import java.awt.image.ImageObserver;
 
 /**
@@ -32,36 +34,35 @@ import java.awt.image.ImageObserver;
  */
 public interface Animation {
 
+	/** Called when an animation needs to be refreshed. This method should update image
+	 * currently handled by the animation*/
+	public void refresh();
 
-    /** Called when an animation needs to be refreshed. This method should update image
-     * currently handled by the animation*/
-    public void refresh();
+	/** Initialization method for implementing class. The implementation of this method
+	 * should prepare images for the animation, if this has not been done within cunstructor.*/
+	public void init();
 
-    /** Initialization method for implementing class. The implementation of this method
-     * should prepare images for the animation, if this has not been done within cunstructor.*/
-    public void init();
+	/** Paints image currently handled in a rectangle defined within {@link this.setBounds()} method*/
+	public void paint(Graphics g, ImageObserver io);
 
-    /** Paints image currently handled in a rectangle defined within {@link this.setBounds()} method*/
-    public void paint(Graphics g, ImageObserver io);
+	/**returns background image for this animation.
+	 * @return :Background image for this animation
+	 */
+	public Image getBGImage();
 
-    /**returns background image for this animation.
-     * @return :Background image for this animation
-     */
-    public Image getBGImage();
+	/**sets background image for this animation.
+	 * @param img: background image for this animation
+	 */
+	public void setBGImage(Image img);
 
-    /**sets background image for this animation.
-     * @param img: background image for this animation
-     */
-    public void setBGImage(Image img);
+	/** Sets bounding box for this animation. If this box is set, animation will update only
+	 * this certain area of the Graphics object passed within {@link this.paint()} method.
+	 * @param r: Bounding box for this animation.
+	 */
+	public void setBounds(Rectangle r);
 
-    /** Sets bounding box for this animation. If this box is set, animation will update only
-     * this certain area of the Graphics object passed within {@link this.paint()} method.
-     * @param r: Bounding box for this animation.
-     */
-    public void setBounds(Rectangle r);
-
-    /** Returns bounding box for this animation, e.g. the rectangle within which the frames for this
-     *  animation will be painted
-     * @return : Bounding box for this animation.*/
-    public Rectangle getBounds();
+	/** Returns bounding box for this animation, e.g. the rectangle within which the frames for this
+	 *  animation will be painted
+	 * @return : Bounding box for this animation.*/
+	public Rectangle getBounds();
 }

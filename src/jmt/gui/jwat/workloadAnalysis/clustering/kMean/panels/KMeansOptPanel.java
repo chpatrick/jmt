@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.SpinnerNumberModel;
@@ -35,30 +34,26 @@ import jmt.gui.jwat.workloadAnalysis.panels.ClusterPanel;
 
 //UPDATE 29/10/2006: + aggiunto pannello per selezione trasformazione da applicare alle variabili durange K-Means
 
-public class KMeansOptPanel extends JPanel implements CommonConstants{
-	
+public class KMeansOptPanel extends JPanel implements CommonConstants {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ClusterPanel parent;
 	//private final String numClustDescription = HTML_START + HTML_FONT_NORM + 
 	//"Specify the maximum number of clusters to be generated" + HTML_FONT_NOR_END + HTML_END;
 	//private final String iterationDescription = HTML_START + HTML_FONT_NORM +
 	//"Specify the maximum number of iterations for the algorithm" + HTML_FONT_NOR_END + HTML_END;
-	private final String KMEANS_DESCRIPTION = HTML_START
-		+ HTML_FONT_TITLE + "k-Means Clustering" + HTML_FONT_TIT_END + HTML_FONT_NORM
-		+ "Specify maximum number of clusters and maximum number of iterations that the algorithm has to perform" + HTML_FONT_NOR_END
-		+ HTML_END;
-	private final String KMEANS_CLUSTER_OPT = HTML_START + HTML_FONT_NORM
-	+ "Select maximum number of clusters that the algorithm has to produce." + HTML_FONT_NOR_END
-	+ HTML_END;
+	private final String KMEANS_DESCRIPTION = HTML_START + HTML_FONT_TITLE + "k-Means Clustering" + HTML_FONT_TIT_END + HTML_FONT_NORM
+			+ "Specify maximum number of clusters and maximum number of iterations that the algorithm has to perform" + HTML_FONT_NOR_END + HTML_END;
+	private final String KMEANS_CLUSTER_OPT = HTML_START + HTML_FONT_NORM + "Select maximum number of clusters that the algorithm has to produce."
+			+ HTML_FONT_NOR_END + HTML_END;
 	private final String KMEANS_CLUSTER_ITER = HTML_START + HTML_FONT_NORM
-	+ "Select maximum number of iterations that the algorithm has to perform to find solutions." + HTML_FONT_NOR_END
-	+ HTML_END;
-	private final String KMEANS_OPTIONS_DESCRIPTION = HTML_START
-	+ HTML_FONT_NORM
-	+ "Transformation to apply<p>" +
-	  "to selected variables considered<p>" +
-	  "by the algorithm." + HTML_FONT_NOR_END
-	+ HTML_END;
-	
+			+ "Select maximum number of iterations that the algorithm has to perform to find solutions." + HTML_FONT_NOR_END + HTML_END;
+	private final String KMEANS_OPTIONS_DESCRIPTION = HTML_START + HTML_FONT_NORM + "Transformation to apply<p>"
+			+ "to selected variables considered<p>" + "by the algorithm." + HTML_FONT_NOR_END + HTML_END;
+
 	//private JSlider numClust;
 	//private JSlider numIteration;
 	private ProgressStatusListener lst;
@@ -68,41 +63,40 @@ public class KMeansOptPanel extends JPanel implements CommonConstants{
 	private JRadioButton stdDevT;
 	private JSpinner numOfClust;
 	private JSpinner numOfIter;
-		
-	public KMeansOptPanel(WizardPanel parent,ProgressStatusListener lst,ModelWorkloadAnalysis model)
-	{
-		this.model=model;
-		this.lst=lst;
-		this.parent=(ClusterPanel)parent;
+
+	public KMeansOptPanel(WizardPanel parent, ProgressStatusListener lst, ModelWorkloadAnalysis model) {
+		this.model = model;
+		this.lst = lst;
+		this.parent = (ClusterPanel) parent;
 		setSolveAction();
 		initPanel();
 	}
-	
-	private void initPanel(){
-		this.setLayout(new BorderLayout(10,60));
+
+	private void initPanel() {
+		this.setLayout(new BorderLayout(10, 60));
 
 		JPanel northPanel = new JPanel(new BorderLayout());
-		northPanel.add(Box.createHorizontalStrut(5),BorderLayout.EAST);
-		northPanel.add(new JLabel(KMEANS_DESCRIPTION),BorderLayout.CENTER);
-		this.add(northPanel,BorderLayout.NORTH);
-		
+		northPanel.add(Box.createHorizontalStrut(5), BorderLayout.EAST);
+		northPanel.add(new JLabel(KMEANS_DESCRIPTION), BorderLayout.CENTER);
+		this.add(northPanel, BorderLayout.NORTH);
+
 		JPanel leftPanel = new JPanel(new BorderLayout());
-		this.add(leftPanel,BorderLayout.WEST);
-		
+		this.add(leftPanel, BorderLayout.WEST);
+
 		JPanel clustNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		clustNorth.add(new JLabel("number of clusters:   "));
-		numOfClust = new JSpinner(new SpinnerNumberModel(3,2,37,1));
+		numOfClust = new JSpinner(new SpinnerNumberModel(3, 2, 37, 1));
 		clustNorth.add(numOfClust);
-		leftPanel.add(clustNorth,BorderLayout.NORTH);
-		
+		leftPanel.add(clustNorth, BorderLayout.NORTH);
+
 		JPanel iterNorth = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		iterNorth.add(new JLabel("number of iterations: "));
-		numOfIter = new JSpinner(new SpinnerNumberModel(4,2,50,1));
+		numOfIter = new JSpinner(new SpinnerNumberModel(4, 2, 50, 1));
 		iterNorth.add(numOfIter);
-		leftPanel.add(iterNorth,BorderLayout.SOUTH);
-		
+		leftPanel.add(iterNorth, BorderLayout.SOUTH);
+
 		JPanel centralPanel = new JPanel(new BorderLayout());
-		
+
 		/*
 		JPanel centralPanel = new JPanel(new BorderLayout());
 		//NORTH Panel options
@@ -134,11 +128,10 @@ public class KMeansOptPanel extends JPanel implements CommonConstants{
 		
 		centralPanel.add(northCPanel,BorderLayout.NORTH);
 		*/
-		
-		JPanel transf = new JPanel(new BorderLayout());		//Terzo panel
-		transf.setBorder(new TitledBorder(new TitledBorder(
-				new EtchedBorder(EtchedBorder.LOWERED), "Transformations")));
-		JPanel options = new JPanel(new GridLayout(3,1));	//Panel ratio buttons
+
+		JPanel transf = new JPanel(new BorderLayout()); //Terzo panel
+		transf.setBorder(new TitledBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), "Transformations")));
+		JPanel options = new JPanel(new GridLayout(3, 1)); //Panel ratio buttons
 		noneT = new JRadioButton("none");
 		minmaxT = new JRadioButton("(value - min) / (max - min)");
 		stdDevT = new JRadioButton("(value - mean) / std. dev.");
@@ -150,12 +143,12 @@ public class KMeansOptPanel extends JPanel implements CommonConstants{
 		options.add(noneT);
 		options.add(minmaxT);
 		options.add(stdDevT);
-		transf.add(options,BorderLayout.EAST);
-		transf.add(new JLabel(KMEANS_OPTIONS_DESCRIPTION),BorderLayout.WEST);
-		
-		centralPanel.add(transf,BorderLayout.SOUTH);
-		
-		this.add(centralPanel,BorderLayout.SOUTH);
+		transf.add(options, BorderLayout.EAST);
+		transf.add(new JLabel(KMEANS_OPTIONS_DESCRIPTION), BorderLayout.WEST);
+
+		centralPanel.add(transf, BorderLayout.SOUTH);
+
+		this.add(centralPanel, BorderLayout.SOUTH);
 		/*
 		JPanel center = new JPanel(new GridLayout(3,1));
 		
@@ -207,69 +200,73 @@ public class KMeansOptPanel extends JPanel implements CommonConstants{
 		this.add(center,BorderLayout.CENTER);
 		*/
 	}
-	
-	private void setSolveAction(){
+
+	private void setSolveAction() {
 		//if(model.getListOfClustering().size() > 0) ((JWatWizard)parent.getParentWizard()).setEnableButton("Next >",true);
 		//else ((JWatWizard)parent.getParentWizard()).setEnableButton("Next >",false);
-		((MainJwatWizard)parent.getParentWizard()).setEnableButton("Solve",true);	
-		((MainJwatWizard)parent.getParentWizard()).setActionButton("Solve",new AbstractAction(){
-			public void actionPerformed(ActionEvent e) {
-				if(parent.getVarSelected().length >= 2){
-					short trasf = VariableNumber.NONE;
-					if(minmaxT.isSelected()) trasf = VariableNumber.MINMAX;
-					if(stdDevT.isSelected()) trasf = VariableNumber.STDEV;
-					MainKMean eng=new MainKMean(
-							new ProgressMonitorShow(parent,"Processing...",1),
-							model.getMatrix(),
-							parent.getVarSelected(),
-							//numClust.getValue(),
-							//numIteration.getValue(),
-							((Integer)numOfClust.getValue()).intValue(),
-							((Integer)numOfIter.getValue()).intValue(),
-							trasf
-					);
-					eng.addStatusListener(lst);
-					eng.start();
-					((JWatWizard)parent.getParentWizard()).setEnableButton("Solve",false);
-				}
-				else{
-					JOptionPane.showMessageDialog(parent,"Select at least two variables to proceed with clustering","Warning",JOptionPane.WARNING_MESSAGE);
-				}
-			}
-		});
-		((MainJwatWizard)parent.getParentWizard()).setActionTool(new AbstractAction(){
-			{
-	            putValue(Action.SHORT_DESCRIPTION, "Clusterize");
-	            putValue(Action.SMALL_ICON, JMTImageLoader.loadImage("Sim"));
+		((MainJwatWizard) parent.getParentWizard()).setEnableButton("Solve", true);
+		((MainJwatWizard) parent.getParentWizard()).setActionButton("Solve", new AbstractAction() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
 
-	            putValue(Action.ACCELERATOR_KEY,
-	                    KeyStroke.getKeyStroke(KeyEvent.VK_L,
-	                            ActionEvent.CTRL_MASK));
-	            putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_L));				
-			}
 			public void actionPerformed(ActionEvent e) {
-				if(parent.getVarSelected().length >= 2){
+				if (parent.getVarSelected().length >= 2) {
 					short trasf = VariableNumber.NONE;
-					if(minmaxT.isSelected()) trasf = VariableNumber.MINMAX;
-					if(stdDevT.isSelected()) trasf = VariableNumber.STDEV;
-					MainKMean eng=new MainKMean(
-							new ProgressMonitorShow(parent,"Processing...",1),
-							model.getMatrix(),
-							parent.getVarSelected(),
-							//numClust.getValue(),
+					if (minmaxT.isSelected()) {
+						trasf = VariableNumber.MINMAX;
+					}
+					if (stdDevT.isSelected()) {
+						trasf = VariableNumber.STDEV;
+					}
+					MainKMean eng = new MainKMean(new ProgressMonitorShow(parent, "Processing...", 1), model.getMatrix(), parent.getVarSelected(),
+					//numClust.getValue(),
 							//numIteration.getValue(),
-							((Integer)numOfClust.getValue()).intValue(),
-							((Integer)numOfIter.getValue()).intValue(),
-							trasf
-					);
+							((Integer) numOfClust.getValue()).intValue(), ((Integer) numOfIter.getValue()).intValue(), trasf);
 					eng.addStatusListener(lst);
 					eng.start();
-					((JWatWizard)parent.getParentWizard()).setEnableButton("Solve",false);
-				}
-				else{
-					JOptionPane.showMessageDialog(parent,"Select at least two variables to proceed with clustering","Warning",JOptionPane.WARNING_MESSAGE);
+					((JWatWizard) parent.getParentWizard()).setEnableButton("Solve", false);
+				} else {
+					JOptionPane.showMessageDialog(parent, "Select at least two variables to proceed with clustering", "Warning",
+							JOptionPane.WARNING_MESSAGE);
 				}
 			}
 		});
-	}	
+		((MainJwatWizard) parent.getParentWizard()).setActionTool(new AbstractAction() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 1L;
+			{
+				putValue(Action.SHORT_DESCRIPTION, "Clusterize");
+				putValue(Action.SMALL_ICON, JMTImageLoader.loadImage("Sim"));
+
+				putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
+				putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_L));
+			}
+
+			public void actionPerformed(ActionEvent e) {
+				if (parent.getVarSelected().length >= 2) {
+					short trasf = VariableNumber.NONE;
+					if (minmaxT.isSelected()) {
+						trasf = VariableNumber.MINMAX;
+					}
+					if (stdDevT.isSelected()) {
+						trasf = VariableNumber.STDEV;
+					}
+					MainKMean eng = new MainKMean(new ProgressMonitorShow(parent, "Processing...", 1), model.getMatrix(), parent.getVarSelected(),
+					//numClust.getValue(),
+							//numIteration.getValue(),
+							((Integer) numOfClust.getValue()).intValue(), ((Integer) numOfIter.getValue()).intValue(), trasf);
+					eng.addStatusListener(lst);
+					eng.start();
+					((JWatWizard) parent.getParentWizard()).setEnableButton("Solve", false);
+				} else {
+					JOptionPane.showMessageDialog(parent, "Select at least two variables to proceed with clustering", "Warning",
+							JOptionPane.WARNING_MESSAGE);
+				}
+			}
+		});
+	}
 }

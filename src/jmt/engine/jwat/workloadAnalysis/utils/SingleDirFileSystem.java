@@ -24,20 +24,23 @@ import javax.swing.filechooser.FileSystemView;
 
 public class SingleDirFileSystem extends FileSystemView {
 	private File singleDir;
-	
-	public SingleDirFileSystem(File r){
+
+	public SingleDirFileSystem(File r) {
 		singleDir = r;
 	}
-	
+
 	public File createNewFolder(File containingDir) throws IOException {
 		return null;
 	}
-	public File getParentDirectory(File dir){
+
+	public File getParentDirectory(File dir) {
 		return singleDir;
 	}
-	
-	public Boolean isTraversable(File f){
-		if(f.isDirectory()) return Boolean.FALSE;
+
+	public Boolean isTraversable(File f) {
+		if (f.isDirectory()) {
+			return Boolean.FALSE;
+		}
 		return Boolean.TRUE;
 	}
 }

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 package jmt.gui.jmodel.JGraphMod;
 
 import org.jgraph.graph.DefaultPort;
@@ -33,6 +33,11 @@ import org.jgraph.graph.Edge;
  */
 public class InputPort extends DefaultPort {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	/** creates an input port
 	 *
 	 * @param userObject : Reference to JmtCell that contains this port
@@ -45,10 +50,11 @@ public class InputPort extends DefaultPort {
 	 * Adds <code>edge</code> to the list of ports.
 	 */
 	public boolean addEdge(Object edge) {
-		if (((Edge) edge).getTarget() == this.getParent())
+		if (((Edge) edge).getTarget() == this.getParent()) {
 			return false;
-		else
+		} else {
 			return edges.add(edge);
+		}
 	}
 
 }

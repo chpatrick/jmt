@@ -7,17 +7,19 @@ package jmt.engine.jwat.workloadAnalysis.exceptions;
  * Time: 11.21.44
  * To change this template use Options | File Templates.
  */
-public class TrasformException extends Exception
-{
-    public TrasformException(String m)
-    {
-        msg=m;
-    }
+public class TrasformException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-    public String getMsg()
-    {
-        return msg;
-    }
+	public TrasformException(String m) {
+		msg = m;
+	}
 
-    String msg;
+	public String getMsg() {
+		return msg;
+	}
+
+	String msg;
 }
