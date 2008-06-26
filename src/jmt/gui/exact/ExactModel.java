@@ -19,6 +19,7 @@
 package jmt.gui.exact;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -2130,6 +2131,52 @@ public class ExactModel implements ExactConstants {
 			ret = inv;
 		}
 		return ret;
+	}
+	
+	/**
+	 * This method will recalculate whatif analysis values after the initial values were changed. At first
+	 * detects changes, than applies modifications. If what-if analysis is no longer appliable, resets it.
+	 */
+	public void recalculateWhatifValues() {
+		HashSet closedClasses = new HashSet();
+		HashSet openClasses = new HashSet();
+		
+		for (int i=0; i<classTypes.length; i++) {
+			if (classTypes[i] == CLASS_OPEN) {
+				openClasses.add(new Integer(i));
+			} else if (classTypes[i] == CLASS_CLOSED) {
+				closedClasses.add(new Integer(i));
+			}
+		}
+		
+		// Checks validity first
+		if (whatIfType != null) {
+			if (classTypes.length <= whatIfClass || stationTypes.length <= whatIfStation) {
+				removeWhatIf();
+			} else if (WHAT_IF_ARRIVAL.equals(whatIfType)) {
+				if (openClasses.size() == 0 || (whatIfClass >= 0 && classTypes[whatIfClass] != CLASS_OPEN)) {
+					removeWhatIf();
+				}
+			} else if (WHAT_IF_CUSTOMERS.equals(whatIfType)) {
+				if (closedClasses.size() == 0 || (whatIfClass >= 0 && classTypes[whatIfClass] != CLASS_CLOSED)) {
+					removeWhatIf();
+				}
+			} else if (WHAT_IF_MIX.equals(whatIfType)){
+				if (closedClasses.size() != 2 || (whatIfClass >= 0 && classTypes[whatIfClass] != CLASS_CLOSED)) {
+					removeWhatIf();
+				}
+			} else if (WHAT_IF_DEMANDS.equals(whatIfType)) {
+				if (whatIfStation >= 0 && stationTypes[whatIfStation] == STATION_LD) {
+					removeWhatIf();
+				}
+			}
+		}
+		
+		// If what-if is still valid, updates initial values
+		if (whatIfType != null) {
+			//TODO update initial values...
+		}
+		
 	}
 
 	/**
