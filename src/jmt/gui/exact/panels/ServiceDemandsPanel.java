@@ -114,6 +114,7 @@ public final class ServiceDemandsPanel extends WizardPanel implements ExactConst
 		/* arrays are copied to ensure data object consistency is preserved */
 		ExactModel data = ew.getData();
 		synchronized (data) {
+			
 			zeroLD = (data.isLd() && (data.getMaxpop() == 0));
 			classes = data.getClasses();
 			stations = data.getStations();
@@ -174,8 +175,14 @@ public final class ServiceDemandsPanel extends WizardPanel implements ExactConst
 
 		ExactModel data = ew.getData();
 		synchronized (data) {
-			data.setServiceTimes(serviceDemands);
-			data.setVisits(createUnitaryVisits());
+			boolean whatIfChanged = false;
+
+			whatIfChanged |= data.setServiceTimes(serviceDemands);
+			whatIfChanged |= data.setVisits(createUnitaryVisits());
+			
+			if (whatIfChanged) {
+				data.recalculateWhatifValues();
+			}
 		}
 	}
 

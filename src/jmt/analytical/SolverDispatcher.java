@@ -564,7 +564,7 @@ public class SolverDispatcher {
 
 		// Iterates for what-if executions
 		int i;
-		for (i = 0; i < model.getWhatIfValues().length && !stopped; i++) {
+		for (i = 0; i < values.length && !stopped; i++) {
 			double[][][] current = ArrayUtils.copy3(initials);
 			// If this is one class only
 			if (cl >= 0) {

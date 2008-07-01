@@ -20,6 +20,7 @@ package jmt.gui.exact;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -370,15 +371,15 @@ public class ExactModel implements ExactConstants {
 	/**
 	 * Sets the model description
 	 * @param description the model description
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setDescription(String description) {
-		if (!changed) {
-			if (description.equals(this.description)) {
-				return;
-			}
+	public boolean setDescription(String description) {
+		if (description.equals(this.description)) {
+			return false;
 		}
 		this.description = description;
 		changed = true;
+		return true;
 	}
 
 	/**
@@ -468,36 +469,39 @@ public class ExactModel implements ExactConstants {
 	 * sets the number of servers for each station
 	 * @param classNames the number of servers of each station
 	 * @throws IllegalArgumentException if the array is not of the correct size
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setStationServers(int[] stationServers) {
+	public boolean setStationServers(int[] stationServers) {
 		if (stationServers.length != stations) {
 			throw new IllegalArgumentException("stationServers.length != stations");
 		}
-		if (!changed) {
-			if (Arrays.equals(this.stationServers, stationServers)) {
-				return;
-			}
+		if (Arrays.equals(this.stationServers, stationServers)) {
+			return false;
 		}
+
 		this.stationServers = stationServers;
 		changed = true;
+		return true;
 	}
 
 	/**
 	 * sets the names of the service centers.
 	 * @param stationNames the names of the service centers
 	 * @throws IllegalArgumentException if the array is not of the correct size
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setStationNames(String[] stationNames) {
+	public boolean setStationNames(String[] stationNames) {
 		if (stationNames.length != stations) {
 			throw new IllegalArgumentException("stationNames.length!=stations");
 		}
 		if (!changed) {
 			if (Arrays.equals(this.stationNames, stationNames)) {
-				return;
+				return false;
 			}
 		}
 		this.stationNames = stationNames;
 		changed = true;
+		return true;
 	}
 
 	/**
@@ -511,18 +515,19 @@ public class ExactModel implements ExactConstants {
 	 * sets the names of the classes.
 	 * @param classNames the names of the classes
 	 * @throws IllegalArgumentException if the array is not of the correct size
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setClassNames(String[] classNames) {
+	public boolean setClassNames(String[] classNames) {
 		if (classNames.length != classes) {
 			throw new IllegalArgumentException("classNames.length!=classes");
 		}
-		if (!changed) {
-			if (Arrays.equals(this.classNames, classNames)) {
-				return;
-			}
+		if (Arrays.equals(this.classNames, classNames)) {
+			return false;
 		}
+
 		this.classNames = classNames;
 		changed = true;
+		return true;
 	}
 
 	/**
@@ -536,22 +541,23 @@ public class ExactModel implements ExactConstants {
 	 * sets the data for the classes
 	 * @param classData the data for the classes
 	 * @throws IllegalArgumentException if the array is not of the correct size
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setClassData(double[] classData) {
+	public boolean setClassData(double[] classData) {
 		if (classData.length != classes) {
 			throw new IllegalArgumentException("classData.length!=classes");
 		}
-		if (!changed || resultsOK) {
-			if (Arrays.equals(this.classData, classData)) {
-				return;
-			}
+		if (Arrays.equals(this.classData, classData)) {
+			return false;
 		}
+
 		this.classData = classData;
 		changed = true;
 		resultsOK = false;
 
 		// make sure 3rd dimension of serviceTimes is ok
 		resize(stations, classes);
+		return true;
 	}
 
 	/**
@@ -565,21 +571,22 @@ public class ExactModel implements ExactConstants {
 	 * sets the type of the classes
 	 * @param classTypes the type of the classes
 	 * @throws IllegalArgumentException if the array is not of the correct size
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setClassTypes(int[] classTypes) {
+	public boolean setClassTypes(int[] classTypes) {
 		if (classTypes.length != classes) {
 			throw new IllegalArgumentException("classTypes.length!=classes");
 		}
-		if (!changed || resultsOK) {
-			if (Arrays.equals(this.classTypes, classTypes)) {
-				return;
-			}
+		if (Arrays.equals(this.classTypes, classTypes)) {
+			return false;
 		}
+
 		this.classTypes = classTypes;
 		closed = calcClosed();
 		open = calcOpen();
 		changed = true;
 		resultsOK = false;
+		return true;
 	}
 
 	/**
@@ -593,21 +600,22 @@ public class ExactModel implements ExactConstants {
 	 * sets the type of the stations
 	 * @param stationTypes the type of the stations
 	 * @throws IllegalArgumentException if the array is not of the correct size
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setStationTypes(int[] stationTypes) {
+	public boolean setStationTypes(int[] stationTypes) {
 		if (stationTypes.length != stations) {
 			throw new IllegalArgumentException("stationTypes.length!=stations");
 		}
-		if (!changed || resultsOK) {
-			if (Arrays.equals(this.stationTypes, stationTypes)) {
-				return;
-			}
+		if (Arrays.equals(this.stationTypes, stationTypes)) {
+			return false;
 		}
+
 		this.stationTypes = stationTypes;
 		// adjusts serviceTimes size and recalculates flags
 		resize(stations, classes);
 		changed = true;
 		resultsOK = false;
+		return true;
 	}
 
 	/**
@@ -621,22 +629,24 @@ public class ExactModel implements ExactConstants {
 	 * sets the matrix of visits
 	 * @param visits the matrix of visits
 	 * @throws IllegalArgumentException if the matrix is not of the correct size
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setVisits(double[][] visits) {
+	public boolean setVisits(double[][] visits) {
 		if (visits.length != stations || visits[0].length != classes) {
 			throw new IllegalArgumentException("incorrect array dimension");
 		}
-		if (!changed || resultsOK) {
-			if (ArrayUtils.equals2(this.visits, visits)) {
-				return;
-			}
+		if (ArrayUtils.equals2(this.visits, visits)) {
+			return false;
 		}
+
 		this.visits = visits;
 		changed = true;
 		resultsOK = false;
 
 		// Checks if visits are all one
 		calcUnitaryVisits();
+		return true;
+
 	}
 
 	/**
@@ -650,16 +660,16 @@ public class ExactModel implements ExactConstants {
 	 * sets the matrix of service times
 	 * @param serviceTimes the matrix of service times
 	 * @throws IllegalArgumentException if the matrix is not of the correct size
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setServiceTimes(double[][][] serviceTimes) {
+	public boolean setServiceTimes(double[][][] serviceTimes) {
 		if (serviceTimes.length != stations || serviceTimes[0].length != classes) {
 			throw new IllegalArgumentException("incorrect array dimension");
 		}
-		if (!changed || resultsOK) {
-			if (ArrayUtils.equals3(this.serviceTimes, serviceTimes)) {
-				return;
-			}
+		if (ArrayUtils.equals3(this.serviceTimes, serviceTimes)) {
+			return false;
 		}
+
 		int currSize;
 		double[][] subST;
 
@@ -681,41 +691,46 @@ public class ExactModel implements ExactConstants {
 		this.serviceTimes = serviceTimes;
 		changed = true;
 		resultsOK = false;
+		return true;
 	}
 
 	/**
 	 * Resizes the data structures according to specified parameters. Data is preserved as far as possible
+	 * @return true if data was changed, false otherwise
 	 */
-	public void resize(int stations, int classes) {
+	public boolean resize(int stations, int classes) {
 		if (stations <= 0 || classes <= 0) {
 			throw new IllegalArgumentException("stations and classes must be >0");
 		}
 		if (this.stations != stations || this.classes != classes) {
 			//other cases already handled in setXXX methods
 			discardResults();
+
+			this.stations = stations;
+			this.classes = classes;
+
+			stationNames = ArrayUtils.resize(stationNames, stations, null);
+			stationTypes = ArrayUtils.resize(stationTypes, stations, STATION_LI);
+			stationServers = ArrayUtils.resize(stationServers, stations, 1);
+			ld = calcLD();
+
+			visits = ArrayUtils.resize2(visits, stations, classes, 1.0);
+
+			classNames = ArrayUtils.resize(classNames, classes, null);
+			classTypes = ArrayUtils.resize(classTypes, classes, CLASS_CLOSED);
+			closed = calcClosed();
+
+			classData = ArrayUtils.resize(classData, classes, 0.0);
+
+			maxpop = calcMaxpop();
+
+			serviceTimes = ArrayUtils.resize3var(serviceTimes, stations, classes, calcSizes(), 0.0);
+			// Checks if visits are all one
+			calcUnitaryVisits();
+			
+			return true;
 		}
-		this.stations = stations;
-		this.classes = classes;
-
-		stationNames = ArrayUtils.resize(stationNames, stations, null);
-		stationTypes = ArrayUtils.resize(stationTypes, stations, STATION_LI);
-		stationServers = ArrayUtils.resize(stationServers, stations, 1);
-		ld = calcLD();
-
-		visits = ArrayUtils.resize2(visits, stations, classes, 1.0);
-
-		classNames = ArrayUtils.resize(classNames, classes, null);
-		classTypes = ArrayUtils.resize(classTypes, classes, CLASS_CLOSED);
-		closed = calcClosed();
-
-		classData = ArrayUtils.resize(classData, classes, 0.0);
-
-		maxpop = calcMaxpop();
-
-		serviceTimes = ArrayUtils.resize3var(serviceTimes, stations, classes, calcSizes(), 0.0);
-		// Checks if visits are all one
-		calcUnitaryVisits();
-
+		return false;
 	}
 
 	/**
@@ -1716,20 +1731,23 @@ public class ExactModel implements ExactConstants {
 		}
 		double[][] retVal = new double[stations][iterations];
 		double[][] xClassAggs = getPerClassX();
-		double[] xGlobal = getGlobalX();
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
 			for (int i = 0; i < retVal.length; i++) {
 				retVal[i][k] = 0;
+				double dividend = 0;
 				for (int j = 0; j < resTimes[i].length; j++) {
 					if (xClassAggs != null) {
-						retVal[i][k] += xClassAggs[j][k] * resTimes[i][j][k];
+						if (resTimes[i][j][k] != 0) {
+							retVal[i][k] += xClassAggs[j][k] * resTimes[i][j][k];
+							dividend += xClassAggs[j][k];
+						}
 					} else {
 						return null;
 					}
 				}
-				if (xGlobal[k] != 0) {
-					retVal[i][k] /= xGlobal[k];
+				if (dividend != 0) {
+					retVal[i][k] /= dividend;
 				} else {
 					retVal[i][k] = 0;
 				}
@@ -1744,12 +1762,22 @@ public class ExactModel implements ExactConstants {
 			return null;
 		}
 		double[] retVal = new double[iterations];
-		double[][] aggs = getPerStationR();
+		double[][] xClassAggs = getPerClassX();
+		double[][] aggs = getPerClassR();
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
+			double dividend = 0;
 			if (aggs != null) {
 				for (int i = 0; i < aggs.length; i++) {
-					retVal[k] += aggs[i][k];
+					if (aggs[i][k] != 0) {
+						retVal[k] += xClassAggs[i][k] * aggs[i][k];
+						dividend += xClassAggs[i][k];
+					}
+				}
+				if (dividend > 0) {
+					retVal[k] /= dividend;
+				} else {
+					retVal[k] = 0;
 				}
 			} else {
 				retVal[k] = Double.NaN;
@@ -1890,9 +1918,9 @@ public class ExactModel implements ExactConstants {
 	 * Sets the array of values used for what-if analysis
 	 * @param values vector with values to be used in iterations of what-if analysis
 	 */
-	public void setWhatIfValues(double[] values) {
+	public boolean setWhatIfValues(double[] values) {
 		if (whatIfValues == null && values == null) {
-			return;
+			return false;
 		}
 
 		if (whatIfValues == null || !Arrays.equals(whatIfValues, values)) {
@@ -1904,47 +1932,58 @@ public class ExactModel implements ExactConstants {
 			}
 			changed = true;
 			resultsOK = false;
+			return true;
 		}
+		return true;
 	}
 
 	/**
 	 * Sets class used for what-if analysis
 	 * @param classNum ordered number of selected class or -1 for every class
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setWhatIfClass(int classNum) {
+	public boolean setWhatIfClass(int classNum) {
 		if (whatIfClass != classNum) {
 			whatIfClass = classNum;
 			changed = true;
 			resultsOK = false;
+			return true;
 		}
+		return false;
 	}
 
 	/**
 	 * Sets station used for what-if analysis
 	 * @param stationNum ordered number of selected station or -1 for every station
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setWhatIfStation(int stationNum) {
+	public boolean setWhatIfStation(int stationNum) {
 		if (whatIfStation != stationNum) {
 			whatIfStation = stationNum;
 			changed = true;
 			resultsOK = false;
+			return true;
 		}
+		return false;
 	}
 
 	/**
 	 * Sets type of what-if analysis
 	 * @param type WHAT_IF_ARRIVAL, WHAT_IF_CUSTOMERS, WHAT_IF_MIX, WHAT_IF_DEMANDS
 	 * @see ExactConstants
+	 * @return true if data was changed, false otherwise
 	 */
-	public void setWhatIfType(String type) {
+	public boolean setWhatIfType(String type) {
 		if (whatIfType == null && type == null) {
-			return;
+			return false;
 		}
 		if (whatIfType == null || !whatIfType.equalsIgnoreCase(type)) {
 			whatIfType = type;
 			changed = true;
 			resultsOK = false;
+			return true;
 		}
+		return false;
 	}
 
 	/**
@@ -2132,51 +2171,82 @@ public class ExactModel implements ExactConstants {
 		}
 		return ret;
 	}
-	
+
 	/**
 	 * This method will recalculate whatif analysis values after the initial values were changed. At first
 	 * detects changes, than applies modifications. If what-if analysis is no longer appliable, resets it.
 	 */
 	public void recalculateWhatifValues() {
+		if (whatIfType == null) {
+			return;
+		}
+
 		HashSet closedClasses = new HashSet();
 		HashSet openClasses = new HashSet();
-		
-		for (int i=0; i<classTypes.length; i++) {
+
+		for (int i = 0; i < classTypes.length; i++) {
 			if (classTypes[i] == CLASS_OPEN) {
 				openClasses.add(new Integer(i));
 			} else if (classTypes[i] == CLASS_CLOSED) {
 				closedClasses.add(new Integer(i));
 			}
 		}
-		
+
 		// Checks validity first
-		if (whatIfType != null) {
-			if (classTypes.length <= whatIfClass || stationTypes.length <= whatIfStation) {
+		if (classTypes.length <= whatIfClass || stationTypes.length <= whatIfStation) {
+			removeWhatIf();
+		} else if (WHAT_IF_ARRIVAL.equals(whatIfType)) {
+			if (openClasses.size() == 0 || (whatIfClass >= 0 && classTypes[whatIfClass] != CLASS_OPEN)) {
 				removeWhatIf();
-			} else if (WHAT_IF_ARRIVAL.equals(whatIfType)) {
-				if (openClasses.size() == 0 || (whatIfClass >= 0 && classTypes[whatIfClass] != CLASS_OPEN)) {
-					removeWhatIf();
-				}
-			} else if (WHAT_IF_CUSTOMERS.equals(whatIfType)) {
-				if (closedClasses.size() == 0 || (whatIfClass >= 0 && classTypes[whatIfClass] != CLASS_CLOSED)) {
-					removeWhatIf();
-				}
-			} else if (WHAT_IF_MIX.equals(whatIfType)){
-				if (closedClasses.size() != 2 || (whatIfClass >= 0 && classTypes[whatIfClass] != CLASS_CLOSED)) {
-					removeWhatIf();
-				}
-			} else if (WHAT_IF_DEMANDS.equals(whatIfType)) {
-				if (whatIfStation >= 0 && stationTypes[whatIfStation] == STATION_LD) {
-					removeWhatIf();
+			}
+		} else if (WHAT_IF_CUSTOMERS.equals(whatIfType)) {
+			if (closedClasses.size() == 0 || (whatIfClass >= 0 && classTypes[whatIfClass] != CLASS_CLOSED)) {
+				removeWhatIf();
+			}
+		} else if (WHAT_IF_MIX.equals(whatIfType)) {
+			if (closedClasses.size() != 2 || (whatIfClass >= 0 && classTypes[whatIfClass] != CLASS_CLOSED)) {
+				removeWhatIf();
+			}
+		} else if (WHAT_IF_DEMANDS.equals(whatIfType)) {
+			if (whatIfStation >= 0 && stationTypes[whatIfStation] == STATION_LD) {
+				removeWhatIf();
+			}
+		}
+
+		// If what-if is still valid, updates initial values
+		if (whatIfType != null) {
+			// Check if class data was changed
+			if (whatIfClass >= 0) {
+				if ((WHAT_IF_ARRIVAL.equals(whatIfType) || WHAT_IF_CUSTOMERS.equals(whatIfType)) && classData[whatIfClass] != whatIfValues[0]) {
+					setWhatIfValues(generateWhatIfValues(whatIfType, classData[whatIfClass], whatIfValues[iterations - 1], iterations, whatIfClass,
+							whatIfStation));
+				} else if (WHAT_IF_DEMANDS.equals(whatIfType)
+						&& serviceTimes[whatIfStation][whatIfClass][0] * visits[whatIfStation][whatIfClass] != whatIfValues[0]) {
+					setWhatIfValues(generateWhatIfValues(whatIfType,
+							serviceTimes[whatIfStation][whatIfClass][0] * visits[whatIfStation][whatIfClass], whatIfValues[iterations - 1],
+							iterations, whatIfClass, whatIfStation));
+				} else if (WHAT_IF_MIX.equals(whatIfType)) {
+					// Check that no fractionary values are used
+					int class2 = -1;
+					for (Iterator it = closedClasses.iterator(); it.hasNext();) {
+						int idx = ((Integer) it.next()).intValue();
+						if (idx != whatIfClass) {
+							class2 = idx;
+							break;
+						}
+					}
+					for (int i = 0; i < iterations; i++) {
+						double fClassVal = whatIfValues[i] * classData[whatIfClass];
+						double sClassVal = (1 - whatIfValues[i]) * classData[class2];
+						if (Math.abs(fClassVal - Math.rint(fClassVal)) > 1e-8 || Math.abs(sClassVal - Math.rint(sClassVal)) > 1e-8) {
+							setWhatIfValues(generateWhatIfValues(whatIfType, 0, 1, iterations, whatIfClass, whatIfStation));
+							break;
+						}
+
+					}
 				}
 			}
 		}
-		
-		// If what-if is still valid, updates initial values
-		if (whatIfType != null) {
-			//TODO update initial values...
-		}
-		
 	}
 
 	/**

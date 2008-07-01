@@ -137,7 +137,9 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 
 		ExactModel data = ew.getData();
 		synchronized (data) {
-			data.setVisits(visits);
+			if (data.setVisits(visits)) {
+				data.recalculateWhatifValues();
+			}
 		}
 	}
 

@@ -203,7 +203,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		}
 
 		// Selects correct type
-		if (data.getWhatIfType() == null || !modes.contains(data.getWhatIfType())) {
+		if (!data.isWhatIf() || data.getWhatIfType() == null || !modes.contains(data.getWhatIfType())) {
 			type.setSelectedItem(NO_ANALYSIS);
 		} else {
 			type.setSelectedItem(data.getWhatIfType());

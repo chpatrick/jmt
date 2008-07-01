@@ -430,18 +430,22 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 		ExactModel data = ew.getData();
 
 		synchronized (data) {
-
+			boolean whatIfChanged = false;
 			if (hasDeletes) {
 				//if at some point rows have been deleted
 				//play back all ops in the same order on the data object
 				playbackClassOps(data);
 			} else {
-				data.resize(data.getStations(), classes); //otherwise a simple resize is ok
+				whatIfChanged |= data.resize(data.getStations(), classes); //otherwise a simple resize is ok
 			}
-
+			
 			data.setClassNames(classNames);
-			data.setClassTypes(classTypes);
-			data.setClassData(classData);
+			whatIfChanged |= data.setClassTypes(classTypes);
+			whatIfChanged |= data.setClassData(classData);
+			
+			if (whatIfChanged) {
+				data.recalculateWhatifValues();
+			}
 
 			//NEW
 			//@author Stefano Omini

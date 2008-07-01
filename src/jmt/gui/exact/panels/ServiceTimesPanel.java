@@ -173,7 +173,9 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 
 		ExactModel data = ew.getData();
 		synchronized (data) {
-			data.setServiceTimes(serviceTimes);
+			if (data.setServiceTimes(serviceTimes)) {
+				data.recalculateWhatifValues();
+			}
 		}
 	}
 
