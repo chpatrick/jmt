@@ -80,7 +80,8 @@ public interface ExactConstants {
 	public static final String DESCRIPTION_THROUGHPUTS = "<html><body align=\"left\"><font size=\"4\"><b>Throughput</b>"
 			+ "</font><font size=\"3\"><br>Throughput for each class at each station.</body></html>";
 	public static final String DESCRIPTION_RESPONSETIMES = "<html><body align=\"left\"><font size=\"4\"><b>Residence Times</b>"
-			+ "</font><font size=\"3\"><br>Residence Time for each class at each station. The global aggregate is the response time of entire system.</body></html>";
+			+ "</font><font size=\"3\"><br>Total time spent by each customer class at each station. Note that the aggregate values are weighted by relative per-class throughput."
+			+ " The global aggregate is the system response time.</body></html>";
 	public static final String DESCRIPTION_UTILIZATIONS = "<html><body align=\"left\"><font size=\"4\"><b>Utilization</b>"
 			+ "</font><font size=\"3\"><br>Average Utilization for each class at each station.</body></html>";
 	public static final String DESCRIPTION_WHATIF_NONE = "<html><body align=\"left\"><font size=\"4\"><b>What-if analysis</b>"

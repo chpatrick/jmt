@@ -1738,10 +1738,8 @@ public class ExactModel implements ExactConstants {
 				double dividend = 0;
 				for (int j = 0; j < resTimes[i].length; j++) {
 					if (xClassAggs != null) {
-						if (resTimes[i][j][k] != 0) {
-							retVal[i][k] += xClassAggs[j][k] * resTimes[i][j][k];
-							dividend += xClassAggs[j][k];
-						}
+						retVal[i][k] += xClassAggs[j][k] * resTimes[i][j][k];
+						dividend += xClassAggs[j][k];
 					} else {
 						return null;
 					}
@@ -1769,10 +1767,8 @@ public class ExactModel implements ExactConstants {
 			double dividend = 0;
 			if (aggs != null) {
 				for (int i = 0; i < aggs.length; i++) {
-					if (aggs[i][k] != 0) {
-						retVal[k] += xClassAggs[i][k] * aggs[i][k];
-						dividend += xClassAggs[i][k];
-					}
+					retVal[k] += xClassAggs[i][k] * aggs[i][k];
+					dividend += xClassAggs[i][k];
 				}
 				if (dividend > 0) {
 					retVal[k] /= dividend;
