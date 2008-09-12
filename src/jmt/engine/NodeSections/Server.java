@@ -155,7 +155,7 @@ public class Server extends ServiceSection {
 				if (busyCounter == 0) {
 					//it wasn't waiting for any job
 					return NodeSection.MSG_NOT_PROCESSED;
-				} else if (busyCounter == 1) {
+				} else if (busyCounter == numberOfServers) {
 					// Sends a request to the input section
 					sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
 					busyCounter--;
