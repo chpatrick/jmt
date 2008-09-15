@@ -23,6 +23,7 @@ import java.util.ListIterator;
 import jmt.engine.NodeSections.Queue;
 import jmt.engine.dataAnalysis.InverseMeasure;
 import jmt.engine.dataAnalysis.Measure;
+import jmt.engine.dataAnalysis.SimParameters;
 import jmt.engine.log.JSimLogger;
 import jmt.engine.simEngine.SimEntity;
 import jmt.engine.simEngine.SimEvent;
@@ -105,6 +106,8 @@ public class NetNode extends SimEntity {
 	private NodeList InputNodes;
 
 	private NodeList OutputNodes;
+	
+	private SimParameters simParameters;
 
 	/** Creates a new instance of NetNode.
 	 * @param name Name of the NetNode.
@@ -817,5 +820,21 @@ public class NetNode extends SimEntity {
 	public BlockingRegion getBlockingRegionInputStation() {
 		return region;
 	}
+
+	/**
+	 * @return the simulation parameters
+	 */
+	public SimParameters getSimParameters() {
+		return simParameters;
+	}
+
+	/**
+	 * @param simParameters reads the simulation parameters
+	 */
+	public void setSimParameters(SimParameters simParameters) {
+		this.simParameters = simParameters;
+	}
+	
+	
 
 }

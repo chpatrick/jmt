@@ -999,6 +999,10 @@ public class Simulation {
 			this.output = outSec;
 			//
 			nodeInit = true;
+			
+			if (simParameters != null) {
+				this.node.setSimParameters(simParameters);
+			}
 
 			//OLD
 			//if (inSec instanceof RandomSource) {
