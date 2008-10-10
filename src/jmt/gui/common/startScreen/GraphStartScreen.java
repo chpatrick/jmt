@@ -43,6 +43,7 @@ import javax.swing.SwingConstants;
 
 import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.components.QuickHTMLViewer;
+import jmt.framework.net.BareBonesBrowserLaunch;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.common.startScreen.sampleAnimation.SampleQNAnimation;
 import jmt.gui.exact.ExactWizard;
@@ -70,13 +71,15 @@ public class GraphStartScreen extends JMTFrame {
 	private static final int FONT_SIZE = 4;
 	public static final String VERSION = "0.7.4";
 	private static String[] args;
-	private JButton introIta, introEng;
+	private JButton onlineDoc, introEng;
 
 	// Images
 	public static final String IMG_LOGOPOLI = "logo", IMG_JMODELICON = "JMODELIcon", IMG_JMVAICON = "JMVAIcon", IMG_JSIMICON = "JSIMIcon",
 			IMG_JABAICON = "JABAIcon", IMG_JMCHICON = "JMCHIcon", IMG_JWATICON = "JWATIcon", IMG_SUITEICON = "JMTIcon",
 			//names for URLS of documents to be shown as description of main applications
-			URL_JMT_INTRO_ITA = "IntroIta.html", URL_JMT_INTRO_ENG = "IntroEng.html",
+			URL_JMT_INTRO_ITA = "IntroIta.html", 
+			URL_JMT_INTRO_ENG = "IntroEng.html",
+			URL_DOCUMENTATION_ONLINE="http://jmt.sourceforge.net/Documentation.html",
 			// Content for logo panel
 			FONT_TYPE = "Arial", HTML_CONTENT_TITLE = "<html><body align=\"center\"><b>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + FONT_SIZE
 					+ "\">JMT - Java Modelling Tools v." + VERSION + "</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + (FONT_SIZE - 1)
@@ -260,13 +263,13 @@ public class GraphStartScreen extends JMTFrame {
 		leftPanel.add(pivotPanel, BorderLayout.SOUTH);
 		// Adds intro buttons in the centre
 		JPanel introButtonArea = new JPanel(new GridLayout(3, 1));
-		introIta = new JButton("Introduzione al JMT");
-		introIta.addMouseListener(rollover);
+		onlineDoc = new JButton("Online Documentation");
+		onlineDoc.addMouseListener(rollover);
 		introEng = new JButton("Introduction to JMT");
 		introEng.addMouseListener(rollover);
 		introButtonArea.add(introEng);
 		introButtonArea.add(new JPanel());
-		introButtonArea.add(introIta);
+		introButtonArea.add(onlineDoc);
 		introButtonArea.setOpaque(false);
 		pivotPanel = new JPanel(new GridBagLayout());
 		pivotPanel.add(introButtonArea);
@@ -277,10 +280,9 @@ public class GraphStartScreen extends JMTFrame {
 
 	//assigns each component its own listener
 	private void addListeners() {
-		introIta.addActionListener(new ActionListener() {
+		onlineDoc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				URL url = getClass().getResource(URL_JMT_INTRO_ITA);
-				showDescrWin(url, "Introduzione al JMT");
+				BareBonesBrowserLaunch.openURL(URL_DOCUMENTATION_ONLINE);
 			}
 		});
 		introEng.addActionListener(new ActionListener() {

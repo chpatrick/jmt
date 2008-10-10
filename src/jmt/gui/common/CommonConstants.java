@@ -20,6 +20,7 @@ package jmt.gui.common;
 
 import java.awt.Dimension;
 
+import jmt.framework.data.ConstMap;
 import jmt.gui.common.routingStrategies.FastestServiceRouting;
 import jmt.gui.common.routingStrategies.LeastUtilizationRouting;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
@@ -52,7 +53,21 @@ public interface CommonConstants {
 	public final static String STATION_TYPE_SERVER = "Server";
 	public final static String STATION_TYPE_FORK = "Fork";
 	public final static String STATION_TYPE_JOIN = "Join";
-
+	
+	/** A map that decodes from station type to station name for the GUI */
+	public static final ConstMap STATION_NAMES = new ConstMap() {
+		protected void fill() {
+			putConst(STATION_TYPE_SOURCE, STATION_TYPE_SOURCE);
+			putConst(STATION_TYPE_SINK, STATION_TYPE_SINK);
+			putConst(STATION_TYPE_TERMINAL, STATION_TYPE_TERMINAL);
+			putConst(STATION_TYPE_ROUTER, "Routing Station");
+			putConst(STATION_TYPE_DELAY, STATION_TYPE_DELAY);
+			putConst(STATION_TYPE_SERVER, "Queueing Station");
+			putConst(STATION_TYPE_FORK, STATION_TYPE_FORK);
+			putConst(STATION_TYPE_JOIN, STATION_TYPE_JOIN);
+		}
+	};
+	
 	/**Constants for selection of queueing strategy*/
 	public final static String QUEUE_STRATEGY_LCFS = "LCFS";
 	public final static String QUEUE_STRATEGY_FCFS = "FCFS";

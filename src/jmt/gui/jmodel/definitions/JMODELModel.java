@@ -353,7 +353,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 			num = new Long(num.longValue() + 1);
 		}
 		objectNumber.put(type, num);
-		return super.addStation(getUniqueStationName(type + num), type);
+		return super.addStation(getUniqueStationName((String)STATION_NAMES.get(type) + " " + num), type);
 	}
 
 	/**

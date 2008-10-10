@@ -21,6 +21,7 @@ package jmt.gui.jmodel.controller.actions;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
+import jmt.gui.common.CommonConstants;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.jmodel.controller.Mediator;
 
@@ -51,7 +52,8 @@ public class SetInsertState extends AbstractJmodelAction {
 		setSelectable(true);
 		setGroup(0);
 		// Generate default description
-		putValue(SHORT_DESCRIPTION, "Inserts a " + className.substring(0, className.lastIndexOf("Cell")).toLowerCase() + ".");
+		String type = className.substring(0, className.lastIndexOf("Cell"));
+		putValue(SHORT_DESCRIPTION, "Insert a new " + CommonConstants.STATION_NAMES.get(type));
 		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_I));
 		setIcon(className, JMTImageLoader.getImageLoader());
 		this.className = className;

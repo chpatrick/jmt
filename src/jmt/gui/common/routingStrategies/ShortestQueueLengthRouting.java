@@ -35,7 +35,7 @@ public class ShortestQueueLengthRouting extends RoutingStrategy {
 	}
 
 	public String getName() {
-		return "Shortest Q Length";
+		return "Join the Shortest Queue (JSQ)";
 	}
 
 	public HashMap getValues() {

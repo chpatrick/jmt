@@ -27,6 +27,7 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import jmt.common.exception.NetException;
 import jmt.engine.NodeSections.BlockingQueue;
+import jmt.engine.NodeSections.Server;
 import jmt.engine.QueueNet.JobClass;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeSection;
@@ -490,8 +491,13 @@ public class Measure {
 		//NEW
 		//@author Stefano Omini
 		if (measureType == SimConstants.RESIDENCE_TIME) {
-			scaleMeasure();
+			scaleMeasureWithVisitRatio();
 		}
+		
+		if (measureType == SimConstants.UTILIZATION) {
+			scaleMeasureWithServerNumber();
+		}
+		
 		//end NEW
 		if (counter == fireEventSize) {
 			counter = 0;
@@ -654,8 +660,7 @@ public class Measure {
 	 * accesses to the reference station)
 	 */
 
-	private void scaleMeasure() {
-
+	private void scaleMeasureWithVisitRatio() {
 		//retrieves JobClass object using its name
 		JobClass jobClass = network.getJobClass(jobClassName);
 		double visitRatio = 1.0;
@@ -751,7 +756,7 @@ public class Measure {
 			} catch (NetException ne) {
 				visitRatio = 1;
 				logger.error("Error in computing visit ratio.");
-				ne.printStackTrace();
+				logger.error(ne);
 			}
 		}
 
@@ -763,7 +768,28 @@ public class Measure {
 
 	}
 
-	//end NEW
+	/**
+	 * This method will apply a scale factor proportional to the number of servers to give, as output,
+	 * utilization measure for each server and not the sum of them (so utilization for queue stations
+	 * will always be between 0 and 1)
+	 */
+	private void scaleMeasureWithServerNumber() {
+		// Avoid multiple scaling (not needed as server number is costant)
+		if (!scaled) {
+			int serverNum;
+			try {
+				//current measure node
+				NetNode thisNode = network.getNode(nodeName);
+				NodeSection serviceSection = thisNode.getSection(NodeSection.SERVICE);
+				serverNum = serviceSection.getIntSectionProperty(Server.PROPERTY_ID_MAX_JOBS);
+			} catch (NetException ex) {
+				// Number of servers is not available. Assumes it as 1.
+				serverNum = 1;
+			}
+			scaled = true;
+			scaleFactor = 1.0 / serverNum;
+		}
+	}
 
 	//******************ABORT**********************//
 

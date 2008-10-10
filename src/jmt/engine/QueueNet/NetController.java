@@ -18,8 +18,6 @@
 
 package jmt.engine.QueueNet;
 
-//import eduni.simjava.*;
-
 import jmt.engine.simEngine.SimSystem;
 
 /**

@@ -19,7 +19,7 @@ package jmt.gui.common.editors;
 
 import java.awt.Component;
 import java.util.HashMap;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultCellEditor;
@@ -97,6 +97,17 @@ public class ImagedComboBoxCellEditorFactory {
 	}
 
 	/**
+	 * Creates a new ImagedComboBoxCellEditorFactory used to display
+	 * station types with images. Every image must be called <code>[String] + "Combo"</code>
+	 * where <code>[String]</code> is the content of the string.
+	 * @param isStation tells to resolve station names
+	 */
+	public ImagedComboBoxCellEditorFactory(boolean isStation) {
+		isString = true;
+		this.isStation = isStation;
+	}
+
+	/**
 	 * Changes stored reference to station data structure
 	 * @param sd reference to station definition datastructure
 	 */
@@ -156,7 +167,7 @@ public class ImagedComboBoxCellEditorFactory {
 	 * Returns an instance of editor, given search key for elements to be shown
 	 * @param data vector with search's key for elements to be shown
 	 */
-	public TableCellEditor getEditor(Vector data) {
+	public TableCellEditor getEditor(List data) {
 		if (editor == null) {
 			editor = new ImagedComboEditor();
 		}
@@ -229,7 +240,16 @@ public class ImagedComboBoxCellEditorFactory {
 			setOpaque(true);
 			setBorder(BorderFactory.createEmptyBorder(0, 2, 0, 2));
 			this.key = key;
-			if (isStation) {
+			if (isString) {
+				// This is only a string
+				if (isStation) {
+					// If this is a station type string, resolves label names
+					setText((String)CommonConstants.STATION_NAMES.get(key));
+				} else {
+					setText((String) key);
+				}
+				setIcon(JMTImageLoader.loadImage(key + "Combo"));
+			} else if (isStation) {
 				// This is a station
 				if (sd.getStationName(key) != null && !sd.getStationName(key).equals("")) {
 					setText(sd.getStationName(key));
@@ -247,7 +267,7 @@ public class ImagedComboBoxCellEditorFactory {
 					// Null component
 					setText("");
 				}
-			} else if (!isString) {
+			} else {
 				// This is a class
 				if (cd.getClassName(key) != null && !cd.getClassName(key).equals("")) {
 					setText(cd.getClassName(key));
@@ -264,10 +284,6 @@ public class ImagedComboBoxCellEditorFactory {
 					setText(CommonConstants.ALL_CLASSES);
 				}
 
-			} else {
-				// This is only a string
-				setText((String) key);
-				setIcon(JMTImageLoader.loadImage(key + "Combo"));
 			}
 		}
 

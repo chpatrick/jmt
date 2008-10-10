@@ -504,7 +504,6 @@ public class NetNode extends SimEntity {
 	 */
 	protected void dispatch(NetMessage message) throws jmt.common.exception.NetException {
 		int processed = NodeSection.MSG_NOT_PROCESSED;
-		int section = NodeSection.NO_ADDRESS;
 		NetNode source = message.getSource();
 		byte sourceSection = message.getSourceSection();
 		byte destinationSection = message.getDestinationSection();
@@ -516,7 +515,6 @@ public class NetNode extends SimEntity {
 		switch (destinationSection) {
 
 			case NodeSection.INPUT:
-				section = NodeSection.INPUT;
 				// checks jobs routing
 				if (message.getEvent() == NetEvent.EVENT_JOB) {
 					if (source != this) {
@@ -545,7 +543,6 @@ public class NetNode extends SimEntity {
 				break;
 
 			case NodeSection.SERVICE:
-				section = NodeSection.SERVICE;
 				// checks jobs routing
 				if (message.getEvent() == NetEvent.EVENT_JOB) {
 					if (source != this) {
@@ -558,7 +555,6 @@ public class NetNode extends SimEntity {
 				break;
 
 			case NodeSection.OUTPUT:
-				section = NodeSection.OUTPUT;
 				// checks jobs routing
 				if (message.getEvent() == NetEvent.EVENT_JOB) {
 					if (source != this) {
@@ -612,7 +608,7 @@ public class NetNode extends SimEntity {
 			}
 		}
 
-		//TODO: forse se il job è destinato al nodo stesso (circa come se fosse un multivisita)
+		//TODO: forse se il job ï¿½ destinato al nodo stesso (circa come se fosse un multivisita)
 		//non bisognerebbe eliminarlo.. e poi riaggiungerlo alla ricezione
 		//NEW
 		//@author Stefano Omini
@@ -701,7 +697,7 @@ public class NetNode extends SimEntity {
 	 * Restarts the entity after an hold period: implements the method restart() of SimEntity.
 	 */
 	public void restart() {
-		//TODO: è giusto che non faccia niente?
+		//TODO: ï¿½ giusto che non faccia niente?
 	}
 
 	public void poison() {

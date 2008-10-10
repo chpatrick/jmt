@@ -57,7 +57,8 @@ public interface ResultsConstants {
 			+ "Average response time for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_UTILIZATIONS = HTML_START + HTML_FONT_TITLE + "Utilization" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average utilization for each chosen class at each chosen station. If a station "
-			+ "has more than one server, utilization can be greater than one." + HTML_FONT_NOR_END + HTML_END;
+			+ "has more than one server, utilization is the average utilization of all servers. Utilization for delays is the average "
+			+ " number of customers" + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_RESIDENCETIMES = HTML_START + HTML_FONT_TITLE + "Residence Time" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average residence time for each chosen class at each chosen station. (Residence Time = Number of Visits * Response Time)"
 			+ HTML_FONT_NOR_END + HTML_END;

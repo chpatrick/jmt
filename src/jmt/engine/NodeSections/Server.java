@@ -39,7 +39,7 @@ public class Server extends ServiceSection {
 
 	/** Property Identifier:  Busy counter. */
 	public static final int PROPERTY_ID_BUSY_COUNTER = 0x0101;
-	/** Property Identifier:  Max jobs. */
+	/** Property Identifier:  Max jobs (number of servers). */
 	public static final int PROPERTY_ID_MAX_JOBS = 0x0102;
 	/** Property Identifier:  Visits per class. */
 	public static final int PROPERTY_ID_VISITS_PER_CLASS = 0x0103;

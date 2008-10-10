@@ -87,6 +87,7 @@ public class SolverMultiOpen extends SolverMulti {
 				//throughput of class i for station j
 				throughput[j][i] = lambda[i] * visits[j][i];
 				//utilization of class i for station j
+				// TODO: now utilization in JMT is expressed for each server. This quantity should be divided for number of servers
 				utilization[j][i] = lambda[i] * visits[j][i] * servTime[j][i][0];
 				//aggregate utilization for station j
 				scUtilization[j] += utilization[j][i];
@@ -139,11 +140,11 @@ public class SolverMultiOpen extends SolverMulti {
 	}
 
 	/**
-	 * Solves a model with load dependent stations too. ANCORA DA FARE!!
+	 * Solves a model with load dependent stations too.
 	 */
 	private void solveLD() {
 
-		//TODO: tutta da fare!
+		//TODO: still to be implemented.
 		return;
 	}
 

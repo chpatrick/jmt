@@ -37,19 +37,18 @@ public class JobInfoList {
 	public final int PROPERTY_NOT_AVAILABLE = 0x0001;
 
 	//contain JobInfo objects
-	private LinkedList List, ListPerClass[];
+	private LinkedList list, listPerClass[];
 
 	//arrivals and completions
-	private int JobsIn, JobsOut, JobsInPerClass[], JobsOutPerClass[];
+	private int jobsIn, jobsOut, jobsInPerClass[], jobsOutPerClass[];
 
-	private double BusyTime, BusyTimePerClass[];
+	private double busyTime, busyTimePerClass[];
 
-	private double LastJobOutTime, LastJobInTime, LastJobDropTime, LastJobOutTimePerClass[], LastJobInTimePerClass[], LastJobDropTimePerClass[];
+	private double lastJobOutTime, lastJobInTime, lastJobDropTime, lastJobOutTimePerClass[], lastJobInTimePerClass[], lastJobDropTimePerClass[];
 
-	private Measure Utilization, UtilizationPerClass[], ResponseTime, ResponseTimePerClass[], ResidenceTime, ResidenceTimePerClass[], QueueLength,
-			QueueLengthPerClass[], DropRate, DropRatePerClass[];
-	//OLD
-	//private Measure Throughput, ThroughputPerClass[];
+	private Measure utilization, utilizationPerClass[], responseTime, responseTimePerClass[], residenceTime, residenceTimePerClass[], queueLength,
+			queueLengthPerClass[], dropRate, dropRatePerClass[];
+
 	private InverseMeasure Throughput, ThroughputPerClass[];
 
 	/** Creates a new JobInfoList instance.
@@ -60,45 +59,45 @@ public class JobInfoList {
 	public JobInfoList(int NumberOfJobClasses, boolean Save) {
 		int i;
 		if (Save) {
-			List = new LinkedList();
-			ListPerClass = new LinkedList[NumberOfJobClasses];
+			list = new LinkedList();
+			listPerClass = new LinkedList[NumberOfJobClasses];
 			for (i = 0; i < NumberOfJobClasses; i++) {
-				ListPerClass[i] = new LinkedList();
+				listPerClass[i] = new LinkedList();
 			}
 		}
 
-		JobsIn = 0;
-		JobsInPerClass = new int[NumberOfJobClasses];
+		jobsIn = 0;
+		jobsInPerClass = new int[NumberOfJobClasses];
 		for (i = 0; i < NumberOfJobClasses; i++) {
-			JobsInPerClass[i] = 0;
+			jobsInPerClass[i] = 0;
 		}
 
-		JobsOut = 0;
-		JobsOutPerClass = new int[NumberOfJobClasses];
+		jobsOut = 0;
+		jobsOutPerClass = new int[NumberOfJobClasses];
 		for (i = 0; i < NumberOfJobClasses; i++) {
-			JobsOutPerClass[i] = 0;
+			jobsOutPerClass[i] = 0;
 		}
 
-		BusyTimePerClass = new double[NumberOfJobClasses];
+		busyTimePerClass = new double[NumberOfJobClasses];
 		for (i = 0; i < NumberOfJobClasses; i++) {
-			BusyTimePerClass[i] = 0;
+			busyTimePerClass[i] = 0;
 		}
 
-		LastJobOutTime = LastJobInTime = LastJobDropTime = 0.0;
-		LastJobInTimePerClass = new double[NumberOfJobClasses];
+		lastJobOutTime = lastJobInTime = lastJobDropTime = 0.0;
+		lastJobInTimePerClass = new double[NumberOfJobClasses];
 		for (i = 0; i < NumberOfJobClasses; i++) {
-			LastJobInTimePerClass[i] = 0;
+			lastJobInTimePerClass[i] = 0;
 		}
 
-		LastJobOutTimePerClass = new double[NumberOfJobClasses];
+		lastJobOutTimePerClass = new double[NumberOfJobClasses];
 		for (i = 0; i < NumberOfJobClasses; i++) {
-			LastJobOutTimePerClass[i] = 0;
+			lastJobOutTimePerClass[i] = 0;
 		}
 
 		ThroughputPerClass = new InverseMeasure[NumberOfJobClasses];
 
-		LastJobDropTimePerClass = new double[NumberOfJobClasses];
-		Arrays.fill(LastJobDropTimePerClass, 0.0);
+		lastJobDropTimePerClass = new double[NumberOfJobClasses];
+		Arrays.fill(lastJobDropTimePerClass, 0.0);
 
 	}
 
@@ -111,8 +110,8 @@ public class JobInfoList {
 	 * @throws jmt.common.exception.NetException
 	 */
 	public int size() throws jmt.common.exception.NetException {
-		if (List != null) {
-			return List.size();
+		if (list != null) {
+			return list.size();
 		} else {
 			throw new jmt.common.exception.NetException(this, PROPERTY_NOT_AVAILABLE, "property not available");
 		}
@@ -124,8 +123,8 @@ public class JobInfoList {
 	 * @return Number of jobs of a specified job class.
 	 */
 	public int size(JobClass JobClass) throws jmt.common.exception.NetException {
-		if (ListPerClass != null) {
-			return ListPerClass[JobClass.getId()].size();
+		if (listPerClass != null) {
+			return listPerClass[JobClass.getId()].size();
 		} else {
 			throw new jmt.common.exception.NetException(this, PROPERTY_NOT_AVAILABLE, "property not available");
 		}
@@ -135,7 +134,7 @@ public class JobInfoList {
 	 * @return Arrived Jobs.
 	 */
 	public int getJobsIn() {
-		return JobsIn;
+		return jobsIn;
 	}
 
 	/** Gets the number of jobs of a specific job class added to the list.
@@ -143,21 +142,21 @@ public class JobInfoList {
 	 * @return Arrived jobs of a specific job class.
 	 */
 	public int getJobsInPerClass(JobClass JobClass) {
-		return JobsInPerClass[JobClass.getId()];
+		return jobsInPerClass[JobClass.getId()];
 	}
 
 	/** Gets the number of jobs added to the list for each job class.
 	 * @return Arrived jobs for each job class.
 	 */
 	public int[] getJobsInPerClass() {
-		return JobsInPerClass;
+		return jobsInPerClass;
 	}
 
 	/** Gets the number of jobs removed from the list.
 	 * @return Departed Jobs.
 	 */
 	public int getJobsOut() {
-		return JobsOut;
+		return jobsOut;
 	}
 
 	/** Gets the number of jobs of a specific job class removed from the list.
@@ -165,14 +164,14 @@ public class JobInfoList {
 	 * @return Departed jobs of a specific job class.
 	 */
 	public int getJobsOutPerClass(JobClass JobClass) {
-		return JobsOutPerClass[JobClass.getId()];
+		return jobsOutPerClass[JobClass.getId()];
 	}
 
 	/** Gets the number of jobs added to the list for each job class.
 	 * @return Arrived jobs per each job class.
 	 */
 	public int[] getJobsOutPerClass() {
-		return JobsOutPerClass;
+		return jobsOutPerClass;
 	}
 
 	/** Gets busy time.
@@ -180,8 +179,8 @@ public class JobInfoList {
 	 * @throws jmt.common.exception.NetException
 	 */
 	public double getBusyTime() throws jmt.common.exception.NetException {
-		if (List != null) {
-			return BusyTime;
+		if (list != null) {
+			return busyTime;
 		} else {
 			throw new jmt.common.exception.NetException(this, PROPERTY_NOT_AVAILABLE, "property not available");
 		}
@@ -192,8 +191,8 @@ public class JobInfoList {
 	 * @throws jmt.common.exception.NetException
 	 */
 	public double getBusyTimePerClass(JobClass JobClass) throws jmt.common.exception.NetException {
-		if (ListPerClass != null) {
-			return BusyTimePerClass[JobClass.getId()];
+		if (listPerClass != null) {
+			return busyTimePerClass[JobClass.getId()];
 		} else {
 			throw new jmt.common.exception.NetException(this, PROPERTY_NOT_AVAILABLE, "property not available");
 		}
@@ -203,54 +202,54 @@ public class JobInfoList {
 	 * @return Time of last job arrived.
 	 */
 	public double getLastJobInTime() {
-		return LastJobInTime;
+		return lastJobInTime;
 	}
 
 	/** Gets time of the last job arrived of a specified job class.
 	 * @return Time of last job arrived of a specified job class.
 	 */
 	public double getLastJobInTimePerClass(JobClass JobClass) {
-		return LastJobInTimePerClass[JobClass.getId()];
+		return lastJobInTimePerClass[JobClass.getId()];
 	}
 
 	/** Gets time of the last job was dropped.
 	 * @return Time of last job departed.
 	 */
 	public double getLastJobOutTime() {
-		return LastJobOutTime;
+		return lastJobOutTime;
 	}
 
 	/** Gets time of the last job was dropped.
 	 * @return Time of last job departed.
 	 */
 	public double getLastJobDropTime() {
-		return LastJobDropTime;
+		return lastJobDropTime;
 	}
 
 	/** Gets time of the last job departed of a specified job class.
 	 * @return Time of last job departed of a specified job class.
 	 */
 	public double getLastJobOutTimePerClass(JobClass JobClass) {
-		return LastJobOutTimePerClass[JobClass.getId()];
+		return lastJobOutTimePerClass[JobClass.getId()];
 	}
 
 	/** Gets time of the last job dropped of a specified job class.
 	 * @return Time of last job dropped of a specified job class.
 	 */
 	public double getLastJobDropTimePerClass(JobClass JobClass) {
-		return LastJobDropTimePerClass[JobClass.getId()];
+		return lastJobDropTimePerClass[JobClass.getId()];
 	}
 
 	/** Gets time of the last modify of the list.
 	 * @return Time of last modify of the list.
 	 */
 	public double getLastModifyTime() {
-		if (LastJobOutTime >= LastJobInTime && LastJobOutTime >= LastJobDropTime) {
-			return LastJobOutTime;
-		} else if (LastJobInTime >= LastJobOutTime && LastJobInTime >= LastJobDropTime) {
-			return LastJobInTime;
+		if (lastJobOutTime >= lastJobInTime && lastJobOutTime >= lastJobDropTime) {
+			return lastJobOutTime;
+		} else if (lastJobInTime >= lastJobOutTime && lastJobInTime >= lastJobDropTime) {
+			return lastJobInTime;
 		} else {
-			return LastJobDropTime;
+			return lastJobDropTime;
 		}
 	}
 
@@ -258,14 +257,14 @@ public class JobInfoList {
 	 * @return Time of the last modify of the list for a specified job class.
 	 */
 	public double getLastModifyTimePerClass(JobClass JobClass) {
-		if (LastJobOutTimePerClass[JobClass.getId()] >= LastJobInTimePerClass[JobClass.getId()]
-				&& LastJobOutTimePerClass[JobClass.getId()] >= LastJobDropTimePerClass[JobClass.getId()]) {
-			return LastJobOutTimePerClass[JobClass.getId()];
-		} else if (LastJobInTimePerClass[JobClass.getId()] >= LastJobOutTimePerClass[JobClass.getId()]
-				&& LastJobInTimePerClass[JobClass.getId()] >= LastJobDropTimePerClass[JobClass.getId()]) {
-			return LastJobInTimePerClass[JobClass.getId()];
+		if (lastJobOutTimePerClass[JobClass.getId()] >= lastJobInTimePerClass[JobClass.getId()]
+				&& lastJobOutTimePerClass[JobClass.getId()] >= lastJobDropTimePerClass[JobClass.getId()]) {
+			return lastJobOutTimePerClass[JobClass.getId()];
+		} else if (lastJobInTimePerClass[JobClass.getId()] >= lastJobOutTimePerClass[JobClass.getId()]
+				&& lastJobInTimePerClass[JobClass.getId()] >= lastJobDropTimePerClass[JobClass.getId()]) {
+			return lastJobInTimePerClass[JobClass.getId()];
 		} else {
-			return LastJobDropTimePerClass[JobClass.getId()];
+			return lastJobDropTimePerClass[JobClass.getId()];
 		}
 	}
 
@@ -274,12 +273,12 @@ public class JobInfoList {
 	 * @return JobInfo object which references to the specified job, null otherwise.
 	 */
 	public JobInfo lookFor(Job Job) throws jmt.common.exception.NetException {
-		if (ListPerClass == null) {
+		if (listPerClass == null) {
 			throw new jmt.common.exception.NetException(this, PROPERTY_NOT_AVAILABLE, "property not available");
 		}
 		ListIterator Iterator;
 		//creates an iterator for the job class list of the job class of the specified job
-		Iterator = ListPerClass[Job.getJobClass().getId()].listIterator();
+		Iterator = listPerClass[Job.getJobClass().getId()].listIterator();
 		JobInfo jobInfo;
 		while (Iterator.hasNext()) {
 			jobInfo = (JobInfo) Iterator.next();
@@ -294,7 +293,7 @@ public class JobInfoList {
 	 * Gets the job info list
 	 */
 	public List getJobList() {
-		return List;
+		return list;
 	}
 
 	/**---------------------------------------------------------------------
@@ -307,10 +306,10 @@ public class JobInfoList {
 	 * otherwise no list was created by the constructor)
 	 */
 	public boolean add(JobInfo jobInfo) {
-		if (List != null) {
+		if (list != null) {
 			updateAdd(jobInfo);
-			ListPerClass[jobInfo.getJob().getJobClass().getId()].add(jobInfo);
-			List.add(jobInfo);
+			listPerClass[jobInfo.getJob().getJobClass().getId()].add(jobInfo);
+			list.add(jobInfo);
 			return true;
 		} else {
 			return false;
@@ -323,10 +322,10 @@ public class JobInfoList {
 	 * otherwise no list was created by the constructor)
 	 */
 	public boolean addFirst(JobInfo jobInfo) {
-		if (List != null) {
+		if (list != null) {
 			updateAdd(jobInfo);
-			ListPerClass[jobInfo.getJob().getJobClass().getId()].addFirst(jobInfo);
-			List.addFirst(jobInfo);
+			listPerClass[jobInfo.getJob().getJobClass().getId()].addFirst(jobInfo);
+			list.addFirst(jobInfo);
 			return true;
 		} else {
 			return false;
@@ -352,15 +351,15 @@ public class JobInfoList {
 	 */
 	public boolean add(int index, JobInfo jobInfo, boolean isClassTail) {
 
-		if (List != null) {
+		if (list != null) {
 			updateAdd(jobInfo);
 
 			if (isClassTail) {
-				ListPerClass[jobInfo.getJob().getJobClass().getId()].addLast(jobInfo);
+				listPerClass[jobInfo.getJob().getJobClass().getId()].addLast(jobInfo);
 			} else {
-				ListPerClass[jobInfo.getJob().getJobClass().getId()].addFirst(jobInfo);
+				listPerClass[jobInfo.getJob().getJobClass().getId()].addFirst(jobInfo);
 			}
-			List.add(index, jobInfo);
+			list.add(index, jobInfo);
 
 			return true;
 		} else {
@@ -381,15 +380,15 @@ public class JobInfoList {
 	 */
 	public boolean addFirst(JobInfo jobInfo, boolean isClassTail) {
 
-		if (List != null) {
+		if (list != null) {
 			updateAdd(jobInfo);
 
 			if (isClassTail) {
-				ListPerClass[jobInfo.getJob().getJobClass().getId()].addLast(jobInfo);
+				listPerClass[jobInfo.getJob().getJobClass().getId()].addLast(jobInfo);
 			} else {
-				ListPerClass[jobInfo.getJob().getJobClass().getId()].addFirst(jobInfo);
+				listPerClass[jobInfo.getJob().getJobClass().getId()].addFirst(jobInfo);
 			}
-			List.addFirst(jobInfo);
+			list.addFirst(jobInfo);
 
 			return true;
 		} else {
@@ -410,15 +409,15 @@ public class JobInfoList {
 	 */
 	public boolean addLast(JobInfo jobInfo, boolean isClassTail) {
 
-		if (List != null) {
+		if (list != null) {
 			updateAdd(jobInfo);
 
 			if (isClassTail) {
-				ListPerClass[jobInfo.getJob().getJobClass().getId()].addLast(jobInfo);
+				listPerClass[jobInfo.getJob().getJobClass().getId()].addLast(jobInfo);
 			} else {
-				ListPerClass[jobInfo.getJob().getJobClass().getId()].addFirst(jobInfo);
+				listPerClass[jobInfo.getJob().getJobClass().getId()].addFirst(jobInfo);
 			}
-			List.addLast(jobInfo);
+			list.addLast(jobInfo);
 
 			return true;
 		} else {
@@ -436,10 +435,10 @@ public class JobInfoList {
 	 * otherwise no list was created by the constructor)
 	 */
 	public boolean addLast(JobInfo jobInfo) throws jmt.common.exception.NetException {
-		if (List != null) {
+		if (list != null) {
 			updateAdd(jobInfo);
-			ListPerClass[jobInfo.getJob().getJobClass().getId()].addLast(jobInfo);
-			List.addLast(jobInfo);
+			listPerClass[jobInfo.getJob().getJobClass().getId()].addLast(jobInfo);
+			list.addLast(jobInfo);
 			return true;
 		} else {
 			return false;
@@ -453,7 +452,7 @@ public class JobInfoList {
 	 * otherwise no list was created by the constructor)
 	 */
 	public boolean remove(JobInfo jobInfo) throws jmt.common.exception.NetException {
-		if (List != null) {
+		if (list != null) {
 			Job job = jobInfo.getJob();
 			JobClass jobClass = job.getJobClass();
 			int c = jobClass.getId();
@@ -469,14 +468,14 @@ public class JobInfoList {
 
 			updateResponseTime(jobInfo);
 
-			ListPerClass[c].remove(jobInfo);
-			List.remove(jobInfo);
-			LastJobOutTimePerClass[c] = LastJobOutTime = NetSystem.getTime();
-			double time = LastJobOutTime - jobInfo.getTime();
-			JobsOut++;
-			JobsOutPerClass[c]++;
-			BusyTime += time;
-			BusyTimePerClass[c] += time;
+			listPerClass[c].remove(jobInfo);
+			list.remove(jobInfo);
+			lastJobOutTimePerClass[c] = lastJobOutTime = NetSystem.getTime();
+			double time = lastJobOutTime - jobInfo.getTime();
+			jobsOut++;
+			jobsOutPerClass[c]++;
+			busyTime += time;
+			busyTimePerClass[c] += time;
 
 			return true;
 		} else {
@@ -490,8 +489,8 @@ public class JobInfoList {
 	 * empty or Save property is false)
 	 */
 	public JobInfo removeFirst() throws jmt.common.exception.NetException {
-		if (List != null) {
-			JobInfo jobInfo = ((JobInfo) List.getFirst());
+		if (list != null) {
+			JobInfo jobInfo = ((JobInfo) list.getFirst());
 			if (jobInfo != null) {
 				remove(jobInfo);
 				return jobInfo;
@@ -509,9 +508,9 @@ public class JobInfoList {
 	 * empty or Save property is false)
 	 */
 	public JobInfo removeFirst(JobClass jobClass) throws jmt.common.exception.NetException {
-		if (List != null) {
+		if (list != null) {
 			int c = jobClass.getId();
-			JobInfo JobInfo = ((JobInfo) ListPerClass[c].getFirst());
+			JobInfo JobInfo = ((JobInfo) listPerClass[c].getFirst());
 			if (JobInfo != null) {
 				remove(JobInfo);
 				return JobInfo;
@@ -529,8 +528,8 @@ public class JobInfoList {
 	 * empty or Save property is false)
 	 */
 	public JobInfo removeLast() throws jmt.common.exception.NetException {
-		if (List != null) {
-			JobInfo JobInfo = (JobInfo) List.getLast();
+		if (list != null) {
+			JobInfo JobInfo = (JobInfo) list.getLast();
 			if (JobInfo != null) {
 				remove(JobInfo);
 				return JobInfo;
@@ -548,9 +547,9 @@ public class JobInfoList {
 	 * empty or Save property is false)
 	 */
 	public JobInfo removeLast(JobClass jobClass) throws jmt.common.exception.NetException {
-		if (List != null) {
+		if (list != null) {
 			int c = jobClass.getId();
-			JobInfo JobInfo = (JobInfo) ListPerClass[c].getLast();
+			JobInfo JobInfo = (JobInfo) listPerClass[c].getLast();
 			if ((JobInfo != null)) {
 				remove(JobInfo);
 				return JobInfo;
@@ -573,12 +572,12 @@ public class JobInfoList {
 	 */
 	public void analyzeUtilization(JobClass jobClass, Measure Measurement) {
 		if (jobClass != null) {
-			if (UtilizationPerClass == null) {
-				UtilizationPerClass = new Measure[ListPerClass.length];
+			if (utilizationPerClass == null) {
+				utilizationPerClass = new Measure[listPerClass.length];
 			}
-			UtilizationPerClass[jobClass.getId()] = Measurement;
+			utilizationPerClass[jobClass.getId()] = Measurement;
 		} else {
-			Utilization = Measurement;
+			utilization = Measurement;
 		}
 	}
 
@@ -589,12 +588,12 @@ public class JobInfoList {
 	 */
 	public void analyzeResponseTime(JobClass jobClass, Measure Measurement) {
 		if (jobClass != null) {
-			if (ResponseTimePerClass == null) {
-				ResponseTimePerClass = new Measure[ListPerClass.length];
+			if (responseTimePerClass == null) {
+				responseTimePerClass = new Measure[listPerClass.length];
 			}
-			ResponseTimePerClass[jobClass.getId()] = Measurement;
+			responseTimePerClass[jobClass.getId()] = Measurement;
 		} else {
-			ResponseTime = Measurement;
+			responseTime = Measurement;
 		}
 	}
 
@@ -605,12 +604,12 @@ public class JobInfoList {
 	 */
 	public void analyzeDropRate(JobClass jobClass, InverseMeasure Measurement) {
 		if (jobClass != null) {
-			if (DropRatePerClass == null) {
-				DropRatePerClass = new InverseMeasure[ListPerClass.length];
+			if (dropRatePerClass == null) {
+				dropRatePerClass = new InverseMeasure[listPerClass.length];
 			}
-			DropRatePerClass[jobClass.getId()] = Measurement;
+			dropRatePerClass[jobClass.getId()] = Measurement;
 		} else {
-			DropRate = Measurement;
+			dropRate = Measurement;
 		}
 	}
 
@@ -632,7 +631,7 @@ public class JobInfoList {
 	public void analyzeThroughput(JobClass JobClass, InverseMeasure Measurement) {
 		if (JobClass != null) {
 			if (ThroughputPerClass == null) {
-				ThroughputPerClass = new InverseMeasure[ListPerClass.length];
+				ThroughputPerClass = new InverseMeasure[listPerClass.length];
 			}
 			ThroughputPerClass[JobClass.getId()] = Measurement;
 		} else {
@@ -647,12 +646,12 @@ public class JobInfoList {
 	 */
 	public void analyzeResidenceTime(JobClass JobClass, Measure Measurement) {
 		if (JobClass != null) {
-			if (ResidenceTimePerClass == null) {
-				ResidenceTimePerClass = new Measure[ListPerClass.length];
+			if (residenceTimePerClass == null) {
+				residenceTimePerClass = new Measure[listPerClass.length];
 			}
-			ResidenceTimePerClass[JobClass.getId()] = Measurement;
+			residenceTimePerClass[JobClass.getId()] = Measurement;
 		} else {
-			ResidenceTime = Measurement;
+			residenceTime = Measurement;
 		}
 	}
 
@@ -664,56 +663,56 @@ public class JobInfoList {
 	private void updateResponseTime(JobInfo JobInfo) {
 		int c = JobInfo.getJob().getJobClass().getId();
 		double ArriveTime = JobInfo.getTime();
-		if (ResponseTimePerClass != null) {
-			Measure m = ResponseTimePerClass[c];
+		if (responseTimePerClass != null) {
+			Measure m = responseTimePerClass[c];
 			if (m != null) {
 				m.update(NetSystem.getTime() - ArriveTime, 1.0);
 			}
 		}
-		if (ResponseTime != null) {
-			ResponseTime.update(NetSystem.getTime() - ArriveTime, 1.0);
+		if (responseTime != null) {
+			responseTime.update(NetSystem.getTime() - ArriveTime, 1.0);
 		}
 	}
 
 	private void updateUtilization(JobClass JobClass) {
-		if (UtilizationPerClass != null) {
+		if (utilizationPerClass != null) {
 			int c = JobClass.getId();
-			Measure m = UtilizationPerClass[c];
+			Measure m = utilizationPerClass[c];
 			if (m != null) {
 
-				m.update(ListPerClass[c].size(), NetSystem.getTime() - getLastModifyTimePerClass(JobClass));
+				m.update(listPerClass[c].size(), NetSystem.getTime() - getLastModifyTimePerClass(JobClass));
 			}
 		}
-		if (Utilization != null) {
-			Utilization.update(List.size(), NetSystem.getTime() - getLastModifyTime());
+		if (utilization != null) {
+			utilization.update(list.size(), NetSystem.getTime() - getLastModifyTime());
 		}
 	}
 
 	private void updateResidenceTime(JobInfo JobInfo) {
 		int c = JobInfo.getJob().getJobClass().getId();
 		double ArriveTime = JobInfo.getTime();
-		if (ResidenceTimePerClass != null) {
-			Measure m = ResidenceTimePerClass[c];
+		if (residenceTimePerClass != null) {
+			Measure m = residenceTimePerClass[c];
 			if (m != null) {
 				m.update(NetSystem.getTime() - ArriveTime, 1.0);
 			}
 		}
-		if (ResidenceTime != null) {
-			ResidenceTime.update(NetSystem.getTime() - ArriveTime, 1.0);
+		if (residenceTime != null) {
+			residenceTime.update(NetSystem.getTime() - ArriveTime, 1.0);
 		}
 	}
 
 	private void updateDropRate(JobClass jobClass) {
 		int c = jobClass.getId();
-		if (DropRatePerClass != null) {
-			Measure m = DropRatePerClass[c];
+		if (dropRatePerClass != null) {
+			Measure m = dropRatePerClass[c];
 			if (m != null) {
 				// Inverse measure must be used to compute drop rate
 				m.update(NetSystem.getTime() - getLastJobDropTimePerClass(jobClass), 1.0);
 			}
 		}
-		if (DropRate != null) {
-			DropRate.update(NetSystem.getTime() - getLastJobDropTime(), 1.0);
+		if (dropRate != null) {
+			dropRate.update(NetSystem.getTime() - getLastJobDropTime(), 1.0);
 		}
 	}
 
@@ -743,9 +742,9 @@ public class JobInfoList {
 		updateUtilization(jobClass);
 		updateQueueLength(jobClass);
 
-		JobsIn++;
-		JobsInPerClass[c]++;
-		LastJobInTimePerClass[c] = LastJobInTime = NetSystem.getTime();
+		jobsIn++;
+		jobsInPerClass[c]++;
+		lastJobInTimePerClass[c] = lastJobInTime = NetSystem.getTime();
 
 	}
 
@@ -760,12 +759,12 @@ public class JobInfoList {
 	 */
 	public void analyzeQueueLength(JobClass JobClass, Measure Measurement) {
 		if (JobClass != null) {
-			if (QueueLengthPerClass == null) {
-				QueueLengthPerClass = new Measure[ListPerClass.length];
+			if (queueLengthPerClass == null) {
+				queueLengthPerClass = new Measure[listPerClass.length];
 			}
-			QueueLengthPerClass[JobClass.getId()] = Measurement;
+			queueLengthPerClass[JobClass.getId()] = Measurement;
 		} else {
-			QueueLength = Measurement;
+			queueLength = Measurement;
 		}
 	}
 
@@ -779,15 +778,15 @@ public class JobInfoList {
 	 * @param JobClass
 	 */
 	private void updateQueueLength(JobClass JobClass) {
-		if (QueueLengthPerClass != null) {
+		if (queueLengthPerClass != null) {
 			int c = JobClass.getId();
-			Measure m = QueueLengthPerClass[c];
+			Measure m = queueLengthPerClass[c];
 			if (m != null) {
-				m.update(ListPerClass[c].size(), NetSystem.getTime() - getLastModifyTimePerClass(JobClass));
+				m.update(listPerClass[c].size(), NetSystem.getTime() - getLastModifyTimePerClass(JobClass));
 			}
 		}
-		if (QueueLength != null) {
-			QueueLength.update(List.size(), NetSystem.getTime() - getLastModifyTime());
+		if (queueLength != null) {
+			queueLength.update(list.size(), NetSystem.getTime() - getLastModifyTime());
 		}
 	}
 
@@ -803,17 +802,17 @@ public class JobInfoList {
 	 * otherwise no list was created by the constructor)
 	 */
 	public boolean removeAfterRedirect(JobInfo JobInfo) throws jmt.common.exception.NetException {
-		if (List != null) {
+		if (list != null) {
 			Job job = JobInfo.getJob();
 			JobClass jobClass = job.getJobClass();
 			int c = jobClass.getId();
 
-			ListPerClass[c].remove(JobInfo);
-			List.remove(JobInfo);
+			listPerClass[c].remove(JobInfo);
+			list.remove(JobInfo);
 
 			//the job has been redirected: it shouldn't be counted
-			JobsIn--;
-			JobsInPerClass[c]--;
+			jobsIn--;
+			jobsInPerClass[c]--;
 
 			return true;
 		} else {
@@ -828,13 +827,13 @@ public class JobInfoList {
 	 * otherwise no list was created by the constructor)
 	 */
 	public boolean removeAfterDrop(JobInfo JobInfo) throws jmt.common.exception.NetException {
-		if (List != null) {
+		if (list != null) {
 			Job job = JobInfo.getJob();
 			JobClass jobClass = job.getJobClass();
 			int c = jobClass.getId();
 
-			ListPerClass[c].remove(JobInfo);
-			List.remove(JobInfo);
+			listPerClass[c].remove(JobInfo);
+			list.remove(JobInfo);
 
 			return dropJob(job);
 		} else {
@@ -849,7 +848,7 @@ public class JobInfoList {
 	* otherwise no list was created by the constructor)
 	 */
 	public boolean dropJob(Job job) throws jmt.common.exception.NetException {
-		if (List != null) {
+		if (list != null) {
 			JobClass jobClass = job.getJobClass();
 			int c = jobClass.getId();
 
@@ -857,7 +856,7 @@ public class JobInfoList {
 			updateDropRate(jobClass);
 
 			//Update last drop time 
-			LastJobDropTimePerClass[c] = LastJobDropTime = NetSystem.getTime();
+			lastJobDropTimePerClass[c] = lastJobDropTime = NetSystem.getTime();
 			return true;
 		} else {
 			return false;

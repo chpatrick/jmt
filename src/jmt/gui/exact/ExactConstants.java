@@ -83,7 +83,8 @@ public interface ExactConstants {
 			+ "</font><font size=\"3\"><br>Total time spent by each customer class at each station. Note that the aggregate values are weighted by relative per-class throughput."
 			+ " The global aggregate is the system response time.</body></html>";
 	public static final String DESCRIPTION_UTILIZATIONS = "<html><body align=\"left\"><font size=\"4\"><b>Utilization</b>"
-			+ "</font><font size=\"3\"><br>Average Utilization for each class at each station.</body></html>";
+			+ "</font><font size=\"3\"><br>Average Utilization for each class at each station. Utilization for delays is the average "
+			+ " number of customers.</body></html>";
 	public static final String DESCRIPTION_WHATIF_NONE = "<html><body align=\"left\"><font size=\"4\"><b>What-if analysis</b>"
 			+ "</font><font size=\"3\"><br>Select a control parameter if you want to solve several models with its values "
 			+ "changing in the selected range. " + "The performance indices will be shown " + "in a graph. </font></body></html>";
@@ -110,7 +111,7 @@ public interface ExactConstants {
 			+ "</font></body></html>";
 	public static final String DESCRIPTION_WHATIF_MIX = "<html><body align=\"left\"><font size=\"4\"><b>What-if analysis</b>"
 			+ "</font><font size=\"3\"><br>Solve models with different proportion of jobs between two closed classes, "
-			+ "keeping constant the total number of jobs N (ßi = Ni / N). It is required that Ni > 0."
+			+ "keeping constant the total number of jobs N (ï¿½i = Ni / N). It is required that Ni > 0."
 			+ "<br>Since only integer Ni values are allowed, the number of models executed can be very small." + "</font></body></html>";
 	public static final String DESCRIPTION_GRAPH = "<html><body align=\"left\"><font size=\"4\"><b>Graphical Results</b>"
 			+ "</font><font size=\"3\"><br>Select performance indices to be plotted. Left-click and drag on the graph to zoom "

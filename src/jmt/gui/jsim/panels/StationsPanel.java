@@ -169,7 +169,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 	public StationsPanel(StationDefinition sd, ClassDefinition cd) {
 		super();
 		stationTable = new StationTable();
-		comboEditor = new ImagedComboBoxCellEditorFactory();
+		comboEditor = new ImagedComboBoxCellEditorFactory(true);
 		initComponents();
 		//forbid column to be moved
 		stationTable.getTableHeader().setReorderingAllowed(false);
