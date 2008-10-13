@@ -14,11 +14,11 @@
 <meta name="generator" content="RoboHelp by eHelp Corporation www.ehelp.com">
 </head>
 <body>
-<h1>Server Properties <img src="../../image/topology/edit/server_fig.png" width="90" height="54" align="top"></h1>
+<h1>Queueing Station Properties <img src="../../image/topology/edit/server_fig.png" width="90" height="54" align="top"></h1>
 <p>______________________</p>
 <p>&nbsp;</p>
-<p>The Server station is one of the most important components in a   queuing network model. Service stations represent the service facilities of the   system being modelled. A server station provides the required service to its   customers. Server stations may have any (finite) number of servers. If all the   servers in the service station are busy when a customer arrives at the station,   the arriving customer is put in a waiting queue until its turn to receive   service from the first available server is up. The queueing discipline decides   which customer is served next when a server becomes free. Therefore, the   response time at server stations includes service time and queuing time. <BR>
-Server stations may have more than one server. Their number is a parameter   to be specified (default is 1).</p>
+<p>The Queueing station is one of the most important components in a   queuing network model. Queueing stations represent the service facilities of the   system being modelled. A Queueing station provides the required service to its   customers. Queueing stations may have any (finite) number of servers. If all the   servers in the station are busy when a customer arrives at the station,   the arriving customer is put in a waiting queue until its turn to receive   service from the first available server is up. The queueing discipline decides   which customer is served next when a server becomes free. Therefore, the   response time at server stations includes service time and queuing time. <BR>
+Queueing stations may have more than one server. Their number is a parameter   to be specified (default is 1).</p>
 <p>&nbsp;</p>
  <p class="Stile3">Set or change the properties:</p>
 <p>&nbsp;</p>
@@ -214,7 +214,7 @@ Server stations may have more than one server. Their number is a parameter   to 
   <tr>
     <td valign="top" class="Stile1"><ul>
       <li>
-        <p>Shortest Q length </p>
+        <p>Join the Shortest Queue (JSQ) </p>
       </li>
     </ul></td>
     <td class="hcp2"><p>With this strategy, each job is routed to the device that has the smallest queue   length, i.e., number of jobs waiting, at the time the job leaves therouting   station. </p>

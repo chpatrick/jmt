@@ -76,7 +76,7 @@ import jmt.gui.common.routingStrategies.RoutingStrategy;
  *         Date: 12-lug-2005
  *         Time: 16.18.35
  */
-public class DefaultsEditor extends JDialog {
+public class DefaultsEditor extends JDialog implements CommonConstants{
 	/**
 	 * 
 	 */
@@ -347,11 +347,11 @@ public class DefaultsEditor extends JDialog {
 		// Station type (JSIM only)
 		if (target == JSIM) {
 			tmpMap = new TreeMap();
-			tmpMap.put(CommonConstants.STATION_TYPE_SERVER, CommonConstants.STATION_TYPE_SERVER);
-			tmpMap.put(CommonConstants.STATION_TYPE_DELAY, CommonConstants.STATION_TYPE_DELAY);
-			tmpMap.put(CommonConstants.STATION_TYPE_ROUTER, CommonConstants.STATION_TYPE_ROUTER);
-			tmpMap.put(CommonConstants.STATION_TYPE_FORK, CommonConstants.STATION_TYPE_FORK);
-			tmpMap.put(Defaults.STATION_TYPE_JOIN, Defaults.STATION_TYPE_JOIN);
+			tmpMap.put(STATION_TYPE_SERVER, STATION_NAMES.get(STATION_TYPE_SERVER));
+			tmpMap.put(STATION_TYPE_DELAY, STATION_NAMES.get(STATION_TYPE_DELAY));
+			tmpMap.put(STATION_TYPE_ROUTER, STATION_NAMES.get(STATION_TYPE_ROUTER));
+			tmpMap.put(STATION_TYPE_FORK, STATION_NAMES.get(STATION_TYPE_FORK));
+			tmpMap.put(STATION_TYPE_JOIN, STATION_NAMES.get(STATION_TYPE_JOIN));
 			addInputCombo("Type", "stationType", station_panel, tmpMap);
 			stationpanelnum++;
 		}
