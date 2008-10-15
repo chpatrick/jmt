@@ -216,6 +216,8 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 		else if (nsamples > maxData && confIntervalOk) {
 			success = true;
 			end = true;
+			// Free allocated memory
+			hMeans = null;
 			return true;
 		}
 
@@ -242,7 +244,10 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 			if ((nsamples % nullTestPeriod == 0)) {
 				if (nullTest()) {
 					//null test is true (the measure is almost always equal to 0.0)
-					end = true;
+					if (!disableStatisticStop) {
+						end = true;
+					} 
+					confIntervalOk = true;
 					success = true;
 					measureIsZero = true;
 					return end;
@@ -339,7 +344,7 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 	 * transient period.
 	 * <br>See
 	 * <br>
-	 *  Fishman G.S. 1973 “Concepts and Methods in discrete Event Digital Simulation”.
+	 *  Fishman G.S. 1973 ï¿½Concepts and Methods in discrete Event Digital Simulationï¿½.
 	 *  New York Wiley
 	 *
 	 * <br>

@@ -57,16 +57,26 @@ p.hcp3 { margin-left:0px; }
 <ul type="disc" class="hcp1">
 	
 	<li class="kadov-p"><p class="hcp3"><span class="hcp2"><font color=blue ><a 
- name=Response></a>Response Time: </font></span>Average time spent in a station by a customer for a single   request (it is the sum of Queueing time and Service time).<br>
-	</p>
+ name=Response></a>Response Time: </font></span>Average time spent in a station by a customer for a single   request (it is the sum of Queueing time and Service time).</p>
 	</li>
+
+      <p>&nbsp;
+      </p>
 </ul>
 
 <ul type="disc" class="hcp1">
 	
 	<li class="kadov-p">
-	  <p><span class="hcp2"><font color=blue ><a name=Utilization></a>Utilization:</font></span> Percentage of time a resource is used w.r.t. the system   lifetime; it varies from 0 (0%), when the station is always idle, to a maximum   of 1 (100%), when the station is constantly busy serving customers for the   entire system lifetime. Utilization may be greater than 1 if a station has more   than one server.</p>
-	</li>
+	  <p><span class="hcp2"><font color=blue ><a name=Utilization></a>Utilization: </font></span>Percentage of time a resource is used 
+	    
+	    w.r.t. the system lifetime; it varies from 0 (0%), when the station is
+	    
+	    always idle, to a maximum of 1 (100%), when the station is constantly busy
+	    
+      serving customers for the entire system lifetime.</p>
+	  <p class="stile4">If a queueing station has more than one server, utilization is the average utilization of all servers. </p>
+	  <p class="stile4">In delay stations, for consistency with Little's law, the utilization is computed as the average number of customers in the station. So, its value may be grater than 1.</p>
+    </li>
 </ul>
 
 <p>&nbsp;</p>
