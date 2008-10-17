@@ -595,6 +595,9 @@ public class ExactWizard extends Wizard {
 		} catch (SolverException e) {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Solver error", JOptionPane.ERROR_MESSAGE);
 			return;
+		} catch (OutOfMemoryError e) {
+			JOptionPane.showMessageDialog(this, "Out of memory error. Try to run Java Virtual Machine with more heap size (-Xmx<num>m)", "Out of Memory", JOptionPane.ERROR_MESSAGE);
+			return;
 		}
 		this.data = newdata;
 		if (data.hasResults()) {
@@ -611,7 +614,7 @@ public class ExactWizard extends Wizard {
 		try {
 		    ClassLoader cl = this.getClass().getClassLoader();
 
-		    //TODO: cerca nella cartella class... è l'unica soluzione attualmente funzionante
+		    //TODO: cerca nella cartella class... ï¿½ l'unica soluzione attualmente funzionante
 		    //URL url = HelpSet.findHelpSet(cl, "help/mvaIt/MVA.hs");
 		    URL url = HelpSet.findHelpSet(cl, "help/jmva_en/jmva_eng.hs");
 		    //System.out.println(url.toString());

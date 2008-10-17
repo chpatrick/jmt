@@ -102,6 +102,12 @@ public class SolverClient {
 		}
 
 		// Checks for exceptions
+		if (solverThread.getOutOfMemoryError() != null) {
+			solver = null;
+			System.gc();
+			solver = new SolverDispatcher();
+			throw solverThread.getOutOfMemoryError();
+		}
 		if (solverThread.getInputException() != null) {
 			progress.kill();
 			throw solverThread.getInputException();
@@ -151,6 +157,7 @@ public class SolverClient {
 		private File model;
 		private SolverException solverException;
 		private InputDataException inputDataException;
+		private OutOfMemoryError outOfMemoryError;
 
 		/**
 		 * Creates a solver thread
@@ -176,6 +183,10 @@ public class SolverClient {
 			} catch (InputDataException e) {
 				inputDataException = e;
 				progress.kill();
+			} catch (OutOfMemoryError e) {
+				solver = null;
+				outOfMemoryError = e;
+				progress.kill();
 			}
 		}
 
@@ -194,5 +205,14 @@ public class SolverClient {
 		public InputDataException getInputException() {
 			return inputDataException;
 		}
+
+		/**
+		 * Tells if an OutOfMemory error was thrown
+		 * @return thrown OutOfMemory or null if none was raised
+		 */
+		public OutOfMemoryError getOutOfMemoryError() {
+			return outOfMemoryError;
+		}
+
 	}
 }
