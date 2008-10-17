@@ -14,32 +14,6 @@
 	iconFile="$INSTALL_PATH/jmt.ico">
 	</shortcut>
 	
-	<shortcut name="JMT users manual" 
-	target="$INSTALL_PATH/manual.vbs" 
-	programGroup="yes" 
-	desktop="no" 
-	applications="no" 
-	startMenu="no" 
-	startup="no" 
-	commandLine="" 
-	workingDirectory="$INSTALL_PATH" 
-	description="Java Modelling Tools users manual" 
-	iconFile="$INSTALL_PATH/manual.ico">
-	</shortcut>
-	
-	<shortcut name="JMT system manual" 
-	target="$INSTALL_PATH/SysManual.vbs" 
-	programGroup="yes" 
-	desktop="no" 
-	applications="no" 
-	startMenu="no" 
-	startup="no" 
-	commandLine="" 
-	workingDirectory="$INSTALL_PATH" 
-	description="Java Modelling Tools system manual" 
-	iconFile="$INSTALL_PATH/manual.ico">
-	</shortcut>
-	
 	<shortcut name="JMT 0.7.4 1Gb Heap"
 	target="$INSTALL_PATH/runJMTmem.vbs" 
 	programGroup="yes" 

@@ -17,42 +17,6 @@
 	terminal="no">
 	</shortcut>
 	
-	<shortcut name="JMT users manual"
-	target="acroread" 
-	commandLine="&quot;$INSTALL_PATH/manuals/JMT_users_Manual.pdf&quot;" 
-	url="$INSTALL_PATH/manuals/JMT_users_Manual.pdf"
-	programGroup="yes"
-	desktop="no" 
-	applications="no" 
-	startMenu="no" 
-	startup="no" 
-	workingDirectory="$INSTALL_PATH" 
-	description="Java Modelling Tools users manual" 
-	iconFile="acroread"
-	iconIndex="0"
-	type="Application" 
-	encoding="UTF-8" 
-	terminal="no">
-	</shortcut>
-	
-	<shortcut name="JMT system manual"
-	target="acroread" 
-	commandLine="&quot;$INSTALL_PATH/manuals/JMT_system_Manual.pdf&quot;" 
-	url="$INSTALL_PATH/manuals/JMT_system_Manual.pdf"
-	programGroup="yes"
-	desktop="no" 
-	applications="no" 
-	startMenu="no" 
-	startup="no" 
-	workingDirectory="$INSTALL_PATH" 
-	description="Java Modelling Tools system manual" 
-	iconFile="acroread"
-	iconIndex="0"
-	type="Application" 
-	encoding="UTF-8" 
-	terminal="no">
-	</shortcut>
-	
 	<shortcut name="JMT 0.7.4 1Gb Heap"
 	target="java" 
 	commandLine="-Xmx1000M -jar &quot;$INSTALL_PATH/JMT.jar&quot;" 
