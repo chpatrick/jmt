@@ -100,7 +100,7 @@ public class JWatStartScreen extends JFrame {
 		 */
 		private static final long serialVersionUID = 1L;
 		{
-			putValue(Action.SHORT_DESCRIPTION, "Burstiness analysis");
+			putValue(Action.SHORT_DESCRIPTION, "Traffic Analysis  - Burstiness");
 			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage(IMG_TRAFFIC_ICON, new Dimension(BUTTONSIZE + 10, BUTTONSIZE + 10)));
 		}
 

@@ -64,7 +64,7 @@ public class MainJwatWizard extends JWatWizard {
 	//private JToolBar toolBar = null;
 	private static final String TITLE = "jWAT";
 	private static final String WORK_LOAD_TITLE = "Workload Analysis";
-	private static final String BURSTINESS_TITLE = "Burstiness Analysis";
+	private static final String BURSTINESS_TITLE = "Traffic Analysis  - Burstiness";
 	private JPanel menus = null;
 	private JMenuBar mMenuBar = null;
 
