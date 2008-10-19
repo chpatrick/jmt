@@ -20,6 +20,7 @@ package jmt.gui.jmodel.JGraphMod;
 
 import java.awt.Graphics;
 
+import jmt.common.GlobalSettings;
 import jmt.gui.common.Defaults;
 import jmt.gui.common.startScreen.GraphStartScreen;
 import jmt.gui.jmodel.controller.Mediator;
@@ -251,7 +252,7 @@ public class JmtJGraph extends JGraph {
 	 * Shows a screenshot dialog used to select screenshot format
 	 */
 	public void showScreenShotDialog() {
-		ExportDialog export = new ExportDialog("Java Modelling Tools - version " + GraphStartScreen.VERSION);
+		ExportDialog export = new ExportDialog("Java Modelling Tools - version " + GlobalSettings.getSetting(GlobalSettings.VERSION));
 		export.setUserProperties(Defaults.getProperties());
 		export.showExportDialog(this, "Export as image...", this, "graph");
 		Defaults.save();

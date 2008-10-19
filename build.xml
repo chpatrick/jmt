@@ -3,11 +3,13 @@
     <description>
         build jmt project
     </description>
-	
+
+	<property file="global.properties" />
+	<property file="${globalsettings.path}" />
 	<property file="build.properties" />
 
     <target name="init" description="initialize build process" >
-
+		<echo>Initialize build process for JMT v.${jmt.version}</echo>
         <!-- Create the time stamp -->
         <tstamp/>
 
@@ -240,7 +242,8 @@
             output="${installer}/${jarName}"
             installerType="standard"
             basedir="${out}"
-            izPackDir="${izpack}/"/>
+            izPackDir="${izpack}/" 
+        	inheritall="true"/>
    </target>
 
 

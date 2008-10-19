@@ -5,10 +5,15 @@ import java.io.Serializable;
 import java.util.Properties;
 
 public class GlobalSettings implements Serializable {
-	private static final long serialVersionUID = 1L;
-
-	private static final String FILENAME = "globalsettings.conf";
+	// Some settings
+	public static final String VERSION = "jmt.version";
 	
+	
+	private static final long serialVersionUID = 1L;
+	private static final String FILENAME = "globalsettings.conf";
+	/**
+	 * The data structure. Remember to access them in a thread-safe manner. 
+	 */
 	private static Properties props;
 	
 	/**

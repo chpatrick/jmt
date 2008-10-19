@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="iso-8859-1" standalone="yes"?>
 <installation version="1.0">
+	<variables>
+		<!-- This automatically checks the "Create Desktop Shortcuts" button. Default value is "False". -->
+		<variable name="DesktopShortcutCheckboxEnabled" value="true"/>
+	</variables>
 	<!-- 
         The info section.
          -->
 	<info>
 		<appname>Java Modelling Tools</appname>
-		<appversion>0.7.4 version</appversion>
+		<appversion>@{jmt.version} version</appversion>
 		<!--
 		<authors>
 			<author name="Bertoli Marco"/>
@@ -25,8 +29,8 @@
 
 			<author name="Marco Bertoli" email="bertoli@elet.polimi.it"/>
 		</authors>
-		<url>http://www.vplab.elet.polimi.it/</url>
 		-->
+		<url>http://jmt.sourceforge.net/</url>
 		<javaversion>1.4</javaversion>
 	</info>
 	<!-- 
@@ -41,7 +45,16 @@
 	<locale>
 		<langpack iso3="eng"/>
 		<langpack iso3="ita"/>
+		<langpack iso3="deu"/>
+		<langpack iso3="fra"/>
+		<langpack iso3="spa"/>
 	</locale>
+	
+	<!-- Need to define ant properties we want to use during install as variables -->
+    <variables>
+      <variable name="JMTVERSION" value="@{jmt.version}"/>
+    </variables>
+	
 	<!-- 
         The resources section.
         The ids must be these ones if you want to use the LicencePanel and/or the InfoPanel.

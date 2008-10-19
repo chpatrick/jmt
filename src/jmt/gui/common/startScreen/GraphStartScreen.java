@@ -41,6 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import jmt.common.GlobalSettings;
 import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.components.QuickHTMLViewer;
 import jmt.framework.net.BareBonesBrowserLaunch;
@@ -69,7 +70,6 @@ public class GraphStartScreen extends JMTFrame {
 	private static final int BUTTONSIZE = 25;
 	private static URL imageURL = GraphStartScreen.class.getResource(IMAGE);
 	private static final int FONT_SIZE = 4;
-	public static final String VERSION = "0.7.4";
 	private static String[] args;
 	private JButton onlineDoc, introEng;
 
@@ -82,7 +82,7 @@ public class GraphStartScreen extends JMTFrame {
 			URL_DOCUMENTATION_ONLINE="http://jmt.sourceforge.net/Documentation.html",
 			// Content for logo panel
 			FONT_TYPE = "Arial", HTML_CONTENT_TITLE = "<html><body align=\"center\"><b>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + FONT_SIZE
-					+ "\">JMT - Java Modelling Tools v." + VERSION + "</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + (FONT_SIZE - 1)
+					+ "\">JMT - Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION) + "</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + (FONT_SIZE - 1)
 					+ "\">Performance Evaluation Lab</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + (FONT_SIZE - 1)
 					+ "\">Dipartimento di Elettronica e Informazione<br>" + "Politecnico di Milano - Italy</b><font size=\"0\"><br><br></font>"
 					+ "Project Coordinator: prof. G.Serazzi</font></body></html>";
@@ -211,7 +211,7 @@ public class GraphStartScreen extends JMTFrame {
 	 */
 	private void initGUI() {
 		// Sets default title, close operation and dimensions
-		this.setTitle("JMT - Java Modelling Tools v." + VERSION);
+		this.setTitle("JMT - Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION));
 		this.setIconImage(JMTImageLoader.loadImage(IMG_SUITEICON).getImage());
 		this.setResizable(false);
 		this.centerWindow(780, 500);
