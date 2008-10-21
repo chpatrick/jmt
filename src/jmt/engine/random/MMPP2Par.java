@@ -15,10 +15,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
-
+ 
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
+
 
 /**
 *
@@ -31,49 +32,48 @@ import jmt.common.exception.IncorrectDistributionParameterException;
 *
 */
 
+
 public class MMPP2Par extends AbstractParameter implements Parameter {
 
 	private double mean;
 	private double var;
-	private double r0;
-	private double r1;
+	private double sigma0;
+	private double sigma1;
 	private double lambda1;
-	private double lambda2;
+	private double lambda0;
 	protected ExponentialPar expParam1;
-	protected ExponentialPar expParam2;
+	protected ExponentialPar expParam0;
 
-	public MMPP2Par(Double lambda0, Double lambda1, Double r0, Double r1) throws IncorrectDistributionParameterException {
-		this.r0 = r0.doubleValue();
-		this.r1 = r1.doubleValue();
+	public MMPP2Par(Double lambda0, Double lambda1, Double sigma0, Double sigma1)
+	        throws IncorrectDistributionParameterException {
+		this.sigma0 = sigma0.doubleValue();
+		this.sigma1 = sigma1.doubleValue();
 		this.lambda1 = lambda0.doubleValue();
-		this.lambda2 = lambda1.doubleValue();
+		this.lambda0 = lambda1.doubleValue();
 		testParameters();
-		this.mean = 0;
+		this.mean = (this.sigma0+this.sigma1)/(this.sigma1*this.lambda0+this.sigma0*this.lambda1);
 		this.var = 0;
 		// creates 2 ExponentialPar objects
-		expParam1 = new ExponentialPar(1 / this.lambda1);
-		expParam2 = new ExponentialPar(1 / this.lambda2);
+		expParam1 = new ExponentialPar(this.lambda1+this.sigma1);
+		expParam0 = new ExponentialPar(this.lambda0+this.sigma0);
 	}
 
 	/**
-	 * Tests the parameters for the constructor requiring p, lambda1 and lambda2.
+	 * Tests the parameters for the constructor requiring p, lambda1 and lambda0.
 	 *
 	 * @throws IncorrectDistributionParameterException if p is not betwen zero and one or if lambda1 and labda2 are not both greater than zero.
 	 *
 	 */
-	private void testParameters() throws IncorrectDistributionParameterException {
-		if (r1 <= 0 || r1 >= 1) {
-			throw new IncorrectDistributionParameterException("Error: must be 0 < r1 < 1");
-		}
-		if (r0 <= 0 || r0 >= 1) {
-			throw new IncorrectDistributionParameterException("Error: must be 0 < r0 < 1");
-		}
-		if (lambda1 < 0) {
+	private void testParameters()
+	        throws IncorrectDistributionParameterException {
+		if (sigma1 <= 0 )
+			throw new IncorrectDistributionParameterException("Error: sigma1 must be >= 0 ");
+		if (sigma0 <= 0 )
+			throw new IncorrectDistributionParameterException("Error: sigma0 must be >= 0 ");
+		if (lambda1 < 0)
 			throw new IncorrectDistributionParameterException("Error: lambda1 must be >= 0");
-		}
-		if (lambda2 < 0) {
-			throw new IncorrectDistributionParameterException("Error: lambda2 must be >= 0");
-		}
+		if (lambda0 < 0)
+			throw new IncorrectDistributionParameterException("Error: lambda0 must be >= 0");
 	}
 
 	/**
@@ -86,19 +86,19 @@ public class MMPP2Par extends AbstractParameter implements Parameter {
 	 */
 
 	public boolean check() {
-		if ((r0 <= 0 || r0 >= 1) || (r1 <= 0 || r1 >= 1) || (lambda1 < 0) || (lambda2 < 0)) {
+		if ((sigma0 <= 0 ) || (sigma1 <= 0 ) || (lambda1 < 0) || (lambda0 < 0)) {
 			return false;
 		} else {
 			return true;
 		}
 	}
 
-	public double getR0() {
-		return r0;
+	public double getSigma0() {
+		return sigma0;
 	}
 
-	public double getR1() {
-		return r1;
+	public double getSigma1() {
+		return sigma1;
 	}
 
 	/**
@@ -115,16 +115,16 @@ public class MMPP2Par extends AbstractParameter implements Parameter {
 	}
 
 	/**
-	 * it returns the value of lambda2.
-	 * It returns the value of the parameter lambda2, the parameter lamda for the
+	 * it returns the value of lambda0.
+	 * It returns the value of the parameter lambda0, the parameter lamda for the
 	 * second exponential distribution created by the hyper exponential parameter.
 	 *
-	 * @return double with lambda2 the value of lambda for the 2nd exponential distribution.
+	 * @return double with lambda0 the value of lambda for the 2nd exponential distribution.
 	 *
 	 */
 
-	public double getLambda2() {
-		return lambda2;
+	public double getLambda0() {
+		return lambda0;
 	}
 
 	/**
@@ -170,12 +170,12 @@ public class MMPP2Par extends AbstractParameter implements Parameter {
 	 * It returns the parameter used to create the second of the exponential
 	 * distribution used by the hyper exponential distribution.
 	 *
-	 * @return exponentialPar with expParam2, the parameter of the 2nd exponential distribution.
+	 * @return exponentialPar with expParam0, the parameter of the 2nd exponential distribution.
 	 *
 	 */
 
-	public ExponentialPar getExpParam2() {
-		return expParam2;
+	public ExponentialPar getExpParam0() {
+		return expParam0;
 	}
 
-} // end HyperExpPar
+} // end MMPP2Par
