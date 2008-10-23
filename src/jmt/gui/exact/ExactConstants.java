@@ -83,8 +83,8 @@ public interface ExactConstants {
 			+ "</font><font size=\"3\"><br>Total time spent by each customer class at each station. Note that the aggregate values are weighted by relative per-class throughput."
 			+ " The global aggregate is the system response time.</body></html>";
 	public static final String DESCRIPTION_UTILIZATIONS = "<html><body align=\"left\"><font size=\"4\"><b>Utilization</b>"
-			+ "</font><font size=\"3\"><br>Average Utilization for each class at each station. Utilization for delays is the average "
-			+ " number of customers.</body></html>";
+			+ "</font><font size=\"3\"><br>Utilization of a customer class at the selected station. " +
+			  "The utilization of a delay station is the average number of customers in the station (it may be greater than 1)</body></html>";
 	public static final String DESCRIPTION_WHATIF_NONE = "<html><body align=\"left\"><font size=\"4\"><b>What-if analysis</b>"
 			+ "</font><font size=\"3\"><br>Select a control parameter if you want to solve several models with its values "
 			+ "changing in the selected range. " + "The performance indices will be shown " + "in a graph. </font></body></html>";

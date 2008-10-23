@@ -56,9 +56,9 @@ public interface ResultsConstants {
 	public static final String DESCRIPTION_RESPONSETIMES = HTML_START + HTML_FONT_TITLE + "Response Time" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average response time for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_UTILIZATIONS = HTML_START + HTML_FONT_TITLE + "Utilization" + HTML_FONT_TIT_END + HTML_FONT_NORM
-			+ "Average utilization for each chosen class at each chosen station. If a queueing station has more than one server, "
-			+ "utilization is the average utilization of all servers. In delay stations, for consistency with Little's law, "
-			+ "the utilization is computed as the average number of customers in the station. So, its value may be grater than 1." 
+			+ "Utilization of a customer class at the selected station. The utilization of a queueing station with more than one server is the " +
+			  "average utilization of each server.  The utilization of a delay station is the average number of customers in the station " +
+			  "(it may be greater than 1)" 
 			+ HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_RESIDENCETIMES = HTML_START + HTML_FONT_TITLE + "Residence Time" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average residence time for each chosen class at each chosen station. (Residence Time = Number of Visits * Response Time)"
