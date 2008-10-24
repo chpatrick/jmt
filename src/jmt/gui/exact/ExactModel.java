@@ -330,7 +330,7 @@ public class ExactModel implements ExactConstants {
 		classData = new double[1];
 		//NEW
 		//@author Stefano Omini
-		classData[0] = 0;
+		classData[0] = 1;
 		//end NEW
 
 		stationNames = new String[1];
