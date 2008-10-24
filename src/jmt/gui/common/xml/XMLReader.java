@@ -37,6 +37,7 @@ import jmt.common.xml.resources.XSDSchemaLoader;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.Defaults;
 import jmt.gui.common.definitions.CommonModel;
+import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.distributions.Distribution;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
 import jmt.gui.common.routingStrategies.RoutingStrategy;
@@ -797,6 +798,11 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 				classKey = null;
 			}
 			type = ((Element) measures.item(i)).getAttribute(XML_A_MEASURE_TYPE);
+			// Supports old names
+			if ("Customer Number".equalsIgnoreCase(type)) {
+				type = SimulationDefinition.MEASURE_S_CN;
+			}
+			
 			// Inverts alpha
 			alpha = new Double(1 - Double.parseDouble(((Element) measures.item(i)).getAttribute(XML_A_MEASURE_ALPHA)));
 			precision = Double.valueOf(((Element) measures.item(i)).getAttribute(XML_A_MEASURE_PRECISION));

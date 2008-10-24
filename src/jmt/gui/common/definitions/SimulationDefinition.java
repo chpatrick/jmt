@@ -55,7 +55,7 @@ public interface SimulationDefinition {
 	/**Code for average system response time*/
 	public static final String MEASURE_S_RP = "System Response Time";
 	/**Code for average system customer number*/
-	public static final String MEASURE_S_CN = "Customer Number";
+	public static final String MEASURE_S_CN = "Number of Customers";
 	/**Code for average drop rate*/
 	public static final String MEASURE_DR = "Drop Rate";
 	/**Code for average system drop rate*/

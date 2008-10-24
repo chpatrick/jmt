@@ -284,7 +284,7 @@ public class SimLoader {
 					type = JobClass.CLOSED_CLASS;
 
 					//TODO: al momento non viene letto l'attributo opzionale "customers"
-					//(che comunque non è necessario: i job vengono creati dal terminal o precaricati
+					//(che comunque non ï¿½ necessario: i job vengono creati dal terminal o precaricati
 					//nelle code)
 				} else {
 					type = JobClass.OPEN_CLASS;
@@ -959,7 +959,7 @@ public class SimLoader {
 			return SimConstants.SYSTEM_RESPONSE_TIME;
 		} else if (measure.equalsIgnoreCase("System Throughput")) {
 			return SimConstants.SYSTEM_THROUGHPUT;
-		} else if (measure.equalsIgnoreCase("Customer Number")) {
+		} else if (measure.equalsIgnoreCase("Customer Number") || measure.equalsIgnoreCase("Number of Customers")) {
 			return SimConstants.SYSTEM_JOB_NUMBER;
 		} else if (measure.equalsIgnoreCase("System Drop Rate")) {
 			return SimConstants.SYSTEM_DROP_RATE;
