@@ -43,7 +43,7 @@ public class MMPP2 extends Distribution {
     * Construct a new MMPP2 distribution
     */
    public MMPP2() {
-       super("MMPP2",
+       super("Burst (MMPP2)",
                "jmt.engine.random.MMPP2Distr",
                "jmt.engine.random.MMPP2Par",
                "MMPP(2)");
