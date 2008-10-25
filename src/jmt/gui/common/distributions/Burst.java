@@ -23,7 +23,7 @@ public class Burst extends Distribution {
 	 *
 	 */
 	public Burst() {
-		super("Burst (Epochs)", "jmt.engine.random.Burst", "jmt.engine.random.BurstPar", "Burst definition");
+		super("Burst (General)", "jmt.engine.random.Burst", "jmt.engine.random.BurstPar", "Burst definition");
 		hasC = false;
 		hasMean = false;
 		isNestable = false;
