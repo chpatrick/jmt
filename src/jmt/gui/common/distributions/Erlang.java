@@ -80,9 +80,8 @@ public class Erlang extends Distribution {
 	}
 
 	/**
-	 * Sets explicative image of this distribution used, together with description, to help the
-	 * user to understand meaning of parameters.
-	 * @return explicative image
+	 * Set illustrating figure in distribution panel
+	 * @return illustrating figure
 	 */
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("Erlang");

@@ -36,6 +36,7 @@ import javax.swing.*;
 * <p>Description: MMPP(2) distribution data structure</p>
 * 
 * @author Casale Giuliano
+* @date   Octover 24, 2008
 */
 
 public class MMPP2 extends Distribution {
@@ -43,7 +44,7 @@ public class MMPP2 extends Distribution {
     * Construct a new MMPP2 distribution
     */
    public MMPP2() {
-       super("Burst (MMPP2)",
+       super("Burst (MMPP2)", // name in GUI
                "jmt.engine.random.MMPP2Distr",
                "jmt.engine.random.MMPP2Par",
                "MMPP(2)");
@@ -55,42 +56,14 @@ public class MMPP2 extends Distribution {
     * Used to set parameters of this distribution.
     * @return distribution parameters
     */
+   
    protected Parameter[] setParameters() {
     // Creates parameter array
-    Parameter[] parameters = new Parameter[4];
-    // Sets parameter alpha
-    parameters[2] = new Parameter("sigma0", 
-    		"\u03C30", Double.class, new Double(0.5));
-    // Checks value of alpha must greater or equal then 2
-    parameters[2].setValueChecker(new ValueChecker() {
-        public boolean checkValue(Object value) {
-            Double d = (Double) value;
-            if (d.doubleValue() > 0.0)
-                return true;
-            else
-                return false;
-        }
-    });
-
-    // Sets parameter k
-    parameters[3] = new Parameter("sigma1",
-            "\u03C31",
-            Double.class,
-            new Double(0.5));
-    // Checks value of k must be greater then 0
-    parameters[3].setValueChecker(new ValueChecker() {
-        public boolean checkValue(Object value) {
-            Double d = (Double) value;
-            if (d.doubleValue() > 0.0)
-                return true;
-            else
-                return false;
-        }
-    });
-    
-    // Sets parameter k
+    Parameter[] parameters = new Parameter[4]; //MMPP(2) is specified by four rates
+        
+    /* arrival rate of jobs if MMPP is in state 0 */
     parameters[0] = new Parameter("lambda0",
-            "\u03BB0",
+            "\u03BB0", //unicode character for lambda0
             Double.class,
             new Double(1.0));
     // Checks value of k must be greater then 0
@@ -104,9 +77,9 @@ public class MMPP2 extends Distribution {
         }
     });
     
-    // Sets parameter k
+    /* arrival rate of jobs if MMPP is in state 1 */
     parameters[1] = new Parameter("lambda1",
-    		"\u03BB1",
+    		"\u03BB1", //unicode character for lambda1
             Double.class,
             new Double(2.0));
     // Checks value of k must be greater then 0
@@ -120,21 +93,52 @@ public class MMPP2 extends Distribution {
         }
     });
 
+    /* rate of jump from state 0 to state 1 */ 
+    parameters[2] = new Parameter("sigma0", 
+    		"\u03C30", //unicode character for sigma0 
+    		Double.class, 
+    		new Double(0.5));
+    // Checks value of alpha must greater or equal then 2
+    parameters[2].setValueChecker(new ValueChecker() {
+        public boolean checkValue(Object value) {
+            Double d = (Double) value;
+            if (d.doubleValue() > 0.0)
+                return true;
+            else
+                return false;
+        }
+    });
+
+    /* rate of jump from state 1 to state 0 */
+    parameters[3] = new Parameter("sigma1",
+            "\u03C31", //unicode character for sigma1
+            Double.class,
+            new Double(0.1));
+    // Checks value of k must be greater then 0
+    parameters[3].setValueChecker(new ValueChecker() {
+        public boolean checkValue(Object value) {
+            Double d = (Double) value;
+            if (d.doubleValue() > 0.0)
+                return true;
+            else
+                return false;
+        }
+    });
+    
     return parameters;
 }
 
    /**
-    * Sets explicative image of this distribution used, together with description, to help the
-    * user to understand meaning of parameters.
-    * @return explicative image
+    * Set illustrating figure in distribution panel
+    * @return illustrating figure
     */
    protected ImageIcon setImage() {
        return JMTImageLoader.loadImage("MMPP2");
    }
 
    /**
-    * Returns this distribution's short description
-    * @return distribution's short description
+    * Return distribution short description
+    * @return distribution short description
     */
    public String toString() {
        return "mmpp2(" +
