@@ -14,7 +14,6 @@
 % Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 % 02110-1301, USA.
 %
-% Author: Bertoli Marco
 %
 \documentclass[10pt, twoside, a4paper]{book}
 \usepackage{fancyhdr}
@@ -31,17 +30,16 @@
 \usepackage{tocbibind}
 \usepackage{multicol}
 \usepackage{xcolor}
-\hypersetup{ 
-	pdftitle={Java Modelling Tools users manual},
-	pdfauthor={Marco Bertoli}, 
-	bookmarksopen=true, 
-	bookmarksnumbered=true,
-	colorlinks=true,
-	pdfstartview=FitH, 
-	urlcolor=cyan, 
-	citecolor=black,
-	linkcolor=black, 
-	pdfhighlight=/N,
+\hypersetup{
+    pdftitle={Java Modelling Tools users manual},
+    bookmarksopen=true,
+    bookmarksnumbered=true,
+    colorlinks=true,
+    pdfstartview=FitH,
+    urlcolor=cyan,
+    citecolor=black,
+    linkcolor=black,
+    pdfhighlight=/N,
 }
 
 
@@ -75,8 +73,6 @@
     \setlength{\parskip}{0pt}}
   {\end{description}}
 
-\author{Marco Bertoli}
-
 \title{Java Modelling Tools users manual}
 
 \begin{document}
@@ -86,7 +82,7 @@
 \begin{titlepage}
 \begin{figure}[h]
 \begin{center}
-\includegraphics{img/poli}\\
+\includegraphics{img/poli.eps}\\
 Performance Evaluation Lab\\
 Dipartimento di Elettronica e Informazione\\
 Politecnico di Milano - Italy
@@ -98,14 +94,14 @@ Politecnico di Milano - Italy
 
  \vspace*{\stretch{1}}
 \noindent\hspace*{\centeroffset}\makebox[0pt][l]{\begin{minipage}{\textwidth}
-\flushright {\Huge\bfseries Java Modelling Tools}\\
+\flushright {\Huge\bfseries JMT \\ \ \\ Java Modelling Tools}\\
 \noindent\rule[-1ex]{9.3cm}{5pt}\\[2.5ex]
 \hfill\emph{\Huge users manual}
 \end{minipage}}
 
 \vspace{\stretch{0.1}}
 \noindent\hspace*{\centeroffset}\makebox[0pt][l]{\begin{minipage}{\textwidth}
-\flushright Version~0.4, \today
+\flushright Version~0.5
 \end{minipage}}
 
 
@@ -144,7 +140,8 @@ Politecnico di Milano - Italy
 % Imports manuals
 \input{introduction_users.tex}
 \input{jmva_users.tex}
-\input{jsim_users.tex}
+\input{jsimwiz_users.tex}
+\input{jsimgraph_users.tex}
 \input{jaba_users.tex}
 \input{jwat_users.tex}
 \appendix

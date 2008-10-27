@@ -16,16 +16,41 @@
 %
 % Author: Carlo Gimondi
 %
-\chapter{JABA}
+\chapter{JABA (Asymptotic Bound Analysis)}
 \label{cha:jaba}
 \section{Overview}
-Product-form queueing network models have been used for modelling the performance of many type of systems, from large computing infrastructures to distributed applications. The complexity of modern systems makes the application of known exact solution techniques, such as the convolution algorithm or the MVA prohibitively expensive in terms of computational resource requirements. Also approximate solution techniques become less accurate or more expensive with the growing complexity of the model. The alternative is represented by asymptotic techniques that can efficiently determine asymptotic values for several performance indices such as throughput, response time and queue lengths.
-The asymptotic techniques are particularly useful in tuning studies where one needs to evaluate the performance gains of different tuning alternatives. The key to determine the asymptotic performances is the knowledge of the queueing center(s) with the highest utilization, i.e. the bottleneck station(s). Multiclass models, and in particular two class models which are widely-used, can exhibit multiple simultaneous bottlenecks depending of the population mix.
-While identifying the bottleneck stations under a single-class workload is a well-established practice, no simple
-methodology for multiclass models has yet been found. JABA provides such a technique, called Polyhedral Analysis, using a convex polytopes  based approach presented in Casale and Serazzi, 2004 \cite{polytopes}.
+Product-form queueing network models are used for modelling the
+performance of many type of systems, from large computing
+infrastructures to distributed applications. The complexity of
+modern systems makes the application of exact solution techniques,
+such as the convolution algorithm or the MVA, prohibitively
+expensive in terms of computational resource requirements. Also
+approximate solution techniques become less accurate or more
+expensive with the growing complexity of the models. The
+alternative is represented by \emph{asymptotic} techniques that
+can efficiently determine asymptotic values for several
+performance indices such as throughput, response time and queue
+lengths. The asymptotic techniques are particularly useful in
+tuning studies where one needs to evaluate the performance gains
+of different tuning alternatives. The key to determine the
+asymptotic performances is the knowledge of the queueing center(s)
+with the highest utilization, i.e. the \emph{bottleneck
+station(s)}. Multiclass models can exhibit multiple simultaneous
+bottlenecks depending of the population mix. While identifying the
+bottleneck stations under a single-class workload is a
+well-established practice, no simple methodology for multiclass
+models has yet been found. JABA provides such a technique, called
+Polyhedral Analysis, using convex polytopes based approach
+presented in \cite{polytopes}.
 
-Among the no-bottleneck station, we distinguish two different centers: dominated and masked-off stations.
-This distinction is important since the masked-off stations, despite having lower utilization than the bottleneck center(s), may still exhibit the largest queue-length and hence the highest response times. Dominated stations, instead, typically play a marginal role in determining system performance, and have always the smallest utilization and queue-lengths. 
+Among the no-bottleneck station, we distinguish two different
+centers: \emph{dominated} and \emph{masked-off} stations. This
+distinction is important since the \emph{masked-off} stations,
+despite having lower utilization than the bottleneck center(s),
+may still exhibit the largest queue-length and hence the highest
+response times. \emph{Dominated} stations, instead, typically play
+a marginal role in determining system performance, and have always
+the smallest utilization and queue-lengths.
 
 
 \subsection{Starting the alphanumeric JABA solver}
@@ -57,9 +82,9 @@ the proper tab, as will be shown later.
 Models with two or three customer classes provide estimates of wich stations are potential bottleneck.
 For a brief description of basic terminology please refer to \autoref{cha:glossary}.
 
-The workload is characterized for each station by the service 
-demands of every customer class. 
-Al least JABA works with 2 classes of custumers therefore a matrix of 
+The workload is characterized for each station by the service
+demands of every customer class.
+Al least JABA works with 2 classes of custumers therefore a matrix of
 service demands is required \cite{Lazowska}.
 
 \subsection{Defining a new model}
@@ -269,9 +294,9 @@ It is possible to represent a saturation sector and the switching points using a
 \end{figure}
 
 In this example we can observe that \emph{Disk1} is a bottleneck for a mix population
-among (0;1) and (0.499,0.501). At the point (0.499,0.501) color switches from green to blue because 
-this point is a switching point. In fact for a mix population from (0.499,0.501) to (0.757,0.243) 
-\emph{Disk1} and \emph{Disk2} are both bottleneck. After the point (0.757,0.243), that is a swiching 
+among (0;1) and (0.499,0.501). At the point (0.499,0.501) color switches from green to blue because
+this point is a switching point. In fact for a mix population from (0.499,0.501) to (0.757,0.243)
+\emph{Disk1} and \emph{Disk2} are both bottleneck. After the point (0.757,0.243), that is a swiching
 point too, only \emph{Disk2} is a bottleneck.
 
 
@@ -280,7 +305,7 @@ point too, only \emph{Disk2} is a bottleneck.
 Suppose we can split the customers of our system in 3 class of customers, a specific population mix could be represented by a point whose coordinates are the percentage of customers of a specific class.
 on a triangle that has the vertex in the points (1,0,0), (0,1,0) e (0,0,1). The triangle area represent every possible population mix. So we can divide the triangle in different sub-areas and each area
 rapresent a population mix range where one, two or more stations are bottleneck at the same time.
-It is clearly understandable that we have no more a switching point (such as in the two classes graph) 
+It is clearly understandable that we have no more a switching point (such as in the two classes graph)
 but a switching segment.
 \begin{figure}[htbp]
     \begin{center}
@@ -299,18 +324,18 @@ This graph is useful for understanding what station begin bottlenek and when but
 \subsection{Convex Hull - Graphic}
 \label{sec:jaba:convexHullGraphic}
 
-Using the \texttt{Solve} command and selecting the ``Convex Hull - Graphic'' 
+Using the \texttt{Solve} command and selecting the ``Convex Hull - Graphic''
 tab the Convex Hull graphic is show.
 
 \subsubsection{Overview}
 The Convex Hull graphic implements the polyhedral analysis technique.
-The polyhedral analysis technique implemented in JABA is limited to queueing networks with customers grouped in two classes. The points in the graph are obtained from the service demand matrix as follows. Each station corresponds to a point on the graph whose co-ordinates are represented by the service demand of the two customer classes. For example, a queue with service demands 10 sec for class 1, and 15 sec for class 2 is represented as a point with coordinates (10,15).  Then JABA builds the convex hull of this set of points, that is the smallest convex set containing all the points. 
+The polyhedral analysis technique implemented in JABA is limited to queueing networks with customers grouped in two classes. The points in the graph are obtained from the service demand matrix as follows. Each station corresponds to a point on the graph whose co-ordinates are represented by the service demand of the two customer classes. For example, a queue with service demands 10 sec for class 1, and 15 sec for class 2 is represented as a point with coordinates (10,15).  Then JABA builds the convex hull of this set of points, that is the smallest convex set containing all the points.
 
 The distinction of queues among the different types of bottleneck and non-bottleneck classes can be immediately operated from the knowledge of the convex hull using the following rules:
 \begin{itemize}
-	\item All \emph{potential bottlenecks} lie on the boundary of the convex polytope.
-	\item All \emph{dominated} station are interior points P of the convex polytope such that there is at least one point Q whose co-ordinates are all higher or equal in value than those of P; 
-	\item All non-dominated stations in the interior of the convex polytope are \emph{masked-off} stations. 
+    \item All \emph{potential bottlenecks} lie on the boundary of the convex polytope.
+    \item All \emph{dominated} station are interior points P of the convex polytope such that there is at least one point Q whose co-ordinates are all higher or equal in value than those of P;
+    \item All non-dominated stations in the interior of the convex polytope are \emph{masked-off} stations.
 The application of these rules is described below in the case study.
 \end{itemize}
 \begin{figure}[htbp]
@@ -321,7 +346,7 @@ The application of these rules is described below in the case study.
     \label{fig:jaba:convexHull}
 \end{figure}
 
-From this plot,\autoref{fig:jaba:convexHull} we can see that \emph{Disk1} and \emph{Disk2} (depicted in red) lie on the boundary of the convex hull, thus are potential bottlenecks. \emph{CPU} (green) is instead a dominated non-bottleneck station, since  it is dominated by \emph{Sation4} and \emph{Disk1}. \emph{Sation4} (blue) is also in the interior of the convex hull, but it is a non-bottleneck station as there is no other point with all coordinates greater than those of \emph{Sation4} so it is a masked-off station.
+>From this plot,\autoref{fig:jaba:convexHull} we can see that \emph{Disk1} and \emph{Disk2} (depicted in red) lie on the boundary of the convex hull, thus are potential bottlenecks. \emph{CPU} (green) is instead a dominated non-bottleneck station, since  it is dominated by \emph{Sation4} and \emph{Disk1}. \emph{Sation4} (blue) is also in the interior of the convex hull, but it is a non-bottleneck station as there is no other point with all coordinates greater than those of \emph{Sation4} so it is a masked-off station.
 
 \subsubsection{Determining points coordinates}
 
@@ -403,7 +428,7 @@ This tab could be helpful in the Saturation Sector graphic of three classes of c
 
 \subsection{Modification of a model}
 To modify system parameters return to the main window and enter new
-data or moving a station in Convex Hull - graphic tab (see \autoref{sec:jaba:convexHullGraphic}). 
+data or moving a station in Convex Hull - graphic tab (see \autoref{sec:jaba:convexHullGraphic}).
 After the modifications, if you use \texttt{Solve} command, the
 new graphs will show. You can \texttt{save} this
 new model with the previous name - overwriting the previous one - or
@@ -482,7 +507,7 @@ Accelerator Key: & CTRL+L
 
 \subsubsection{Randomize}
 Use this command in order to insert random values into Service
-Demands - or Service Times - table. 
+Demands - or Service Times - table.
 
 \noindent
 \begin{tabular}{ll}
@@ -518,7 +543,7 @@ instructions are provided in two examples:
 \end{figure}
 
 There are three stations (named
-\emph{CPU}, \emph{Disk1} and \emph{Disk2}). 
+\emph{CPU}, \emph{Disk1} and \emph{Disk2}).
 Service demands for each station are reported in
 \autoref{tab:jaba:example1ServDemand}.
 
@@ -586,7 +611,7 @@ At the end of this step, the \texttt{Stations Tab} should look like
 the Service Demands of the three stations. After button pressure,
 the \texttt{Service Demands Tab} will be hidden and \texttt{Service
 times Tab} and \texttt{Visit Tab} will appear. Now Service
-Times and number of Visits should be typed. 
+Times and number of Visits should be typed.
 \end{itemize*}
 
 At this point, the \texttt{Service Demands Tab} should look like
@@ -617,7 +642,7 @@ In the \textit{Saturation Sector - Grlaphic Tab} will be displayed a graphic lik
 \end{figure}
 
 This graphic show the range of mix population where two or more stations are both bottleneck.
-In this example \textit{Disk1} and \textit{Disk2} are both bottleneck when \textit{FirstClass} is among 
+In this example \textit{Disk1} and \textit{Disk2} are both bottleneck when \textit{FirstClass} is among
 \textit{0.545 - 0.689} and \textit{SecondClass} is among \textit{0.311 - 0.455}
 
 \subsubsection{Step 5 - Convex Hull - Graphics}
@@ -635,7 +660,7 @@ This graphic implements the polyhedra analysis technique. The points on this gra
 
 \subsubsection{Step 6 - Saturation Sectors - Text}
 
-If you use \texttt{Next $>$} command again you will see the \textit{Saturation Sectors - Text}, a simple textual report about the Saturation Sectors. 
+If you use \texttt{Next $>$} command again you will see the \textit{Saturation Sectors - Text}, a simple textual report about the Saturation Sectors.
 
 
 \subsection{Example 2 - A three class model}
@@ -714,7 +739,7 @@ At this point, the \texttt{Service Times Tab} should look like
 \begin{itemize*}
 \item use \texttt{Next $>$} command to switch to \texttt{Visits Tab}
 \item input number of visits for each center in the
-table. 
+table.
 \end{itemize*}
 
 At the end of this step, the \texttt{Visits Tab} looks like
@@ -749,4 +774,6 @@ For example the orange area is a renge of mix population in which \textit{Disk1}
 
 \subsubsection{Step 5 - Saturation Sectors - Text}
 
-If you use \texttt{Next $>$} command again you will see the \textit{Saturation Sectors - Text}, a simple textual report about the Saturation Sectors. 
+If you use \texttt{Next $>$} command again you will see the
+\textit{Saturation Sectors - Text}, a simple textual report about
+the Saturation Sectors.

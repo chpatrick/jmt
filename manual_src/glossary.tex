@@ -1,89 +1,128 @@
-%
-% This document is free; you can redistribute it and/or modify
-% it under the terms of the GNU General Public License as published by
-% the Free Software Foundation; either version 2 of the License, or
-% (at your option) any later version.
-%
-% This document is distributed in the hope that it will be useful, but
-% WITHOUT ANY WARRANTY; without even the implied warranty of
-% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-% General Public License for more details.
-%
-% You should have received a copy of the GNU General Public License
-% along with this document; if not, write to the Free Software
-% Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
-% 02110-1301, USA.
-%
-% Author: Bertoli Marco
-%
+%\documentclass{article}
+
+%\begin{document}
 \chapter{Basic Definitions}
 \label{cha:glossary}
 \begin{description}
-\item[Customer :] or \emph{job} or \emph{transaction} is the element that will require
-service from our network. For example, it can be an \emph{http
-request}, a \emph{database query}, or an \emph{ftp download
-command}.
-\item[Class :] a group of elements that are statistically equal.
-The customers of a class have the same workload intensity and the
-same average service demands.
-\item[Station :] or service center, it represents a system resource.
-Customers arrive at the station and then, if necessary, wait in
-queue, receive service from server then depart.
-\item[Bottleneck Station :] a station with the highest utilization
-\item[Potential Bottleneck Station :] a station that can become bottleneck for some feasible network population
-\item[Dominated Stations :] a station P is dominated if exist al least a station Q whose demand for each classes of custumer are highest or equal (but at least one highest) than those of P.
-\item[Masked-off Stations :] a station that is not a Potential Bottleneck or a Dominated station.A Masked-off station may exhibit the largest queue-lungth and hence the highest response time.
-\item[Workload Intensity ($\lambda$ or $N$) :] rate at which customers of a
-given class arrive at the system.  Each class has its own workload
-intensity. If a class is closed the constant \emph{number of
-customers} $N$ that are present in the system must be provided, if a
-class is open the \emph{arrival rate} $\lambda$ of customers to the
-system is requested.
-\item[Population Mix ($\beta_i$) :] the ratio between \emph{number of
-customers} of closed class $i$ and the total number of customers in
-the system: $\beta_i = N_i / \sum_k N_k$
-\item[Saturarion Sector :] a interval of Population Mix in witch one, two ore more stations are both bottleneck.
-\item[Service Time ($S_k$):] average time of service required at
-each visit to resource $k$; it is computed as the ratio of the busy
-time to the number of system completions. It is an alternatively way
-to describe the service requirement.
-\item[Visit (number of -) ($V_k$) :] average number of visits that
-a customer makes at station $k$ during a complete execution; it is
-computed as the ratio of the number of completions at resource k to
-the number of system completions. If resource $k$ is a delay center
-representing a client station, it is a convention assign a unitary
-value to number of visits to this station.
-\item[Service Demand ($D_k$) :] average service requirement of
-a customer, that is the total amount of service required  by a
-complete execution at resource $k$. In the model it is necessary to
-provide separate service demand for each pair service center-class.
-It is given by $D_k = V_k * S_k$.
-\item[Throughput ($X_k$) :] rate at which customers are executed
-by station $k$, that is the number of completions in a time unit.
-\item[Queue length ($Q_k$) :] average number of customers at station
-$k$, either waiting in queue and receiving service.
-\item[Response Time ($R_k$):] average time interval between the instant
-a customer arrives at station $k$ and the instants it terminate its
-servicing.
-\item[Residence Time ($W_k$) :] average
-time that a customer spent at station $k$ during a complete
-interaction with the system. It includes time spent queueing and
-time spent receiving service. It does not correspond to
-\emph{Response Time} $R_k$ of a station since $W_k = R_k * V_k$.
-\item[Utilization ($U_k$) :] proportion of time in which the station $k$ is busy or, in the case
-of a delay center, is the average  number of  customers in the
-station (see Little Law \cite{Little}).
-\item[System Throughput ($X$) :] rate at which customers perform
-an entire interaction with the system. This is the aggregate measure
-of \emph{Throughput}: $X = X_k / V_k$.
-\item[System Response Time ($R$):] correspond to the intuitive
-notion of response time perceived by users, that is, the time
-interval between the instant of the submission of a request to a
-system and the instant the corresponding reply arrives completely at
-the user. It is the aggregate measure of \emph{Residence Times}: $R
-= \sum_k W_k$.
-\item[Average number of customers in the system ($N$):] the average
-number of customer in the system, either waiting in queue or
-receiving service. It is the aggregate measure of \emph{Queue
-Length}: $N = \sum_k Q_k$.
+\item[Arrival Rate ($\lambda$).] Rate at which customers of a given open
+class arrive in the system.  %Each class has its own workload intensity. If a class is closed the constant \emph{number of customers} $N$ that are present in the system must be provided, if a class is open the \emph{arrival rate} $\lambda$ of customers to the system is requested.
+\item[Batch workload.] Closed workload class composed of customers that do not require interaction with delay stations during their execution (i.e., the users think time is zero).
+%Its intensity is specified by a parameter indicating the average number of executing jobs. %A batch workload has a fixed population. Jobs that have completed service can be thought of as leaving and being replaced instantaneously from a backlog of waiting jobs.
+\item[Bottleneck Station(s).] The station(s) with the highest
+utilization in the system.
+%\item[Bottleneck.] The bottleneck resource is the first to saturate. In a model with load independent centers, the bottleneck coincides with the resource with the largest service demand ($D_i$).
+\item[Class of customers.] A group of customers with service
+demands on the different stations statistically equal. Open
+classes are specified by an \emph{arrival rate} (job/s), closed
+classes are composed by a fixed number of jobs specified as a
+\emph{population} (job). \item[Closed Class.] Workload class in
+which customers that have completed service leave the system and
+are instantaneously replaced by a new customer. A closed model has
+thus a fixed population of requests. \item[Customer] or
+\textbf{Job} or \textbf{Transaction} or \textbf{Request}. It is
+the element that will require service from network stations. For
+example, it can be an {http request}, a {database query},a {ftp
+download command}, or an I/O request. \item[Delay station.]
+Customers at a delay station are each (logically) allocated their
+own server, so there is no competition for service (no queue). The
+time spent by a customer at a delay station is exactly its service
+demand. In delay stations, for consistency with Little's law, the
+\emph{utilization} is computed as the \emph{average number of
+customers} in the station, and thus it may be \emph{greater than
+1}
+
+\item[Dominated Stations.] A station P is dominated if exist al
+least one station Q whose service demands for each class of
+customer are highest or equal (but at least one highest) than
+those of P. \item[Interactive workload (terminal workload).] Its
+intensity is specified by two parameters: the number of active
+terminals (customers), and the average length of time that
+customers use terminals ("think time") between interactions.
+\item[Load Dependent Resource (station).] A load dependent service
+station can be thought of as a service station whose service rate
+(the reciprocal of its service time) is a function of the customer
+population in its queue. \item[Masked-off Stations.] a station
+that is not a Potential Bottleneck or a Dominated station. A
+Masked-off station may exhibit the largest queue-length and hence
+the highest response time. \item[Mean Value Analysis (MVA).]
+Iterative technique used to evaluate closed queuing networks.
+\item[Multiple class models.] Models with several customer
+classes, each of which has its own workload intensity and its own
+service demand at each center. Within each class, the customers
+are indistinguishable. \item[Number of customers at a resource $i$
+($Q_i$).] The average queue length at station $i$ include all
+customers at that center, whether waiting in queue or receiving
+service. \item[Number of customers in the system.] It is the
+aggregate measure of \emph{Queue Length} over all stations.
+\item[Number of visits.] The average number of visits that a
+customer makes to each resource during a complete execution.
+\item[Open Class]  or {\bf Transaction Workload}. Workload class
+in which there is an external source with an arbitrary number of
+customers that are sent to the system according to a given
+distribution. The number of customers in the model varies over
+time and can be arbitrarily large depending on the congestion
+level of the resources and on the arrival process. \item[Global
+Population ($N$).] Constant number of requests belonging to a
+closed class. \item[Population Mix ($\beta_i$).] The ratio between
+$N_i$, the \emph{number of customers} of closed class $i$, and the
+total number of customers in the system: $\beta_i = N_i / \sum_k
+N_k$ \item[Potential Bottleneck Station.] a station that can
+become bottleneck for some feasible combination of population
+\item[Queue length ($Q_k$), also referred to as Customer number.]
+average number of customers at station $k$, either waiting in
+queue \emph{and} receiving service. \item[Queueing network model.]
+A network of queues is a collection of service resources, which
+represent system resources, and customers, which represent users
+or transactions. \item[Queueing station.] A resource consisting of
+two components: queue and server. Customers at a queueing resource
+compete for the use of the server. The time spent by a customer at
+a queueing resource has \emph{two} components: time spent waiting
+in queue and time spent receiving service. \item[Reference
+Station.] User-specified station where a customer flow through
+when it has completed its execution, i.e., it has performed an
+entire cycle of service in the system. The system throughput,
+system response time, and the visits $V_k$ are computed with
+respect to the visits at the reference station (\emph{usually}
+assumed as 1). \item[Residence Time ($W_k$).] Average time that a
+customer spent at station $k$ during its complete execution. It
+includes time spent queueing and time spent receiving service. It
+does not correspond to \emph{Response Time} $R_k$ of a station
+since $W_k = R_k * V_k$. \item[Response Time ($R_k$).] Average
+time required by a customer to flow through a station $k$
+(includes queue time and service time).
+\item[Saturated Resource.]
+When the arrival rate at a resource is greater than or equal to
+the maximum service rate, the resource is said to be saturated (i.
+e., its utilization is equal to 1). \item[Saturation Sector.] a
+interval of Population Mix in witch one, two ore more stations are
+both bottleneck. \item[Server Utilization ($U$).] The utilization
+of a queuing center is the proportion of time the resource is busy
+or, equivalently, the average number of customers in service there
+(definition valid also for delay centers). \item[Service Demand
+($D_k$).] average service requirement of a customer, that is the
+total amount of service required  by a complete execution at
+resource $k$. In the model it is necessary to provide separate
+service demand for each pair service center-class. It is given by
+$D_k = V_k * S_k$. \item[Service Time ($S_k$).] Average service
+requirement of a request of a given class per visit at resource
+$k$. \item[Station] or \textbf{Service Center} or
+\textbf{Resource}. It represents a unit of the network. Customers
+arrive at the station and then, if necessary, wait in queue,
+receive service from server, and eventually depart from the
+station. \item[System Response Time ($R$).] Correspond to the
+intuitive notion of response time perceived by users, that is, the
+time interval between the instant of the submission of a request
+to a system and the instant the corresponding reply arrives
+completely at the user. It is the aggregate measure of
+\emph{Residence Times}: $R= \sum_k W_k$. \item[System Throughput
+($X$).] Rate at which customers perform an entire interaction with
+the system. It is the throughput observed at a user-defined
+reference station. \item[Throughput ($X_k$).] Rate at which
+customers are executed by station $k$ accounting also periods
+where the server is idle. That is $X_k$ is the mean number of
+completions in a time unit.
+%\item[] Its population varies overtime. Customers that have completed service leave the model. Its intensity is specified by a parameter indicating the rate at which requests (customers) arrive at the model.
+\item[Utilization ($U_k$).] Proportion of time in which the station $k$ is busy or, in the case of a delay center. For single server stations it may be interpreted as the average  number of  customers in the station (see Little Law \cite{Little}).
+\item[Visit (number of -) ($V_k$).] Average number of visits that a customer makes at station $k$ during a complete execution; it is computed as the ratio of the number of completions at resource $k$ to the number of system completions as observed at a user-defined reference station. If resource $k$ is a delay center representing a client station, it is a convention assign a unitary value to number of visits to this station.
 \end{description}
+%\end{document}
