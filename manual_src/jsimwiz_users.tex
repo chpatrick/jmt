@@ -104,7 +104,7 @@ starting screen, \autoref{fig:jsim:Classes} window shows up.
     \label{fig:jsim:Classes}
 \end{figure}
 Three main areas are shown:
-\begin{description}
+\begin{description*}
 \item[Menu :] it is organized into three groups of functions. To use a
 menu, click on the menu heading and choose the appropriate option.
 For the description of menu entries, see \autoref{sec:jmva:Menu}
@@ -113,7 +113,7 @@ For the description of menu entries, see \autoref{sec:jmva:Menu}
 \item[Page Area :] this is the core of the window. All JSIM parameters are grouped in
 different tabs. You can modify only a subset of them by selecting
 the right tab, as will be shown later.
-\end{description}
+\end{description*}
 
 \section{Defining a new model}
 \label{sec:DefiningANewModel}
@@ -395,14 +395,14 @@ The utilization of the delay center represents the average number of jobs receiv
 Delay centers are used when it is necessary to force some known average delay. A common application of delay centers is to model
 transmission time of large amounts of data over a dedicated low speed transmission line.\\\\
 In the Station Parameters tab menu page, you can modify:
-\begin{description}
+\begin{description*}
 \item[Service Section:]
 in this section you can choose the service time distribution for the station.
 For more information, see Service section \ref{sec:ServiceSection}.
 \item[Routing Section:]
 in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
 For more information, see Routing section \ref{sec:RoutingSection}.
-\end{description}
+\end{description*}
 \item \textbf{Server station:} \includegraphics[scale=1]{img/jsim/server.eps}\\
 The Server station is one of the most important components in a queuing network model. Service stations represent the service facilities of the system being modelled. A server station provides the required service to its customers. Server stations may have any (finite) number of servers. If all the servers in the service station are busy when a customer arrives at the station, the arriving customer is put in a waiting queue until its turn to receive service from the first available server is up.
 The queueing discipline decides which customer is served next when a server becomes free. Therefore, the response time at server stations includes service time and
@@ -440,18 +440,18 @@ For more information, see Queue section \ref{sec:QueueSection}.
 In classical queueing network theory, a task arrives at a join station from the corresponding Fork station. In JSIM, a Join station may have incoming links from stations other than the corresponding Fork one. A Join station has no service time, as it is only used to recombine the tasks a job had been previously split into and then route the job to some other station(s). When a task arrives at a join station, it waits until all its sibling tasks have arrived. At this time, the original job is
 recomposed and routed to the next station. If a job arrives from a station other than the corresponding Fork, i.e., a job that was not split, it is simply routed to the next station. In this case the Join station operates as a routing station.\\\\
 In the Station Parameters tab menu page, you can modify:
-\begin{description}
+\begin{description*}
 \item[Routing Section:] in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
 For more information, see Routing section \ref{sec:RoutingSection}.
-\end{description}
+\end{description*}
 \item \textbf{Routing station:} \includegraphics[scale=1]{img/jsim/load_splitter.eps}
 A routing station is a dummy station, with service time equal 0, that is used to create more complex and sophisticated routing strategies by sending jobs through one or more such stations. For example, if we wanted two thirds of the incoming traffic at station Z to be randomly routed to either station A or B and the remaining third to go either to station C or D, depending on the shortest queue at the two stations, we could implement the following. Add a routing station, Y, among Z's output stations and define random routing for the three of them (A, B, Y).
 Then connect Y to C and D and define Join the Shortest Queue routing to C and D.\\\\
 In the Station Parameters tab menu page, you can modify:
-\begin{description}
+\begin{description*}
 \item[Routing Section:] in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
 For more information, see Routing section \ref{sec:RoutingSection}.
-\end{description}
+\end{description*}
 \item \textbf{Source station:} \includegraphics[scale=1]{img/jsim/source.eps}
 If the model comprises at least an open class, a sink and  a source stations are created by default, as they are necessary for the simulation and cannot be removed\\
 \begin{center}
@@ -460,10 +460,10 @@ If the model comprises at least an open class, a sink and  a source stations are
 Open classes are characterized by an infinite stream of jobs that can enter the system. Source stations are used to introduce jobs in the model. Their service time is the interarrival time of each customer class and as such, it is defined as a parameter of the class the job belongs to. The routing strategy defines the first station
 a newly created job will visit. Only open class jobs can be routed from source stations.\\\\
 In the Station Parameters tab menu page, you can modify:
-\begin{description}
+\begin{description*}
 \item[Routing Section:] in this section you can specify how newly created customers should be routed to the next station they will visit in the model.
 For more information, see Routing section \ref{sec:RoutingSection}.
-\end{description}
+\end{description*}
 \item \textbf{Sink Station:} \includegraphics[scale=1]{img/jsim/sink.eps}\\
 Open class customers leave the system once they have received all the service the need. Sink stations are used to model customers leaving the system, as they
 enter the sink station but do not ever leave it. Sink stations have no parameters, only incoming connections from one or more stations, depending upon the model.
@@ -532,7 +532,7 @@ By clicking an algorithm, a brief explanation of the selected algorithm is shown
 \includegraphics[scale=.5]{img/jsim/routing2.eps}
 \end{center}
 You can choose among the following algorithms (NOTE: in each of the pictures illustrating the algorithms, the blue station implements the routing strategy to the other devices):
-\begin{description}
+\begin{description*}
 \item[Random:] with this strategy, jobs are routed randomly to one of the stations connected to the routing device. The outgoing links are selected with the same probability.The figure illustrates the routing strategy with 3 output links. For each link the probability to be selected is 1/3.
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/random.eps}
@@ -572,7 +572,7 @@ queue is the shortest(1 job).
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/S_time.eps}
 \end{center}
-\end{description}
+\end{description*}
 
 \subsubsection{Service section}
 \label{sec:ServiceSection}
@@ -612,7 +612,7 @@ To set the parameters of a Load Dependent service time, click the \includegraphi
 \includegraphics[scale=.5]{img/jsim/load_dipendent.eps}
 \end{center}
 For each customer number range you must specify the following parameters:
-\begin{description}
+\begin{description*}
 \item [Distribution:] you can choose among Burst (general),
 Pareto, Erlang, Exponential, Hyperexponential, Poisson, Uniform,
 Constant, Gamma and Normal distribution. \item [Mean:] the mean
@@ -630,7 +630,7 @@ mean = 1 and C = 0.5. For any number of jobs greater or equal to 5
 in the station, the system will behave according to an Exponential
 distribution with mean = 1. If you want to delete a range click
 \includegraphics[scale=.5]{img/jsim/delete.eps}
-\end{description}
+\end{description*}
 
 \subsection{Define Connections}
 \label{sec:DefineConnections}
@@ -703,7 +703,7 @@ a time unit. \item [System Throughput] Rate at which customers
 departs from the system. \item [Customer Number] Average number of
 customers in the system. If the index is associated with a closed
 class, then it is  equal to the number of customers in the class.
-\end{description}
+\end{description*}
 Each index is associated with a class and a station and will be computed within a given Confidence Interval and Max Relative Error, both defined on the (0-1) range, by performing the following steps:
 \begin{enumerate}
 \item Select the index you want to add to the model from this menu:
@@ -770,7 +770,7 @@ The Simulation Parameters and Initial State of the model are defined using the \
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/sim_tabs.eps}
 \end{center}
-\begin{description}
+\begin{description*}
 \item [Simulation parameters:] In the top section of this windows
 you can edit general simulation parameters.
 \begin{figure}
@@ -807,7 +807,7 @@ simulation, measurements can be stopped in case of:
 \end{itemize*}
 The default value for the maximum number of samples is 500,000; you may increase it (for a more accurate simulation) o decrease it (for a faster simulation).
 \item [Representation Interval (sec):] This is the granularity at which results are plotted on the screen, i.e., the time interval before a new point is added to the graphs, as the simulation proceeds. A large value will make the simulation to proceed slower, as the graphs are updated less often. Small values will provide an impression of better \emph{responsiveness} from the simulation, as graphs are updated more frequently.
-\end{description}
+\end{description*}
 \textbf{Initial state:}
 Initial state is the model situation at time 0, typically expressed by the number of customers in each station before starting the simulation. For closed customer classes, all jobs are initially allocated to their reference station. You can modify this allocation, as long as  the total number of jobs remains the one defined in the
 Classes (\ref{sec:DefineClasses}) tab.

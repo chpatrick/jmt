@@ -3,7 +3,7 @@
 %\begin{document}
 \chapter{Basic Definitions}
 \label{cha:glossary}
-\begin{description}
+\begin{description*}
 \item[Arrival Rate ($\lambda$).] Rate at which customers of a given open
 class arrive in the system.  %Each class has its own workload intensity. If a class is closed the constant \emph{number of customers} $N$ that are present in the system must be provided, if a class is open the \emph{arrival rate} $\lambda$ of customers to the system is requested.
 \item[Batch workload.] Closed workload class composed of customers that do not require interaction with delay stations during their execution (i.e., the users think time is zero).
@@ -124,5 +124,5 @@ completions in a time unit.
 %\item[] Its population varies overtime. Customers that have completed service leave the model. Its intensity is specified by a parameter indicating the rate at which requests (customers) arrive at the model.
 \item[Utilization ($U_k$).] Proportion of time in which the station $k$ is busy or, in the case of a delay center. For single server stations it may be interpreted as the average  number of  customers in the station (see Little Law \cite{Little}).
 \item[Visit (number of -) ($V_k$).] Average number of visits that a customer makes at station $k$ during a complete execution; it is computed as the ratio of the number of completions at resource $k$ to the number of system completions as observed at a user-defined reference station. If resource $k$ is a delay center representing a client station, it is a convention assign a unitary value to number of visits to this station.
-\end{description}
+\end{description*}
 %\end{document}
