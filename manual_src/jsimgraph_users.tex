@@ -97,7 +97,7 @@ toolbar.
     \caption{The home window of JSIM\emph{graph}}
     \label{fig:jsimg:Classes}
 \end{figure}
-From Fig.~\ref{fig:jsimg:Classes}, we can see that the home window
+From \autoref{fig:jsimg:Classes}, we can see that the home window
 has a \emph{menu bar} and \emph{two toolbars}. The menu bar has 5
 menus: \texttt{File, Edit, Define,
 Solve, Help}.\\
@@ -180,7 +180,7 @@ source, sink, logger, connection, routing station and fork/join.
 \noindent{\textbf{Step 2: Define customer classes}}
 
 In all the networks implemented, one or more \emph{Customer Classes} must
-be defined. To describe them, see Section ~\ref{sec:DefineClasses} -
+be defined. To describe them, see \autoref{sec:DefineClasses} -
 "\emph{Defining Customers Classes}" and parameterize the classes to use.\\
 For each class of customers, a \emph{Reference Station} should be
 set. This station is used to compute the system throughput for
@@ -196,7 +196,7 @@ All the stations have default parameters. The proper parameters of
 the objects should be defined: either the numeric values or the
 qualitative parameters such as routing strategy, queueing policy,
 maximum number of customers in a FCR region, etc. See
-Section~\ref{defnettop} - "\emph{Defining Network Topology}" for
+\autoref{defnettop} - "\emph{Defining Network Topology}" for
 details.
 
 \noindent{\textbf{Step 4: Define performance indices}}
@@ -204,7 +204,7 @@ details.
 The performance indices that will be evaluated during the
 simulation should be selected. Select the indices and set the
 class and the station which each index refers to. See
-Section~\ref{perfinde} - "\emph{Performance Indices}" for details.
+\autoref{perfinde} - "\emph{Performance Indices}" for details.
 
 \noindent{\textbf{Step 5: Define a Finite Capacity Region}}
 
@@ -212,18 +212,18 @@ A \emph{F}inite \emph{C}apacity \emph{R}egion (FCR) is a section
 of the model, that may consists of one or more stations, in which
 the number of customers is limited. Several FCRs can be defined in
 a network, provided that they \emph{do not} overlap. See
-Section~\ref{defcap} "\emph{Finite Capacity Region (FCR)}" to
+\autoref{defcap} "\emph{Finite Capacity Region (FCR)}" to
 learn how to set this type of region.
 
 \noindent{\textbf{Step 6: Setting simulation parameters}}
 
 The parameters that control the simulation and the initial state
-of the network should be defined. See Section~\ref{modifpa}
+of the network should be defined. See \autoref{modifpa}
 "\emph{Modification of the parameters}" for details.
 
 \noindent{\textbf{Step 7: Enabling a What-If Analysis}}\\
 If you decide to set up a What-If Analysis read
-Section~\ref{whaif}.
+\autoref{whaif}.
 
 \noindent{\textbf{Step 8: Start the simulation}}\\
 Press
@@ -232,11 +232,11 @@ Press
 simulation.  Before starting the simulation, a check if the
 defined network is correct is performed, and the errors detected
 (fatal or warning) are shown.  The results of a simulation are
-described in Section~\ref{ressults}.
+described in \autoref{ressults}.
 
 \noindent{\textbf{Step 9: Fatal Errors and Warning Messages}}\\
 The detected errors and warning messages are shown in
-Section~\ref{erwar}.\\
+\autoref{erwar}.\\
 
 
 
@@ -317,7 +317,7 @@ default}, so if you want an \emph{Open} class, select the type
     \label{fig:typeclass}
 \end{figure}
 
-Now the class characteristics should look like Fig.~\ref{fig:classchar}.
+Now the class characteristics should look like \autoref{fig:classchar}.
 
 \begin{figure}[htb]
     \begin{center}
@@ -379,7 +379,7 @@ The final step of a class definition is the identification of the
 compute the system throughput and response time of a class. It can be
 selected from
 the \texttt{Reference
-Station} menu (Fig.~\ref{fig:selrefstat}). For
+Station} menu (\autoref{fig:selrefstat}). For
 \emph{Open Classes}, \emph{only} one of the stations of
 \texttt{Source} type can be selected as \emph{Reference Station}.
 \begin{figure}[htb!]
@@ -474,7 +474,7 @@ the Burst (General) distribution is used. As soon as the interval
 ends, a new interval is chosen based on the given probability as
 before.
 
-Fig.~\ref{fig:strburdistr} shows the concept idea of the Burst
+\autoref{fig:strburdistr} shows the concept idea of the Burst
 (General) distribution, clarifying the role of the occurrence
 probability and the role of the interval length.
 \begin{figure}[htb]
@@ -519,7 +519,7 @@ null positive integer, as in the case of the Erlang distribution,
 the Eulero function reduces to $\Gamma(r)= (r-1)!$.\\
 A random variable with Erlang distribution of order \emph{r} can
 be obtained as a sum of \emph{r} exponentially distributed random
-variables with mean $1/r \alpha$ (see Fig.~\ref{fig:simErl}).
+variables with mean $1/r \alpha$ (see \autoref{fig:simErl}).
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/4.3.eps}
@@ -531,7 +531,7 @@ When the values of $\alpha$ and \emph{r} are changed, the system
 will automatically recompute the mean = r/$\alpha$ and the
 variance $Var = r/\alpha^2$. A family of probability density
 functions that illustrate the impact of various ($\alpha$, r)
-pairs is shown in Fig.~\ref{fig:famErl}.
+pairs is shown in \autoref{fig:famErl}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/4.4.eps}
@@ -562,7 +562,7 @@ The parameter $\lambda$ is a real number, the mean value is
  given by $1/\lambda$, the variance is given by $1/\lambda^2$.
 
 A family of exponential density functions with different values of
-$\lambda$ is shown in Fig.~\ref{fig:famExp}.
+$\lambda$ is shown in \autoref{fig:famExp}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/4.5.eps}
@@ -583,7 +583,7 @@ where $\Gamma(t)$ is the Eulero function. When the Gamma
 distribution is selected, the user can either provide $\alpha$ and
 $\lambda$ or the distribution mean equal to $\alpha \lambda$ and
 the variance $\alpha \lambda^2$. A family of probability density
-functions is shown in Fig.~\ref{fig:famGam}, for a set of $\alpha$
+functions is shown in \autoref{fig:famGam}, for a set of $\alpha$
 and $\lambda$ values.
 \begin{figure}[htb]
     \begin{center}
@@ -618,12 +618,12 @@ parameter $\lambda_2$. The probability density function is:
 When this distribution is used to model customer interarrival time
 or a station service time, with probability \emph{p} the next
 interval before a new arrival (or the next service time) is
-distributed like the upper server in Fig.~\ref{fig:genHyper} the
+distributed like the upper server in \autoref{fig:genHyper} the
 figure above while with probability \emph{1-p} it will be
 distributed like the lower server.
 
 A family of hyperexponential density functions is shown in
-Fig.~\ref{fig:famHyper}. Note that when $\lambda_1 = \lambda_2$,
+\autoref{fig:famHyper}. Note that when $\lambda_1 = \lambda_2$,
 the hyperexponential reduces to a simple exponential.\\
 
 \begin{figure}[htb]
@@ -652,7 +652,7 @@ f(x) = \frac{1}{\sqrt{2 \pi \sigma}} \; e^{-\frac{(x-\mu)^2}{2
  The \emph{standard normal distribution} is the normal
 distribution with $\mu$ = 0 (mean equal 0) and $\sigma$ = 1
 (variance and standard deviation equal 1). A family of normal
-density functions is shown in Fig.~\ref{fig:famNorm}.
+density functions is shown in \autoref{fig:famNorm}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/4.9.eps}
@@ -678,7 +678,7 @@ variance
 \[ \frac{\alpha^2 x }{(x-1)^2 (x-2)}
 \]
 A family of Pareto density functions is shown in
-Fig.~\ref{fig:famPar}.
+\autoref{fig:famPar}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/4.10.eps}
@@ -707,7 +707,7 @@ probability mass function is:
 \[ f(x) = \frac{\lambda^x}{x!} \; e^{-\lambda}
 \]
 A family of Poisson probability mass functions is shown in
-Fig.~\ref{fig:famPois}.
+\autoref{fig:famPois}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/4.11.eps}
@@ -741,8 +741,7 @@ density function is:
 {\nu})^\frac{\nu+1}{2}}
 \]
 where $\Gamma(t)$ is the Eulero function. A family of probability
-density functions for a set of $\nu$ values is shown in Fig.
-~\ref{fig:famStut}.
+density functions for a set of $\nu$ values is shown in \autoref{fig:famStut}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/4.12.eps}
@@ -760,7 +759,7 @@ probability is 0 outside the considered range.
 
 The user can either provide the pair (min, max) or the \emph{mean}
 $m=(max+min)/2$ and \emph{variance} $c=(max-min)^2 / 12$. Two
-uniform density functions are plotted in Fig.~\ref{fig:famUnif}.
+uniform density functions are plotted in \autoref{fig:famUnif}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/4.13.eps}
@@ -934,7 +933,7 @@ either by selecting \texttt{Simulation Parameters} from the
 \texttt{Define} menu or by clicking the \texttt{Define Simulation
 Parameters} icon
 \includegraphics[scale=.5]{img/jsimg/defineSimulationParameters.eps}
-from the toolbar (see Fig.~\ref{fig:inistat}).
+from the toolbar (see \autoref{fig:inistat}).
 
 \begin{figure}[h]
     \begin{center}
@@ -1005,7 +1004,7 @@ For closed customer classes, all customers are allocated by
 this allocation, as long as the total number of customers remains
 the one defined in the \texttt{Classes} tab. For open customer
 classes, it is possible to initialize each station with any
-desired number of customers. In Fig.~\ref{fig:inistat} the
+desired number of customers. In \autoref{fig:inistat} the
 \emph{initial state} of a model with four stations and two classes
 (\emph{ClosedClass} with 3 customers in the \emph{CPU} station and
 \emph{Class0} with 10 customers in the \emph{Users} station) is
@@ -1038,7 +1037,7 @@ analysis} checkbox to activate it.
 \noindent{\emph{Selecting the What-If Analysis}}\\ After enabling
 the What-If Analysis, it is possible to select the parameter to
 control the sequence of simulation runs using the menu of
-Fig.~\ref{fig:selparwhatif}.
+\autoref{fig:selparwhatif}.
 \begin{figure}[hbt]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/7.2.eps}
@@ -1048,7 +1047,7 @@ Fig.~\ref{fig:selparwhatif}.
     \label{fig:selparwhatif}
 \end{figure}
 When you select a What-If Analysis parameter, the bottom section
-of the window of Fig.~\ref{fig:iniwhatif} will change depending
+of the window of \autoref{fig:iniwhatif} will change depending
 upon the parameter. In the right portion a \texttt{Description} is
 provided of the selected parameter and of the impact of its
 variation. In the left portion the details of the parameter range
@@ -1079,7 +1078,7 @@ the \texttt{To N} field. The simulation is repeated
     a What-If Analysis.}
     \label{fig:seltypepopg}
 \end{figure}
-In Fig.~\ref{fig:seltypepopg} a What-If Analysis is planned on a
+In \autoref{fig:seltypepopg} a What-If Analysis is planned on a
 single closed class model. The option \texttt{Increase number of
 jobs of one closed class} has been selected. The initial value of
 the number of customers is not modifiable from this window, as it
@@ -1094,7 +1093,7 @@ simulator control that the sum of the \emph{percentages of jobs}
 of the various classes (represented by the components $\beta_i$ of
 vector \textbf{$\beta$}) evaluated over the global population $N$
 of the model add up to 1, as shown in the \texttt{Population mix}
-table on the bottom of the window of Fig.~\ref{fig:seltypepopg} in
+table on the bottom of the window of \autoref{fig:seltypepopg} in
 the simple case of a single class model.
 
 If the \texttt{Increase number of jobs of all closed classes}
@@ -1142,7 +1141,7 @@ arrival rates of all the classes.
 %    in a What-if analysis.}
 %    \label{fig:selarrrat}
 %\end{figure}
-Figure~\ref{fig:iniwhatif} shows the settings for a What-If
+\autoref{fig:iniwhatif} shows the settings for a What-If
 Analysis of the arrival rate of all the open classes. The
 \texttt{To} field is set to 150\%, which means that for each class
 the final arrival rate will be 1.5 times greater than the initial
@@ -1163,7 +1162,7 @@ the classes) whose service time will be varied must be specified.
     in a What-If Analysis.}
     \label{fig:selservti}
 \end{figure}
-Figure~\ref{fig:selservti} shows the settings for a What-If
+\autoref{fig:selservti} shows the settings for a What-If
 Analysis of the service time of class \emph{Class1} at station
 \emph{Server1}. The service time distribution will not change.
 Only its average will be modified to span the range defined by the
@@ -1198,7 +1197,7 @@ generate the sequence of values used in each execution. By
 changing the seed, a different sequence of values is produced,
 thus leading to different numerical results. The first seed is the
 one defined in the \texttt{Simulation Parameters} tab. The number
-of executions is specified in the panel of Fig.~\ref{fig:selseed}
+of executions is specified in the panel of \autoref{fig:selseed}
 and the simulation engine generates as many pseudo-random seeds to
 be used (one for each execution).
 \end{itemize}
@@ -1234,7 +1233,7 @@ its class, as it would violate the shared constraint.\\
 \textbf{ 1.}  Select the stations to include in the region with
 the mouse: left-click with the mouse and hold it pressed until all
 the elements are included. The selected stations are framed with
-green dashed lines, as shown in Fig.~\ref{fig:selsatfcr}.\\
+green dashed lines, as shown in \autoref{fig:selsatfcr}.\\
 \begin{figure}[h]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/8.1.eps}
@@ -1245,7 +1244,7 @@ green dashed lines, as shown in Fig.~\ref{fig:selsatfcr}.\\
 \noindent{\textbf{2.}  Select the icon
 \includegraphics[scale=.5]{img/jsimg/addStationToNFCR}  and
 the Finite Capacity Region will
-appear with a blue background, see Fig.~\ref{fig:selfcrblueback}}.\\
+appear with a blue background, see \autoref{fig:selfcrblueback}}.\\
 \begin{figure}[h]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/8.2.eps}
@@ -1255,7 +1254,7 @@ appear with a blue background, see Fig.~\ref{fig:selfcrblueback}}.\\
 \end{figure}
 \textbf{3.}  Double click on \texttt{FCRegion} to set the
 properties. The properties panel will appear,
-Fig.~\ref{fig:fcrdefprop}.
+\autoref{fig:fcrdefprop}.
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/8.3.eps}
@@ -1292,7 +1291,7 @@ click the icon
 network topology.\\
 
 \noindent \textbf{Selecting the stations}\\ From the second
-toolbar (Fig.~\ref{fig:statdraw}), select a station and click on
+toolbar (\autoref{fig:statdraw}), select a station and click on
 the model panel to insert it (drag and drop). The available
 stations
 are:\\
@@ -1345,7 +1344,7 @@ stations.\\
 
 \noindent{\textbf{Setting or changing the properties}}\\ Double
 click on the station icon to open the properties panel of
-Fig.~\ref{fig:statprop}. There is only one section:
+\autoref{fig:statprop}. There is only one section:
 \texttt{Routing Section}.\\
 \begin{figure}[htb]
     \begin{center}
@@ -1363,8 +1362,8 @@ strategies. The following algorithms are available:
 \begin{itemize}
 \item \textbf{Random:} Customers are routed randomly to one of the
 stations connected in output to the considered station. The
-outgoing links are selected with the same probability. Figure
-~\ref{fig:routrand} illustrates the routing strategy with 3 output
+outgoing links are selected with the same probability. 
+\autoref{fig:routrand} illustrates the routing strategy with 3 output
 links. For each link the probability to be selected is 1/3.
 \begin{figure}[htb]
     \begin{center}
@@ -1376,7 +1375,7 @@ links. For each link the probability to be selected is 1/3.
 
 \item \textbf{Round Robin:} Customers are cyclically routed to the
 outgoing links according to a circular routing. As shown in
-Fig.~\ref{fig:routrr}, the first customer is sent to the top
+\autoref{fig:routrr}, the first customer is sent to the top
 station, the second customer is sent to the central station, and
 the third customers is sent to the bottom station. The next
 customers would be sent to the top station again, and so on.
@@ -1390,11 +1389,11 @@ customers would be sent to the top station again, and so on.
 
 \item \textbf{Probabilities:} The routing probability for each
 outgoing link must be defined. The sum of all probabilities must
-be equal 1 (Fig.s~\ref{fig:defprobw},~\ref{fig:routexe}). If the
+be equal 1 (\autoref{fig:defprobw} and \autoref{fig:routexe}). If the
 values provided do not satisfy the constraint, JSIM automatically
 normalizes the values before the simulation starts. The
 probability for each output link may be set in the panel on the
-bottom right of the window shown in Fig.~\ref{fig:statprop}.
+bottom right of the window shown in \autoref{fig:statprop}.
 \begin{figure}[h!]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/8.9.eps}
@@ -1413,7 +1412,7 @@ bottom right of the window shown in Fig.~\ref{fig:statprop}.
 to as \emph{Shortest Queue Length}) Each customer is routed to the
 station connected in output that has the \emph{smallest} number of
 customers either in queue and in service at the time the customer
-leaves the routing station. Figure ~\ref{fig:routsql} shows a case
+leaves the routing station. \autoref{fig:routsql} shows a case
 where the number of customers (in queue and in service) at the
 devices are 3, 2, and 1 job, respectively, from top to bottom. The
 exiting customer will be routed to the bottom station, since its
@@ -1428,7 +1427,7 @@ queue is the shortest (1 customer).
 \item \textbf{Shortest Response time:} Customers are sent to the
 station where the average response time for the job's class is the
 smallest at the moment a customer leaves the routing station.
-Figure ~\ref{fig:routstrespt} shows that at the time of routing,
+\autoref{fig:routstrespt} shows that at the time of routing,
 the middle station has the smallest average response time, R, so
 the customer will be sent to it.
 \begin{figure}[htb]
@@ -1442,7 +1441,7 @@ the customer will be sent to it.
 \item \textbf{Least Utilization:} The destination station is
 chosen as the one with the smallest average utilization at the
 time routing is performed. In the example, shown in
-Fig.~\ref{fig:routleasut} depicted in the picture, the top station
+\autoref{fig:routleasut} depicted in the picture, the top station
 is the least utilized, so it will receive the next customer to
 leave the blue station.
 \begin{figure}[htb]
@@ -1455,7 +1454,7 @@ leave the blue station.
 
 \item \textbf{Fastest Service:} A customer is routed to the device
 with the smallest average service time, S, for the job's class. In
-Fig.~\ref{fig:routfastserv} the exiting customer will be routed to
+\autoref{fig:routfastserv} the exiting customer will be routed to
 the top station since its service time is the minimum among the
 three.
 \begin{figure}[htb]
@@ -1513,7 +1512,7 @@ servers provide the same  average response time for all jobs, as
 no job waits in queue for service. The load \emph{dependent} or
 \emph{independent} characteristic of the service time must be
 specified for each class of customers through the menus of
-Fig.s~\ref{fig:editdprop}, \ref{fig:selloaddep}.
+\autoref{fig:editdprop} and \autoref{fig:selloaddep}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/8.16.eps}
@@ -1528,7 +1527,7 @@ indicates that, regardless of the number of customers that are in
 the station, the system will serve all the customers following a
 fixed policy modelled by the chosen statistical distribution. To
 choose the Distribution press the \texttt{Edit} button and insert
-all the parameters from the window of Fig.~\ref{fig:cldistrw}.
+all the parameters from the window of \autoref{fig:cldistrw}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/8.17.eps}
@@ -1537,7 +1536,7 @@ all the parameters from the window of Fig.~\ref{fig:cldistrw}.
     \label{fig:cldistrw}
 \end{figure}
 
-The following service time distributions (see Sect.~\ref{distns})
+The following service time distributions (see \autoref{distns})
 are supported: \emph{Burst (General), Constant, Erlang,
 Exponential, Gamma, Hyperexponential, Normal, Pareto, Poisson,
 Student-T, Uniform}.
@@ -1554,7 +1553,7 @@ computed. Each range of values can be associated with different
 service times, distribution, mean and coefficient of variation, or
 a subset of them. To set the parameters of a Load Dependent
 service time, click the \texttt{Edit} button to edit the Service
-Time Distribution. The panel of Fig.~\ref{fig:ldservstrat}
+Time Distribution. The panel of \autoref{fig:ldservstrat}
 appears, then specify the parameters for each range.\\
 \begin{figure}[htb]
     \begin{center}
@@ -1576,7 +1575,7 @@ can read the "Help" tab or see the official JFEP web site at
 http://jfep.sourceforge.net/ \item \textbf{c}: The coefficient of
 variation of each distribution (when $c$ exists) can be specified
 by double clicking on the $c$ form. For example, in
-Fig.~\ref{fig:ldservstrat} two distributions are defined: when there is
+\autoref{fig:ldservstrat} two distributions are defined: when there is
 only one customer in the station the service times are generated
 according to an Erlang distribution with \emph{mean=1} and
 \emph{c=0.5}. For any number of customers greater than 1 in the
@@ -1605,14 +1604,14 @@ use for outgoing connections. The following algorithms are available:\\
 - Random\\ - Round Robin\\ - Probabilities\\ - Join the Shortest Queue\\
 - Shortest Response time\\ - Least Utilization\\ - Fastest Service.\\
 To know details about these algorithms, please refer to
-Section~\ref{sstatlab} of \emph{Source Station}.
+\autoref{sstatlab} of \emph{Source Station}.
 
 \subsection{Fork Station}
 \label{fstlab}
  A Fork station is a station where jobs
 are split into tasks. No service is provided; therefore there is
 no service time specification. Tasks are then routed along the
-Fork station outgoing links (see Fig.~\ref{fig:forkprop}).\\
+Fork station outgoing links (see \autoref{fig:forkprop}).\\
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/8.23.eps}
@@ -1675,7 +1674,7 @@ fork-join section (when a join is present):
 routed on each outgoing link of the fork station. Therefore, each
 customer is split into \emph{(forking degree)}x\emph{(number of
 outgoing links)} tasks. By \emph{default} the forking degree is 1,
-it can be modified as shown in Fig.~\ref{fig:forkdegcap}. \item
+it can be modified as shown in \autoref{fig:forkdegcap}. \item
 \textbf{Capacity:} It is the maximum number of customers (jobs)
 that can be served by a Fork-Join section simultaneously. It makes
 sense only if there is a Join station matching the Fork one. It
@@ -1683,7 +1682,7 @@ can be \emph{finite}, in this case when the limit is reached the
 jobs wait in the queue of the Fork station. A job is removed from
 the queue and serviced (i.e., split into tasks) when a job is
 recomposed at the matching Join station and leaves it. Capacity is
-defined using the form shown in Fig.~\ref{fig:forkpropwind}, after
+defined using the form shown in \autoref{fig:forkpropwind}, after
 checking the \texttt{Finite capacity...} box.
 \end{itemize}
 
@@ -1745,7 +1744,7 @@ allowed is reached.
 
 \subsection{Join Station}
  \emph{Join} stations are complementary to fork
-stations (see Fig.~\ref{fig:forkprop}). In classical queueing
+stations (see \autoref{fig:forkprop}). In classical queueing
 network theory, a task arrives at a join station from the
 corresponding Fork station.\\
 
@@ -1789,7 +1788,7 @@ The following algorithms are available:\\
 - Shortest Response time\\ - Least Utilization\\  - Fastest Service.\\
 
 \noindent To know details about these algorithms, please refer to the
-Section~\ref{sstatlab} \emph{Source Station}.
+\autoref{sstatlab} \emph{Source Station}.
 
 
 \subsection{Routing Station}
@@ -1815,7 +1814,7 @@ shortest queue routing JSQ for C and D.\\
 
 \noindent \textbf{Set or change of properties}\\ With a double click on the
 routing station icon, the \texttt{Editing Routing Station
-Properties} window is shown (see Fig.~\ref{fig:edjprop}).
+Properties} window is shown (see \autoref{fig:edjprop}).
 %\begin{figure}[htb]
 %    \begin{center}
 %        \includegraphics[scale=.5]{img/jsimg/8.27.eps}
@@ -1842,7 +1841,7 @@ The following algorithms are available:\\
 - Shortest Response time\\ - Least Utilization\\  - Fastest Service.\\
 
 \noindent To know details about these algorithms, please refer to the
-Section~\ref{sstatlab} \emph{Source Station}.
+\autoref{sstatlab} \emph{Source Station}.
 
 \subsection{Queueing Station}
  The \emph{Queueing Station} is one of the most
@@ -1874,7 +1873,7 @@ is given by $U=\lambda S /m$.\\
 \noindent \textbf{Set or change of the properties}\\
 Double click on the \texttt{Queueing Station} icon and the
 \texttt{Editing Server
-Properties} window will open (see Fig.~\ref{fig:questatset}).\\
+Properties} window will open (see \autoref{fig:questatset}).\\
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/8.30.eps}
@@ -1887,7 +1886,7 @@ like to assign. There are three tabs: \texttt{Queue Section,
 Service Section} and \texttt{Routing Section}.\\
 
 \noindent \textbf{Queue Section}\\
-Please refer to \emph{Queue Section} of Par.~\ref{fstlab} \emph{Fork Station}\\
+Please refer to \emph{Queue Section} of \autoref{fstlab} \emph{Fork Station}\\
 
 
 \noindent{\textbf{Service Section}}\\
@@ -1895,9 +1894,9 @@ The service time
 distribution and the number of servers (\emph{default} is 1)
 should be defined. The load \emph{dependent} or \emph{independent}
 characteristic of the service times must be specified for each
-class of customers through the menus of Fig.s~\ref{fig:editdprop},
-\ref{fig:selloaddep}.\\
-Please refer to \emph{Service Section} of Par.~\ref{dstat} \emph{Delay Station}.\\
+class of customers through the menus of \autoref{fig:editdprop} and
+\autoref{fig:selloaddep}.\\
+Please refer to \emph{Service Section} of \autoref{dstat} \emph{Delay Station}.\\
 
 
 
@@ -1919,7 +1918,7 @@ The following algorithms are available:\\
 - Random\\ - Round Robin\\ - Probabilities\\ - Join the Shortest Queue - JSQ\\
 - Shortest Response Time\\ - Least Utilization\\ - Fastest Service.\\
 To know details about these algorithms, please refer to the
-\texttt{Routing Section} of Par.~\ref{sstatlab}-\emph{Source
+\texttt{Routing Section} of \autoref{sstatlab}-\emph{Source
 Station}.
 %\begin{figure}[htb]
 %    \begin{center}
@@ -1950,7 +1949,7 @@ as it passes through the model.\\
 Double click on the \texttt{Logger Station} icon
 \includegraphics[scale=.5]{img/jsimg/logger}
 to open the \texttt{Editing Logger Properties} station's
-configuration dialog (see Fig.~\ref{fig:deditlogg}). There are two
+configuration dialog (see \autoref{fig:deditlogg}). There are two
 sections:
 \texttt{Logger Section} and \texttt{Routing Section}.\\
 \begin{figure}[htb]
@@ -2011,7 +2010,7 @@ The following algorithms are available:\\
 - Random\\ - Round Robin\\ - Probabilities\\ - Join the Shortest Queue - JSQ\\
 - Shortest Response Time\\ - Least Utilization\\ - Fastest Service.\\
 To know details about these algorithms, please refer to the
-\texttt{Routing Section} of Par.~\ref{sstatlab}-\emph{Source
+\texttt{Routing Section} of \autoref{sstatlab}-\emph{Source
 Station}.
 
 
@@ -2034,7 +2033,7 @@ confirm the maximum \emph{duration} of the simulation.
 \end{enumerate}
 
 \noindent For more details about these parameters see the Section
-\texttt{Simulation Parameters} of Par.~\ref{modefpara}.
+\texttt{Simulation Parameters} of \autoref{modefpara}.
 
 \subsection{Modifying station parameters}
  To modify the
@@ -2043,7 +2042,7 @@ parameters of a station select the icon
 click on the station to modify. The properties panel of a station
 will be opened and the modifications could be applied.\\
 To see a complete list of properties of each station see
-Section~\ref{defnettop} \emph{Defining Network Topology}.
+\autoref{defnettop} \emph{Defining Network Topology}.
 
 \subsection{Modifying the default values of parameters}
 \label{modefpara} The simulator default settings for \emph{Class,
@@ -2070,7 +2069,7 @@ following sections.\\
 
 \noindent \textbf{Class Parameters}\\
 These settings define the default values of class parameters
-assigned to a new class (see Fig.~\ref{fig:clparam}).
+assigned to a new class (see \autoref{fig:clparam}).
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/9.2.eps}
@@ -2103,7 +2102,7 @@ non-exponential pattern.
 
 \noindent \textbf{Station Parameters}\\
 These settings are general parameters for any type of station (see
-Fig.~\ref{fig:stparam}).
+\autoref{fig:stparam}).
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/9.3.eps}
@@ -2164,7 +2163,7 @@ parallelism a job has
 These parameters define the simulation run from a statistical
 point of view. More details on \emph{Confidence Interval} and \emph{Max
 Relative
-Error} are reported in Sect.s~\ref{conint},~\ref{mrerr}.\\
+Error} are reported in \autoref{conint} and \autoref{mrerr}.\\
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/9.4.eps}
@@ -2248,7 +2247,7 @@ press the \texttt{Reset} button at the bottom of the panel.
 
 JSIMgraph analyzes the network before starting the simulation. If
 errors or warnings are found, a window reporting the description
-of the errors, like the one of Fig.~\ref{fig:diagerr}, is shown.\\
+of the errors, like the one of \autoref{fig:diagerr}, is shown.\\
 Click on an error or warning message to open the panel where you
 can fix it (modifying the wrong parameters or changing the network).\\
 In the following table the \emph{diagnostic messages} of the most
@@ -2430,7 +2429,7 @@ simulation executed: \emph{single simulation run} and
 \subsection{Results from a single simulation run}
 At the end of a simulation, a panel with several tabs
 corresponding to the performance indices previously selected is
-shown (see Fig.~\ref{fig:ssimrun}).\\
+shown (see \autoref{fig:ssimrun}).\\
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/11.1.eps}
@@ -2448,7 +2447,7 @@ graphs are given. Successful results (i.e. if the confidence
 interval has been computed with the precision set by the user) are
 indicated by the checkmark sign \includegraphics[scale=.3]
 {img/jsimg/tick} (see, e.g.,
-Fig.~\ref{fig:ssimrun}). In case of errors or of early
+\autoref{fig:ssimrun}). In case of errors or of early
 termination, the sign \includegraphics[scale=.3]
 {img/jsimg/cross2} indicates that the
 results obtained are not within the requested confidence interval.
@@ -2480,7 +2479,7 @@ Click on the graph to magnify it.
 
 Each graph plotted represents the values of the corresponding
 index (blue line) with the Confidence Interval (red lines), see
-Fig.~\ref{fig:valconfint}.
+\autoref{fig:valconfint}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/11.2.eps}
@@ -2562,7 +2561,7 @@ The digital infrastructure of a company consists of a computing
 server and a storage server equipped with two large disks arrays.
 The user requirements are homogeneous and the workload generated
 may be considered as a single class. The layout of the digital
-infrastructure is shown in Fig.~\ref{fig:ex1layout}. The customer
+infrastructure is shown in \autoref{fig:ex1layout}. The customer
 class, referred to as \emph{ClosedClass}, has a population of
 $N=3$ customers.
 \begin{figure}[htb]
@@ -2577,7 +2576,7 @@ of queueing type load independent and one is of delay type
 (\emph{Users}). Users delay station represents user's think time
 ($Z=16s$) between interaction with the system. Service times,
 distributed exponentially, and the visits at the stations are
-reported in Table~\ref{fig:ex1par}.\\
+reported in \autoref{fig:ex1par}.\\
 
 \begin{table}
 \begin{center}
@@ -2610,7 +2609,7 @@ the toolbar. Double click on it and rename the \texttt{Station
 Name} as \emph{Users}. \item By selecting the
 \includegraphics[scale=.5]{img/jsimg/connect} icon, connect
 the queueing stations and the delay station as given in the
-problem. The graph should look like Fig.~\ref{fig:ex1repr}.
+problem. The graph should look like \autoref{fig:ex1repr}.
 \end{itemize}
 \begin{figure}[htb]
     \begin{center}
@@ -2648,7 +2647,7 @@ tool.
     \label{fig:meanthin}
 \end{figure}
 \item Click \texttt{Done} on the window of
-Fig.~\ref{fig:uspropwin}.
+\autoref{fig:uspropwin}.
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/12.4.eps}
@@ -2667,7 +2666,7 @@ automatically computed by the tool.
 are 3 outgoing links from \emph{CPU}, we have to set a job's
 probability to choose each of these paths. This is done by setting
 the probabilities of \emph{Disk1, Disk2} and \emph{Users} as 60,
-40 and 1 respectively (see Fig.~\ref{fig:probcpu}). Click on
+40 and 1 respectively (see \autoref{fig:probcpu}). Click on
 \texttt{Done}. Note that the values of the \texttt{Probabilities}
 are automatically adjusted by the tool.
 \begin{figure}[htb]
@@ -2687,7 +2686,7 @@ automatically computed by the tool. \item Click on the
 as \texttt{Probabilities}. Since there is only one outgoing link,
 which goes to the \emph{CPU}, from \emph{Disk1} so select the
 \texttt{Probability} of going to CPU (under the Routing Options
-subsection) as 1 (see Fig.~\ref{fig:probDisk1}). Click on
+subsection) as 1 (see \autoref{fig:probDisk1}). Click on
 \texttt{Done}.
 \begin{figure}[htb]
     \begin{center}
@@ -2753,7 +2752,7 @@ four times. Change \texttt{State/Region} of these \texttt{Indices}
 to \emph{CPU, Disk1, Disk2} and \emph{Users}.
 \end{itemize}
 The \texttt{Define Performance Indices} window should look like
-Fig.~\ref{fig:globperindw}. It should be noted that we can change
+\autoref{fig:globperindw}. It should be noted that we can change
 the \texttt{Confidence Interval} and/or \texttt{Maximum Relative
 Error} for any performance index from this window. At the end
 click on \texttt{Done}.\\
@@ -2774,7 +2773,7 @@ Note that if you had run the simulation for the same program
 before, JSIM\emph{graph} asks for a confirmation whether you want
 to replace the previous simulation results or not. Choose
 \texttt{yes} to confirm. In the drawing window of the Simulator
-(Fig.~\ref{fig:progsimw}),
+(\autoref{fig:progsimw}),
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/12.14.eps}
@@ -2786,12 +2785,12 @@ to replace the previous simulation results or not. Choose
 the colored parts of a station represents the percentages of
 station busy time and of the queue length due to the customers of
 \emph{Class0}. In the \texttt{Simulation Results} window,
-Fig.~\ref{fig:simres},  opened automatically when simulation
+\autoref{fig:simres},  opened automatically when simulation
 starts, the progress of the average values of the selected
 performance indices and the extremes of the confidence intervals
-are shown.\\ Table~\ref{fig:ressm1} shows the average, min and max
+are shown.\\ \autoref{fig:ressm1} shows the average, min and max
 values of the indexes at the station level at the end of the
-simulation. Table~\ref{fig:globres} shows the average, min, and
+simulation. \autoref{fig:globres} shows the average, min, and
 max values of Response Time, Throughput, and number of customers
 at the level of the global system.\\
 Note that the results of different simulation runs may slightly
@@ -2877,7 +2876,7 @@ the storage or the Apache server according to a probabilistic
 algorithm. All \emph{Class0} customers go to the \emph{Load
 Balancer} and their interarrival times are hyperexponentially
 distributed with parameters ($p, \lambda_1, \lambda_2$) = (0.291,
-0.182, 0.442), see Fig.~\ref{fig:hypeexponcl0}, resulting in a
+0.182, 0.442), see \autoref{fig:hypeexponcl0}, resulting in a
 mean value equal
 to 3.2 sec and coefficient of variation equal to 1.192.\\
 The interarrival times of Class1 customers are exponentially
@@ -2945,7 +2944,7 @@ strategy} for both \emph{Class0} and \emph{Class1} as
 customers may go either to the \texttt{LoadBalancer} or to the
 RAID0 station, set the \texttt{Probability} of both
 \texttt{LoadBalancer} and RAID0 as 0.5. Then Click on
-\texttt{Done} (see Fig.~\ref{fig:parroutstrat}).
+\texttt{Done} (see \autoref{fig:parroutstrat}).
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/12.19.eps}
@@ -2955,7 +2954,7 @@ RAID0 station, set the \texttt{Probability} of both
     \label{fig:parroutstrat}
 \end{figure}
 \item Double click on RAID0 and set \texttt{Fork degree} at 3 (see
-Fig.~\ref{fig:raid0prop}).
+\autoref{fig:raid0prop}).
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/12.20.eps}
@@ -2972,7 +2971,7 @@ disks - \emph{Disk1, Disk2} and \emph{Disk3} as 5 for
 \item Double click on the \texttt{LoadBalancer}. Set the
 \texttt{Routing Strategy} of \emph{Class0} to \texttt{Shortest
 Queue length}, and that of \emph{Class1} to \texttt{Shortest
-Response Time} (see Fig.~\ref{fig:loadbalprop}).
+Response Time} (see \autoref{fig:loadbalprop}).
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/12.22.eps}
@@ -2990,7 +2989,7 @@ bar \texttt{Define -> Performance Indices} add the index
 \texttt{Confidence Interval} to 0.99 and \texttt{Maximum Relative
 Error} to 0.05. Then add the index \texttt{Throughput}. Set its
 \texttt{Station/Region} as \emph{WebServer1} (see
-Fig.~\ref{fig:conintmaxer}).
+\autoref{fig:conintmaxer}).
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/12.23.eps}
@@ -3006,7 +3005,7 @@ as 150, \texttt{Steps (n. of exec.)} as 10 and \texttt{Station} as
 \emph{WebServer1}. Keep the values of the \texttt{Arrival Rates}
 parameter as it is (\texttt{To} should be 150 and \texttt{Steps}
 should be 10). Steps in the Seed parameter should remain 10 by
-default. Click \texttt{Done} (see Fig.~\ref{fig:wiaparam}).
+default. Click \texttt{Done} (see \autoref{fig:wiaparam}).
 \begin{figure}[htb]
     \begin{center}
         \includegraphics[scale=.5]{img/jsimg/12.24.eps}
@@ -3023,8 +3022,8 @@ whether you want to replace the previous simulation results or
 not. Choose \texttt{yes} to carry on. If we look the drawing
 window of the Simulator, we can see the simulation going on.
 \end{itemize}
-The windows of Fig.s~\ref{fig:throughbehav}, ~\ref{fig:respcl0},
-~\ref{fig:respcl1} show the results of the What-If Analysis. Note
+The windows of \autoref{fig:throughbehav}, \autoref{fig:respcl0} and
+\autoref{fig:respcl1} show the results of the What-If Analysis. Note
 that the results of different simulation runs may slightly vary
 due to the differences in the sequence of random numbers generated
 with different seeds.

@@ -180,7 +180,7 @@ The following window will appear
 \end{center}
 
 Click on the Selected Distribution drop down menu to choose from any of the following
-distributions \ref{sec:Distributions}:
+distributions \autoref{sec:Distributions}:
 \begin{itemize*}
     \item Burst
     \item Constant
@@ -398,10 +398,10 @@ In the Station Parameters tab menu page, you can modify:
 \begin{description*}
 \item[Service Section:]
 in this section you can choose the service time distribution for the station.
-For more information, see Service section \ref{sec:ServiceSection}.
+For more information, see Service section \autoref{sec:ServiceSection}.
 \item[Routing Section:]
 in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
-For more information, see Routing section \ref{sec:RoutingSection}.
+For more information, see Routing section \autoref{sec:RoutingSection}.
 \end{description*}
 \item \textbf{Server station:} \includegraphics[scale=1]{img/jsim/server.eps}\\
 The Server station is one of the most important components in a queuing network model. Service stations represent the service facilities of the system being modelled. A server station provides the required service to its customers. Server stations may have any (finite) number of servers. If all the servers in the service station are busy when a customer arrives at the station, the arriving customer is put in a waiting queue until its turn to receive service from the first available server is up.
@@ -411,13 +411,13 @@ In the Station Parameters tab menu page, you can modify:
 \begin{description*}
 \item[Queue Section:]
 in this section you can choose the type of queue (finite or infinite) and the policy used to select the next customer to be served.
-For more information, see Queue section \ref{sec:QueueSection}.
+For more information, see Queue section \autoref{sec:QueueSection}.
 \item[Service Section:]
 in this section you can choose the service time distribution for the station.
-For more information, see Service section \ref{sec:ServiceSection}.
+For more information, see Service section \autoref{sec:ServiceSection}.
 \item[Routing Section:]
 in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
-For more information, see Routing section \ref{sec:RoutingSection}.
+For more information, see Routing section \autoref{sec:RoutingSection}.
 \end{description*}
 \item \textbf{Fork station:} \includegraphics[scale=1]{img/jsim/fork.eps}
 A JSIM Fork station is simply a station where jobs are split into tasks. No service is provided, therefore there is no service time specification. Tasks are then routed along the Fork station outgoing links.
@@ -431,10 +431,10 @@ In the Station Parameters page of the tabs menu,you can modify:\\
 \begin{description*}
 \item[Fork Section:] in this section you can choose the forking degree of a job on each outgoing link and the fork station capacity, i.e., the maximum number
 of jobs that can be served in parallel by the station.
-For more information, see Fork section \ref{sec:ForkSection}.
+For more information, see Fork section \autoref{sec:ForkSection}.
 \item[Queue Section:] in this section you can choose the type of queue (finite or infinite) of the fork station in case its capacity is finite and jobs must wait before
 proceeding through the fork station.
-For more information, see Queue section \ref{sec:QueueSection}.
+For more information, see Queue section \autoref{sec:QueueSection}.
 \end{description*}
 \item \textbf{Join station:} \includegraphics[scale=1]{img/jsim/join.eps}Join stations are complementary to fork stations.
 In classical queueing network theory, a task arrives at a join station from the corresponding Fork station. In JSIM, a Join station may have incoming links from stations other than the corresponding Fork one. A Join station has no service time, as it is only used to recombine the tasks a job had been previously split into and then route the job to some other station(s). When a task arrives at a join station, it waits until all its sibling tasks have arrived. At this time, the original job is
@@ -442,7 +442,7 @@ recomposed and routed to the next station. If a job arrives from a station other
 In the Station Parameters tab menu page, you can modify:
 \begin{description*}
 \item[Routing Section:] in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
-For more information, see Routing section \ref{sec:RoutingSection}.
+For more information, see Routing section \autoref{sec:RoutingSection}.
 \end{description*}
 \item \textbf{Routing station:} \includegraphics[scale=1]{img/jsim/load_splitter.eps}
 A routing station is a dummy station, with service time equal 0, that is used to create more complex and sophisticated routing strategies by sending jobs through one or more such stations. For example, if we wanted two thirds of the incoming traffic at station Z to be randomly routed to either station A or B and the remaining third to go either to station C or D, depending on the shortest queue at the two stations, we could implement the following. Add a routing station, Y, among Z's output stations and define random routing for the three of them (A, B, Y).
@@ -450,7 +450,7 @@ Then connect Y to C and D and define Join the Shortest Queue routing to C and D.
 In the Station Parameters tab menu page, you can modify:
 \begin{description*}
 \item[Routing Section:] in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
-For more information, see Routing section \ref{sec:RoutingSection}.
+For more information, see Routing section \autoref{sec:RoutingSection}.
 \end{description*}
 \item \textbf{Source station:} \includegraphics[scale=1]{img/jsim/source.eps}
 If the model comprises at least an open class, a sink and  a source stations are created by default, as they are necessary for the simulation and cannot be removed\\
@@ -462,7 +462,7 @@ a newly created job will visit. Only open class jobs can be routed from source s
 In the Station Parameters tab menu page, you can modify:
 \begin{description*}
 \item[Routing Section:] in this section you can specify how newly created customers should be routed to the next station they will visit in the model.
-For more information, see Routing section \ref{sec:RoutingSection}.
+For more information, see Routing section \autoref{sec:RoutingSection}.
 \end{description*}
 \item \textbf{Sink Station:} \includegraphics[scale=1]{img/jsim/sink.eps}\\
 Open class customers leave the system once they have received all the service the need. Sink stations are used to model customers leaving the system, as they
@@ -669,7 +669,7 @@ For each station, a different menu is presented depending upon the station type.
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/sub_tabs_menu.eps}
 \end{center}
-\textbf{NOTE:} You can find detailed information about station parameters \ref{sec:DefineStations}.
+\textbf{NOTE:} You can find detailed information about station parameters \autoref{sec:DefineStations}.
 
 \subsection{Define Performance Indices}
 \label{sec:DefinePerformanceIndices}
@@ -810,7 +810,7 @@ The default value for the maximum number of samples is 500,000; you may increase
 \end{description*}
 \textbf{Initial state:}
 Initial state is the model situation at time 0, typically expressed by the number of customers in each station before starting the simulation. For closed customer classes, all jobs are initially allocated to their reference station. You can modify this allocation, as long as  the total number of jobs remains the one defined in the
-Classes (\ref{sec:DefineClasses}) tab.
+Classes (\autoref{sec:DefineClasses}) tab.
 For open customer classes, it is possible to initialize each station with any desired number of jobs. The following table represents an example of an initial state of a model with three stations and two classes.
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/bottom_section.eps}
@@ -1020,13 +1020,13 @@ In what follows, a list of common problems and the respective solutions are pres
 \begin{itemize}
 \item \includegraphics[scale=.5]{img/jsim/1.eps}\\
 This error occurs when the station (source or join) has not outgoing, or forward, links to any other station in the model. Only Sink stations do not have forward links.
-To see how to connect two stations, see subsection \ref{sec:DefineConnections}.
+To see how to connect two stations, see \autoref{sec:DefineConnections}.
 \item \includegraphics[scale=.5]{img/jsim/2.eps}\\
-Each sink station must have at least an incoming, or backward, link from other stations, for open class jobs to be able to leave the system. Only the Source station does not have a backward link. To see how to connect stations, see subsection \ref{sec:DefineConnections}.
+Each sink station must have at least an incoming, or backward, link from other stations, for open class jobs to be able to leave the system. Only the Source station does not have a backward link. To see how to connect stations, see \autoref{sec:DefineConnections}.
 \item \includegraphics[scale=.5]{img/jsim/3.eps}\\
- For each class you must define a Reference Station that is used to compute the performance indices for the class. To see how to define a reference  station, see subsection \ref{sec:ReferenceStations}.
+ For each class you must define a Reference Station that is used to compute the performance indices for the class. To see how to define a reference  station, see \autoref{sec:ReferenceStations}.
 \item \includegraphics[scale=.5]{img/jsim/4.eps}\\
-This error occurs when you try to start the simulation but no performance index is defined. Performance indices are defined through subsection \ref{sec:DefinePerformanceIndices}.
+This error occurs when you try to start the simulation but no performance index is defined. Performance indices are defined through \autoref{sec:DefinePerformanceIndices}.
 \item \includegraphics[scale=.5]{img/jsim/5.eps}\\
 \includegraphics[scale=.5]{img/jsim/9.eps}\\
 Fork and Join stations should be inserted together in the model.
@@ -1036,20 +1036,20 @@ Fork without a Join is possible, although it may lead the system
 to saturate quickly, hence the Warning message. Having a Join
 without a Fork is a mistake, hence the Error message. The missing
 station must be added with the corresponding links, see subsection
-\ref{sec:DefineStations} and subsection
-\ref{sec:DefineConnections} respectively.
+\autoref{sec:DefineStations} and subsection
+\autoref{sec:DefineConnections} respectively.
 \item \includegraphics[scale=.5]{img/jsim/6.eps}\\
-Customer classes are a mandatory parameter of a model. If you forget to define any, the simulator will raise an error. Add classes as described in subsection \ref{DefineClasses}.
+Customer classes are a mandatory parameter of a model. If you forget to define any, the simulator will raise an error. Add classes as described in \autoref{DefineClasses}.
 \item \includegraphics[scale=.5]{img/jsim/10.eps}\\
 In the definition of the model output, the same index has been added more than once for the same station and class. Multiple occurrences must be removed, see subsection
 \autoref{sec:DefinePerformanceIndices}.
 \item \includegraphics[scale=.5]{img/jsim/11.eps}\\
-Customers of closed classes keep circulating in the system. They may not visit a Sink station or a station that is connected on the outgoing link only to the Sink, since this would cause them to leave the system. The station connections must be changed, see subsection \ref{sec:DefineConnections}.
+Customers of closed classes keep circulating in the system. They may not visit a Sink station or a station that is connected on the outgoing link only to the Sink, since this would cause them to leave the system. The station connections must be changed, see \autoref{sec:DefineConnections}.
 \item \includegraphics[scale=.5]{img/jsim/12.eps}\\
-When exporting a JSIM model to JMVA, a few constraints apply as for the admissible routing strategies. Round Robin routing is not implemented in JMVA, so it will be automatically transformed into Random, if you click the \emph{Continue} button. Otherwise, you can change it as described in subsetion \ref{sec:StationParameters}.
+When exporting a JSIM model to JMVA, a few constraints apply as for the admissible routing strategies. Round Robin routing is not implemented in JMVA, so it will be automatically transformed into Random, if you click the \emph{Continue} button. Otherwise, you can change it as described in subsetion \autoref{sec:StationParameters}.
 \item \includegraphics[scale=.5]{img/jsim/13.eps}\\
 When exporting a JSIM model to JMVA, a few constraints apply as for the admissible service time distributions. A FCFS station must have exponentially distributed service time with the same mean for all the classes of customers that visit the station. If you click the \emph{Continue} button, the station service time is
-reset to the default value, the same for all classes. Otherwise, you can change it as described in subsection \ref{sec:StationParameters}.
+reset to the default value, the same for all classes. Otherwise, you can change it as described in \autoref{sec:StationParameters}.
 \item \includegraphics[scale=.5]{img/jsim/14.eps}\\
 When you add a new performance index, the station for which it is defined must be specified, otherwise the error message above appears. Specify the missing station as described in subsection  \autoref{sec:DefinePerformanceIndices}.
 \end{itemize}
