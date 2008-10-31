@@ -332,12 +332,12 @@ The Convex Hull graphic implements the polyhedral analysis technique.
 The polyhedral analysis technique implemented in JABA is limited to queueing networks with customers grouped in two classes. The points in the graph are obtained from the service demand matrix as follows. Each station corresponds to a point on the graph whose co-ordinates are represented by the service demand of the two customer classes. For example, a queue with service demands 10 sec for class 1, and 15 sec for class 2 is represented as a point with coordinates (10,15).  Then JABA builds the convex hull of this set of points, that is the smallest convex set containing all the points.
 
 The distinction of queues among the different types of bottleneck and non-bottleneck classes can be immediately operated from the knowledge of the convex hull using the following rules:
-\begin{itemize}
+\begin{itemize*}
     \item All \emph{potential bottlenecks} lie on the boundary of the convex polytope.
     \item All \emph{dominated} station are interior points P of the convex polytope such that there is at least one point Q whose co-ordinates are all higher or equal in value than those of P;
     \item All non-dominated stations in the interior of the convex polytope are \emph{masked-off} stations.
 The application of these rules is described below in the case study.
-\end{itemize}
+\end{itemize*}
 \begin{figure}[htbp]
     \begin{center}
         \includegraphics[scale=.5]{img/jaba/convexHull}
@@ -418,10 +418,10 @@ Only the name of the station that is in the free area is showed.
 \subsection{Saturation Sector - Text}
 \label{sec:jaba:saturationSectorText}
 It's a simple report about the saturation sector, for each saturation sector you can find:
-\begin{itemize}
+\begin{itemize*}
 \item The station that are bottleneck
 \item The switching point or the switching segment bound points.
-\end{itemize}
+\end{itemize*}
 This tab could be helpful in the Saturation Sector graphic of three classes of costumers.\autoref{sec:jaba:saturationSectorGraphic}
 
 

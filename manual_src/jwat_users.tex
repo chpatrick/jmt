@@ -96,7 +96,7 @@ the various steps of the workload characterization from the data
 loading to the statistical analysis, to the results visualization
 and to their evaluation. The main components of the workload
 analysis window are:
-\begin{itemize}
+\begin{itemize*}
 \item \emph{Menù}: three groups of functions are available: File,
 Action, Help.
 %(\autoref{fig:menu_toolbar}).
@@ -135,7 +135,7 @@ the operations to be performed in the actual step (\autoref{fig:nav_button_menu}
     \caption{Navigation buttons}
     \label{fig:nav_button_menu}
 \end{figure}
-\end{itemize}
+\end{itemize*}
 In the following sections the utilization of the panels  will be
 described in detail together with the available options.
 
@@ -154,7 +154,7 @@ intensity, source level instructions, etc. In the following we
 will refer to a workload basic component as an {\em observation}
 (i.e., an item in the input file) and to the parameters that
 describe each component as {\em variables}.
-\begin{enumerate}
+\begin{enumerate*}
 \item The first step consists of the selection of the file
 containing the data that are to be considered as input, of the
 variables to load and of their format (see \autoref{sec:usrman:sel_def_format}). Let us remark that each
@@ -211,7 +211,7 @@ the visualization of the results of the clustering analysis.
 Several graphics and tables are reported in order to describe the
 clusters composition and the goodness of a partition. Scatter
 plots are available for all the variables considered (see \autoref{cha:usrman:rkmean}).
-\end{enumerate}
+\end{enumerate*}
 \subsection{Input definition}
 The panel for the description of the input data 
 (\autoref{fig:wl_start_screen}) is a very important one since it allows
@@ -248,7 +248,7 @@ name will automatically appears (\autoref{fig:file_information}).
 \label{sec:usrman:sel_def_format} The next operation consists of
 the definition of the data format. The format of the input data is
 required by the application:
-\begin{itemize}
+\begin{itemize*}
 \item to recognize the number of variables that belongs to each
 observation \item to recognize the type (string, numeric or data)
 of each variable \item to the right interpretation of the meaning
@@ -257,7 +257,7 @@ definition of the elements regular expressions Perl5 (Section
 \autoref{sec:usrman:es_def_form}) are used. The defined formats are
 stored in a library and can be browsed and reused.
  \item to select a subset of the variables of the observations that are in the original input file.
-\end{itemize}
+\end{itemize*}
 We will describe a very simple example of the format definition of
 an '\emph{observation}, i.e., a single element in the input log
 file. The considered log file contains several data, e.g., IP
@@ -270,12 +270,12 @@ is empty, see \autoref{fig:wl_start_screen}, since no
 information regarding current format has already been defined.
 
 Two types of format definition are available:
-\begin{itemize}
+\begin{itemize*}
 \item Manual, that consists of the definition of the format of
 each single variable through relative table and relative commands
 \item Automatic, that load one of the predefined standard formats
 previously defined and loaded in files \emph{`.jwatformat'}.
-\end{itemize}
+\end{itemize*}
 \subsubsection{Manual definition}
 \label{sec:usrman:sel_def_format:man} At the beginning, the
 correct number of variables of each observation in the log file is
@@ -285,7 +285,7 @@ table. The same result is obtained using the spinner
 \emph{`Number'} at the right top of the table (see \autoref{fig:manual_format}).
 
 To remove one or more variables by a format table we can utilize:
-\begin{itemize}
+\begin{itemize*}
 \item the button
 \includegraphics[scale=.8]{img/jwat/Manual/del_button.eps}
 at the end of each row of the table. The result is the deletion of
@@ -294,7 +294,7 @@ the spinner. The result is the deletion of the last variable of
 the table \item the right button of the mouse on a single selected
 variable, or on a set, to delete them from the format table
 (\autoref{fig:mouse_del_var}).
-\end{itemize}
+\end{itemize*}
 %\begin{figure}[htbp]
 %\begin{center}
 %        \includegraphics[scale=.5]{img/jwat/Manual/single_row.eps}
@@ -319,7 +319,7 @@ variable, or on a set, to delete them from the format table
 Once the correct number of variables in a observation is defined
 the next step is their description. The columns of the format
 table have the following meaning:
-\begin{itemize}
+\begin{itemize*}
 \item \emph{Name:} as default, to each new added variable it is
 assigned the standard name \emph{Variable X}. In order to
 facilitate the analysis of the results it is recommended to change
@@ -343,7 +343,7 @@ variable. For example in case of IP variables a possible regular
 expression is:
 `\emph{$\backslash$d+$\backslash$.$\backslash$d+$\backslash$.$\backslash$d+$\backslash$.$\backslash$d+}'.
 \item \emph{Delete:} the corresponding variable will be deleted.
-\end{itemize}
+\end{itemize*}
 
 In order to help the users for each of the types the tool sets
 automatically some of the fields (delimiter of field and regular
@@ -397,7 +397,7 @@ panel \emph{Workload sampling method} of
 \end{figure}
  to select one of the following
 extraction criteria:
-\begin{itemize}
+\begin{itemize*}
 
 \item \emph{Complete file:} all the observations of the input file
 are considered. \item \emph{Random:} the number of observations to
@@ -421,7 +421,7 @@ will be shown.
     \caption{Interval method options}
     \label{fig:sampling_methods_interval}
 \end{figure}
-\end{itemize}
+\end{itemize*}
 
 \subsubsection{Loading of log file}
 \label{cha:usrman:load} After the definition of the input file the
@@ -467,7 +467,7 @@ description of the errors found during the loading operation
     \label{fig:error_log}
 \end{figure}
 The error messages that are contained in the log file are:
-\begin{itemize}
+\begin{itemize*}
 \item \emph{Error in row xx : Element y is wrong}: (if you defined
 separators) the element corresponding to the variable \emph{y},
 for the row \emph{xx}, does not correspond to the defined regular
@@ -479,7 +479,7 @@ many fields} : the row \emph{xx} contains elements in excess
 compared to the defined format. This may indicate with high
 probability that the format definition described by the user is
 not correct for the considered observation.
-\end{itemize}
+\end{itemize*}
 \subsection{Data processing}
 A tabs substructure (\autoref{fig:stat_tabs}) shows the groups
 of the various statistics available:
@@ -518,7 +518,7 @@ correlation coefficients of the variables (\autoref{fig:biv_stats}).
     \label{fig:biv_stats}
 \end{figure}\\
 The univariate panel shows also the following two types of graphs:
-\begin{itemize}
+\begin{itemize*}
 \item a histogram, or frequency graph, preview for each variable,
 that can be magnified with a double click on the preview (\autoref{fig:histogram}).
 \begin{figure}[htbp]
@@ -533,7 +533,7 @@ compared with the normal distribution quantiles with the same
 average and variance or the exponential distribution with the same
 average. Also this preview can be magnified with a double click
 (\autoref{fig:qqplot_prev}).
-\end{itemize}
+\end{itemize*}
 \begin{figure}[htbp]
 \begin{center}
     \includegraphics[scale=.5]{img/jwat/Manual/qqplot_prev.eps}
@@ -580,7 +580,7 @@ method and on the type of the variables.
     \label{fig:filters_list}
 \end{figure}
 
-\begin{itemize}
+\begin{itemize*}
 \item \emph{Random} and \emph{Obsev. \# interval} methods are
 similar to those available in input window and allow to select
 randomly \emph{n} observations from the input file or to extract
@@ -626,7 +626,7 @@ to be contained in the selected observations.
     \caption{Filter on the values of a data variable}
     \label{fig:time_filter}
 \end{figure}
-\end{itemize}
+\end{itemize*}
 The operation of \emph{`Undo sampling'} is available.
 \subsubsection{Graphs}
 \label{cha:usrman:grap} The last two panels of the statistics tab
@@ -692,7 +692,7 @@ execution is shown.
 \label{cha:usrman:kmean} The non-hierarchical k-Means algorithm
 implemented in the tool requires the specification of the
 following parameters, \autoref{fig:kmeans_options}:
-\begin{itemize}
+\begin{itemize*}
 \item \emph{the maximum number k of clusters} that the algorithm
 has to produce. Note that the algorithm produces the results for
 all partitions from 1 to $k$ clusters \item \emph{the maximum
@@ -718,7 +718,7 @@ Since the algorithm uses the Euclidean distance function as
 comparison metric to determine if an observation belongs to a
 cluster, the results could be not reliable if the values differ of
 one or more order of magnitude.
-\end{itemize}
+\end{itemize*}
 \begin{figure}[htbp]
 \begin{center}
     \includegraphics[scale=.5]{img/jwat/Manual/kmeans_options.eps}
@@ -730,7 +730,7 @@ one or more order of magnitude.
 \label{cha:usrman:fuzzy} The fuzzy k-Means algorithm implemented
 in the tool requires the following parameters,
 \autoref{fig:fuzzy_options}:
-\begin{itemize}
+\begin{itemize*}
 \item \emph{the maximum number k of clusters} that the algorithm
 has to produce. The results for all the partitions from two to the
 selected maximum value will be provided. The higher is this value
@@ -743,7 +743,7 @@ the value used by algorithm to determine the fuzziness degree of
 final solution. It ranges from 2 to 100 \item \emph{the
 transformation type} to apply to selected variables (if needed).
 See the comments reported above for the K-means algorithm.
-\end{itemize}
+\end{itemize*}
 \begin{figure}[htbp]
 \begin{center}
     \includegraphics[scale=.5]{img/jwat/Manual/fuzzy_options.eps}
@@ -808,7 +808,7 @@ shown. Three main panels are available (\autoref{fig:kmenas_c_info}):
     for the K-Means algorithm}
     \label{fig:kmeans_list}
 \end{figure}
-\begin{itemize}
+\begin{itemize*}
 \item \emph{Clustering Info: }It shows some statistical
 information concerning the clusters. For each cluster the number
 of its components and its weight with respect to the total
@@ -858,7 +858,7 @@ selected with a right click on the graph.
     with the color corresponding to the cluster it is assigned.}
     \label{fig:kmean_8_matrix}
 \end{figure}
-\end{itemize}
+\end{itemize*}
 %\clearpage
 \subsubsection{Fuzzy K-Means algorithm results}
 \label{cha:usrman:rfuzzy} When the fuzzy k-Means results are
@@ -877,7 +877,7 @@ concerning results, by grouping them in three main panels:
     \caption{Results of a fuzzy k-Means algorithm execution}
     \label{fig:fuzzy_list}
 \end{figure}
-\begin{itemize}
+\begin{itemize*}
 \item \textit{Clustering Info: }It shows the clusters that have
 been identified and the entropy values (
 \autoref{fig:fuzzy_c_info}). The error value used to identify a
@@ -922,7 +922,7 @@ dispersion matrix of the k-means algorithm.
     with the color corresponding to the cluster it is assigned}
     \label{fig:fuzzy_4_matrix}
 \end{figure}
-\end{itemize}
+\end{itemize*}
 \clearpage
 
 \subsection{An example of a web log analysis}
@@ -953,7 +953,7 @@ Java Modelling Tools folder installed with the JMT tools.\\
 
 Each observation consists of the values of 4 variables described
 in \autoref{fig:rows_example1wa}:
-\begin{itemize}
+\begin{itemize*}
     \item \textit{IP}: String type variable that defines IP address of the request.
     \item \textit{Timestamp}: Date type variable that defines the timestamp of the request,
     the regular expression\begin{verbatim}"\d\d/\w\w\w/\d\d\d\d:\d\d:\d\d:\d\d"' \end{verbatim}
@@ -968,7 +968,7 @@ in \autoref{fig:rows_example1wa}:
     quotation marks.
     \item \textit{Bytes transferred}: Numeric type variable that identifies the quantity
     of bytes transferred due to the execution of the request submitted.
-\end{itemize}
+\end{itemize*}
 
 \textbf{Step 2 - Descriptive statistics and sample extraction}\\
 Before the execution of the cluster analysis the size of the input
@@ -1132,11 +1132,11 @@ end with `$\backslash$n' character (new line).
 
 To allow the application to be able to process correctly a log
 file, the user must describe:
-\begin{itemize}
+\begin{itemize*}
 \item the observation structure, that is the number of variables
 that compose it. \item and for each variable the name, the type
 and the `structure'.
-\end{itemize}
+\end{itemize*}
 These information are specified by the user through the input
 panel described in \autoref{sec:usrman:sel_def_format}.
 
@@ -1303,7 +1303,7 @@ observation has the following structure:
 Windows 98; DigExt)'' ``-''}
 \end{center}
 A brief explanation of the regular expressions used (\autoref{fig:format_2}) follows:
-\begin{enumerate}
+\begin{enumerate*}
 \item for the Ip address of the request we define a sequence of
 one or more digits separated by a point and therefore the regular
 expression is
@@ -1332,7 +1332,7 @@ bit different as \emph{[\textasciicircum$\backslash$s]+}. \item
 these last three strings are all delimited by the character '' and
 they can contain some spaces, characters or numbers and therefore
 we must utilize the regular expression \emph{.+}.
-\end{enumerate}
+\end{enumerate*}
 \begin{figure}[htbp]
 \begin{center}
     \includegraphics[scale=.5]{img/jwat/Format/formato_2.eps}
