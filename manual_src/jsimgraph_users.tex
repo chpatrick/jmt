@@ -23,7 +23,7 @@ very general characteristics, usually referred to as
 blocking mechanisms, regions with capacity constraints on
 population, state-dependent routing strategies, user-defined
 general distributions, import and reuse of log data. A module for
-\emph{what-if analysis}, where a sequence of simulations is run
+\emph{What-If Analysis}, where a sequence of simulations is run
 for different values of control parameters, particularly useful in
 capacity planning, tuning and optimization studies, is also
 provided.
@@ -354,6 +354,7 @@ The following window will appear:
 menu to
 choose one of the following distributions:}\\
 \emph{Burst (General)\\
+Burst (MMPP2)\\
 Constant\\
 Erlang\\
 Exponential\\
@@ -1362,7 +1363,7 @@ strategies. The following algorithms are available:
 \begin{itemize*}
 \item \textbf{Random:} Customers are routed randomly to one of the
 stations connected in output to the considered station. The
-outgoing links are selected with the same probability. 
+outgoing links are selected with the same probability.
 \autoref{fig:routrand} illustrates the routing strategy with 3 output
 links. For each link the probability to be selected is 1/3.
 \begin{figure}[htb]
@@ -1564,22 +1565,22 @@ appears, then specify the parameters for each range.\\
 \end{figure}
 For each range of the number of customers the following parameters
 must be described: \begin{itemize*} \item \textbf{Distribution}:
-you can choose among Pareto, Erlang, Exponential,
-Hyperexponential, Poisson, Uniform, Constant, Gamma and Normal
-distribution. \item \textbf{Mean}: the mean value of each
-distribution is specified in the "Mean" form by double clicking on
-it. Insert a number or an arithmetic expression that will be
-evaluated with JFEP - Java Fast Expression Parser by Bertoli
-Marco. For a complete list of the command supported by JFEP you
-can read the "Help" tab or see the official JFEP web site at
+you can choose among Burst (General), Burst (MMPP2), Pareto,
+Erlang, Exponential, Hyperexponential, Poisson, Uniform, Constant,
+Gamma and Normal distribution. \item \textbf{Mean}: the mean value
+of each distribution is specified in the "Mean" form by double
+clicking on it. Insert a number or an arithmetic expression that
+will be evaluated with JFEP - Java Fast Expression Parser. For a
+complete list of the command supported by JFEP you can read the
+\texttt{Help} tab or see the JFEP web site at
 http://jfep.sourceforge.net/ \item \textbf{c}: The coefficient of
 variation of each distribution (when $c$ exists) can be specified
 by double clicking on the $c$ form. For example, in
-\autoref{fig:ldservstrat} two distributions are defined: when there is
-only one customer in the station the service times are generated
-according to an Erlang distribution with \emph{mean=1} and
-\emph{c=0.5}. For any number of customers greater than 1 in the
-station, the service times are generated according to an
+\autoref{fig:ldservstrat} two distributions are defined: when
+there is only one customer in the station the service times are
+generated according to an Erlang distribution with \emph{mean=1}
+and \emph{c=0.5}. For any number of customers greater than 1 in
+the station, the service times are generated according to an
 Hyperexponential distribution with \emph{mean=1} and $c=1.19$.
 \end{itemize*}
 \noindent To delete a range click on the \emph{delete} icon

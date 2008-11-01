@@ -11,8 +11,9 @@ In the JMT \emph{suite} a discrete-event simulator JSIM for the
 analysis of queueing network models is provided. It can be used
 through two interfaces: alphanumerical (JSIM\emph{wiz}) and
 graphical (JSIM\emph{graph}). \textbf{The manual of
-JSIM\emph{graph} follows this one, and should be consulted if some
-information are omitted or unclear in the present manual.}
+JSIM\emph{graph} (following) is more detailed than this one. If
+some information are omitted or unclear in the present manual you
+may consult it.}
 
 An intuitive user interface allows even an unexperienced user to
 build with JSIM\emph{wiz} system models with sophisticated
@@ -135,32 +136,34 @@ To set each parameter, follow the user manual step by step.
 
 \subsection{Define Classes}
 \label{sec:DefineClasses}
-Customer classes identify different customer behavior and characteristics, such as the type (closed or open), the size of the customer population (for closed classes) or the interarrival time distribution (for open classes).
-They can be set using the \textbf{Classes} tab during the creation of a new model.\\
+Customer classes identify different customer behavior and
+characteristics, such as the type (closed or open), the size of the customer population (for closed classes) or the interarrival time distribution (for open classes).
+They can be set using the \texttt{Classes} tab during the creation of a new model.\\
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/define_class1}
 \end{center}
 
-\noindent\textbf{\large{Adding a Class}}
+\noindent\textbf{{Adding a Class}}
 
 Classes must be explicitly added to the model, either one at a time by clicking the \includegraphics[scale=.5]{img/jsim/button_addClass.eps} button, or by selecting directly the final number of classes desired in the form \includegraphics[scale=.5]{img/jsim/button_NClass.eps}. The newly added classes will be listed with deafult parameters.\\
 Double click on the default name (ClassN) to change it.\\
 Each new class has a priority in the system. A smaller number indicates a lower priority. Default value is 0 and it can be changed by double clicking on the corresponding area.\\\\
-\textbf{\large{Defining the Class Type: Open Classes}}
+\textbf{{Defining the Class Type: Open Classes}}
 
-After adding a class and possibly changing its name and priority, you must choose the type of customers comprising the class. Classes are created Closed by default, so if you want an Open class, select the type Open in the menu\\
-\begin{figure}
+After adding a class and possibly changing its name and priority,
+you must choose the type of customers comprising the class.
+Classes are created Closed by default, so if you want an Open
+class, select the type \texttt{Open} in the menu.
+\begin{figure}[h!]
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/type_class.eps}
 \end{center}
 \end{figure}
-
 The class characteristics looks like this now
-\begin{figure}
+\begin{figure}[h!]
 \begin{center}
 %\includegraphics[scale=.5]{img/jsim/open_class1.eps}
 \includegraphics[scale=.5]{img/jsim/open_class1.eps}
-
 \end{center}
 \end{figure}
 
@@ -169,7 +172,7 @@ therefore they are best characterized by the probability
 distribution of the interarrival time, rather than by a constant
 number of customers. The default Interarrival Time Distribution is
 exp(1) (Exponential Distribution with $\lambda$ =1).\\ To change
-the Interarrival Time Distribution click the Edit button
+the Interarrival Time Distribution click the \texttt{Edit} button
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/arrival_time_distribution1.eps}
 \end{center}
@@ -179,10 +182,12 @@ The following window will appear
 \includegraphics[scale=.5]{img/jsim/erlang.eps}
 \end{center}
 
-Click on the Selected Distribution drop down menu to choose from any of the following
-distributions \autoref{sec:Distributions}:
+Click on the \texttt{Selected Distribution} drop down menu to
+choose from any of the following distributions (see
+\autoref{distns}):
 \begin{itemize*}
-    \item Burst
+    \item Burst (General)
+    \item Burst (MMPP2)
     \item Constant
     \item Erlang
     \item Exponential
@@ -196,15 +201,25 @@ distributions \autoref{sec:Distributions}:
     \item Uniform
 \end{itemize*}
 
-In each case, it is possible to configure the distribution parameters as you wish, or use the default values. Parameters that are related among each other are automatically adjusted if one is modified (for example,the figure shows how for an Erlang distribution, if you set the (alfa, r) pair, the (mean, c) pair is automatically adjusted to the correct value).
-The Replayer distribution allows you to provide data traces from files.
+In each case, it is possible to configure the distribution
+parameters as you wish, or use the default values. Parameters that
+are related each other are automatically adjusted if one is
+modified (for example,the figure shows how for an Erlang
+distribution, if you set the ($\alpha$, r) pair, the (mean, c)
+pair is automatically adjusted to the correct value). The Replayer
+distribution allows you to provide data traces from files.
 Click OK when you are done to return to Class parameters definition.\\
-The final step in defining a class is the definition of the Reference Station, i.e., that station in the model with respect to which the performance indices will be computed. For Open classes there is no choice since the Source station is the unchangeable default Reference Station used to compute System Throughput for all the Open classes.\\
+The final step in defining a class is the definition of the
+Reference Station, i.e., that station in the model with
+respect to which the performance indices will be computed.
+For Open classes there is no choice since the Source station
+is the unchangeable default Reference Station used to compute
+System Throughput for all the Open classes.\\
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/reference_open1.eps}
 \end{center}
-
-\textbf{\large{Defining the Class Type: Closed Classes}}\\
+\ \\
+\noindent \textbf{{Defining the Class Type: Closed Classes}}\\
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/closed_class1.eps}
 \end{center}
@@ -218,157 +233,8 @@ The final step is to define a Reference Station for the class that will be used 
 \subsubsection{Distributions}
 \label{sec:Distributions}
 
-Open classes model transaction workloads where the number of requests in the system fluctuates over time and transactions arrive at the system as if generated by an infinite source. The arrival pattern is well described by a probability distribution, in particular, the distribution of the interarrival times of consecutive transactions, or \emph{customers}.
-A probability distribution f(x) is characterized by :
-\begin{itemize*}
-\item Mean (if exists): \includegraphics[scale=.5]{img/jsim/Mean.eps}
-\item Variance (if exists): \includegraphics[scale=.5]{img/jsim/variance.eps}
-\item c, Coefficient of Variation, only if mean and variance exist and mean is not zero: \includegraphics[scale=.5]{img/jsim/CoeffVariation.eps}
-\end{itemize*}
-JSIM\emph{wiz} allows you to use any of the following probability distributions:
-\\ % DISTR %
-\textbf{Constant: }\includegraphics[scale=.5]{img/jsim/constant_f.eps}
-\\\\
-\noindent Probability density function:
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/constant1.eps}
-\end{center}
+See \autoref{distns}
 
-The mean is equal to \emph{k}, which is the parameter  you must specify.
-This distribution describes a constant flow of customers, arriving exactly every \emph{k} time units.\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/const_pdf.eps}
-\end{center}
-
-
-% DISTR %
-\textbf{Erlang:}
-\includegraphics[scale=.5]{img/jsim/erlang_f.eps}
-\\ \\
-Probability density function
-\\\\
-The Erlang distribution is a continuous distribution, with 2 parameters: the \emph{shape r}, an integer value, and the rate \emph{$\alpha$}, a real value. It is a special case of Gamma distribution where the shape parameter is an integer.
-\\
-$\Gamma (t)$ is called Eulero function and is defined by \\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/eulergamma.eps}
-\end{center}
-
-When r is a real non null positive integer, as in the  case of the Erlang distribution,
-the Eulero function reduces  to $\Gamma$ (r)=(r-1)!
-A random variable (r.v.) with Erlang distribution  of order \emph{r} can be obtained as a sum of \emph{r} exponentially  distributed random variables with mean 1/r$\alpha$.
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/erlang2.eps}
-\end{center}
-When you change the values of $\alpha$ and r, the system  will automatically adjust the mean = r/$\alpha$ and the variance $\sigma ^ 2$ = r/$\alpha ^ 2$.
-A family of probability density functions that illustrate the impact of various $\alpha$, r) pairs is shown below.\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/erl_pdf.eps}
-\end{center}
-% DISTR %
-\textbf{Exponential}:\includegraphics[scale=.5]{img/jsim/exponential_f.eps}\\\\
-Probability density function\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/exponential1.eps}
-\end{center}
-This is a continuous probability distribution where $\lambda$ $>$ 0 is the distribution parameter, often called the \emph{rate} parameter; the distribution is supported on the interval [0,$\infty$).\\
-The exponential distribution is used to model Poisson  processes, which are processes describing state changes of a system that occur  with constant probability per time unit $\lambda$.In this case, the time interval between two consecutive changes is
-described by an exponential random variable with parameter $\lambda$.Therefore, if the system is in state A at time \emph{t = 0}, the integral of \emph{f(t)} from 0 to \emph{T} over \emph{t} represents the  probability that the system is in state B at
-time \emph{t = T}. When you select this distribution, the parameter $\lambda$ is requires (real number) and the mean is computed as \includegraphics[scale=.3]{img/jsim/exponential2.eps} while the variance is \includegraphics[scale=.3]{img/jsim/expo_var.eps}.\\
-A family of probability density functions is shown below, for a set of $\lambda$ values.\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/exp_pdf.eps}
-\end{center}
-\textbf{Gamma}:\includegraphics[scale=.5]{img/jsim/gamma_f.eps}\\\\
-Probability density function\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/gamma1.eps}
-\end{center}
-This is a continuous probability  distribution. The parameters are the \emph{shape} $\alpha$ and the \emph{scale} $\lambda$, both real numbers.When you choose the Gamma distribution, you can either provide $\alpha$ and $\lambda$ or the distribution mean, equal to $\alpha$ * $\lambda$   and the variance $\alpha$ * $\lambda ^ 2$.
-A family of probability density functions is shown below, for a set of $\alpha$ and $\lambda$ values.
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/gamma_pdf.eps}
-\end{center}
-\textbf{Hyperexponential}:\includegraphics[scale=.5]{img/jsim/huperexpon_f.eps}\\\\
-Probability density function\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/huperexpon1.eps}
-\end{center}
-A hyperexponential distribution describes a random  variable similar to an exponential but with more variability since it is the result of a weighted sum of two independent exponentially distributed  random variables, with paramters $\lambda$1 and $\lambda$2 respectively.The weight is the probability P that the random variable behaves like the exponential variable with parameter $\lambda$1 and 1-P that it behaves like the exponential variable with parameter $\lambda$2.\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/hyperExp1.eps}
-\end{center}
-When this distribution is used to model the customer interarrival time at a station (or the service time at that station), with  probability P the next interval before an arrival (service time) is  distributed like the upper branch in the figure above and with probability 1-P it will be distributed like the lower branch in the figure.
-A family of probability density functions is illustrated in the picture below. Note that when $\lambda$1= $\lambda$2, the hyperexponential reduces to a simple exponential.\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/hyperexp_pdf.eps}
-\end{center}
-\textbf{Normal}:\includegraphics[scale=.5]{img/jsim/normal_f.eps}\\\\
-Probability density function\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/normal1.eps}
-\end{center}
-The Normal distribution is also called Gaussian since its probability density function is the Gaussian function.It is well known for its bell-shaped density function. The two parameters are $\mu$=location  (real number, it is the mean of the  distribution), and $\sigma$=scale (real number, it is the standard deviation of the distribution i.e. the square root of the variance).The density is symmetrical around the mean and the variance. The \textbf{standard} normal distribution is the normal distribution with $\mu$= 0 (mean equal 0) and $\sigma$ = 1 (variance equal 1).
-A family of probability density functions is illustrated in the picture below. The standard distribution is depicted in green.\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/norm_pdf.eps}
-\end{center}
-\textbf{Pareto}:\includegraphics[scale=.5]{img/jsim/paretp_f.eps}\\\\
-Probability density function\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/pareto1.eps}
-\end{center}
-This distribution usually describes  social and economical phenomena (typically, the distribution of wealth, where a small portion of the people owns the larger part of the wealth).It is charcaterized by the parameters k $>$ 0, location (real) and  $\alpha$ $>$ 0 shape (real).
-When requested to input the distribution parameters, if k and $\alpha$ are provided, the system automatically derives the  mean m = \emph{k*$\alpha$ / ($\alpha$ - 1)} for k $>$ 1 and the variance c \includegraphics[scale=.5]{img/jsim/pareto_c.eps}.A famility of probability density functions  is illustrated in the picture below:\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/par_pdf.eps}
-\end{center}
-\textbf{Poisson}:\includegraphics[scale=.5]{img/jsim/poisson_f.eps}\\\\
-Probability density function\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/posson1.eps}
-\end{center}
-The Poisson distribution describes the number of events occurring over a given time interval, when such events are independent of  the amount of time elapsed and they occur at a fix average rate.It is a discrete probability distribution characterized by a single parameter, $\lambda$, a positive real number, which is the average number of  events in a time unit and its variance.
-Thus, the probability of having an arrival in a time interval (t, t+$\Delta$t) is $\lambda$$\Delta$t + O($\Delta$t)), while the probability of more than one  arrival in the same interval is O($\Delta$t).For large time intervals, the distribution is near the mean value, thus the number n or arrivals over the interval is given by n = $\lambda$*T, where T is the length of the interval
-A characteristic of the Poisson distribution is that the time intervals between two consecutive events is exponentially distributed with average $\Delta$.
-The parameter $\lambda$ is not only the \emph{mean} number of occurrences but also its variance.
-A family of probability density functions is illustrated in the picture below.\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/poisson_pdf_d.eps}
-\end{center}
-\textbf{Replayer}: \includegraphics[scale=.5]{img/jsim/replayer_f.eps}\\\\
-When Replayer is chosen, a trace of data can be played back as the source of the distribution for service times or interarrival times.The file format is text/binary with values separated by CR (Carriage Return).In order to use this distribution, provide the absolute path name of the file in the input window.\\
-\textbf{StudentT}:\includegraphics[scale=.5]{img/jsim/studentT_f.eps}\\\\
-Probability density function\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/studentT1.eps}
-\end{center}
-The t-distribution, or Student t-distribution, is a continuous
-distribution characterized by the single parameter $\upsilon$, a
-real positive number. It is used when the mean of a normally
-distributed population must be estimate using only a small sample
-size. It is the basis of the Student-t's test that is used ot
-evaluate the statistical significance of the difference between
-two sample means and for the difference between two population
-means.It is a special case of the generalized hyperbolic
-distribution.The mean is 0 for $\upsilon$ $>$ 1 and the variance
-is $\upsilon$/($\upsilon$ -2) for $\upsilon$ $>$ 2 (infinite
-otherwise).
-A family of probability density functions  for a set of $\upsilon$ values are illustrated in the picture below.\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/studentt_pdf.eps}
-\end{center}
-\textbf{Uniform}:\includegraphics[scale=.5]{img/jsim/uniform_f.eps}\\\\
-Probability density function\\
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/uniform1.eps}
-\end{center}
-The Uniform distribution is sometimes called rectangular due the shape of its density function.It describes a random variable that can assume values over the range
-(\emph{min, max}), its characterizing parameters, with constant probability equal to 1/(\emph{max - min}).The probability is 0 outside the range.When you choose this distribution, you can either provide the pair (\emph{min, max}) or the mean m = (\emph{max + min})/2 and variance c = $(\emph{max - min})^2 / 12$.
-The probability density function is plotted in the figure below.
-\begin{center}
-\includegraphics[scale=.5]{img/jsim/uniform_pdf.eps}
-\end{center}
 
 \subsection{Define stations}
 \label{sec:DefineStations}
@@ -387,14 +253,21 @@ Similarly, if the default station type Server is not what you need, select from 
 \end{center}
 You can choose among the following types of station:
 \begin{enumerate*}
-\item \textbf{Delay station:} \includegraphics[scale=1]{img/jsim/delay.eps}\\
-Customers that arrive at this station are delayed for the amount of time that defines the station service time. They do not experience any queueing, since a delay station is modelled as a station with an infinite number of servers with identical service time. Because customers never have to wait for service, response time at delay
-stations is equal to service time, \emph{Ri = Si}. Furthermore, the queue length corresponds in this case to the number of jobs receiving service since there is no waiting:\\
-\emph{Qi = RiXi = SiX = Ui. }
-The utilization of the delay center represents the average number of jobs receiving service.
-Delay centers are used when it is necessary to force some known average delay. A common application of delay centers is to model
-transmission time of large amounts of data over a dedicated low speed transmission line.\\\\
-In the Station Parameters tab menu page, you can modify:
+\item \textbf{Delay station:} \includegraphics[scale=0.5]{img/jsim/delay.eps}\\
+Customers that arrive at this station are delayed for the amount
+of time that defines the station service time. They do not
+experience any queueing, since a delay station is modelled as a
+station with an infinite number of servers with identical service
+time. Because customers never have to wait for service, response
+time at delay stations is equal to service time, $R_i= S_i$.
+Furthermore, the queue length corresponds in this case to the
+number of jobs receiving service since there is no waiting in
+queue: $Q_i = R_i\;X_i = S_i\;X_i = U_i$. The utilization of the
+delay center represents the average number of jobs receiving
+service (i.e., in think state). Delay centers are used when it is
+necessary to reproduce some known average delay (with the selected
+distribution).\\
+In the \texttt{Station Parameters} tab menu page, you can modify:
 \begin{description*}
 \item[Service Section:]
 in this section you can choose the service time distribution for the station.
@@ -403,7 +276,7 @@ For more information, see Service section \autoref{sec:ServiceSection}.
 in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
 For more information, see Routing section \autoref{sec:RoutingSection}.
 \end{description*}
-\item \textbf{Server station:} \includegraphics[scale=1]{img/jsim/server.eps}\\
+\item \textbf{Server station:} \includegraphics[scale=0.5]{img/jsim/server.eps}\\
 The Server station is one of the most important components in a queuing network model. Service stations represent the service facilities of the system being modelled. A server station provides the required service to its customers. Server stations may have any (finite) number of servers. If all the servers in the service station are busy when a customer arrives at the station, the arriving customer is put in a waiting queue until its turn to receive service from the first available server is up.
 The queueing discipline decides which customer is served next when a server becomes free. Therefore, the response time at server stations includes service time and
 queuing time. Server stations may have more than one server. Their number is a parameter to be specified (default is 1).\\\\
@@ -419,13 +292,34 @@ For more information, see Service section \autoref{sec:ServiceSection}.
 in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
 For more information, see Routing section \autoref{sec:RoutingSection}.
 \end{description*}
-\item \textbf{Fork station:} \includegraphics[scale=1]{img/jsim/fork.eps}
-A JSIM Fork station is simply a station where jobs are split into tasks. No service is provided, therefore there is no service time specification. Tasks are then routed along the Fork station outgoing links.
-Unlike classical queueing theory fork-join queues, a JSIM Fork station is not associated with a join station automatically. Any combination of server stations, finite regions, fork-join, routing stations, etc., is possibile after a Fork station. This feature allows the modeling of very general parallel behaviors, of
-which the traditional Fork-Join one is a special case. In JSIM the classical queueing theory Fork-Join queue behavior is obtained by connecting the Fork station to as many Server stations as the degree of parallelism requested, with one task per outgoing link. Each Server station is then connected to a Join station, where the job is
-recomposed.
-A Fork station is characterized by the forking degree, i.e., the number of tasks routed on each one of its outgoing links, and the capacity,
-i.e., the maximum number of jobs that can be served by the station simultaneously. Therefore, the number of sibling tasks a job is split into is given by the product of the number of outgoing links from the Fork station times the forking degree. Note that a finite station capacity makes sense only when there is a join station downstream from the fork station that can recompose the split jobs. Otherwise, inconsistencies in the model and subsequent simulation error, such as out-of-memory, may occur. No automatic checks are available at the moment that can identify such critical conditions. Both the forking degree and the capacity are section parameters to be
+\item \textbf{Fork station:}
+\includegraphics[scale=0.5]{img/jsim/fork.eps} A JSIM Fork station
+is simply a station where jobs are split into tasks. No service is
+provided, therefore there is no service time specification. Tasks
+are then routed along the Fork station outgoing links. Unlike
+classical queueing theory fork-join queues, a JSIM Fork station is
+not associated with a join station automatically. Any combination
+of server stations, finite regions, fork-join, routing stations,
+etc., is possibile after a Fork station. This feature allows the
+modeling of very general parallel behaviors, of which the
+traditional Fork-Join one is a special case. In JSIM the classical
+queueing theory Fork-Join queue behavior is obtained by connecting
+the Fork station to as many Server stations as the degree of
+parallelism requested, with one task per outgoing link. Each
+Server station is then connected to a Join station, where the job
+is recomposed. A Fork station is characterized by the forking
+degree, i.e., the number of tasks routed on each one of its
+outgoing links, and the capacity, i.e., the maximum number of jobs
+that can be served by the station simultaneously. Therefore, the
+number of sibling tasks a job is split into is given by the
+product of the number of outgoing links from the Fork station
+times the forking degree. Note that a finite station capacity
+makes sense only when there is a join station downstream from the
+fork station that can recompose the split jobs. Otherwise,
+inconsistencies in the model and subsequent simulation error, such
+as out-of-memory, may occur. No automatic checks are available at
+the moment that can identify such critical conditions. Both the
+forking degree and the capacity are section parameters to be
 specified in the model. As an example, a Fork station with forking degree 1, connected to three Server stations, would split a job into 3 sibling tasks (this is a traditional Fork-Join like behavior). If no Join station is connected to any of the three Servers, a warning message is displayed since the model could quickly saturate due to the extra load (3 more jobs) created in addition to each job entering the Fork station.\\\\
 In the Station Parameters page of the tabs menu,you can modify:\\
 \begin{description*}
@@ -436,23 +330,42 @@ For more information, see Fork section \autoref{sec:ForkSection}.
 proceeding through the fork station.
 For more information, see Queue section \autoref{sec:QueueSection}.
 \end{description*}
-\item \textbf{Join station:} \includegraphics[scale=1]{img/jsim/join.eps}Join stations are complementary to fork stations.
-In classical queueing network theory, a task arrives at a join station from the corresponding Fork station. In JSIM, a Join station may have incoming links from stations other than the corresponding Fork one. A Join station has no service time, as it is only used to recombine the tasks a job had been previously split into and then route the job to some other station(s). When a task arrives at a join station, it waits until all its sibling tasks have arrived. At this time, the original job is
+\item \textbf{Join station:}
+\includegraphics[scale=0.5]{img/jsim/join.eps}Join stations are
+complementary to fork stations. In classical queueing network
+theory, a task arrives at a join station from the corresponding
+Fork station. In JSIM, a Join station may have incoming links from
+stations other than the corresponding Fork one. A Join station has
+no service time, as it is only used to recombine the tasks a job
+had been previously split into and then route the job to some
+other station(s). When a task arrives at a join station, it waits
+until all its sibling tasks have arrived. At this time, the
+original job is
 recomposed and routed to the next station. If a job arrives from a station other than the corresponding Fork, i.e., a job that was not split, it is simply routed to the next station. In this case the Join station operates as a routing station.\\\\
 In the Station Parameters tab menu page, you can modify:
 \begin{description*}
 \item[Routing Section:] in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
 For more information, see Routing section \autoref{sec:RoutingSection}.
 \end{description*}
-\item \textbf{Routing station:} \includegraphics[scale=1]{img/jsim/load_splitter.eps}
-A routing station is a dummy station, with service time equal 0, that is used to create more complex and sophisticated routing strategies by sending jobs through one or more such stations. For example, if we wanted two thirds of the incoming traffic at station Z to be randomly routed to either station A or B and the remaining third to go either to station C or D, depending on the shortest queue at the two stations, we could implement the following. Add a routing station, Y, among Z's output stations and define random routing for the three of them (A, B, Y).
+\item \textbf{Routing station:}
+\includegraphics[scale=0.5]{img/jsim/load_splitter.eps} A routing
+station is a dummy station, with service time equal 0, that is
+used to create more complex and sophisticated routing strategies
+by sending jobs through one or more such stations. For example, if
+we wanted two thirds of the incoming traffic at station Z to be
+randomly routed to either station A or B and the remaining third
+to go either to station C or D, depending on the shortest queue at
+the two stations, we could implement the following. Add a routing
+station, Y, among Z's output stations and define random routing
+for the three of them (A, B, Y).
 Then connect Y to C and D and define Join the Shortest Queue routing to C and D.\\\\
 In the Station Parameters tab menu page, you can modify:
 \begin{description*}
 \item[Routing Section:] in this section you can specify how serviced customers should be routed to the next station they will visit in the model.
 For more information, see Routing section \autoref{sec:RoutingSection}.
 \end{description*}
-\item \textbf{Source station:} \includegraphics[scale=1]{img/jsim/source.eps}
+\item \textbf{Source station:}
+\includegraphics[scale=0.5]{img/jsim/source.eps}
 If the model comprises at least an open class, a sink and  a source stations are created by default, as they are necessary for the simulation and cannot be removed\\
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/source_sink.eps}
@@ -461,18 +374,25 @@ Open classes are characterized by an infinite stream of jobs that can enter the 
 a newly created job will visit. Only open class jobs can be routed from source stations.\\\\
 In the Station Parameters tab menu page, you can modify:
 \begin{description*}
-\item[Routing Section:] in this section you can specify how newly created customers should be routed to the next station they will visit in the model.
-For more information, see Routing section \autoref{sec:RoutingSection}.
+\item[Routing Section:] in this section you can specify how newly
+created customers should be routed to the next station they will
+visit in the model. For more information, see Routing section
+\autoref{sec:RoutingSection}.
 \end{description*}
-\item \textbf{Sink Station:} \includegraphics[scale=1]{img/jsim/sink.eps}\\
-Open class customers leave the system once they have received all the service the need. Sink stations are used to model customers leaving the system, as they
-enter the sink station but do not ever leave it. Sink stations have no parameters, only incoming connections from one or more stations, depending upon the model.
+\item \textbf{Sink Station:} \includegraphics[scale=0.5]{img/jsim/sink.eps}\\
+Open class customers leave the system once they have received all
+the service the need. Sink stations are used to model customers
+leaving the system, as they enter the sink station but do not ever
+leave it. Sink stations have no parameters, only incoming
+connections from one or more stations, depending upon the model.
 \end{enumerate*}
 
 \subsubsection{Fork section}
-\label{sec:ForkSection}
-\textbf{How to define the Forking Behavior}
-This section is characteristic only of fork stations. It defines the parallelism degree of a job, in terms of the number of tasks it is split into and how many jobs can be serviced simultaneoulsy.
+\label{sec:ForkSection} \textbf{How to define the Forking
+Behavior} This section is characteristic only of fork stations. It
+defines the parallelism degree of a job, in terms of the number of
+tasks it is split into and how many jobs can be serviced
+concurrently.
 
 In this section you can define the station forking degree, i.e., the number of tasks created for each job arriving at the fork station, and its capacity, i.e., the maximum number of of jobs that can be in a fork-join section (when a join is present):\\
 \begin{center}
@@ -560,7 +480,12 @@ queue is the shortest(1 job).
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/Q_length.eps}
 \end{center}
-\item[Shortest R Time:] with this algorithm, jobs are sent to the station where the average response time for the job's class is the smallest at the moment a job leaves the routing station.The figure shows that at the time of routing, the middle station has the smallest average response time, R, so the job will be sent to it.
+\item[Shortest Response Time:] with this algorithm, jobs are sent
+to the station where the average response time for the job's class
+is the smallest at the moment a job leaves the routing station.The
+figure shows that at the time of routing, the middle station has
+the smallest average response time, R, so the job will be sent to
+it.
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/R_length.eps}
 \end{center}
@@ -601,49 +526,68 @@ For each class, the Service Time Distribution is set to Exponential with average
 \end{center}
 Click the drop down menu and choose the service time distribution among the following:
 \begin{itemize*}
-
-\item Burst (general) \item Constant \item Erlang \item
-Exponential \item Gamma \item Hyperexponential \item Normal \item
-Pareto \item Poisson \item Replayer \item StudentT \item Uniform
+\item Burst (General) \item Burst (MMPP2) \item Constant \item
+Erlang \item Exponential \item Gamma \item Hyperexponential \item
+Normal \item Pareto \item Poisson \item Replayer \item StudentT
+\item Uniform
 \end{itemize*}
-A load dependent service time indicates that the amount of time the server spends with each customer depends upon the current number of customers in the station. A set of intervals for the number fo jobs in the station is specified, either by adding one range at a time via the \includegraphics[scale=.5]{img/jsim/add_range.eps} button or by specifying the total number at once. Each range must them be specified by its lower (From) and upper (To) extremes. Each such range can be associated with different service times, as for the distribution, the mean and the coefficient of variation, or a subset thereof.
-To set the parameters of a Load Dependent service time, click the \includegraphics[scale=.5]{img/jsim/edit.eps} button and then specify the parameters for each added range.
+A load dependent service time indicates that the amount of time
+the server spends with each customer depends upon the current
+number of customers in the station. A set of intervals for the
+number of jobs in the station is specified, either by adding one
+range at a time via the
+\includegraphics[scale=.5]{img/jsim/add_range.eps} button or by
+specifying the total number at once. Each range must them be
+specified by its lower (\texttt{From}) and upper (\texttt{To})
+extremes. Each such range can be associated with different service
+times, as for the distribution, the mean and the coefficient of
+variation, or a subset thereof. To set the parameters of a Load
+Dependent service time, click the
+\includegraphics[scale=.5]{img/jsim/edit.eps} button and then
+specify the parameters for each added range.
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/load_dipendent.eps}
 \end{center}
 For each customer number range you must specify the following parameters:
 \begin{description*}
-\item [Distribution:] you can choose among Burst (general),
-Pareto, Erlang, Exponential, Hyperexponential, Poisson, Uniform,
-Constant, Gamma and Normal distribution. \item [Mean:] the mean
-value of each distribution is specified in the \emph{Mean} form by
-double clicking on it. Insert a number or an arithmetic expression
-that will be evaluated with JFEP - Java Fast Expression Parser by
-Bertoli Marco. For a complete list of the command supported by
-JFEP you can read the \emph{Help} tab or see the official JFEP web
-site at http://jfep.sourceforge.net/ \item [C:] The coefficient of
+\item [Distribution:] you can choose among Burst (general), Burst
+(MMPP2), Pareto, Erlang, Exponential, Hyperexponential, Poisson,
+Uniform, Constant, Gamma and Normal distribution. \item [Mean:]
+the mean value of each distribution is specified in the
+\emph{Mean} form by double clicking on it. Insert a number or an
+arithmetic expression that will be evaluated with JFEP - Java Fast
+Expression Parser. For a complete list of the command supported by
+JFEP you can read the \emph{Help} tab or see the JFEP web site at
+http://jfep.sourceforge.net/ \item [c:] The coefficient of
 variation of each distribution (when C exist) can be specified by
-double clicking on the \emph{C} form. For example, in the previous
+double clicking on the \emph{c} form. For example, in the previous
 picture two policies are defined: From 1 to 4 jobs in the station,
 the server will behave according to an Erlang distribution with
-mean = 1 and C = 0.5. For any number of jobs greater or equal to 5
+mean = 1 and c=0.5. For any number of jobs greater or equal to 5
 in the station, the system will behave according to an Exponential
 distribution with mean = 1. If you want to delete a range click
 \includegraphics[scale=.5]{img/jsim/delete.eps}
 \end{description*}
 
 \subsection{Define Connections}
-\label{sec:DefineConnections}
-The \textbf{Connections} tab allows you to define how stations are connected with each other.
-In order to create a connection from station \emph{i} to a station \emph{j}, check the table entry (i,j) in the connection matrix (rows identifiy source stations, columns identify destination stations)
+\label{sec:DefineConnections} The \textbf{Connections} tab allows
+you to define how stations are connected with each other. In order
+to create a connection from station \emph{i} to a station
+\emph{j}, check the table entry (i,j) in the connection matrix
+(rows identify source stations, columns identify destination
+stations)
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/connections1.eps}
 \end{center}
-\textbf{NOTE:} if there are open classes in the model, the Source and Sink station automatically created by the system appear in the connection matrix.  A Source station may have only outgoing links, a Sink station may have only incoming links.
+\textbf{NOTE:} if there are open classes in the model, the Source
+and Sink station automatically created by the system appear in the
+connection matrix.  A \emph{Source} station may have only outgoing
+links, a \emph{Sink} station may have only incoming links.
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/sink_source_connections.eps}
 \end{center}
-To define a consistent model a Source station must have at least one outgoing connection and a Sink station must have an incoming connection.\\\\
+To define a consistent model a Source station must have at
+least one outgoing connection and a Sink station must have an incoming connection.\\\\
 \textbf{Example 1:} if you want to connect station1 to station2 in this way \includegraphics[scale=.5]{img/jsim/es1.eps} you must check this box
 \begin{center}
 \includegraphics[scale=.5]{img/jsim/connection1.eps}
@@ -945,11 +889,17 @@ These settings are general parameters for every type of station. For a detailed 
 \includegraphics[scale=.5]{img/jsim/Station_parameters.eps}
 \end{center}
 \emph{Name:}
-the default name of each newly created station is \emph{Station}, followed by a progressive integer, starting from 1, indicating how many classes you have created so far. It can be reset to any alphanumerical string, which will be followed by the same numbering scheme.\\\\
+the default name of each newly created station is \emph{Station},
+followed by a progressive integer, starting from 1, indicating how
+many classes you have created so far. It can be reset to any alphanumerical
+string, which will be followed by the same numbering scheme.\\\\
 \emph{Type:}
-the default station type is \emph{Server}, since this is the most popular type of station in performance models. Alternative types are \emph{Server}, Fork, Join, Routing, Delay.\\\\
+the default station type is \emph{Server}, since this is the most
+popular type of station in performance models. Alternative
+types are \emph{Server}, Fork, Join, Routing, Delay.\\\\
 \emph{Queue Capacity:}
-this parameter applies only to \emph{Server} and \emph{Fork} station types; the default value is infinite, i.e., an infinite number can queue at such stations. It can be reset to finite, with a finite value specified, by checking out the Infinite checkbox.\\\\
+this parameter applies only to \emph{Server} and \emph{Fork} station
+types; the default value is infinite, i.e., an infinite number can queue at such stations. It can be reset to finite, with a finite value specified, by checking out the Infinite checkbox.\\\\
 \emph{Number of Servers:}
 this parameter applies only to <em>Server stations; the default value is 1, as most devices are single server. It can be changed to any finite value.\\\\
 \emph{Queue Strategy:}
