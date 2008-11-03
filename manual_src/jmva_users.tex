@@ -158,11 +158,11 @@ spin controls, decreasing classes number; in this case last inserted
 class will be removed.
 
 Default class names are \emph{Class1}, \emph{Class2}, \dots
-\emph{ClassN}. A model can be personalized by changing this names.
+\emph{ClassN}. A model can be customized by changing these names: this can be done by clicking directly on the name that should be changed.
 
 In \autoref{fig:jmva:3Classes} there are three classes of customers,
 two closed and one open. The third class has the default name
-\emph{Class3} while the other two classes have personalized names,
+\emph{Class3} while the other two classes have customized names,
 namely \emph{ClosedClass} and \emph{OpenClass}.
 
 \begin{figure}[htbp]
@@ -175,9 +175,9 @@ namely \emph{ClosedClass} and \emph{OpenClass}.
 
 A class type can be \texttt{Open} or \texttt{Closed}. It is
 important to define each class type because a closed class workload
-is described by the number of customers in each class and the open
+is described by a constant number of customers in each class, while the open
 classes workload is described by the customer arrival rate for each
-class.
+class which does not imply limits on the maximum number of customers.
 
 As can be seen in \autoref{fig:jmva:3Classes}, a class type can be
 selected in a combo-box. The input boxes \emph{No. of Customers
@@ -221,7 +221,7 @@ and give names other than default ones.
 
 In \autoref{fig:jmva:stations} there is only one station with
 default name \emph{Station4} and there are three stations with
-personalized names: \emph{CPU}, \emph{Disk1} and \emph{Disk2}.
+customized names: \emph{CPU}, \emph{Disk1} and \emph{Disk2}.
 
 \begin{figure}[htbp]
     \begin{center}
@@ -258,12 +258,12 @@ ways:
 Service demand $D_{kc}$ is the total service requirement, that is
 the average amount of time that a customer of class $c$ spends in
 service at station $k$ during one interaction with the system, i.e.
-it's complete execution. Service time $S_{kc}$ is the average time
+it completes execution. Service time $S_{kc}$ is the average time
 spent by a customer of class $c$ at station $k$ for a single visit
 at that station while $V_{kc}$ is the average number of visits at
 that resource for each interaction with the system.
 
-Remember that $D_{kc} = V_{kc} * S_{kc}$ so it's simple to compute
+Remember that $D_{kc} = V_{kc} * S_{kc}$ so it is simple to compute
 service demands matrix starting from service times and visits
 matrixes. Inverse calculation is performed with the following
 algorithm:
@@ -278,7 +278,7 @@ S_{kc} = \left\{ \begin{array}{ccl} D_{kc} & \textrm{if} & D_{kc}
 \]
 
 \subsubsection{Service Demands Tab}
-In this tab you can insert directly Service Demands $D_{kc}$ for
+In this tab, you can insert directly Service Demands $D_{kc}$ for
 each pair \{station~$k$-class~$c$\} in the model. In
 \autoref{fig:jmva:ServiceDemandsTab} a reference screenshot can be
 seen: notice that a value for every $D_{kc}$ element of the
@@ -296,15 +296,13 @@ to newly created stations is zero.
 In the example of \autoref{fig:jmva:ServiceDemandsTab}, each job of
 type \emph{ClosedClass} requires an average service demand time of 6
 sec to \emph{CPU}, 10 sec to \emph{Disk1}, 8 sec to
-\emph{Disk2} and 2.5 sec to \emph{Station4}.\\
-On the other hand, a job of type \emph{OpenClass} requires on
+\emph{Disk2} and 2.5 sec to \emph{Station4}. On the other hand, a job of type \emph{OpenClass} requires on
 average 0.1 sec of \emph{CPU} time, 0.3 sec of \emph{Disk1} time,
 0.2 sec of \emph{Disk2} time and 0.15 sec of \emph{Station4} time to
 be processed by the system.
 
 If the model contains any load dependent station, the behavior of
 \autoref{fig:jmva:LD} will be shown.
-
 \begin{figure}[htbp]
     \begin{center}
         \includegraphics[scale=.5]{img/jmva/ld}
@@ -312,7 +310,6 @@ If the model contains any load dependent station, the behavior of
     \caption{Defining a \emph{load dependent} station service demand}
     \label{fig:jmva:LD}
 \end{figure}
-
 By double-clicking on \emph{LD Settings\dots} button a window will
 show up and that can be used to insert the values of the service
 demands for each possible number of customer inside the station.
@@ -344,13 +341,13 @@ enter the visits number $V_{kc}$ (See \autoref{fig:jmva:visits}).
 The layout of these tabs is similar to the one of the
 \texttt{Service Demand Tab} described in the previous paragraph. The
 default value for each element of the Service Times ($S$) matrix is
-zero, while it's one for Visits' matrix elements.
+zero, while it is one for Visits' matrix elements.
 
 In current model contains load dependent stations, the behavior of
 \texttt{Service Times Tab} for their parametrization will be
 identical to the one described on the previous paragraph for
 \texttt{Service Demands Tab}. On the other hand \texttt{Visits Tab}
-behavior won't change as load dependency is a property of service
+behavior will not change as load dependency is a property of service
 times and not of visits.
 
 \subsection{What-if Tab}
@@ -417,7 +414,7 @@ A brief description of each field is now presented:
 \item[Station :] available only with \texttt{Service Demands} control
 parameter. This combo box allows to select at which station service
 demand values will be modified.
-\item[Class :] allow to select for which class the selected
+\item[Class :] allows to select for which class the selected
 parameter will be changed. A special value, namely \texttt{All
 classes proportionally}, is used to modify the control parameter for
 each class keeping constant the proportion between different
@@ -430,7 +427,7 @@ proportion of jobs between two closed classes.
 to leave this value fixed to the initial value specified by the user
 in the previous steps to avoid confusions, so this field acts as a
 reminder. The only exception is when \texttt{Population Mix} is
-changed, in that case it's allowed to modify this value too.
+changed, in that case it is allowed to modify this value too.
 \item[To :] the final value of what-if analysis. Please notice that
 this value can be greater or smaller than \texttt{From} value and is
 expressed in the same measure unit. Whenever \texttt{All classes
@@ -446,7 +443,7 @@ of different models that will be solved. When control parameter is
 be correctly specified only for integer values of population. JMVA
 will perform a fast computation to find the maximum allowed number
 of executions given current \texttt{From} and \texttt{To} values: if
-user specify a value bigger than that, JMVA will use the computed
+user specifies a value bigger than that, JMVA will use the computed
 value.
 \end{description*}
 
@@ -517,7 +514,7 @@ times} \label{tab:jmva:Functions}
 
 \subsection{Model Solution}
 \label{sec:jmva:solution}Use \texttt{Solve} command to solve the
-model. If the model specify a what-if analysis, please refer to
+model. If the model specifies a what-if analysis, please refer to
 \autoref{sec:jmva:solutionWhatif}. Model results will be shown on a
 separate window, like the one of \autoref{fig:jmva:results}.
 
@@ -533,7 +530,7 @@ Using the tab selector, all the other computed performance indices
 can be seen: Throughput, Queue lengths, Residence Times,
 Utilizations and a synopsis panel with schematic report of input
 model. Both results and synopsis tab data can be copied to clipboard
-with \texttt{CTRL+C} keyboard shortcut.
+with the standard \texttt{CTRL+C} keyboard shortcut.
 
 When open classes are used, the resource saturation control is
 performed. For multiple class models, the following inequality must
@@ -623,7 +620,7 @@ this case, the table in the left of \autoref{fig:jmva:graphical}
 will not be shown.
 
 On the bottom-left corner of the window, users can modify minimum
-and maximum value of both X and Y axis of the plot. JMVA is designed
+and maximum value of both the horizontal and vertical axes of the plot. JMVA is designed
 to automatically best-fit the plot in the window but this controls
 allow the user to specify a custom range or zoom on the plot.
 Another fast method to perform a zoom operation is to left-click and
@@ -695,13 +692,13 @@ model at time, to edit two or more models start more than one
 instance of JMVA. If current model was modified since its creation
 or last save action, a popup window will be shown for confirmation.
 
-It's possible to open not only models saved with JMVA (*.jmva), but
+\noindent It is possible to open not only models saved with JMVA (*.jmva), but
 also with other programs of the suite (for example JABA *.jaba, JSIM
-*.jsim and JMODEL *.jmodel). Whenever a foreign data file is opened, a
+*.jsim and JMODEL\footnote{In previous versions of the JMT suite, JMODEL was the name of the JSIMgraph application. Thus, *.jmodel files are files saved in previous versions of the tool.} *.jmodel). Whenever a data file of another tool is opened, a
 conversion is performed and error/warnings occurred during
 conversion will be reported in a window.
 
-Models are stored in XML format, see \emph{JMT system manual} for a
+\noindent Models are stored in XML format, see \emph{JMT system manual} for a
 detailed description.
 
 \noindent

@@ -487,6 +487,46 @@ probability and the role of the interval length.
     \label{fig:strburdistr}
 \end{figure}\\
 
+\textbf{\emph{Burst (MMPP2)} (mmpp2($\sigma_0,\sigma_1,\lambda_0,\lambda_1$)) distribution}\\
+A MMPP(2) is a continuous-time Markov chain that jumps between two
+states and the active state determines the current rate of service. For example, one state may be
+associated with slow inter-arrival times (state 0), the other may have fast
+inter-arrival times (state 1). As time passes, the MMPP(2) jumps several times between the slow state 0 and
+the fast state 1.
+
+In JMT, the MMPP(2) is parameterized by four rates: $\sigma_0$,  $\sigma_1$,
+$\lambda_0$, and $\lambda_1$. While in state $0$, the MMPP(2) generates
+arrivals with rate $\lambda_0$ or jumps to state $1$ with rate $\sigma_0$; in state 1 the arrival
+and jump rates are $\lambda_1$ and $\sigma_1$, respectively. This can be equivalently stated as follows: in state $0$ a random number with exponential distribution having rate $\lambda_0+\sigma_0$ is drawn, then with probability $\lambda_0/(\lambda_0+\sigma_0)$ the is the arrival of a new job (or equivalently the completion of its service if the MMPP(2) is used as a service process), while with probability $\sigma_0/(\lambda_0+\sigma_0)$ \emph{without} any job arrival or service completion; the case of state $1$ is similar.
+
+A MMPP(2) can be parameterized to have a predefined mean, $c^2$, skewness, decay rate of the autocorrelation. Given these four parameters, there are closed-form formulas to obtain the corresponding values
+of  $\sigma_0$,  $\sigma_1$, $\lambda_0$, and $\lambda_1$. For example the mean is
+related to the rates of the MMPP(2) by
+
+\[mean=\frac{\sigma_0+\sigma_1}{\lambda_0\sigma_1+\sigma_0\lambda_1}\]
+
+while the decay rate of the autocorrelation that controls the burstiness is
+\[
+decay~rate=\frac{\lambda_0\lambda_1}{\lambda_0\lambda_1+\lambda_0\sigma_1+\sigma_0\lambda_1}.
+\]
+
+In particular, a large decay rate ($>0.9$) creates large bursts of arrivals/service completions.
+The reader could find additional details on how to fit a MMPP(2) for example in \cite{CasZS07} and references therein.
+
+\textbf{example 1)}$\lambda_0=\lambda_1=5$ is an exponential distribution for all
+choices of $\sigma_0$ and $\sigma_1$
+
+\textbf{example 2)}$\lambda_0=1.4346$, $\lambda_1=0$, $\sigma_0=0.0139$, $\sigma_1=0.0319$
+is an hyperexponential with mean$=1$, $c^2=20$, $p=0.99$. since the
+hyperexponential has no burstiness, here the autocorrelation
+coefficients are equal to zero.
+
+\textbf{example 3)} $\lambda_0=12$, $\lambda_1=0.0879$, $\sigma_0=0.0010$,
+$\sigma_1=0.0001$ is a MMPP(2) with burstiness. The mean is 1, $c^2$=20,
+skewness$=7.31$, lag-1 autocorrelation coefficient is $0.4745$. Since for
+a MMPP(2) the autocorrelation is always less than $0.5$, this is an
+example of a process with very large burstiness.
+
 \textbf{\emph{Constant} (Const(k)) distribution}\\
  This distribution
 describes a constant (deterministic) flow of customers, arriving
