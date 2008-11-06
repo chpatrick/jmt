@@ -477,6 +477,16 @@ public class NetNode extends SimEntity {
 			//receive a stop event
 			if (!stopped && eventType == NetEvent.EVENT_STOP) {
 				stopped = true;
+				// Sends stop event to all sections
+				NetMessage msg = (NetMessage) message.clone();
+				msg.setDestinationSection(NodeSection.INPUT);
+				dispatch(msg);
+				msg = (NetMessage) message.clone();
+				msg.setDestinationSection(NodeSection.SERVICE);
+				dispatch(msg);
+				msg = (NetMessage) message.clone();
+				msg.setDestinationSection(NodeSection.OUTPUT);
+				dispatch(msg);
 			}
 
 			// if this node has been stopped sends automatically acks
@@ -572,7 +582,7 @@ public class NetNode extends SimEntity {
 				;
 		}
 		// This situation should be avoided as it is probably an error.
-		if (processed == NodeSection.MSG_NOT_PROCESSED) {
+		if (processed == NodeSection.MSG_NOT_PROCESSED && message.getEvent() != NetEvent.EVENT_STOP) {
 			String src = message.getSource().getName() + ":" + message.getSourceSection();
 			String dst = message.getDestination().getName() + ":" + message.getDestinationSection();
 			String job = "";

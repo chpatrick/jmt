@@ -23,7 +23,7 @@ package jmt.engine.QueueNet;
  * NetNode or by a NodeSection.
  * @author Francesco Radaelli
  */
-public class NetMessage {
+public class NetMessage implements Cloneable {
 
 	private int event;
 
@@ -159,5 +159,13 @@ public class NetMessage {
 
 	public boolean sentBy(byte section, NetNode node) {
 		return ((sourceSection == section) && (Source == node));
+	}
+	
+	public Object clone() {
+		try {
+			return super.clone();
+		} catch (CloneNotSupportedException ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 }
