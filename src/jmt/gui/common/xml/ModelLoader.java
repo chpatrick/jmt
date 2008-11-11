@@ -56,6 +56,8 @@ public class ModelLoader {
 	public static final JmtFileFilter XML = new JmtFileFilter(".xml", "Engine XML i/o file");
 	public static final JmtFileFilter ALL = new JmtFileFilter(".jsimg;.jsimw;.jmva;.jaba;.xml;.jsim;.jmodel", "All JMT data files");
 
+	public static final JmtFileFilter ALL_NOTJABA = new JmtFileFilter(".jsimg;.jsimw;.jmva;.xml;.jsim;.jmodel", "All compatible JMT data files");
+
 	/**
 	 * Constants used for output
 	 */
@@ -247,8 +249,8 @@ public class ModelLoader {
 						return FAILURE;
 					case XML_MVA:
 						//TODO implement bridge JMVA --> JABA
-						//failureMotivation = FAIL_CONVERSION + "JMVA.";
-						//return FAILURE;
+						failureMotivation = FAIL_CONVERSION + "JMVA.";
+						return FAILURE;
 					case XML_JABA:
 						((JabaModel) modelData).loadDocument(xmlutils.loadXML(file));
 						break;
@@ -389,6 +391,24 @@ public class ModelLoader {
 		//dialog.setFileFilter(defaultFilter);
 		dialog.setFileFilter(ALL);
 	}
+	
+	/**
+	 * Adds only compatible filters to current dialog
+	 */
+	protected void addCompatibleFilters() {
+		dialog.setAcceptAllFileFilterUsed(true);
+		dialog.addChoosableFileFilter(ALL);
+		if (defaultFilter == JABA) {
+			dialog.addChoosableFileFilter(JABA);
+			dialog.setFileFilter(JABA);
+		} else {
+			dialog.addChoosableFileFilter(ALL_NOTJABA);
+			dialog.addChoosableFileFilter(JMODEL);
+			dialog.addChoosableFileFilter(JSIM);
+			dialog.addChoosableFileFilter(JMVA);
+			dialog.setFileFilter(ALL_NOTJABA);
+		}
+	}
 
 	/**
 	 * Shows open file dialog
@@ -404,7 +424,7 @@ public class ModelLoader {
 	 * returns true.
 	 */
 	protected int showOpenDialog(Component parent) {
-		addAllFilters();
+		addCompatibleFilters();
 		return dialog.showOpenDialog(parent);
 	}
 
