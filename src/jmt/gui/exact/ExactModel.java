@@ -323,7 +323,7 @@ public class ExactModel implements ExactConstants {
 		stations = 1;
 		classes = 1;
 
-		// perchè è 1 se non ci sono customers?? Lasciare così
+		// perchï¿½ ï¿½ 1 se non ci sono customers?? Lasciare cosï¿½
 		maxpop = 1;
 		changed = true;
 
@@ -729,6 +729,14 @@ public class ExactModel implements ExactConstants {
 			calcUnitaryVisits();
 			
 			return true;
+		} else {
+			// Check if population was changed.
+			int newMaxpop = calcMaxpop();
+			if (newMaxpop != maxpop) {
+				maxpop = newMaxpop;
+				serviceTimes = ArrayUtils.resize3var(serviceTimes, stations, classes, calcSizes(), 0.0);
+				return true;
+			}
 		}
 		return false;
 	}
