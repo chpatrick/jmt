@@ -48,7 +48,7 @@ public class Constant extends Distribution {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[1];
 		// Sets parameter lambda
-		parameters[0] = new Parameter("t", "t", Double.class, new Double(1));
+		parameters[0] = new Parameter("t", "k", Double.class, new Double(1));
 		// Checks value of t must be greater than 0
 		parameters[0].setValueChecker(new ValueChecker() {
 			public boolean checkValue(Object value) {
