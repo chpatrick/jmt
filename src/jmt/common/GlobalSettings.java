@@ -25,7 +25,7 @@ public class GlobalSettings implements Serializable {
 			props.load(GlobalSettings.class.getResourceAsStream(FILENAME));
 		} catch (IOException ex) {
 			System.err.println("Fatal error: unable to load global settings");
-			throw new Error("Fatal error: unable to load global settings. Aborts JMT.");
+			throw new Error("Fatal error: unable to load global settings. Aborting JMT.");
 		}
 	}
 	
