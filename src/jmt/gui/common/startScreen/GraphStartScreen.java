@@ -82,7 +82,7 @@ public class GraphStartScreen extends JMTFrame {
 			URL_DOCUMENTATION_ONLINE="http://jmt.sourceforge.net/Documentation.html",
 			// Content for logo panel
 			FONT_TYPE = "Arial", HTML_CONTENT_TITLE = "<html><body align=\"center\"><b>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + FONT_SIZE
-					+ "\">JMT - Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION) + "</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + (FONT_SIZE - 1)
+					+ "\">Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION) + "</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + (FONT_SIZE - 1)
 					+ "\">Performance Evaluation Lab</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + (FONT_SIZE - 1)
 					+ "\">Dipartimento di Elettronica e Informazione<br>" + "Politecnico di Milano - Italy</b><font size=\"0\"><br><br></font>"
 					+ "Project Coordinator: prof. G.Serazzi</font></body></html>";
@@ -317,6 +317,7 @@ public class GraphStartScreen extends JMTFrame {
 	private void showDescrWin(URL url, String title) {
 		if (url != null) {
 			QuickHTMLViewer qhv = new QuickHTMLViewer(url, title);
+			qhv.centerWindow(730, 480);
 			qhv.show();
 			qhv.setIconImage(getIconImage());
 		}
