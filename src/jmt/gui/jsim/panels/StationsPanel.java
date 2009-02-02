@@ -79,7 +79,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 	protected ImagedComboBoxCellEditorFactory comboEditor;
 
 	//Enabled types of station for station editing
-	Object[] stationTypes = new Object[] { STATION_TYPE_DELAY, STATION_TYPE_SERVER, STATION_TYPE_FORK, STATION_TYPE_JOIN, STATION_TYPE_ROUTER };
+	Object[] stationTypes = new Object[] { STATION_TYPE_DELAY, STATION_TYPE_SERVER, STATION_TYPE_FORK, STATION_TYPE_JOIN, STATION_TYPE_ROUTER, STATION_TYPE_LOGGER };
 
 	//Component responsible of setting global number of classes at once
 	private JSpinner stationNumSpinner = new JSpinner() {

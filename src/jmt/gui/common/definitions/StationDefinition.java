@@ -1,4 +1,4 @@
-/**    
+/**
   * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
@@ -196,6 +196,28 @@ public interface StationDefinition {
 	 * @return routing strategy for specified class and station.
 	 */
 	public Object getRoutingStrategy(Object stationKey, Object classKey);
+
+    /** Sets (Returns) logging parameters for the logger.
+     * @param stationKey: search key for station.
+     * @param loggerParameters: local LoggerParameters.
+     */
+    public void setLoggingParameters(Object stationKey, Object loggerParameters);
+    
+    /** Returns logging parameters for the logger. <I>MF'08 0.7.4</I>
+     * @param stationKey: search key for station.
+     */
+    public Object getLoggingParameters(Object stationKey);
+    
+    /** Returns logging parameters for the Global logfile. <I>MF'08 0.7.4</I>
+     * @param selector: either "path", "delim", or "autoAppend" 
+     */
+    public String getLoggingGlbParameter(String selector);
+
+    /** Sets a global logging parameter as a CommonModel variable. <I>MF'08 0.7.4</I>
+     * @param selector: either "path", "delim", or "autoAppend" 
+     * @param value: String to assign to variable named by Selector.
+     */
+    public void setLoggingGlbParameter(String selector, String value);
 
 	/**
 	 * Normalizes the routing probabilities

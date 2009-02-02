@@ -1,4 +1,4 @@
-/**    
+/**
   * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
@@ -43,6 +43,8 @@ import jmt.gui.common.routingStrategies.ProbabilityRouting;
 import jmt.gui.common.routingStrategies.RoutingStrategy;
 import jmt.gui.common.serviceStrategies.LDStrategy;
 import jmt.gui.common.serviceStrategies.ZeroStrategy;
+import jmt.engine.log.JSimLogger;
+import jmt.engine.log.LoggerParameters;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
@@ -55,7 +57,7 @@ import org.xml.sax.SAXException;
  * <p>Title: XML Reader</p>
  * <p>Description: Reads model information from an XML file. This
  * class provide methods for model load. It's designed to be used by both JModel and JSim.</p>
- * 
+ *
  * @author Bertoli Marco
  *         Date: 27-lug-2005
  *         Time: 13.59.48
@@ -67,11 +69,14 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	protected static HashMap refStations; // Data structure used to hold classes' reference stations
 	protected static HashMap empiricalRouting; // Data structure to save malformed empirical routing tuples
 
+	/*defines the default logger (used to report errors and information for debugging purposes)*/
+	private static final jmt.engine.log.JSimLogger debugLog = jmt.engine.log.JSimLogger.getLogger(JSimLogger.STD_LOGGER);
+
 	/*defines matching between engine representation and gui names for drop
 	rules.*/
 	protected static final HashMap dropRulesNamesMatchings = new HashMap() {
 		/**
-		 * 
+		 *
 		 */
 		private static final long serialVersionUID = 1L;
 
@@ -168,6 +173,38 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			model.setDisableStatistic(Boolean.valueOf(disableStatistic));
 		}
 
+		/* Gets optional parameters log path, replace policy, and delimiter
+		 * Values here should correspond to SimLoader values (Ctrl+F for them) */
+		String logPath = root.getAttribute(XML_A_ROOT_LOGPATH);
+		if (logPath != null && logPath != "") {
+			model.setLoggingGlbParameter("path",logPath);
+		}
+		else {
+			model.setLoggingGlbParameter("path","");
+		}
+		String logReplaceMode = root.getAttribute(XML_A_ROOT_LOGREPLACE);
+		if (logReplaceMode != null && logReplaceMode != "") {
+			model.setLoggingGlbParameter("autoAppend",logReplaceMode);
+		}
+		else {
+			model.setLoggingGlbParameter("autoAppend",Defaults.get("loggerAutoAppend"));
+		}
+		String logDelimiter = root.getAttribute(XML_A_ROOT_LOGDELIM);
+		if (logDelimiter != null && logDelimiter != "") {
+			model.setLoggingGlbParameter("delim",logDelimiter);
+		}
+		else {
+			model.setLoggingGlbParameter("delim",Defaults.get("loggerDelimiter"));
+		}
+		String logExecutionTimestamp = root.getAttribute(XML_A_ROOT_LOGEXECUTIONTIMESTAMP);
+		if (logExecutionTimestamp != null && logExecutionTimestamp != "") {
+			model.setLoggingGlbParameter("logExecutionTimestamp",logExecutionTimestamp);
+		}
+		else {
+			model.setLoggingGlbParameter("logExecutionTimestamp","true");
+		}
+
+		
 		parseClasses(root, model);
 		empiricalRouting = new HashMap();
 		parseStations(root, model);
@@ -313,7 +350,12 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			} else if (type.equals(STATION_TYPE_FORK)) {
 				parseQueue((Element) sections.item(0), model, key);
 				parseFork((Element) sections.item(2), model, key);
-			}
+            }else if (type.equals(STATION_TYPE_LOGGER)) {
+            	parseQueue((Element)sections.item(0), model, key);
+            	parseLogger((Element)sections.item(1), model, key);
+            	parseRouter((Element)sections.item(2), model, key);
+            }
+
 		}
 	}
 
@@ -607,6 +649,60 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		}
 	}
 
+    /**
+     * Extract all parameters for a Logger section from the XML document.
+     * The information from parseLogger is passed to LogTunnel.
+     * 
+     * @param section input section of source station
+     * @param model link to data structure
+     * @param key key of search for this source station into data structure
+     * @author Michael Fercu (Bertoli Marco)
+     *		   Date: 08-aug-2008
+     * @see jmt.engine.log.LoggerParameters LoggerParameters
+     * @see jmt.gui.common.XMLWriter#writeLoggerSection XMLWriter.writeLoggerSection()
+     * @see jmt.gui.common.definitions.CommonModel#getLoggingParameters CommonModel.getLoggingParameters()
+     * @see jmt.gui.common.definitions.CommonModel#setLoggingParameters CommonModel.setLoggingParameters()
+     * @see jmt.engine.NodeSections.LogTunnel LogTunnel
+     */
+    protected static void parseLogger(Element section, CommonModel model, Object key) {
+        NodeList parameters = section.getElementsByTagName(XML_E_PARAMETER);
+        LoggerParameters logParams = new LoggerParameters();
+
+        for (int i=0; i<parameters.getLength(); i++) {
+            Element parameter = (Element)parameters.item(i);
+            String parameterName = parameter.getAttribute(XML_A_PARAMETER_NAME);
+            try {
+            // Get the parameters from the XML file
+            if (parameterName.equals(XML_LOG_FILENAME))
+            	logParams.name = new String(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+            else if (parameterName.equals(XML_LOG_FILEPATH))
+            	try {
+            	logParams.path = new String(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+            	} catch (Exception e) {logParams.path = "./";} // this should never happen
+            else if (parameterName.equals(XML_LOG_B_LOGGERNAME))
+            	logParams.boolLoggername = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+            else if (parameterName.equals(XML_LOG_B_TIMESTAMP))
+            	logParams.boolTimeStamp = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+            else if (parameterName.equals(XML_LOG_B_JOBID))
+            	logParams.boolJobID = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+            else if (parameterName.equals(XML_LOG_B_JOBCLASS))
+            	logParams.boolJobClass = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+            else if (parameterName.equals(XML_LOG_B_TIMESAMECLS))
+            	logParams.boolTimeSameClass = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+            else if (parameterName.equals(XML_LOG_B_TIMEANYCLS))
+            	logParams.boolTimeAnyClass = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+            else if (parameterName.equals("numClasses"))
+            	/* No parsing needed for these parameters:
+            	 * Only useful to (and has already been passed to) the simulator. */ ;
+            else
+            	debugLog.error("XMLReader.parseLogger() - Unknown parameter \"" + parameterName + "\".");
+            } catch (Exception e) {debugLog.error("XMLreader.parseLogger: " + e.toString());}
+            model.setLoggingParameters(key,logParams);
+
+
+        }
+    }
+
 	/**
 	 * Extract all informations regarding Fork section.
 	 * @param section input section of source station
@@ -762,6 +858,8 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			return STATION_TYPE_JOIN;
 		} else if (sectionNames[1].equals(CLASSNAME_TUNNEL)) {
 			return STATION_TYPE_ROUTER;
+		} else if (sectionNames[1].equals(CLASSNAME_LOGGER)) {
+			return STATION_TYPE_LOGGER;
 		}
 		return null;
 	}

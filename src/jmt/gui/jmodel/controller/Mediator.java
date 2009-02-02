@@ -2193,6 +2193,7 @@ public class Mediator implements GuiInterface {
 	 * Author: Bertoli Marco
 	 *
 	 * Modified by Francesco D'Aquino
+	 * Modified by Michael Fercu (Logger,2008,0.7.4)
 	 */
 	public void startSimulation() {
 		// if simulation is not in pause state
@@ -2211,6 +2212,51 @@ public class Mediator implements GuiInterface {
 					return;
 				}
 			}
+			// Asks for confirmation if a logger-file exists (and has existing data) [MF08 0.7.4 (Marco Bertoli)]
+			String[] ln = model.getLoggerNameList();
+			String ln2 = "";
+			if (ln != null) {
+				if (model.getLoggingGlbParameter("autoAppend").equalsIgnoreCase(new Integer(jmt.engine.log.LoggerParameters.LOGGER_AR_ASK).toString()))
+				{
+				  if (ln.length > 0) {
+					// Cache the absolute log-path
+					String logabspath;
+					if (model.getLoggingGlbParameter("path").equalsIgnoreCase("") || (model.getLoggingGlbParameter("path").equalsIgnoreCase("."))) 
+						logabspath = new File("").getAbsolutePath() + File.separator;
+					else
+						logabspath = new File(model.getLoggingGlbParameter("path")).getAbsolutePath() + File.separator;
+					
+					// Find if the logfiles have data in them:
+					try {
+						for (int fn=0; fn<ln.length; fn++)
+						{
+							// if the files have data, print what will be overwritten
+							if (new File(logabspath + ln[fn]).length() > 0)
+									ln2 = ln2 + ln[fn] + ", ";
+						}
+						// remove the trailing comma
+						if (ln2 != "")
+							ln2 = ln2.substring(0, ln2.length()-2);
+					} catch (Exception e) {e.printStackTrace();}
+	
+					if (ln2 != "") {
+						// Find frame to show dialog
+						Component parent = mainWindow;
+						if (resultsWindow != null && resultsWindow.isFocused()) {
+							parent = resultsWindow;
+						}
+		
+						int resultValue = JOptionPane.showConfirmDialog(parent, "This operation will modify the following logfile(s): " + ln2 + ".  " + "Continue anyway?",
+								"JMT - Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+						if (resultValue == JOptionPane.NO_OPTION) {
+							return;
+						}
+					}
+				  }
+				  else
+					  System.out.println("Empty file");
+				}
+			} // end confirmation if file exists
 			// Correct eventual problems on preloading for closed classes
 			model.manageJobs();
 			mc = new ModelChecker(model, model, model, model, false);

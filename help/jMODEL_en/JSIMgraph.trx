@@ -33,6 +33,7 @@ glossary_files\image4.gif|Glossary_files\Image4.gif
 glossary_files\image28.gif|Glossary_files\Image28.gif
 image\simparam\sim_maxdur.png|image\simParam\sim_maxDur.png
 how_to\stations\loadsplitter_prop.html|how_to\stations\loadsplitter_prop.html
+how_to\stations\logger_prop.html|how_to\stations\logger_prop.html
 definition\distribution\constant.jpeg|definition\distribution\constant.jpeg
 image\bas_drop.jpg|image\bas_drop.JPG
 definition\distribution\poisson_f.png|definition\distribution\poisson_f.png
@@ -120,6 +121,7 @@ how_to\define_fcr_clip_image002.gif|how_to\define_FCR_clip_image002.gif
 webserver1\webserver.html|webserver1\webserver.html
 how_to\define_fcr.html|how_to\define_fcr.html
 image\topology\edit\loadsplitter_prop.png|image\topology\edit\loadsplitter_prop.png
+image\topology\edit\logger_editFull_sm.png|image\topology\edit\logger_editFull_sm.png
 jsimgraph.hhp|JSIMgraph.hhp
 definition\distribution\exponential1.png|definition\distribution\exponential1.png
 image\topology\edit\model1.png|image\topology\edit\model1.png
@@ -127,6 +129,7 @@ image\ic_simulate.png|image\ic_simulate.PNG
 image\confidence_relative\xn_sum.gif|image\confidence_relative\Xn_sum.gif
 image\topology\edit\add_range.png|image\topology\edit\add_range.png
 image\topology\loadsplitter.png|image\topology\loadsplitter.png
+image\topology\logger_icon.gif|image\topology\logger.png
 glossary_files\image12.gif|Glossary_files\Image12.gif
 definition\distribution\posson1.png|definition\distribution\posson1.png
 image\topology\source.png|image\topology\source.png
@@ -137,6 +140,7 @@ definition\distribution\constant_f.png|definition\distribution\constant_f.png
 default.css|default.css
 image\stop_icon.gif|image\stop_icon.gif
 image\topology\edit\loadsplitter1.png|image\topology\edit\loadsplitter1.png
+image\topology\edit\logger_icon.png|image\topology\edit\logger_icon.png
 image\topology\edit\join.png|image\topology\edit\join.png
 image\ic_class.png|image\ic_class.PNG
 how_to\stations\connect_elem.htm|how_to\stations\connect_elem.htm

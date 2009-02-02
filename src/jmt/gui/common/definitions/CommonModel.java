@@ -1,4 +1,4 @@
-/**    
+/**
   * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
@@ -18,11 +18,14 @@
 
 package jmt.gui.common.definitions;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import jmt.framework.data.BDMap;
@@ -32,6 +35,8 @@ import jmt.gui.common.CommonConstants;
 import jmt.gui.common.Defaults;
 import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
+import jmt.engine.log.JSimLogger;
+import jmt.engine.log.LoggerParameters;
 
 /**
  * Created by IntelliJ IDEA.
@@ -53,8 +58,10 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	double pollingInterval;
 	protected MeasureDefinition results = null;
 	protected Boolean disableStatistic = Boolean.FALSE;
+	protected LoggerGlobalParameters loggerGlbParams;
 	// Used to tell if model have to be saved
 	protected boolean save = false;
+	private static JSimLogger debugLog = JSimLogger.getRootLogger();;
 
 	/**
 	 * search keysets for classes, stations and measures
@@ -560,6 +567,26 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		return delays;
 	}
 
+	/**
+	 * This method returns the key set of loggers
+	 *
+	 * @return an array containing the entire set of logger keys
+	 *
+	 * Author: Michael Fercu (Marco Bertoli) 0.7.4
+	 */
+	public Vector getStationKeysLogger() {
+		Vector stations = this.getStationKeys();
+		Vector loggers = new Vector(0, 1);
+		for (int i = 0; i < stations.size(); i++) {
+			Object thisStation = stations.get(i);
+			if (this.getStationType(thisStation).equals(CommonConstants.STATION_TYPE_LOGGER)) {
+				loggers.add(thisStation);
+			}
+		}
+		return loggers;
+	}
+
+	
 	/**Returns entire key set for search of stations. Objects contained  in returned vector
 	 * can be directly passed to methods for parameters retrieval.*/
 	public Vector getStationKeys() {
@@ -782,7 +809,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			/*Delay stations have infinite number of servers and no queue*/
 			numberOfServers = new Integer(-1);
 		} else if (sd.type.equals(STATION_TYPE_TERMINAL) || sd.type.equals(STATION_TYPE_ROUTER) || sd.type.equals(STATION_TYPE_SOURCE)
-				|| sd.type.equals(STATION_TYPE_SINK) || sd.type.equals(STATION_TYPE_JOIN)) {
+				|| sd.type.equals(STATION_TYPE_SINK) || sd.type.equals(STATION_TYPE_JOIN) || sd.type.equals(STATION_TYPE_LOGGER)) {
 			/*If this station has no queue and no service section, there's no need to
 			* set any parameter value for these sections.*/
 			numberOfServers = null;
@@ -971,6 +998,121 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		}
 	}
 
+    /**
+     * Michael Fercu (Marco Bertoli) - 0.7.4
+     * Access methods for "Logger"
+     */
+    public void setLoggingParameters(Object stationKey, Object loggerParameters) {
+        StationData sd;
+        if(stationDataHM.containsKey(stationKey)){
+            sd = (StationData) stationDataHM.get(stationKey);
+        }else return;
+
+		if (sd.loggerParameters == null)
+			save = true;
+		else if (!sd.loggerParameters.equals(loggerParameters))
+            save = true;
+
+		sd.loggerParameters = loggerParameters;
+    }
+
+    public Object getLoggingParameters(Object stationKey) {
+        Object loggerParams = null;
+
+    	if(stationDataHM.containsKey(stationKey)){
+            StationData sd = (StationData)stationDataHM.get(stationKey);
+            loggerParams = (sd.loggerParameters != null) ? sd.loggerParameters : new LoggerParameters();
+        }
+    	else return null;
+    	return loggerParams;
+    }
+
+    public String getLoggingGlbParameter(String selector) {
+
+    	// The global parameters must be instantiated for a new file
+    	if (loggerGlbParams == null)
+    		loggerGlbParams = new LoggerGlobalParameters();
+    	
+    	if (selector.equalsIgnoreCase("path") == true)
+    		return loggerGlbParams.path;
+    	else if (selector.equalsIgnoreCase("delim") == true)
+    		return loggerGlbParams.delimiter;
+    	else if (selector.equalsIgnoreCase("autoAppend") == true)
+    		return loggerGlbParams.autoAppendMode.toString();
+    	else if (selector.equalsIgnoreCase("logExecutionTimestamp") == true)
+    		return loggerGlbParams.logExecutionTimestamp;
+    	else
+    		debugLog.error("No such selector " + selector + " for " +
+    				new Exception().getStackTrace()[0] + "\n" + new Exception().getStackTrace()[1]);
+    		return null;
+    }
+
+    public void setLoggingGlbParameter(String selector, String value) {
+
+    	// The global parameters must be instantiated for a new file
+    	if (loggerGlbParams == null)
+    		loggerGlbParams = new LoggerGlobalParameters();
+
+    	// debugLog.debug("glbParameter <" + selector + "=" + value + "> assigned by " + (new Exception().getStackTrace()[1]).toString().substring(19));
+    	
+    	if (selector.equalsIgnoreCase("path") == true)
+    		this.loggerGlbParams.path = value;
+    	else if (selector.equalsIgnoreCase("delim") == true)
+    		this.loggerGlbParams.delimiter = value;
+    	else if (selector.equalsIgnoreCase("autoAppend") == true)
+    		this.loggerGlbParams.autoAppendMode = new Integer(value);
+    	else if (selector.equalsIgnoreCase("logExecutionTimestamp") == true)
+    		this.loggerGlbParams.logExecutionTimestamp = value;
+    	else
+    	{
+    		debugLog.error("No such selector " + selector + " for " +
+    				new Exception().getStackTrace()[0] + "\n" + new Exception().getStackTrace()[1]);
+    		return;
+    	}
+    	
+    	save = true;
+    }
+
+	/**
+	 * Used by jmodel.controller.Mediator to get the <i>files that could be overwritten</i>,
+	 * in order to warn the user with a dialog box. 
+	 * @author MF08 0.7.4 - Michael Fercu for Logger (Marco Bertoli)
+	 * @return String[] of the filename of all log files that will be written to.
+	 */
+	public String[] getLoggerNameList() {
+		Vector loggerkeys = getStationKeysLogger();
+		int loggerkeyssize = loggerkeys.size();
+		String[] lknames = new String[loggerkeyssize];
+		String[] lknames2;
+		int size = 0;
+		boolean globalWasProcessed = false;
+
+		if (loggerkeys == null)
+			return null;
+		
+		// get the list of all filenames from their keys
+		for (int i=0; i<loggerkeyssize; i++)
+		{
+			LoggerParameters lp = (LoggerParameters)getLoggingParameters(loggerkeys.get(i));
+			if (lp.name.equalsIgnoreCase("global") == false)
+			{
+				lknames[size++] = lp.name;
+			}
+			else if ((lp.name.equalsIgnoreCase("global") == true) && (globalWasProcessed == false))
+			{
+				globalWasProcessed = true;
+				lknames[size++] = lp.name;
+			}
+		}
+		
+		lknames2 = new String[size];
+		for (int i=0; i<size;i++)
+			lknames2[i] = lknames[i];
+		
+		return lknames2;
+	}
+
+    
 	/**
 	 * Francesco D'Aquino
 	 * Normalizes the routing probabilities for each station
@@ -1062,7 +1204,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			defaultDetails = new StationClassData(null, null, null);
 		} else if (STATION_TYPE_TERMINAL.equals(sd.type)) {
 			defaultDetails = new StationClassData(null, null, Defaults.getAsNewInstance("stationRoutingStrategy"));
-		} else if (STATION_TYPE_ROUTER.equals(sd.type)) {
+		}else if((STATION_TYPE_ROUTER.equals(sd.type)) || (STATION_TYPE_LOGGER.equals(sd.type))){
 			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), null, Defaults.getAsNewInstance("stationRoutingStrategy"));
 		} else if (STATION_TYPE_FORK.equals(sd.type)) {
 			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), null, null);
@@ -1228,7 +1370,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		}
 		// No connection between a router or a fork or join and itself
 		if (sourceKey == targetKey
-				&& (source.type.equals(STATION_TYPE_ROUTER) || source.type.equals(STATION_TYPE_FORK) || source.type.equals(STATION_TYPE_JOIN))) {
+				&& (source.type.equals(STATION_TYPE_ROUTER) || source.type.equals(STATION_TYPE_FORK) || source.type.equals(STATION_TYPE_JOIN) || source.type.equals(STATION_TYPE_LOGGER))) {
 			return false;
 		}
 		//no direct connections from source to sink
@@ -2093,6 +2235,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		public Integer numOfServers;
 		public Integer queueCapacity;
 		public Integer forkBlock;
+		public Object loggerParameters;
 		/** Reference to owner blocking station or null */
 		public Object blockingRegion;
 
@@ -2101,6 +2244,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			this.type = type;
 			this.numOfServers = numOfServers;
 			this.queueCapacity = queueCapacity;
+			this.loggerParameters = null;
 		}
 	}
 
@@ -2203,6 +2347,23 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			type = measureType;
 			this.precision = precision;
 			this.alpha = alpha;
+		}
+	}
+
+	protected class LoggerGlobalParameters {
+		public String path;
+		public String delimiter;
+		public Integer autoAppendMode;
+		public String logExecutionTimestamp;
+		
+		LoggerGlobalParameters()
+		{
+			path = ".";
+			delimiter = Defaults.get("loggerDelimiter");
+			autoAppendMode = Defaults.getAsInteger("loggerAutoAppend");
+			logExecutionTimestamp = "true";
+			
+			// debugLog.debug("LoggerGlobalParameters constructor called by \n  " + new Exception().getStackTrace()[1] + "\n  " + new Exception().getStackTrace()[2]);
 		}
 	}
 

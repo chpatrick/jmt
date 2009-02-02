@@ -232,6 +232,11 @@
     <param name="Local" value="how_to/stations/loadsplitter_prop.html">
   </object>
   <li><object type="text/sitemap">
+    <param name="Name" value="Logger Properties">
+    <param name="Name" value="Edit logger properties">
+    <param name="Local" value="how_to/stations/logger_prop.html">
+  </object>
+  <li><object type="text/sitemap">
     <param name="Name" value="Mean">
     <param name="Name" value="Distributions">
     <param name="Local" value="definition/distribuzioni.html">

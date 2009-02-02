@@ -1,4 +1,4 @@
-/**    
+/**
   * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
@@ -53,7 +53,8 @@ public interface CommonConstants {
 	public final static String STATION_TYPE_SERVER = "Server";
 	public final static String STATION_TYPE_FORK = "Fork";
 	public final static String STATION_TYPE_JOIN = "Join";
-	
+	public final static String STATION_TYPE_LOGGER = "Logger";
+
 	/** A map that decodes from station type to station name for the GUI */
 	public static final ConstMap STATION_NAMES = new ConstMap() {
 		protected void fill() {
@@ -65,9 +66,10 @@ public interface CommonConstants {
 			putConst(STATION_TYPE_SERVER, "Queueing Station");
 			putConst(STATION_TYPE_FORK, STATION_TYPE_FORK);
 			putConst(STATION_TYPE_JOIN, STATION_TYPE_JOIN);
+			putConst(STATION_TYPE_LOGGER, STATION_TYPE_LOGGER);
 		}
 	};
-	
+
 	/**Constants for selection of queueing strategy*/
 	public final static String QUEUE_STRATEGY_LCFS = "LCFS";
 	public final static String QUEUE_STRATEGY_FCFS = "FCFS";
@@ -88,7 +90,7 @@ public interface CommonConstants {
 	public final static String DISTRIBUTION_HYPEREXPONENTIAL = "Hyperexponential";
 	public final static String DISTRIBUTION_BURST = "Burst";
 	//public final static String DISTRIBUTION_MAP= "MAP";
-	public final static String DISTRIBUTION_MMPP2= "MMPP2";    
+	public final static String DISTRIBUTION_MMPP2= "MMPP2";
 	public final static String DISTRIBUTION_GAMMA = "Gamma";
 	public final static String DISTRIBUTION_UNIFORM = "Uniform";
 	public final static String DISTRIBUTION_STUDENTT = "StudentT";

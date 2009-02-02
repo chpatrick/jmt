@@ -179,6 +179,10 @@
           <param name="Name" value="Loadsplitter">
           <param name="Local" value="how_to/stations/loadsplitter_prop.html">
         </object>
+	<li><object type="text/sitemap">
+	  <param name="Name" value="Logger">
+	  <param name="Local" value="how_to/stations/logger_prop.html">
+	</object>
         <li><object type="text/sitemap">
           <param name="Name" value="Server">
           <param name="Local" value="how_to/stations/server_prop.html">

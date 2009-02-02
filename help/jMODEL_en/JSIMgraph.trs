@@ -33,6 +33,7 @@ how_to\stations\delay_prop.html=Edit delay properties;;0;0;0;;524288;;2;;;;
 how_to\stations\fork_prop.html=Edit Fork properties;;0;0;0;;524288;;2;;;;
 how_to\stations\join_prop.html=Edit Join properties;;0;0;0;;524288;;2;;;;
 how_to\stations\loadsplitter_prop.html=Edit loadsplitter properties;;0;0;0;;524288;;2;;;;
+how_to\stations\logger_prop.html=Edit logger properties;;0;0;0;;524288;;2;;;;
 how_to\stations\server_prop.html=Edit Server Properties;;0;0;0;;524288;;2;;;;
 how_to\stations\sink_properties.html=Editing Sink Properties;;0;0;0;;524288;;2;;;;
 how_to\stations\source_properties.htm=Source Properties;;0;0;0;;524288;;2;;;;

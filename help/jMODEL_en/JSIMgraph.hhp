@@ -49,6 +49,7 @@ export_image\esempio1.htm
 export_image\esempio2.htm
 how_to\stations\fork_prop.html
 how_to\stations\loadsplitter_prop.html
+how_to\stations\logger_prop.html
 how_to\stations\server_prop.html
 how_to\stations\sink_properties.html
 how_to\stations\source_properties.htm
@@ -147,6 +148,7 @@ webserver1\8whatif_par.gif
 image\ic_paramSim.PNG
 image\esempi\mod1.png
 image\topology\edit\loadsplitter_prop.png
+image\topology\edit\logger_editFull_sm.png
 image\topology\edit\join.png
 image\topology\edit\routing_section.png
 definition\distribution\hyoerexp_pdf1.jpeg
@@ -219,12 +221,14 @@ webserver1\4_index.gif
 image\ic_wia.PNG
 image\topology\edit\server_numb.png
 image\topology\edit\loadsplitter1.png
+image\topology\edit\logger_icon.gif
 definition\distribution\studentT1.png
 definition\distribution\exponential_f.png
 definition\distribution\erlang_f.png
 definition\distribution\constant1.png
 image\simParam\initial_state.png
 image\topology\loadsplitter.png
+image\topology\logger.png
 image\menu_file.PNG
 image\topology\edit\delete.png
 definition\distribution\posson1.png

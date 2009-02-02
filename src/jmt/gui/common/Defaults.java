@@ -1,4 +1,4 @@
-/**    
+/**
   * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
@@ -81,6 +81,11 @@ public class Defaults implements CommonConstants {
 		def.setProperty("blockingRegionName", "FCRegion");
 		// Not used parameter...
 		def.setProperty("blockingRegionType", "default");
+
+        // Logger Parameters (for global log)
+        def.setProperty("loggerDelimiter", ";");
+        def.setProperty("loggerAutoAppend", ""+jmt.engine.log.LoggerParameters.LOGGER_AR_ASK);
+        def.setProperty("loggerFilePath", "");
 
 		//Simulation Defaults parameters
 		def.setProperty("measureAlpha", "0.9");

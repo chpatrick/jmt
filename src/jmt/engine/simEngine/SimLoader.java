@@ -29,6 +29,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -237,6 +238,13 @@ public class SimLoader {
 			//gets the default value of maxsamples
 			//(max number of samples for each measure)
 			int maxSamples = simParam.getMaxSamples();
+			
+			// Gets the timestamp value
+			// [MF08 0.7.4 (Marco Bertoli)
+			SimpleDateFormat sdf = new SimpleDateFormat();
+			sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
+			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+			simParam.setTimestampValue(sdf.format(new Date()));
 
 			//-------------- end SIM PARAMETERS -------------------//
 
@@ -253,6 +261,31 @@ public class SimLoader {
 			}
 			//END
 
+			// MF08 0.7.4  Michael Fercu (Bertoli Marco) -- re-defines global logger attributes
+			// for the purpose of passing them to the Logger constructor
+			if (root.hasAttribute("logPath")) {
+				String temp_lp = root.getAttribute("logPath");
+				simParam.setLogPath(temp_lp);
+			}
+			if (root.hasAttribute("logDelimiter")) {
+				String temp_ld = root.getAttribute("logDelimiter");
+				simParam.setLogDelimiter(temp_ld);
+				
+			}
+			if (root.hasAttribute("logReplaceMode")) {
+				String temp_lr = root.getAttribute("logReplaceMode");
+				simParam.setLogReplaceMode(temp_lr);
+			}
+			if (root.hasAttribute("logExecutionTimestamp")) {
+				String temp_lt = root.getAttribute("logExecutionTimestamp");
+				simParam.setLogExecutionTimestamp(temp_lt);
+			}
+			if (root.hasAttribute("lastRunTime")) {
+				String temp_ltv = root.getAttribute("lastRunTime");
+				simParam.setTimestampValue(temp_ltv);
+			}
+			//END MF08
+			
 			//Returns a NodeList of all the Elements with a given tag name in the order in which they
 			//are encountered in a preorder traversal of the Document tree.
 			NodeList nodeList = root.getElementsByTagName("node");

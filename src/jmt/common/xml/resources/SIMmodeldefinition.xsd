@@ -116,6 +116,10 @@
 			<xs:attribute name="maxTime" type="xs:double" use="optional"/>
 			<xs:attribute name="polling" type="xs:double" use="optional"/>
 			<xs:attribute name="maxSamples" type="xs:int" use="optional"/>
+			<xs:attribute name="logPath" type="xs:string" use="optional"/>
+			<xs:attribute name="logDelimiter" type="xs:string" use="optional"/>
+			<xs:attribute name="logReplaceMode" type="xs:int" use="optional"/>
+			<xs:attribute name="logExecutionTimestamp" type="xs:boolean" use="optional"/>
 			<xs:attribute name="disableStatisticStop" type="xs:boolean" use="optional"/>
 		</xs:complexType>
 	</xs:element>

@@ -32,6 +32,7 @@
   <mapID target="how_to_stations_fork_prop_html" url="how_to/stations/fork_prop.html" />
   <mapID target="how_to_stations_join_prop_html" url="how_to/stations/join_prop.html" />
   <mapID target="how_to_stations_loadsplitter_prop_html" url="how_to/stations/loadsplitter_prop.html" />
+  <mapID target="how_to_stations_logger_prop_html" url="how_to/stations/logger_prop.html" />
   <mapID target="how_to_stations_server_prop_html" url="how_to/stations/server_prop.html" />
   <mapID target="how_to_modify_modify_simulation_parameters_html" url="how_to/modify/modify_simulation_parameters.html" />
   <mapID target="how_to_modify_modify_station_parameters_html" url="how_to/modify/modify_station_parameters.html" />
