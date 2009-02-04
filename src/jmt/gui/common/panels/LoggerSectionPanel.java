@@ -133,6 +133,11 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
         checkExecutionTimestamp.setToolTipText("Execution Timestamp is useful to identify the run number when appending.  (e.g. " + "31102008T125959GMT" + ")");
         gbc.gridx = 2; gbc.gridy = 0;
         loggerPanelTop.add(checkExecutionTimestamp,gbc);
+        /*
+        labelFileStatus = new JLabel();
+        gbc.fill = GridBagConstraints.REMAINDER; gbc.gridx = 1; gbc.gridy = 0; gbc.gridwidth=3;
+        loggerPanelTop.add(labelFileStatus,gbc);
+        */
         // layout of north: checkbox fields
         final JCheckBox checkLoggername = new JCheckBox();
         checkLoggername.setText("Logger Name  ");
@@ -228,6 +233,26 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
             		loggerParameters.name = loggerStationName + ".csv";
             	else if (loggerChooser.getSelectedIndex() == 2) 
             		loggerParameters.name = loggerParameters.name;
+            	
+            	/*
+            	else if (loggerChooser.getSelectedIndex() == 2)
+            	{
+            		String tmpFileName = "";
+            		JFileChooser fc = new JFileChooser();
+                    fc.setFileSelectionMode(JFileChooser.FILES_ONLY );
+                    fc.setDialogTitle("Choose File Name of Log...");
+                    fc.setCurrentDirectory(new java.io.File(loggerUniversalLogPath));
+                    int ret = fc.showSaveDialog(LoggerSectionPanel.this);
+                    
+                    if (ret == JFileChooser.APPROVE_OPTION) {
+                        java.io.File thefile = fc.getSelectedFile();
+                        tmpFileName = thefile.getName();
+                        //stationData.setLoggingGlbParameter("path", loggerUniversalLogPath);
+                    }
+                    
+            		loggerParameters.name = tmpFileName;
+            	}
+            	*/
             	loggerChooserLoadValues();
             }});
         delimiterChooser.addActionListener(new ActionListener() {
@@ -321,7 +346,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
     		
 	    	if (loggerParameters.name.equalsIgnoreCase(LoggerParameters.GLOBALLOGNAME))
 	    		return 0;
-	    	else if (loggerParameters.name.equalsIgnoreCase(loggerStationName))
+	    	else if (loggerParameters.name.startsWith(loggerStationName))
 	    		return 1;
 	    	else if (loggerParameters.name.length() > 0) {
 	    		loggerChooser.addItem(loggerParameters.name);
@@ -342,9 +367,16 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
     private void loggerChooserLoadValues()
     {
     	preventSaveReplacement = true; // keeps the other combo boxes (delim/append) from changing
-		checkExecutionTimestamp.setSelected( new Boolean(stationData.getLoggingGlbParameter("logExecutionTimestamp")).booleanValue() );
-    	delimiterChooser.setSelectedIndex(getDelimiterIndex(stationData.getLoggingGlbParameter("delim")));
-    	autoAppendChooser.setSelectedIndex( Integer.parseInt(stationData.getLoggingGlbParameter("autoAppend")) );
+    	//if (loggerParameters.isGlobal() == true) {
+    		checkExecutionTimestamp.setSelected( new Boolean(stationData.getLoggingGlbParameter("logExecutionTimestamp")).booleanValue() );
+	    	delimiterChooser.setSelectedIndex(getDelimiterIndex(stationData.getLoggingGlbParameter("delim")));
+	    	autoAppendChooser.setSelectedIndex( Integer.parseInt(stationData.getLoggingGlbParameter("autoAppend")) );
+	    /*// this code is now redundant; since all delimiters and appenders are global-only
+    	} else
+    	{
+	    	delimiterChooser.setSelectedIndex(getDelimiterIndex(loggerParameters.delimiter.toString()));
+	        autoAppendChooser.setSelectedIndex(loggerParameters.intAutoAppend.intValue());
+    	} */
     	updateFileLabelStatus();
     	preventSaveReplacement = false;
     }
@@ -404,7 +436,14 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
     		autoAppendPolicy = new Integer(LoggerParameters.LOGGER_AR_ASK);
     	tmp=null;
 
-		/* MF (Bertoli suggests): global append should be the only mode for 0.7.4 */
+		/* MF (Bertoli suggests): global append should be the only mode for 0.7.4 
+    	if (isGlobal == false)
+		{
+		
+			// If not logging to global.csv, set the delimiter and append policy per logger
+    		loggerParameters.delimiter = delim;
+    		loggerParameters.intAutoAppend = autoAppendPolicy;
+    		*/
 
     		// Finally, set the globally effective 'delimiter' and 'append' mode for logs
 	    	stationData.setLoggingGlbParameter("delim",delim.toString());
