@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <shortcuts>
 	<programGroup defaultName="Java Modelling Tools" location="applications"/>
-	<shortcut name="JMT 0.7.4"
+	<shortcut name="JMT 0.7.5"
 	target="java" 
 	commandLine="-jar &quot;$INSTALL_PATH/JMT.jar&quot;" 
 	programGroup="yes"
@@ -17,7 +17,7 @@
 	terminal="no">
 	</shortcut>
 	
-	<shortcut name="JMT 0.7.4 1Gb Heap"
+	<shortcut name="JMT 0.7.5 1Gb Heap"
 	target="java" 
 	commandLine="-Xmx1000M -jar &quot;$INSTALL_PATH/JMT.jar&quot;" 
 	programGroup="yes"
@@ -33,7 +33,7 @@
 	terminal="no">
 	</shortcut>
 	
-	<shortcut name="Uninstall JMT 0.7.4" 
+	<shortcut name="Uninstall JMT 0.7.5" 
 	target="java" 
 	programGroup="yes" 
 	desktop="no" 
