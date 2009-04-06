@@ -40,6 +40,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 import jmt.framework.data.ArrayUtils;
 import jmt.framework.gui.graph.WhatIfPlot;
@@ -88,6 +89,10 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 	private int[] stations;
 	// Aggregate special value
 	private static final String AGGREGATE = "<html><b><i>Aggregate</i></b></html>";
+	
+	//Added by ASHANKA START
+	private TableColumn stationColumn;
+	//Added by ASHANKA STOP
 
 	/**
 	 * Builds a new GraphPanel, given an exact model data structure
@@ -255,6 +260,24 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		String current = (String) index.getSelectedItem();
 		if (!current.equals(currentIndex)) {
 			currentIndex = current;
+			//Added by ASHANKA START
+			if(currentIndex.equals(ExactConstants.INDICES_TYPES[4])){
+				if(stationColumn ==null){
+					stationColumn = table.getColumnModel().getColumn(2);					
+				}
+				//If the System Power is selected then Need to remove the Stations Column if present
+				//If column count is less than 3 then do nothing as Stations Column is already removed.
+				if(table.getColumnCount()==3){
+					table.removeColumn(stationColumn);					
+				}
+			}else{
+				//If any thing other than System Power is clicked then 
+				//restore the Stations Column only if it is not present.
+				if(table.getColumnCount()<3){
+					table.addColumn(stationColumn);
+				}
+			}
+			//Added by ASHANKA STOP
 			// System Response time
 			if (currentIndex.equals(AGGREGATE_TYPES[0])) {
 				tableScrollPane.setVisible(false);
@@ -276,6 +299,15 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 				graph.draw(0, model.getGlobalQ());
 				graph.fillPlot();
 			}
+			//Added by ASHANKA START
+			//For single Class TableScroll Pane is removed. 
+			else if (currentIndex.equals(ExactConstants.INDICES_TYPES[4])&& !model.isMultiClass()){
+				tableScrollPane.setVisible(false);
+				graph.clear(false);
+				graph.draw(0, model.getGlobalSP());
+				graph.fillPlot();
+			}
+			//Added by ASHANKA STOP
 			// otherwise
 			else {
 				tableScrollPane.setVisible(true);
@@ -342,8 +374,13 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		graph.clear(rowNum);
 		int classNum = classes[rowNum];
 		int statNum = stations[rowNum];
-
-		if (classNum < -1 || statNum < -1) {
+		
+		//Modified the below condition by ASHANKA for 
+		//System Power there is no Station Panel
+		//in fact the station panel is removed 
+		//System Power is Indices type 4
+		//if (classNum < -1 || statNum < -1) {
+		if (classNum < -1 || (statNum < -1 && !currentIndex.equals(ExactConstants.INDICES_TYPES[4]))) {
 			// Resets view
 			autosizeGraph();
 			return;
@@ -393,7 +430,16 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 				graph.draw(rowNum, model.getPerStationU()[statNum]);
 			}
 		}
-
+		//Added by ASHANKA START
+		//System Power
+		else if (currentIndex.equals(ExactConstants.INDICES_TYPES[4])){					
+			if (classNum >= 0) {				
+				graph.draw(rowNum, model.getPerClassSP()[classNum]);				
+			} else if (classNum == -1) {				
+				graph.draw(rowNum, model.getGlobalSP());				
+			}			
+		}
+		//Added by ASHANKA STOP
 		// Resets view
 		autosizeGraph();
 	}

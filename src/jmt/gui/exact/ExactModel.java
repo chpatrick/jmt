@@ -1847,7 +1847,45 @@ public class ExactModel implements ExactConstants {
 			return neg;
 		}
 	}
-
+	//Added by ASHANKA START
+	//System Power
+	//Unlike other performance indices we don't have station level
+	//aggregate and individual 
+	public double[][] getPerClassSP(){		
+		if(resTimes== null){
+			return null;
+		}
+		double[][] retVal = new double[classes][iterations];
+        // Scans for every iteration (what if analysis)
+        for (int k=0; k<iterations; k++) {
+            for(int i=0; i<retVal.length; i++){
+            	try{
+            		retVal[i][k] = getPerClassX()[i][k]/getPerClassR()[i][k];
+            	}
+            	catch(ArithmeticException ae){
+            		retVal[i][k]=0;
+            	}
+            }
+        }
+        return retVal;    	
+	}
+	
+	public double[] getGlobalSP(){
+		if(resTimes==null){
+			return null;
+		}
+		double[] retVal = new double[iterations];
+    	for (int k=0; k<iterations; k++) {
+    		try{
+    			retVal[k] = getGlobalX()[k]/getGlobalR()[k];
+    		}
+    		catch (ArithmeticException e){
+    			retVal[k] =0;
+    		}
+    	}
+        return retVal;
+	}
+	//Added by ASHANKA STOP
 	/**
 	 * This method tells if visits were set or are all unitary (or zero if
 	 * corresponding service time is zero). This is used to show correct panel layout

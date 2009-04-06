@@ -74,6 +74,7 @@ import jmt.gui.exact.panels.ServiceDemandsPanel;
 import jmt.gui.exact.panels.ServiceTimesPanel;
 import jmt.gui.exact.panels.StationsPanel;
 import jmt.gui.exact.panels.SynopsisPanel;
+import jmt.gui.exact.panels.SysPowerPanel;
 import jmt.gui.exact.panels.ThroughputPanel;
 import jmt.gui.exact.panels.UtilizationPanel;
 import jmt.gui.exact.panels.VisitsPanel;
@@ -710,17 +711,29 @@ public class ExactWizard extends Wizard {
 		QueueLenPanel queuelength = new QueueLenPanel(this);
 		ResTimePanel restimes = new ResTimePanel(this);
 		UtilizationPanel utilizations = new UtilizationPanel(this);
+		//Added by ASHANKA START
+		//Introducing the new System Power Panel as a Tabbed Pane
+		SysPowerPanel systemPower = new SysPowerPanel(this);		
+		//Added by ASHANKA STOP
 		if (selector != null) {
 			selector.addSolutionPanel(throughput);
 			selector.addSolutionPanel(queuelength);
 			selector.addSolutionPanel(restimes);
 			selector.addSolutionPanel(utilizations);
+			//Added by ASHANKA START
+			// for System Power
+			selector.addSolutionPanel(systemPower);
+			//Added by ASHANKA STOP
 			jtp.add(selector);
 		} else {
 			jtp.add(throughput);
 			jtp.add(queuelength);
 			jtp.add(restimes);
 			jtp.add(utilizations);
+			//Added by ASHANKA START
+			//for System Power
+			jtp.add(systemPower);
+			//Added by ASHANKA STOP
 		}
 		//NEW Dall'Orso 5-5-2005
 		SynopsisPanel synPane;

@@ -50,7 +50,11 @@ public interface ExactConstants {
 	public static final int MAX_STATIONS = 50;
 
 	// Performance indices
-	public static final String[] INDICES_TYPES = { "Throughput", "Queue length", "Residence Times", "Utilization" };
+	//Modified by ASHANKA START
+	//TODO Later System Power will be replaced for Residence Time2
+	//public static final String[] INDICES_TYPES = { "Throughput", "Queue length", "Residence Times", "Utilization" };
+	public static final String[] INDICES_TYPES = { "Throughput", "Queue length", "Residence Times", "Utilization", "System Power"};
+	//Modified by ASHANKA STOP
 	// Aggregate performance indices
 	public static final String[] AGGREGATE_TYPES = { "System Response Time", "System Throughput", "Number of Customers" };
 
@@ -116,6 +120,12 @@ public interface ExactConstants {
 	public static final String DESCRIPTION_GRAPH = "<html><body align=\"left\"><font size=\"4\"><b>Graphical Results</b>"
 			+ "</font><font size=\"3\"><br>Select performance indices to be plotted. Left-click and drag on the graph to zoom "
 			+ "it, right-click to save it in EPS or PNG format.</body></html>";
+	
+	//Added by ASHANKA START
+	public static final String DESCRIPTION_SYSPOWER = "<html><body align=\"left\"><font size=\"4\"><b>System Power</b>"
+		+ "</font><font size=\"3\"><br>System Power (Aggregate or Per Class): Throughout Xi /Response Time Ri</body></html>";
+
+	//Added by ASHANKA STOP
 
 	/** What-if Analysis type constants */
 	public static final String WHAT_IF_ARRIVAL = "Arrival Rates";
