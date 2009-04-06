@@ -531,6 +531,8 @@ public abstract class Distribution implements ServiceStrategy {
 					objval = new Float(Float.parseFloat(value));
 				} else if (valueClass.equals(Double.class)) {
 					objval = new Double(Double.parseDouble(value));
+				} else if (valueClass.equals(Boolean.class)) {
+					objval = new Boolean(value);
 				} else {
 					return false;
 				}

@@ -40,6 +40,11 @@ public class Burst extends NetNode implements Distribution {
 	private Parameter lengthParamA;
 	/** parameter of length distribution B */
 	private Parameter lengthParamB;
+	/**
+	 * If <tt>true</tt>, the behavior of the interval change is set to Round-Robin;
+	 * if <tt>false</tt> the interval type is changed according to the probability parameter.
+	 */
+	private Boolean isRoundRobin;
 
 	/** absolute system time of the interval end */
 	private double intervalEnd;
@@ -63,10 +68,15 @@ public class Burst extends NetNode implements Distribution {
 	 * distribution A and the related parameter
 	 * @param distrContB the DistributionContainer containing the length
 	 * distribution A and the related parameter
+	 * @param isRoundRobin if <tt>true</tt>, the behavior of the interval change is
+	 * set to Round-Robin. That is, there is a pure alternation of the interval types,
+	 * starting with interval A: A-B-A-B-A-B-A-B... In this case, the
+	 * probability parameter is ignored. If <tt>false</tt>, the interval type is
+	 * changed according to the probability parameter
 	 * @throws IncorrectDistributionParameterException if the probability
 	 * is not a value comprised between 0 and 1
 	 */
-	public Burst(Double probability, DistributionContainer distrContA, DistributionContainer distrContB)
+	public Burst(Double probability, DistributionContainer distrContA, DistributionContainer distrContB, Boolean isRoundRobin)
 			throws IncorrectDistributionParameterException {
 
 		super("@@JSIM:RESERVED@@ Burst Distribution " + count++);
@@ -82,10 +92,30 @@ public class Burst extends NetNode implements Distribution {
 		this.lengthParamA = distrContA.getParameter();
 		this.lenghtDistrB = distrContB.getDistribution();
 		this.lengthParamB = distrContB.getParameter();
+		this.isRoundRobin = isRoundRobin;
 
 		// sets the starting distribution and the starting interval end
 		intervalEnd = changeInterval();
 		sendMe(intervalEnd, NetEvent.EVENT_DISTRIBUTION_CHANGE);
+	}
+	
+	/**
+	 * Creates a new non-Round-Robin Burst distribution with the specified probability
+	 * of having events of type A. <tt>distrContA</tt> is the DistributionContainer
+	 * containing the length distribution A and the related parameters, while
+	 * <tt>distrContB</tt> is the same of <tt>distrContA</tt> but for distribution B.
+	 * 
+	 * @param probability the probability of having events of type A
+	 * @param distrContA the DistributionContainer containing the length
+	 * distribution A and the related parameter
+	 * @param distrContB the DistributionContainer containing the length
+	 * distribution A and the related parameter
+	 * @throws IncorrectDistributionParameterException if the probability
+	 * is not a value comprised between 0 and 1
+	 */
+	public Burst(Double probability, DistributionContainer distrContA, DistributionContainer distrContB)
+			throws IncorrectDistributionParameterException {
+		this(probability, distrContA, distrContB, new Boolean(false));
 	}
 
 	/**
@@ -115,12 +145,27 @@ public class Burst extends NetNode implements Distribution {
 	 */
 	private double changeInterval() throws IncorrectDistributionParameterException {
 
-		if (engine.raw() < probability.doubleValue()) {
-			currentLengthDistr = lenghtDistrA;
-			currentLengthPar = lengthParamA;
+		if(isRoundRobin.booleanValue()) {
+			// alternates the interval distributions, starting with distribution A
+			if((currentLengthDistr == null) || // the length distribution has not been initialized yet
+				currentLengthDistr.equals(lenghtDistrB)) {
+				// sets it to length distribution A
+				currentLengthDistr = lenghtDistrA;
+				currentLengthPar = lengthParamA;
+			} else {
+				// sets it to length distribution B
+				currentLengthDistr = lenghtDistrB;
+				currentLengthPar = lengthParamB;
+			}
 		} else {
-			currentLengthDistr = lenghtDistrB;
-			currentLengthPar = lengthParamB;
+			// changes the interval distributions according to the probability parameter
+			if (engine.raw() < probability.doubleValue()) {
+				currentLengthDistr = lenghtDistrA;
+				currentLengthPar = lengthParamA;
+			} else {
+				currentLengthDistr = lenghtDistrB;
+				currentLengthPar = lengthParamB;
+			}
 		}
 
 		return currentLengthDistr.nextRand(currentLengthPar);
