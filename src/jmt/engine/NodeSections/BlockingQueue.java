@@ -18,12 +18,10 @@
 
 package jmt.engine.NodeSections;
 
-import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 import jmt.common.exception.NetException;
-import jmt.engine.NetStrategies.QueueGetStrategy;
-import jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy;
 import jmt.engine.QueueNet.BlockingRegion;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
@@ -61,11 +59,7 @@ public class BlockingQueue extends InputSection {
 	//coolStart is true if there are no waiting jobs when the queue is started
 	private boolean coolStart;
 
-	private boolean infinite = true;
-
 	private int size;
-
-	private QueueGetStrategy getStrategy;
 
 	private BlockingRegion blockingRegion;
 
@@ -89,7 +83,6 @@ public class BlockingQueue extends InputSection {
 		super(true);
 
 		coolStart = true;
-		getStrategy = new FCFSstrategy();
 		//infinite queue
 		this.size = -1;
 		//sets the blocking region owner of this blocking queue
@@ -131,34 +124,32 @@ public class BlockingQueue extends InputSection {
 	}
 
 	/**
-	 * Gets, if exists, the first job in queue that is not class blocked
+	 * Gets, if exists, the first job in queue that is not class blocked and has an higher priority.
 	 * @return the first job in queue that is not class blocked; null otherwise.
 	 */
-	private Job getFirstNotBlockedJob() {
+	private Job getNextNotBlockedJob() {
 
 		if (jobsList == null) {
 			return null;
 		}
 
-		LinkedList list = (LinkedList) jobsList.getJobList();
+		List jobList = jobsList.getJobList();
 
-		ListIterator iterator = list.listIterator();
-
-		JobInfo jobInfo;
-		Job job;
-		JobClass jobClass;
-
+		ListIterator iterator = jobList.listIterator();
+		
+		Job nextJob = null;
+		int nextJobPriority = 0;
 		while (iterator.hasNext()) {
-			jobInfo = (JobInfo) iterator.next();
-			job = jobInfo.getJob();
-			jobClass = job.getJobClass();
-
-			if (!blockingRegion.isBlocked(jobClass)) {
-				//this job is not class blocked
-				return job;
-			}
+			JobInfo info = (JobInfo) iterator.next();
+			JobClass jobClass = info.getJob().getJobClass();
+			if (nextJob == null || nextJobPriority < jobClass.getPriority()) {
+				if (!blockingRegion.isBlocked(jobClass)) {
+					nextJob = info.getJob();
+					nextJobPriority = jobClass.getPriority();
+				}
+			} 
 		}
-		return null;
+		return nextJob;
 	}
 
 	/** This method implements a blocking queue
@@ -188,7 +179,7 @@ public class BlockingQueue extends InputSection {
 
 				//get the first job which is not blocked (if exists)
 
-				notBlockedJob = getFirstNotBlockedJob();
+				notBlockedJob = getNextNotBlockedJob();
 
 				if (notBlockedJob == null) {
 					//all jobs in queue are class blocked
@@ -218,7 +209,7 @@ public class BlockingQueue extends InputSection {
 				//search for the first job which is not blocked (if exists)
 				// and forward it
 
-				notBlockedJob = getFirstNotBlockedJob();
+				notBlockedJob = getNextNotBlockedJob();
 
 				if (notBlockedJob != null) {
 					JobClass jobClass = notBlockedJob.getJobClass();
@@ -243,7 +234,7 @@ public class BlockingQueue extends InputSection {
 				//search for the first job which is not blocked (if exists)
 				// and forward it
 
-				notBlockedJob = getFirstNotBlockedJob();
+				notBlockedJob = getNextNotBlockedJob();
 
 				if (notBlockedJob != null) {
 					JobClass jobClass = notBlockedJob.getJobClass();
