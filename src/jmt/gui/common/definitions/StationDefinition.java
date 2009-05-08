@@ -214,7 +214,7 @@ public interface StationDefinition {
     public String getLoggingGlbParameter(String selector);
 
     /** Sets a global logging parameter as a CommonModel variable. <I>MF'08 0.7.4</I>
-     * @param selector: either "path", "delim", or "autoAppend" 
+     * @param selector: either "path", "delim", "decimalSeparator", or "autoAppend" 
      * @param value: String to assign to variable named by Selector.
      */
     public void setLoggingGlbParameter(String selector, String value);

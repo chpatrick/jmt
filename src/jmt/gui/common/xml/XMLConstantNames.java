@@ -33,6 +33,7 @@ public interface XMLConstantNames {
 	public static final String XML_A_ROOT_DURATION = "maxTime";
 	public static final String XML_A_ROOT_LOGPATH = "logPath";	/* MF08 0.7.4 - path of logs */
 	public static final String XML_A_ROOT_LOGDELIM = "logDelimiter";	/* MF08 0.7.4 - delimiter character in log */
+	public static final String XML_A_ROOT_LOGDECIMALSEPARATOR = "logDecimalSeparator";	/* MF08 0.7.4 - delimiter character in log */
 	public static final String XML_A_ROOT_LOGREPLACE = "logReplaceMode";	/* MF08 0.7.4 - replacement mode */
 	public static final String XML_A_ROOT_LOGEXECUTIONTIMESTAMP = "logExecutionTimestamp";	/* MF08 0.7.4 - ISO8601 timestamp on/off */
 	public static final String XML_A_ROOT_POLLING = "polling";

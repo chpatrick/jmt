@@ -84,6 +84,7 @@ public class Defaults implements CommonConstants {
 
         // Logger Parameters (for global log)
         def.setProperty("loggerDelimiter", ";");
+        def.setProperty("loggerDecimalSeparator", ".");
         def.setProperty("loggerAutoAppend", ""+jmt.engine.log.LoggerParameters.LOGGER_AR_ASK);
         def.setProperty("loggerFilePath", "");
 

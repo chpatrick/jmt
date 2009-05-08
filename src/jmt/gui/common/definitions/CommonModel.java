@@ -18,16 +18,15 @@
 
 package jmt.gui.common.definitions;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.Vector;
 
+import jmt.engine.log.JSimLogger;
+import jmt.engine.log.LoggerParameters;
 import jmt.framework.data.BDMap;
 import jmt.framework.data.BDMapImpl;
 import jmt.framework.data.CachedHashMap;
@@ -35,8 +34,6 @@ import jmt.gui.common.CommonConstants;
 import jmt.gui.common.Defaults;
 import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
-import jmt.engine.log.JSimLogger;
-import jmt.engine.log.LoggerParameters;
 
 /**
  * Created by IntelliJ IDEA.
@@ -1037,6 +1034,8 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
     		return loggerGlbParams.path;
     	else if (selector.equalsIgnoreCase("delim") == true)
     		return loggerGlbParams.delimiter;
+    	else if (selector.equalsIgnoreCase("decimalSeparator") == true)
+    		return loggerGlbParams.decimalSeparator;
     	else if (selector.equalsIgnoreCase("autoAppend") == true)
     		return loggerGlbParams.autoAppendMode.toString();
     	else if (selector.equalsIgnoreCase("logExecutionTimestamp") == true)
@@ -1054,9 +1053,12 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
     		loggerGlbParams = new LoggerGlobalParameters();
 
     	// debugLog.debug("glbParameter <" + selector + "=" + value + "> assigned by " + (new Exception().getStackTrace()[1]).toString().substring(19));
+    	debugLog.debug("glbParameter <" + selector + "=" + value + ">");
     	
     	if (selector.equalsIgnoreCase("path") == true)
     		this.loggerGlbParams.path = value;
+    	else if (selector.equalsIgnoreCase("decimalSeparator") == true)
+    		this.loggerGlbParams.decimalSeparator = value;
     	else if (selector.equalsIgnoreCase("delim") == true)
     		this.loggerGlbParams.delimiter = value;
     	else if (selector.equalsIgnoreCase("autoAppend") == true)
@@ -1086,9 +1088,6 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		String[] lknames2;
 		int size = 0;
 		boolean globalWasProcessed = false;
-
-		if (loggerkeys == null)
-			return null;
 		
 		// get the list of all filenames from their keys
 		for (int i=0; i<loggerkeyssize; i++)
@@ -2353,6 +2352,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	protected class LoggerGlobalParameters {
 		public String path;
 		public String delimiter;
+		public String decimalSeparator;
 		public Integer autoAppendMode;
 		public String logExecutionTimestamp;
 		
@@ -2360,6 +2360,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		{
 			path = ".";
 			delimiter = Defaults.get("loggerDelimiter");
+			decimalSeparator = Defaults.get("loggerDecimalSeparator");
 			autoAppendMode = Defaults.getAsInteger("loggerAutoAppend");
 			logExecutionTimestamp = "true";
 			

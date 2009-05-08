@@ -44,9 +44,9 @@ public class LoggerParameters{
 				boolLoggername = new Boolean(true);
 				boolTimeStamp = new Boolean(true);
 				boolJobID = new Boolean(true);
-				boolJobClass = new Boolean(true);
-				boolTimeSameClass = new Boolean(true);
-				boolTimeAnyClass = new Boolean(true);
+				boolJobClass = new Boolean(false);
+				boolTimeSameClass = new Boolean(false);
+				boolTimeAnyClass = new Boolean(false);
 				name = new String(GLOBALLOGNAME);
 				path = new String("./");
 				enable();

@@ -196,6 +196,13 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		else {
 			model.setLoggingGlbParameter("delim",Defaults.get("loggerDelimiter"));
 		}
+		String logDecimalSeparator = root.getAttribute(XML_A_ROOT_LOGDECIMALSEPARATOR);
+		if (logDecimalSeparator != null && logDecimalSeparator != "") {
+			model.setLoggingGlbParameter("decimalSeparator",logDecimalSeparator);
+		}
+		else {
+			model.setLoggingGlbParameter("decimalSeparator",".");
+		}
 		String logExecutionTimestamp = root.getAttribute(XML_A_ROOT_LOGEXECUTIONTIMESTAMP);
 		if (logExecutionTimestamp != null && logExecutionTimestamp != "") {
 			model.setLoggingGlbParameter("logExecutionTimestamp",logExecutionTimestamp);

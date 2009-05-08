@@ -190,6 +190,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 		elem.setAttribute(XML_A_ROOT_LOGPATH, model.getLoggingGlbParameter("path"));
 		elem.setAttribute(XML_A_ROOT_LOGREPLACE,model.getLoggingGlbParameter("autoAppend"));
 		elem.setAttribute(XML_A_ROOT_LOGDELIM,model.getLoggingGlbParameter("delim"));
+		elem.setAttribute(XML_A_ROOT_LOGDECIMALSEPARATOR,model.getLoggingGlbParameter("decimalSeparator"));
 		elem.setAttribute(XML_A_ROOT_LOGEXECUTIONTIMESTAMP,model.getLoggingGlbParameter("logExecutionTimestamp"));
 		// Write all elements
 		writeClasses(modelDoc, elem, model);

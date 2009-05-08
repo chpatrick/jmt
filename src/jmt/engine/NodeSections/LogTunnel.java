@@ -45,7 +45,7 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/ {
 
 	private final boolean DEBUG = true;
 	
-	private char chDelimiter;
+	private char chDelimiter, decimalSeparator;
 	private int intReplacePolicy;
 	private boolean boolExecutionTimestamp;
 	private String strTimestampValue;
@@ -97,6 +97,12 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/ {
 		lp.path = getOwnerNode().getSimParameters().getLogPath();
 		intReplacePolicy = new Integer(getOwnerNode().getSimParameters().getLogReplaceMode()).intValue();
 		chDelimiter = (getOwnerNode().getSimParameters().getLogDelimiter().charAt(0));
+		try
+		{
+			String ds = getOwnerNode().getSimParameters().getLogDecimalSeparator();
+			if(ds.length() > 0) decimalSeparator = ds.charAt(0);
+			else decimalSeparator = '.';
+		}catch(Exception e) { debugLog.debug(e.toString()); }
 		boolExecutionTimestamp = new Boolean(getOwnerNode().getSimParameters().getLogExecutionTimestamp()).booleanValue();
 		strTimestampValue = getOwnerNode().getSimParameters().getTimestampValue();
 		
@@ -327,7 +333,7 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/ {
 
 					if (lp.boolTimeStamp.booleanValue() == true)
 					{
-						s += Double.toString(message.getTime());
+						s += Double.toString(message.getTime()).replace('.', decimalSeparator).replace(',', decimalSeparator);
 						s += chDelimiter;
 					}
 
@@ -348,7 +354,7 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/ {
 						Integer idx = (Integer)classesIndexerFast.get(message.getJob().getJobClass().getName());
 
 						if (idx != null)
-							s += Double.toString(message.getTime() - classesTimeAccounting[idx.intValue()]);
+							s += Double.toString(message.getTime() - classesTimeAccounting[idx.intValue()]).replace('.', decimalSeparator).replace(',', decimalSeparator);
 						else
 						{
 							s += "0";
@@ -360,7 +366,7 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/ {
 					}
 
 					if (lp.boolTimeAnyClass.booleanValue() == true) {
-						s += Double.toString(message.getTime() - classesTimePreviousAny);
+						s += Double.toString(message.getTime() - classesTimePreviousAny).replace('.', decimalSeparator).replace(',', decimalSeparator);
 						classesTimePreviousAny = message.getTime();
 						s += chDelimiter;
 					}

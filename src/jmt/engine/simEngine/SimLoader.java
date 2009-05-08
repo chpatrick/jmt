@@ -272,6 +272,11 @@ public class SimLoader {
 				simParam.setLogDelimiter(temp_ld);
 				
 			}
+			if (root.hasAttribute("logDecimalSeparator")) {
+				String temp_ld = root.getAttribute("logDecimalSeparator");
+				simParam.setLogDecimalSeparator(temp_ld);
+				
+			}
 			if (root.hasAttribute("logReplaceMode")) {
 				String temp_lr = root.getAttribute("logReplaceMode");
 				simParam.setLogReplaceMode(temp_lr);
