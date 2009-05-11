@@ -29,7 +29,7 @@ import java.util.NoSuchElementException;
  * @author Federico Granata
  * @version 7-ott-2003 14.50.16
  */
-public class NewEvQueue {
+public class CircularEventQueue {
 
 	private static final boolean DEBUG = false;
 
@@ -47,7 +47,7 @@ public class NewEvQueue {
 	 * Allocates a new EventQueue object, with an initial capacity.
 	 * @param initialCapacity	The initial capacity of the queue.
 	 */
-	public NewEvQueue(int initialCapacity) {
+	public CircularEventQueue(int initialCapacity) {
 		if (initialCapacity <= 0) {
 			data = new SimEvent[2];
 		} else {
@@ -58,7 +58,7 @@ public class NewEvQueue {
 	/**
 	 * Allocates a new EventQueue object.
 	 */
-	public NewEvQueue() {
+	public CircularEventQueue() {
 		data = new SimEvent[2];
 	}
 
@@ -339,7 +339,7 @@ public class NewEvQueue {
 			}
 
 			public Object nextElement() {
-				synchronized (NewEvQueue.this) {
+				synchronized (CircularEventQueue.this) {
 					if (count < size) {
 						return data[count++];
 					}
@@ -386,7 +386,7 @@ public class NewEvQueue {
 	}
 
 	public static void test() {
-		NewEvQueue q = new NewEvQueue();
+		CircularEventQueue q = new CircularEventQueue();
 
 		for (int i = 0; i < 5; i++) {
 			q.add(new SimEvent(0, i, 0, 0, 0, null));

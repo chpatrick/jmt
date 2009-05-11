@@ -3,8 +3,8 @@
 
 package jmt.engine.simEngine;
 
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * This class implements an event queue used internally by the Sim_system to
@@ -20,7 +20,7 @@ import java.util.Vector;
  * moved down one space. A better method would be to use a circular array.
  */
 
-public class EventQueue extends Vector {
+public class ListEventQueue extends ArrayList {
 	/**
 	 * 
 	 */
@@ -30,7 +30,7 @@ public class EventQueue extends Vector {
 	/**
 	 * Allocates a new EventQueue object.
 	 */
-	public EventQueue() {
+	public ListEventQueue() {
 		super();
 	}
 
@@ -38,7 +38,7 @@ public class EventQueue extends Vector {
 	 * Allocates a new EventQueue object, with an initial capacity.
 	 * @param initialCapacity	The initial capacity of the queue.
 	 */
-	public EventQueue(int initialCapacity) {
+	public ListEventQueue(int initialCapacity) {
 		super(initialCapacity);
 	}
 
@@ -47,9 +47,7 @@ public class EventQueue extends Vector {
 	 * @return           The next event.
 	 */
 	public SimEvent pop() {
-		SimEvent event = (SimEvent) firstElement();
-		removeElementAt(0);
-		return event;
+		return (SimEvent) this.remove(0);
 	}
 
 	/**
@@ -57,7 +55,7 @@ public class EventQueue extends Vector {
 	 * @return	The next event.
 	 */
 	public SimEvent top() {
-		return (SimEvent) firstElement();
+		return (SimEvent) this.get(0);
 	}
 
 	/**
@@ -66,22 +64,18 @@ public class EventQueue extends Vector {
 	 * @param new_event	The event to be put on the queue.
 	 */
 	public void add(SimEvent new_event) {
-		int i;
-		Enumeration e;
-		SimEvent event;
-
-		i = -1;
-		for (e = elements(); e.hasMoreElements() && (i == -1);) {
-			event = (SimEvent) e.nextElement();
+		int i = -1;
+		for (Iterator it = this.iterator(); it.hasNext() && (i == -1);) {
+			SimEvent event = (SimEvent) it.next();
 			if (event.eventTime() > new_event.eventTime()) {
 				i = indexOf(event);
 			}
 		}
 
 		if (i == -1) {
-			addElement(new_event);
+			super.add(new_event);
 		} else {
-			insertElementAt(new_event, i);
+			super.add(i, new_event);
 		}
 	}
 }

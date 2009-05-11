@@ -29,14 +29,14 @@ import java.util.Enumeration;
  */
 public class SuperEventQueue {
 
-	private NewEvQueue future;
-	private NewEvQueue now;
+	private CircularEventQueue future;
+	private CircularEventQueue now;
 
 	private double clock;
 
 	public SuperEventQueue() {
-		future = new NewEvQueue();
-		now = new NewEvQueue();
+		future = new CircularEventQueue();
+		now = new CircularEventQueue();
 	}
 
 	/**

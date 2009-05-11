@@ -7,6 +7,7 @@ package jmt.engine.simEngine;
 
 import java.text.NumberFormat;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -23,10 +24,10 @@ public class SimSystem {
 
 	//TODO: verificare quale classe funziona meglio per la future event queue
 	//	static private EventQueue future;   // The future event queue
-	static private NewEvQueue future; // The future event queue
+	static private CircularEventQueue future; // The future event queue
 	//	static private SuperEventQueue future; // The future event queue
 
-	static private EventQueue deferred; // The deferred event queue
+	static private ListEventQueue deferred; // The deferred event queue
 
 	static private double clock; // Holds the current global simulation time
 	static private boolean running; // Tells whether the run() member been called yet
@@ -84,10 +85,10 @@ public class SimSystem {
 		//TODO: verificare quale classe funziona meglio per la future event queue
 
 		//		future = new EventQueue();
-		future = new NewEvQueue();
+		future = new CircularEventQueue();
 		//      future = new SuperEventQueue();
 
-		deferred = new EventQueue();
+		deferred = new ListEventQueue();
 
 		clock = 0.0;
 		running = false;
@@ -338,7 +339,7 @@ public class SimSystem {
 		SimEvent event;
 		//DEK (Federico Granata) 25-11-2003
 		for (int i = 0; i < deferred.size(); i++) {
-			event = (SimEvent) deferred.elementAt(i);
+			event = (SimEvent) deferred.get(i);
 			if (event.getDest() == d) {
 				if (p.match(event)) {
 					w++;
@@ -363,16 +364,15 @@ public class SimSystem {
 	}
 
 	static synchronized void select(int src, SimPredicate p) {
-		Enumeration e;
 		SimEvent ev = null;
 		boolean found = false;
 
 		// retrieve + remove event with dest == src
-		for (e = deferred.elements(); (e.hasMoreElements()) && !found;) {
-			ev = (SimEvent) e.nextElement();
+		for (Iterator it = deferred.iterator(); it.hasNext() && !found;) {
+			ev = (SimEvent) it.next();
 			if (ev.getDest() == src) {
 				if (p.match(ev)) {
-					deferred.removeElement(ev);
+					deferred.remove(ev);
 					found = true;
 				}
 			}
