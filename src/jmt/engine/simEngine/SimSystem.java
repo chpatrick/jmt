@@ -24,10 +24,10 @@ public class SimSystem {
 
 	//TODO: verificare quale classe funziona meglio per la future event queue
 	//	static private EventQueue future;   // The future event queue
-	static private CircularEventQueue future; // The future event queue
+	static private EventQueue future; // The future event queue
 	//	static private SuperEventQueue future; // The future event queue
 
-	static private ListEventQueue deferred; // The deferred event queue
+	static private EventQueue deferred; // The deferred event queue
 
 	static private double clock; // Holds the current global simulation time
 	static private boolean running; // Tells whether the run() member been called yet
@@ -257,7 +257,7 @@ public class SimSystem {
 			// Checks if next events are at same time...
 			boolean trymore = (future.size() > 0);
 			while (trymore) {
-				event = future.top();
+				event = future.peek();
 				if (event.eventTime() == now) {
 					processEvent(future.pop());
 					trymore = (future.size() > 0);
@@ -338,8 +338,8 @@ public class SimSystem {
 		int w = 0;
 		SimEvent event;
 		//DEK (Federico Granata) 25-11-2003
-		for (int i = 0; i < deferred.size(); i++) {
-			event = (SimEvent) deferred.get(i);
+		for (Iterator it = deferred.iterator(); it.hasNext();) {
+			event = (SimEvent) it.next();
 			if (event.getDest() == d) {
 				if (p.match(event)) {
 					w++;
@@ -387,16 +387,15 @@ public class SimSystem {
 	}
 
 	static synchronized void cancel(int src, SimPredicate p) {
-		Enumeration e;
 		SimEvent ev = null;
 		boolean found = false;
 
 		// retrieves + remove event with dest == src
-		for (e = future.elements(); (e.hasMoreElements()) && !found;) {
-			ev = (SimEvent) e.nextElement();
+		for (Iterator it = future.iterator(); it.hasNext() && !found;) {
+			ev = (SimEvent) it.next();
 			if (ev.getSrc() == src) {
 				if (p.match(ev)) {
-					future.removeElement(ev);
+					it.remove();
 					found = true;
 				}
 			}

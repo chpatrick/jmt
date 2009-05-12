@@ -20,7 +20,7 @@ import java.util.Iterator;
  * moved down one space. A better method would be to use a circular array.
  */
 
-public class ListEventQueue extends ArrayList {
+public class ListEventQueue extends ArrayList implements EventQueue {
 	/**
 	 * 
 	 */
@@ -78,4 +78,12 @@ public class ListEventQueue extends ArrayList {
 			super.add(i, new_event);
 		}
 	}
+
+	public SimEvent peek() {
+		return top();
+	}
+
+	public boolean remove(SimEvent ev) {
+		return super.remove(ev);
+	}	
 }

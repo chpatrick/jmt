@@ -19,6 +19,7 @@
 package jmt.engine.simEngine;
 
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -29,7 +30,7 @@ import java.util.NoSuchElementException;
  * @author Federico Granata
  * @version 7-ott-2003 14.50.16
  */
-public class CircularEventQueue {
+public class CircularEventQueue implements EventQueue {
 
 	private static final boolean DEBUG = false;
 
@@ -285,14 +286,19 @@ public class CircularEventQueue {
 	 * removes the selected element
 	 * @param event
 	 */
-	public void removeElement(SimEvent event) {
-		int i;
+	public boolean removeElement(SimEvent event) {
+		int i = -1;
 		for (i = start; i <= end; i++) {
 			if (data[i].equals(event)) {
 				break;
 			}
 		}
-		remove(i);
+		if (i >= 0) {
+			remove(i);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private void remove(int index) {
@@ -407,6 +413,36 @@ public class CircularEventQueue {
 
 		//	   System.out.println("q = \n" + q);
 
+	}
+
+	public Iterator iterator() {
+		return new Iter();
+	}
+
+	public SimEvent peek() {
+		return top();
+	}
+
+	public boolean remove(SimEvent ev) {
+		return removeElement(ev);
+	}
+	
+	private class Iter implements Iterator {
+		Enumeration en = elements();
+		SimEvent lastEvent;
+		public boolean hasNext() {
+			return en.hasMoreElements();
+		}
+
+		public Object next() {
+			lastEvent = (SimEvent) en.nextElement();
+			return lastEvent;
+		}
+
+		public void remove() {
+			CircularEventQueue.this.remove(lastEvent);
+		}
+		
 	}
 
 }
