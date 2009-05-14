@@ -16,7 +16,9 @@ public class SimEvent implements Cloneable {
 	private int entDst; // id of entity which event will be sent to
 	private int tag; // the user defined type of event
 	private Object data; // any data the event is carrying
-
+	/** This field should never be set explicitly. It's used by the EventQueue for ordering purposes. */
+	int internalOrdering;
+	
 	//
 	// Public library interface
 	//

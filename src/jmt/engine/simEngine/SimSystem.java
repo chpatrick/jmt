@@ -6,9 +6,9 @@
 package jmt.engine.simEngine;
 
 import java.text.NumberFormat;
-import java.util.Enumeration;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 /**
  * This is the system class which manages the simulation. All
@@ -20,7 +20,7 @@ public class SimSystem {
 	private static boolean DEBUG = false;
 
 	// Private data members
-	static private Vector entities; // The current entity list
+	static private List entities; // The current entity list
 
 	//TODO: verificare quale classe funziona meglio per la future event queue
 	//	static private EventQueue future;   // The future event queue
@@ -80,14 +80,15 @@ public class SimSystem {
 	 */
 	static public void initialize() {
 
-		entities = new Vector();
+		entities = new ArrayList();
 
 		//TODO: verificare quale classe funziona meglio per la future event queue
 
-		//		future = new EventQueue();
-		future = new CircularEventQueue();
-		//      future = new SuperEventQueue();
-
+		// future = new ListEventQueue();
+		// future = new CircularEventQueue();
+		// future = new SuperEventQueue();
+		future = new HybridEventQueue();
+		
 		deferred = new ListEventQueue();
 
 		clock = 0.0;
@@ -141,7 +142,7 @@ public class SimSystem {
 	 * @return A reference to the entity, or null if it could not be found
 	 */
 	static final public SimEntity getEntity(int id) {
-		return (SimEntity) entities.elementAt(id);
+		return (SimEntity) entities.get(id);
 	}
 
 	/** Finds an entity by its name.
@@ -149,11 +150,10 @@ public class SimSystem {
 	 * @return A reference to the entity, or null if it could not be found
 	 */
 	static public SimEntity getEntity(String name) {
-		Enumeration e;
 		SimEntity ent, found = null;
 
-		for (e = entities.elements(); e.hasMoreElements();) {
-			ent = (SimEntity) e.nextElement();
+		for (Iterator it = entities.iterator(); it.hasNext();) {
+			ent = (SimEntity) it.next();
 			if (name.compareTo(ent.getName()) == 0) {
 				found = ent;
 			}
@@ -191,7 +191,7 @@ public class SimSystem {
 
 				// Only add once!
 				e.setId(entities.size());
-				entities.addElement(e);
+				entities.add(e);
 			}
 		}
 	}
@@ -209,7 +209,7 @@ public class SimSystem {
 		} else {
 			System.out.println("Adding: " + e.getName());
 		}
-		entities.addElement(e);
+		entities.add(e);
 		e.start();
 	}
 
@@ -219,15 +219,14 @@ public class SimSystem {
 	 * and their ports linked.
 	 */
 	static public void runStart() {
-		Enumeration e;
 		SimEntity ent;
 		running = true;
 		// Start all the entities' threads
 		if (DEBUG) {
 			System.out.println("SimSystem: Starting entities");
 		}
-		for (e = entities.elements(); e.hasMoreElements();) {
-			ent = (SimEntity) e.nextElement();
+		for (Iterator it = entities.iterator(); it.hasNext();) {
+			ent = (SimEntity) it.next();
 			ent.start();
 		}
 	}
@@ -276,11 +275,10 @@ public class SimSystem {
 	/** Stops the simulation, by calling the poison() method of each SimEntity.
 	 */
 	static public void runStop() {
-		Enumeration e;
 		SimEntity ent;
 		// Attempt to kill all the entity threads
-		for (e = entities.elements(); e.hasMoreElements();) {
-			ent = (SimEntity) e.nextElement();
+		for (Iterator it = entities.iterator(); it.hasNext();) {
+			ent = (SimEntity) it.next();
 			ent.poison();
 		}
 		if (DEBUG) {
@@ -378,10 +376,10 @@ public class SimSystem {
 			}
 		}
 		if (found) {
-			((SimEntity) entities.elementAt(src)).setEvbuf((SimEvent) ev.clone());
+			((SimEntity) entities.get(src)).setEvbuf((SimEvent) ev.clone());
 
 		} else {
-			((SimEntity) entities.elementAt(src)).setEvbuf(null);
+			((SimEntity) entities.get(src)).setEvbuf(null);
 
 		}
 	}
@@ -401,10 +399,10 @@ public class SimSystem {
 			}
 		}
 		if (found) {
-			((SimEntity) entities.elementAt(src)).setEvbuf((SimEvent) ev.clone());
+			((SimEntity) entities.get(src)).setEvbuf((SimEvent) ev.clone());
 
 		} else {
-			((SimEntity) entities.elementAt(src)).setEvbuf(null);
+			((SimEntity) entities.get(src)).setEvbuf(null);
 
 		}
 	}
@@ -438,7 +436,7 @@ public class SimSystem {
 				if (dest < 0) {
 					throw new jmt.common.exception.NetException("SimSystem: Error - attempt to send to a null entity");
 				} else {
-					destEnt = (SimEntity) entities.elementAt(dest);
+					destEnt = (SimEntity) entities.get(dest);
 					if (destEnt.getState() == SimEntity.WAITING) {
 						SimPredicate p = destEnt.getWaitingPred();
 
@@ -490,8 +488,8 @@ public class SimSystem {
 				if (src < 0) {
 					throw new jmt.common.exception.NetException("SimSystem: Error - NULL entity holding");
 				} else {
-					((SimEntity) entities.elementAt(src)).setState(SimEntity.RUNNABLE);
-					((SimEntity) entities.elementAt(src)).restart();
+					((SimEntity) entities.get(src)).setState(SimEntity.RUNNABLE);
+					((SimEntity) entities.get(src)).restart();
 				}
 				break;
 		}
