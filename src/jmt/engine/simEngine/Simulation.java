@@ -110,7 +110,6 @@ public class Simulation {
 	//the max simulation time
 	private long maxSimulationTime = 0;
 	//the timer which controls max simulation time
-	SimulationTimer simTimer = null;
 	//true if the simulation has finished
 	private boolean finished = false;
 
@@ -610,31 +609,9 @@ public class Simulation {
 	 */
 	public void run() throws Exception {
 		if (initialized) {
-
-			//NEW
-			//@author Stefano Omini
-			if (isTimeLimited()) {
-				//sets the timer task
-				//a Timer must be created and run
-				simTimer = new SimulationTimer(this, maxSimulationTime);
-			}
-			//end NEW
-
 			//runs the simulation
 			NetSystem.start();
 			finished = true;
-
-			//NEW
-			//@author Stefano Omini
-			if (isTimeLimited()) {
-				//the simulation has finished before max simulation time has expired
-				//cancels the timer
-				simTimer.stopTimer();
-			}
-			//end NEW
-
-			//NEW
-			//@author Stefano Omini
 
 			//simulation has finished
 			//results are put into a xml file

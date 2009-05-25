@@ -22,10 +22,7 @@ public class SimSystem {
 	// Private data members
 	static private List entities; // The current entity list
 
-	//TODO: verificare quale classe funziona meglio per la future event queue
-	//	static private EventQueue future;   // The future event queue
 	static private EventQueue future; // The future event queue
-	//	static private SuperEventQueue future; // The future event queue
 
 	static private EventQueue deferred; // The deferred event queue
 
@@ -33,37 +30,6 @@ public class SimSystem {
 	static private boolean running; // Tells whether the run() member been called yet
 	static private NumberFormat nf;
 
-	//STE
-	//temp variable used by runTick
-	//static private SimEvent event = null;
-
-	//NEW
-	//@author Stefano Omini
-
-	//if true a timer has been defined on the simulation
-	static private boolean hasTimer = false;
-
-	//if true, max simulation time has been reached and simulation must be aborted
-	static private boolean timeout = false;
-
-	//true if the simulation has been finished and therefore SimSystem must be stopped
-	static private boolean simStopped = false;
-
-	//end NEW
-
-	//NEW
-	//@author Stefano Omini
-
-	/**
-	 * Sets timeout property
-	 * @param simTimeout True if max time has been reached
-	 */
-	static public void setTimeout(boolean simTimeout) {
-		timeout = simTimeout;
-		hasTimer = true;
-	}
-
-	//end NEW
 
 	//
 	// Public library interface
@@ -82,7 +48,6 @@ public class SimSystem {
 
 		entities = new ArrayList();
 
-		//TODO: verificare quale classe funziona meglio per la future event queue
 
 		// future = new ListEventQueue();
 		// future = new CircularEventQueue();
@@ -204,11 +169,6 @@ public class SimSystem {
 	 */
 	static synchronized void addEntityDynamically(SimEntity e) {
 		e.setId(entities.size());
-		if (e == null) {
-			System.out.println("Adding null entity :(");
-		} else {
-			System.out.println("Adding: " + e.getName());
-		}
 		entities.add(e);
 		e.start();
 	}
@@ -236,15 +196,6 @@ public class SimSystem {
 	 * @return <tt>false</tt> if there are no more future events to be processed
 	 */
 	static public boolean runTick() throws jmt.common.exception.NetException {
-
-		//NEW
-		//@author Stefano Omini
-
-		if (timeout) {
-			//time has expired: simulation must be aborted
-			return false;
-		}
-
 		// If there are more future events then deals with them
 		SimEvent event;
 
@@ -266,8 +217,6 @@ public class SimSystem {
 			}
 		} else {
 			running = false;
-			//System.out.println("SimSystem: No more future events");
-
 		}
 		return running;
 	}
@@ -286,23 +235,6 @@ public class SimSystem {
 		}
 	}
 
-	//TODO: usato solo per debug
-	/** Starts the simulation running. This should be called after
-	 * all the entities have been setup and added, and their ports linked.
-	 * <br>
-	 * The simulation goes on until runTick() becomes false (there are no more
-	 * future events to be processed).
-	 * Then the runStop() method is called.
-	 */
-	static public void run() throws jmt.common.exception.NetException {
-		//Now the main loop
-		//System.out.println("SimSystem: Entering main loop");
-		runStart();
-		while (runTick()) {
-		}
-		runStop();
-	}
-
 	//
 	// Package level methods
 	//
@@ -318,14 +250,29 @@ public class SimSystem {
 	//		onestopped.v();
 	//	}
 
-	static synchronized void hold(int src, double delay) {
+	static synchronized RemoveToken hold(int src, double delay) {
 		SimEvent e = new SimEvent(SimEvent.HOLD_DONE, clock + delay, src);
 		future.add(e);
+		return new RemoveToken(e);
 	}
 
-	static synchronized void send(int src, int dest, double delay, int tag, Object data) {
+	static synchronized RemoveToken send(int src, int dest, double delay, int tag, Object data) {
 		SimEvent e = new SimEvent(SimEvent.SEND, clock + delay, src, dest, tag, data);
 		future.add(e);
+		return new RemoveToken(e);
+	}
+	
+	/**
+	 * Given a remove token, this method will remove a future or deferred simulation event
+	 * @param token the remove token
+	 * @return true if the event was found and removed, false otherwise.
+	 */
+	static synchronized boolean remove(RemoveToken token) {
+		if (token.isDeferred()) {
+			return deferred.remove(token.getEvent());
+		} else {
+			return future.remove(token.getEvent());
+		}
 	}
 
 	static synchronized void wait(int src) {
@@ -407,8 +354,9 @@ public class SimSystem {
 		}
 	}
 
-	static synchronized void putback(SimEvent ev) {
+	static RemoveToken putback(SimEvent ev) {
 		deferred.add(ev);
+		return new RemoveToken(ev, true);
 	}
 
 	//
@@ -505,19 +453,4 @@ public class SimSystem {
 			System.out.println("Simulation Aborted");
 		}
 	}
-
-	//NEW
-	//@author Stefano Omini
-
-	/**
-	 * By using this method, the simulation can be aborted or stopped even if there
-	 * are still events in the future events queue.
-	 * @param simStopped true to stop SimSystem
-	 */
-	public static void setSimStopped(boolean simStopped) {
-		SimSystem.simStopped = simStopped;
-	}
-
-	//end NEW
-
 }
