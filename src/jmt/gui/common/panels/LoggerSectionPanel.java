@@ -145,8 +145,8 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
         gbc.fill = GridBagConstraints.HORIZONTAL; gbc.gridx = 0; gbc.gridy = 0;
         loggerPanelTop.add(loggerPanelTopLogfile,gbc);
         checkExecutionTimestamp = new JCheckBox();
-        checkExecutionTimestamp.setText("Exec. Start Timestamp  ");
-        help.addHelp(checkExecutionTimestamp, "Execution Timestamp is useful to identify the run number when appending.  (e.g. " + "31102008T125959GMT" + ")");
+        checkExecutionTimestamp.setText("Simul. Start Timestamp  ");
+        help.addHelp(checkExecutionTimestamp, "Simulation Timestamp is useful to identify the run number when appending.  (e.g. " + "31102008T125959GMT" + ")");
         gbc.gridx = 2; gbc.gridy = 0;
         loggerPanelTop.add(checkExecutionTimestamp,gbc);
         /*
@@ -198,7 +198,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
         autoAppendChooser = new JComboBox(loggerAutoAppendDropdown);
         JLabel owLabel = new JLabel("Overwrite: ");
         loggerPanelTR.add(owLabel);
-        help.addHelp(owLabel, "Owerwrite the log file?");
+        help.addHelp(owLabel, "Owerwrite the existing logfile with the same name or append the data to the existing file. ");
         loggerPanelTR.add(autoAppendChooser);
         delimiterChooser = new JComboBox(loggerOutputDelimiterDropdown);
         JLabel delLabel = new JLabel("Delimiter: ");
@@ -208,7 +208,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
         decimalSeparatorChooser = new JComboBox(loggerOutputDecimalSeparatorDropdown);
         JLabel dsLabel = new JLabel("Decimal separator: ");
         loggerPanelTR.add(dsLabel);
-        help.addHelp(dsLabel, "Decimal separator");
+        help.addHelp(dsLabel, "Decimal separator, choose \".\" for English");
         loggerPanelTR.add(decimalSeparatorChooser);
 
         //layout of middle panel
@@ -244,7 +244,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
          ****************** */
         loggerChooser.setSelectedIndex( loggerChooserGetIndex() );
         loggerChooserLoadValues();
-				checkExecutionTimestamp.setSelected(false);
+				checkExecutionTimestamp.setSelected(loggerParameters.boolExecTimestamp.booleanValue());
         checkLoggername.setSelected(loggerParameters.boolLoggername.booleanValue());
         checkTimeStamp.setSelected(loggerParameters.boolTimeStamp.booleanValue());
         checkJobID.setSelected(loggerParameters.boolJobID.booleanValue());
@@ -298,7 +298,8 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
             }});
         checkExecutionTimestamp.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	stationData.setLoggingGlbParameter("logExecutionTimestamp", ""+checkExecutionTimestamp.isSelected() );
+            	//stationData.setLoggingGlbParameter("logExecutionTimestamp", ""+checkExecutionTimestamp.isSelected() );
+            	loggerParameters.boolExecTimestamp = new Boolean(checkExecutionTimestamp.isSelected()); 
             }});
         checkLoggername.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

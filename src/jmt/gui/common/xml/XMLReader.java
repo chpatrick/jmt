@@ -686,6 +686,8 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
             	try {
             	logParams.path = new String(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
             	} catch (Exception e) {logParams.path = "./";} // this should never happen
+            else if (parameterName.equals(XML_LOG_B_EXECTIMESTAMP))
+            	logParams.boolExecTimestamp = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
             else if (parameterName.equals(XML_LOG_B_LOGGERNAME))
             	logParams.boolLoggername = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
             else if (parameterName.equals(XML_LOG_B_TIMESTAMP))

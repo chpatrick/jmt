@@ -539,6 +539,10 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
         		XML_LOG_FILEPATH, "java.lang.String", null, loggerParameters.getpath().toString(), false
         );
         path.appendParameterElement(doc, elem);
+        XMLParameter logExecTimestamp = new XMLParameter(
+        		XML_LOG_B_EXECTIMESTAMP, "java.lang.Boolean", null, loggerParameters.boolExecTimestamp.toString(), false
+        );
+        logExecTimestamp.appendParameterElement(doc, elem);
         XMLParameter logLoggerName = new XMLParameter(
         		XML_LOG_B_LOGGERNAME, "java.lang.Boolean", null, loggerParameters.boolLoggername.toString(), false
         );

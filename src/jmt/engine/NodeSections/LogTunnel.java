@@ -18,15 +18,18 @@
 
 package jmt.engine.NodeSections;
 
-import jmt.engine.QueueNet.NetEvent;	// MF (used in processing())
+import java.io.File;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.HashMap;
+import java.util.Locale;
+
+import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeSection;
 import jmt.engine.log.JSimLogger;
-import jmt.engine.log.LoggerParameters; // MF (common object)
-
-import java.util.HashMap; // MF (for Indexer)
-import java.io.File; 	  // MF (check if logfile exists)
+import jmt.engine.log.LoggerParameters;
 
 /**
  * <p>Title: LogTunnel Extension</p>
@@ -41,10 +44,10 @@ import java.io.File; 	  // MF (check if logfile exists)
  *         Time: 14.04.02
  *
  */
-public class LogTunnel extends ServiceTunnel /*ServiceSection*/ {
+public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 
 	private final boolean DEBUG = true;
-	
+
 	private char chDelimiter, decimalSeparator;
 	private int intReplacePolicy;
 	private boolean boolExecutionTimestamp;
@@ -52,241 +55,226 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/ {
 	private LoggerParameters lp;
 	private JSimLogger localLog;
 	private final JSimLogger debugLog = JSimLogger.getLogger(JSimLogger.STD_LOGGER);
+	private DecimalFormat numberFormat;
 
-	HashMap classesIndexerFast;	      /* Holds {name of class},{array index for classTimeAccounting} */
-	short   classesTimeAccountingSize;
-	double  classesTimeAccounting[];  /* Holds [previously-accessed time] of all classes */
-	double  classesTimePreviousAny;   /* Holds [previous   arrival time]  of any of the classes, so as not to have to search */
+	HashMap classesIndexerFast; /* Holds {name of class},{array index for classTimeAccounting} */
+	short classesTimeAccountingSize;
+	double classesTimeAccounting[]; /* Holds [previously-accessed time] of all classes */
+	double classesTimePreviousAny; /* Holds [previous   arrival time]  of any of the classes, so as not to have to search */
 
 	boolean didInitialCheck;
 
 	/**
 	 *  Creates a new instance of LogTunnel; called by simulator engine.
 	 */
-	public LogTunnel(String argFN, String argFP, Boolean argBLN, Boolean argBTS, Boolean argBJID, Boolean argBJC, Boolean argBTSC, Boolean argBTAC, Integer numClasses)
-	{
-       super();
-       /* Create an object to hold the Logger's parameters, with parameters from XMLReader */
-       lp = new LoggerParameters(argFN, argFP, argBLN, argBTS, argBJID, argBJC, argBTSC, argBTAC);
-       
-       /* Reset the 'didInitialCheck' variable for initialCheck() */
-       didInitialCheck = false;
+	public LogTunnel(String argFN, String argFP, Boolean argET, Boolean argBLN, Boolean argBTS, Boolean argBJID, Boolean argBJC, Boolean argBTSC,
+			Boolean argBTAC, Integer numClasses) {
+		super();
+		/* Create an object to hold the Logger's parameters, with parameters from XMLReader */
+		lp = new LoggerParameters(argET, argFN, argFP, argBLN, argBTS, argBJID, argBJC, argBTSC, argBTAC);
 
-       /* Initialize objects for statistics accounting, like, the time between two messages. (mf'08) */
-       classesIndexerFast = new HashMap(numClasses.intValue()+2,1);
-       classesTimeAccounting = new double[numClasses.intValue()+1];
-       classesTimePreviousAny = 0.0F;
-       classesTimeAccountingSize = 0;
-       
-       if (DEBUG) 
-       {
-    	   debugLog.debug("[LT] new LoggerParameters(" + argFP + "," + argFN + "," + argBLN +","+ argBTS +","+ argBJID +","+ argBJC +","+ argBTSC +","+ argBTAC + ");");
-    	   debugLog.debug("[LT] constructed " + (lp.isEnabled ? "and en" : "but dis") + "abled for " + lp.name);
-       }
+		/* Reset the 'didInitialCheck' variable for initialCheck() */
+		didInitialCheck = false;
+
+		/* Initialize objects for statistics accounting, like, the time between two messages. (mf'08) */
+		classesIndexerFast = new HashMap(numClasses.intValue() + 2, 1);
+		classesTimeAccounting = new double[numClasses.intValue() + 1];
+		classesTimePreviousAny = 0.0F;
+		classesTimeAccountingSize = 0;
+
+		if (DEBUG) {
+			debugLog.debug("[LT] new LoggerParameters(" + argFP + "," + argFN + "," + argBLN + "," + argBTS + "," + argBJID + "," + argBJC + ","
+					+ argBTSC + "," + argBTAC + ");");
+			debugLog.debug("[LT] constructed " + (lp.isEnabled ? "and en" : "but dis") + "abled for " + lp.name);
+		}
 	}
 
-	
 	/**
 	 * Checks if the file is writable
-	 */ 
+	 */
 	private void initialCheck() {
 		Boolean append;
 		String absfilepath = "";
-		
+
 		// Get global values (from the XML file) for the path, auto-replace, and delimiter 
 		lp.path = getOwnerNode().getSimParameters().getLogPath();
 		intReplacePolicy = new Integer(getOwnerNode().getSimParameters().getLogReplaceMode()).intValue();
 		chDelimiter = (getOwnerNode().getSimParameters().getLogDelimiter().charAt(0));
-		try
-		{
+		try {
 			String ds = getOwnerNode().getSimParameters().getLogDecimalSeparator();
-			if(ds.length() > 0) decimalSeparator = ds.charAt(0);
-			else decimalSeparator = '.';
-		}catch(Exception e) { debugLog.debug(e.toString()); }
+			if (ds.length() > 0) {
+				decimalSeparator = ds.charAt(0);
+			} else {
+				decimalSeparator = '.';
+			}
+		} catch (Exception e) {
+			debugLog.debug(e.toString());
+		}
+		DecimalFormatSymbols dfs = new DecimalFormatSymbols(Locale.US);
+		dfs.setDecimalSeparator(decimalSeparator);
+		numberFormat = new DecimalFormat("#.#", dfs);
+		numberFormat.setMaximumFractionDigits(340);
+		numberFormat.setMaximumIntegerDigits(340);
+		
 		boolExecutionTimestamp = new Boolean(getOwnerNode().getSimParameters().getLogExecutionTimestamp()).booleanValue();
 		strTimestampValue = getOwnerNode().getSimParameters().getTimestampValue();
-		
+
 		// Add an initial file-separator if none exists
-       if ((lp.path != "") && (lp.path.endsWith(File.separator) == false) && (lp.path.endsWith(JSimLogger.FILESEPARATOR) == false))
-    	       lp.path = lp.path + File.separator;
+		if ((lp.path != "") && (lp.path.endsWith(File.separator) == false) && (lp.path.endsWith(JSimLogger.FILESEPARATOR) == false)) {
+			lp.path = lp.path + File.separator;
+		}
 
-       if (lp.path == File.separator || lp.path == JSimLogger.FILESEPARATOR)
-    	   debugLog.info("Warning: possible mis-set path for <" + lp.path + "><" + lp.name + ">  (filesystem root)");
+		if (lp.path == File.separator || lp.path == JSimLogger.FILESEPARATOR) {
+			debugLog.info("Warning: possible mis-set path for <" + lp.path + "><" + lp.name + ">  (filesystem root)");
+		}
 
-	    // Enable the log if: the logger is enabled, and the logfile is usable.
-   		if (lp.isEnabled() == true)
-   			absfilepath = checkLogfileWriteableAndReturnAbsPath();
-   		else
-   			debugLog.info("Not logging '" + lp.name + "'.  (nothing to log?)");
-   		
-   		// When logging is possible, connect this stream to JSimLogger
-   		if (lp.isEnabled() == true)
-   		{
-   			append = new Boolean(intReplacePolicy == LoggerParameters.LOGGER_AR_APPEND);
+		// Enable the log if: the logger is enabled, and the logfile is usable.
+		if (lp.isEnabled() == true) {
+			absfilepath = checkLogfileWriteableAndReturnAbsPath();
+		} else {
+			debugLog.info("Not logging '" + lp.name + "'.  (nothing to log?)");
+		}
 
-   	    	if (DEBUG)
-   	    		debugLog.debug("[LT].initialCheck() assigned: <"+lp.path+"=" + absfilepath + "><repl: " + intReplacePolicy + "><" + chDelimiter + "><" + (append.booleanValue() ? "append" : "replace") + "> by :" );
+		// When logging is possible, connect this stream to JSimLogger
+		if (lp.isEnabled() == true) {
+			append = new Boolean(intReplacePolicy == LoggerParameters.LOGGER_AR_APPEND);
 
-   			if (lp.isGlobal() == true)
-   			{
-   				localLog = JSimLogger.changeAppenderParameters(this.getClass().getName(),"LOGTUNNEL",
-   							lp.path, lp.name, append);
-   				JSimLogger.getLogger(JSimLogger.LOGTUNNEL_LOGGER).setHeaderWrittenFlag(absfilepath, lp.name, false);
-   			}
-   			else
-   			{
-   				localLog = JSimLogger.makeNewFileLogger(this.getClass().getName(),
-   							lp.path, lp.name, append );
-   				JSimLogger.getLogger(JSimLogger.LOGTUNNEL_LOGGER).setHeaderWrittenFlag(absfilepath, lp.name, false);
-   			}
+			if (DEBUG) {
+				debugLog.debug("[LT].initialCheck() assigned: <" + lp.path + "=" + absfilepath + "><repl: " + intReplacePolicy + "><" + chDelimiter
+						+ "><" + (append.booleanValue() ? "append" : "replace") + "> by :");
+			}
 
-   			// Now that the logger is connected, write the header
-   			writeHeader(append.booleanValue());
-   		}
+			if (lp.isGlobal() == true) {
+				localLog = JSimLogger.changeAppenderParameters(this.getClass().getName(), "LOGTUNNEL", lp.path, lp.name, append);
+				JSimLogger.getLogger(JSimLogger.LOGTUNNEL_LOGGER).setHeaderWrittenFlag(absfilepath, lp.name, false);
+			} else {
+				localLog = JSimLogger.makeNewFileLogger(this.getClass().getName(), lp.path, lp.name, append);
+				JSimLogger.getLogger(JSimLogger.LOGTUNNEL_LOGGER).setHeaderWrittenFlag(absfilepath, lp.name, false);
+			}
+
+			// Now that the logger is connected, write the header
+			writeHeader(append.booleanValue());
+		}
 
 	}
-	
-	
+
 	/**
 	 * Convenience function used by the LogTunnel constructor to check that the logfile is usable.
 	 * If the file is not usable, the logger-properties are set to disabled.
 	 * This convenience function is only called by the initial check.
 	 */
-	private final String checkLogfileWriteableAndReturnAbsPath()
-    {
+	private final String checkLogfileWriteableAndReturnAbsPath() {
 		boolean loggerInstanceIsEnabled = false;
 		String absolutePath = "";
 
 		try {
-			if ((new File(lp.path)).mkdirs() == true)
+			if ((new File(lp.path)).mkdirs() == true) {
 				debugLog.debug("LogTunnel.checkLogfileWriteable(): Created (missing) directory structure for " + lp.name);
+			}
 
 			File f = new File(lp.path + lp.name + "");
 
-	    	if (f.exists() == true)
-	    	{
-	    		if (f.canWrite() == true)
-	    		{
-	    			if (f.length() >= 0)
-	    			{
-    				   loggerInstanceIsEnabled = true;
-    				   absolutePath = f.getAbsolutePath();
-	    		    }
-	    			else
-	    				debugLog.error("LogTunnel.checkLogfileWriteable(): The file " + f.getAbsolutePath() + " has filesize " + f.length() + ".");
-	    		}
-	    		else
-	    			debugLog.error("LogTunnel.checkLogfileWriteable(): The file " + f.getAbsolutePath() + " has no write access.");
-	    	}
-	    	else
-	    	{
-	    		absolutePath = f.getAbsolutePath();
-	    		loggerInstanceIsEnabled = true;
-	    	}
+			if (f.exists() == true) {
+				if (f.canWrite() == true) {
+					if (f.length() >= 0) {
+						loggerInstanceIsEnabled = true;
+						absolutePath = f.getAbsolutePath();
+					} else {
+						debugLog.error("LogTunnel.checkLogfileWriteable(): The file " + f.getAbsolutePath() + " has filesize " + f.length() + ".");
+					}
+				} else {
+					debugLog.error("LogTunnel.checkLogfileWriteable(): The file " + f.getAbsolutePath() + " has no write access.");
+				}
+			} else {
+				absolutePath = f.getAbsolutePath();
+				loggerInstanceIsEnabled = true;
+			}
 
-	    	f = null;
+			f = null;
+		} catch (Exception e) {
+			debugLog.error("LogTunnel.checkLogfileWriteable(): Exception generated checking file " + lp.path + lp.name
+					+ ", not logging to this file.  Detail: " + e.toString());
+			loggerInstanceIsEnabled = false;
 		}
-		catch (Exception e) {
- 	    	   debugLog.error("LogTunnel.checkLogfileWriteable(): Exception generated checking file " + lp.path + lp.name + ", not logging to this file.  Detail: " + e.toString());
- 	    	   loggerInstanceIsEnabled = false;
- 	       }
 
-		if (DEBUG)
-			debugLog.debug("[LT].chkFileWriteable confirms that " + absolutePath + " is " + (loggerInstanceIsEnabled ? "good." : "bad.") );
+		if (DEBUG) {
+			debugLog.debug("[LT].chkFileWriteable confirms that " + absolutePath + " is " + (loggerInstanceIsEnabled ? "good." : "bad."));
+		}
 
-		if (loggerInstanceIsEnabled == true)
+		if (loggerInstanceIsEnabled == true) {
 			lp.enable();
-		else
+		} else {
 			lp.disable();
-		
+		}
+
 		return absolutePath;
-    }
+	}
 
 	/**
 	 * Convenience function used by the LogTunnel constructor to write the logfile header.
 	 */
-	private void writeHeader(boolean append)
-	{
-	       try {
-	    	 File f = new File(lp.path + lp.name + "");
-	    	 JSimLogger j = JSimLogger.getLogger(JSimLogger.LOGTUNNEL_LOGGER);
+	private void writeHeader(boolean append) {
+		try {
+			File f = new File(lp.path + lp.name + "");
+			JSimLogger j = JSimLogger.getLogger(JSimLogger.LOGTUNNEL_LOGGER);
 
-	    	 if (append == false)
-	    	 {
-				if (lp.isGlobal() == true && j.getHeaderWrittenFlag(lp.path, lp.name) == 0)
-				{
+			if (append == false) {
+				if (lp.isGlobal() == true && j.getHeaderWrittenFlag(lp.path, lp.name) == 0) {
 					// we're about to write the header, since it wasn't written before
 					j.setHeaderWrittenFlag(lp.path, lp.name, true);
-					
+
 					// compose the header, and then write to the logfile
 					String h = composeHeaderLine();
 					localLog.info(h);
 
-					debugLog.debug("Logging to " + lp.path + lp.name + " with flags " + lp.toString().substring(0,8) + " (replace global)");
-				}
-				else if (lp.isGlobal() == false)
-				{
+					debugLog.debug("Logging to " + lp.path + lp.name + " with flags " + lp.toString().substring(0, 8) + " (replace global)");
+				} else if (lp.isGlobal() == false) {
 					String h = composeHeaderLine();
 					localLog.info(h);
 
-					debugLog.info("Logging to " + lp.path + lp.name + " with flags " + lp.toString().substring(0,8) + " (replace local)");
-				}
-				else //if (lp.isGlobal() && glbHeadrWritten == true) then no action required
+					debugLog.info("Logging to " + lp.path + lp.name + " with flags " + lp.toString().substring(0, 8) + " (replace local)");
+				} else //if (lp.isGlobal() && glbHeadrWritten == true) then no action required
 				{
-				   	debugLog.info("Logging to " + lp.path + lp.name + " with flags " + lp.toString().substring(0,8) + " (replace,aggregated)");
+					debugLog.info("Logging to " + lp.path + lp.name + " with flags " + lp.toString().substring(0, 8) + " (replace,aggregated)");
 				}
-	         }
-	    	 else if ((append == true) && ((f.exists() == false) || f.length() == 0))
-	    	 {
-	    		 // if appending, or if writing to a new file, indicate we're about to write the header 
-	    		if (lp.isGlobal() == true && j.getHeaderWrittenFlag(lp.path, lp.name) == 0)
-	    			j.setHeaderWrittenFlag(lp.path, lp.name, true);
+			} else if ((append == true) && ((f.exists() == false) || f.length() == 0)) {
+				// if appending, or if writing to a new file, indicate we're about to write the header 
+				if (lp.isGlobal() == true && j.getHeaderWrittenFlag(lp.path, lp.name) == 0) {
+					j.setHeaderWrittenFlag(lp.path, lp.name, true);
+				}
 
 				String h = composeHeaderLine();
 				localLog.info(h);
-	
-	    		 debugLog.info("Logging to " + lp.path + lp.name + " with flags " + lp.toString().substring(0,8) + " (append to new)");
-	    	 }
-	    	 else
-	    		 debugLog.info("Logging to " + lp.path + lp.name + " with flags " + lp.toString().substring(0,8) + " (append).");
-	       }
-	       catch (Exception e) {
-	    	   debugLog.error("Exception writing file header to "+lp.name+".  Disabling log.  Details: " + e.getStackTrace().toString()); 
-	    	   lp.disable();
-	       }
+
+				debugLog.info("Logging to " + lp.path + lp.name + " with flags " + lp.toString().substring(0, 8) + " (append to new)");
+			} else {
+				debugLog.info("Logging to " + lp.path + lp.name + " with flags " + lp.toString().substring(0, 8) + " (append).");
+			}
+		} catch (Exception e) {
+			debugLog.error("Exception writing file header to " + lp.name + ".  Disabling log.  Details: " + e.getStackTrace().toString());
+			lp.disable();
+		}
 	}
-	
-	private final String composeHeaderLine()
-	{
+
+	private final String composeHeaderLine() {
 		/* compose header to write to the logfile */
-		String s = "";
-		if (lp.boolLoggername.booleanValue() == true)
-			s += "LOGGERNAME" + chDelimiter;
-		if (lp.boolTimeStamp.booleanValue() == true)
-			s += "TIMESTAMP" + chDelimiter;
-		if (lp.boolJobID.booleanValue() == true)
-			s += "JOBID" + chDelimiter;
-		if (lp.boolJobClass.booleanValue() == true)
-			s += "JOBCLASS" + chDelimiter;
-		if (lp.boolTimeSameClass.booleanValue() == true)
-			s += "TIMEELAPSED_SAMECLASS" + chDelimiter;
-		if (lp.boolTimeAnyClass.booleanValue() == true)
-			s += "TIMEELAPSED_ANYCLASS" + chDelimiter;
-		if (boolExecutionTimestamp == true)
-			s += "EXECUTION_TIMESTAMP" + chDelimiter;
-
-		if (s.charAt(s.length()-1) == chDelimiter) // remove trailing semicolon
-			return s.substring(0, s.length()-1);
-		else
-			return s;
+		LogLineWriter s = new LogLineWriter(chDelimiter);
+		s.append("LOGGERNAME")
+			.append("TIMESTAMP")
+			.append("JOB_ID")
+			.append("CLASS_ID")
+			.append("INTERARRIVAL_SAMECLASS")
+			.append("INTERARRIVAL_ANYCLASS")
+			.append("SIMUL_START_TIME");
+		return s.toString();
 	}
 
-    public void NodeLinked(NetNode node) {
-    }
+	public void NodeLinked(NetNode node) {
+	}
 
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
-       if (isMyOwnerNode(message.getSource())) {
-    	   
+		if (isMyOwnerNode(message.getSource())) {
+
 			if (message.getEvent() == NetEvent.EVENT_START) {
 				debugLog.debug("[LT] EVENT_START");
 			}
@@ -294,93 +282,71 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/ {
 				debugLog.debug("[LT] EVENT_ABORT");
 			}
 			if (message.getEvent() == NetEvent.EVENT_STOP) {
-				
+
 				debugLog.debug("[LT] EVENT_STOP");
-				JSimLogger.getLogger(JSimLogger.LOGTUNNEL_LOGGER).closeCustomAppender(this.getClass().getName(), lp.path, "LT"+lp.name);
+				JSimLogger.getLogger(JSimLogger.LOGTUNNEL_LOGGER).closeCustomAppender(this.getClass().getName(), lp.path, "LT" + lp.name);
 			}
-			
+
 			if (message.getSourceSection() == NodeSection.INPUT) {
 				sendForward(message.getEvent(), message.getData(), 0.0);
 
 				/* write to log this forward-going message */
-				if (message.getEvent() == NetEvent.EVENT_JOB)
-				{
+				if (message.getEvent() == NetEvent.EVENT_JOB) {
 
-				  // MF08: this is an initial file and logger check
-				  // it is done here because getOwnerNode() cannot be used in the constructor
-				  if (didInitialCheck == false)
-				  {
-					didInitialCheck = true;
-					if (lp.isEnabled == true)
-						initialCheck();
-				  }
-				  
-				  // 
-				  if (lp.isEnabled == true) {
-					/*
-					 * TO DO:Consider changing LoggerParameters (and LoggerSectionPanel, XMLWriter, XMLReader)
-					 *  to use primitive booleans instead of Boolean Objects to avoid conversion penalty.
-					 */
-
-					String s = "";
-
-					/* compose one line to write to the logfile */
-					if (lp.boolLoggername.booleanValue() == true)
-					{
-						s += message.getSource().getName();
-						s += chDelimiter;
-					}
-
-					if (lp.boolTimeStamp.booleanValue() == true)
-					{
-						s += Double.toString(message.getTime()).replace('.', decimalSeparator).replace(',', decimalSeparator);
-						s += chDelimiter;
-					}
-
-					if (lp.boolJobID.booleanValue() == true)
-					{
-						s += Integer.toString(message.getJob().getId());
-						s += chDelimiter;
-					}
-
-					if (lp.boolJobClass.booleanValue() == true)
-					{
-						s += message.getJob().getJobClass().getName();
-						s += chDelimiter;
-					}
-
-					if (lp.boolTimeSameClass.booleanValue() == true)
-					{
-						Integer idx = (Integer)classesIndexerFast.get(message.getJob().getJobClass().getName());
-
-						if (idx != null)
-							s += Double.toString(message.getTime() - classesTimeAccounting[idx.intValue()]).replace('.', decimalSeparator).replace(',', decimalSeparator);
-						else
-						{
-							s += "0";
-							idx = new Integer(classesTimeAccountingSize++);
-							classesIndexerFast.put(message.getJob().getJobClass().getName(),new Integer(classesTimeAccountingSize));
+					// MF08: this is an initial file and logger check
+					// it is done here because getOwnerNode() cannot be used in the constructor
+					if (didInitialCheck == false) {
+						didInitialCheck = true;
+						if (lp.isEnabled == true) {
+							initialCheck();
 						}
-						classesTimeAccounting[idx.intValue()] = message.getTime();
-						s += chDelimiter;
 					}
 
-					if (lp.boolTimeAnyClass.booleanValue() == true) {
-						s += Double.toString(message.getTime() - classesTimePreviousAny).replace('.', decimalSeparator).replace(',', decimalSeparator);
-						classesTimePreviousAny = message.getTime();
-						s += chDelimiter;
-					}
-					if (boolExecutionTimestamp == true) {
-						s += strTimestampValue;
-					}
+					// 
+					if (lp.isEnabled == true) {
+						/*
+						 * TO DO:Consider changing LoggerParameters (and LoggerSectionPanel, XMLWriter, XMLReader)
+						 *  to use primitive booleans instead of Boolean Objects to avoid conversion penalty.
+						 */
 
-					/* the composed line is now written out to the logfile */
-					int sl = s.length()-1;
-					if (s.charAt(sl) == chDelimiter)
-						localLog.info(s.substring(0, sl));
-					else
-						localLog.info(s);
-				  }
+						LogLineWriter s = new LogLineWriter(chDelimiter);
+
+						/* compose one line to write to the logfile */
+						s.append(message.getSource().getName(), lp.boolLoggername.booleanValue());
+
+						s.append(Double.toString(message.getTime()).replace('.', decimalSeparator).replace(',', decimalSeparator), lp.boolTimeStamp.booleanValue());
+
+						s.append(message.getJob().getId(), lp.boolJobID.booleanValue());
+
+						s.append(message.getJob().getJobClass().getName(), lp.boolJobClass.booleanValue());
+
+						if (lp.boolTimeSameClass.booleanValue() == true) {
+							Integer idx = (Integer) classesIndexerFast.get(message.getJob().getJobClass().getName());
+
+							if (idx != null) {
+								s.append(numberFormat.format((message.getTime() - classesTimeAccounting[idx.intValue()])));
+							} else {
+								s.append(0, true);
+								idx = new Integer(classesTimeAccountingSize++);
+								classesIndexerFast.put(message.getJob().getJobClass().getName(), new Integer(classesTimeAccountingSize));
+							}
+							classesTimeAccounting[idx.intValue()] = message.getTime();
+						} else {
+							s.append("");
+						}
+
+						if (lp.boolTimeAnyClass.booleanValue() == true) {
+							s.append(numberFormat.format((message.getTime() - classesTimePreviousAny)));
+							classesTimePreviousAny = message.getTime();
+						} else {
+							s.append("");
+						}
+
+						s.append(strTimestampValue, boolExecutionTimestamp);
+
+						/* the composed line is now written out to the logfile */
+						localLog.info(s.toString());
+					}
 				}
 				/* end of line */
 
@@ -391,15 +357,94 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/ {
 
 				//log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
 			}
-			
 
 			return MSG_PROCESSED;
-		} else
+		} else {
 			return MSG_NOT_PROCESSED;
+		}
 	}
 
 	protected void finalize() throws Throwable {
-	    debugLog.debug("[LT].finalize() runs.");
-	    super.finalize();
+		debugLog.debug("[LT].finalize() runs.");
+		super.finalize();
+	}
+	
+	/**
+	 * <p><b>Name:</b> LogLineWriter</p> 
+	 * <p><b>Description:</b> 
+	 * Inner class used to write log file lines
+	 * </p>
+	 * <p><b>Date:</b> 04/giu/2009
+	 * <b>Time:</b> 09:29:47</p>
+	 * @author Bertoli Marco
+	 */
+	private static class LogLineWriter {
+		private StringBuffer buffer = new StringBuffer(50);
+		private char separator;
+		private boolean init = false;
+		
+		/**
+		 * Builds a log line writer with the given delimiter
+		 * @param delimiter the delimiter
+		 */
+		public LogLineWriter(char delimiter) {
+			this.separator = delimiter;
+		}
+		
+		/**
+		 * Appends an object to the line if the condition is true
+		 * @param obj the object
+		 * @param condition the condition
+		 * @return this
+		 */
+		public LogLineWriter append(Object obj, boolean condition) {
+			addSep();
+			if (condition) {
+				buffer.append(obj);
+			}
+			
+			return this;
+		}
+		
+		/**
+		 * Appends an object to the line
+		 * @param obj the object
+		 * @return this
+		 */
+		public LogLineWriter append(Object obj) {
+			return append(obj, true);
+		}
+
+		/**
+		 * Appends an integer to the line if the condition is true
+		 * @param num the number
+		 * @param condition the condition
+		 * @return this
+		 */
+		public LogLineWriter append(int num, boolean condition) {
+			addSep();
+			if (condition) {
+				buffer.append(num);
+			}
+			
+			return this;
+		}
+		
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		public String toString() {
+			return buffer.toString();
+		}
+
+		private void addSep() {
+			if (!init) {
+				init = true;
+			} else {
+				buffer.append(separator);
+			}
+		}
+		
+		
 	}
 }

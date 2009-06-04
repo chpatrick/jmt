@@ -22,6 +22,7 @@ import java.io.File;
 
 public class LoggerParameters{
 	public volatile boolean isEnabled;	// the variable is left public for fast external read access - don't write to it.
+		public Boolean boolExecTimestamp;
     public Boolean boolLoggername;
     public Boolean boolTimeStamp;
     public Boolean boolJobID;
@@ -41,6 +42,7 @@ public class LoggerParameters{
      * Creates a logger with default parameters.
      */
     public LoggerParameters(){
+    		boolExecTimestamp = new Boolean(false);
 				boolLoggername = new Boolean(true);
 				boolTimeStamp = new Boolean(true);
 				boolJobID = new Boolean(true);
@@ -56,7 +58,8 @@ public class LoggerParameters{
      * Creates a logger with most parameters specified as a string.
      * Used by jmt.engine.NodeSections.LogTunnel class.
      */
-    public LoggerParameters(String  FN, String FP, Boolean  LN, Boolean TS, Boolean JID, Boolean JC, Boolean TSC, Boolean TAC) {
+    public LoggerParameters(Boolean ET, String  FN, String FP, Boolean  LN, Boolean TS, Boolean JID, Boolean JC, Boolean TSC, Boolean TAC) {
+    	boolExecTimestamp = ET;
     	boolLoggername = LN;
         boolTimeStamp = TS;
         boolJobID = JID;
@@ -106,6 +109,7 @@ public class LoggerParameters{
     	String s = "";
     	s += isEnabled() ? "1" : "0";
     	s += "|";
+    	s += (boolExecTimestamp.booleanValue() == true) ? "1" : "0";
     	s += (boolLoggername.booleanValue() == true) ? "1" : "0";
     	s += (boolTimeStamp.booleanValue() == true) ? "1" : "0";
     	s += (boolJobID.booleanValue() == true) ? "1" : "0";
@@ -131,7 +135,8 @@ public class LoggerParameters{
     		return isEnabled;
     	}
 
-    	if ( (boolLoggername.booleanValue() == false) &&
+    	if ( (boolExecTimestamp.booleanValue() == false) &&
+    			 (boolLoggername.booleanValue() == false) &&
     	     (boolTimeStamp.booleanValue() == false) &&
     	     (boolJobID.booleanValue() == false) &&
     	     (boolJobClass.booleanValue() == false) &&

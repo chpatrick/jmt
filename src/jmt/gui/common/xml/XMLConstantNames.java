@@ -88,6 +88,7 @@ public interface XMLConstantNames {
 	
 	public static final String XML_LOG_FILENAME = "logfileName";
 	public static final String XML_LOG_FILEPATH = "logfilePath";
+	public static final String XML_LOG_B_EXECTIMESTAMP = "logExecTimestamp";
 	public static final String XML_LOG_B_LOGGERNAME = "logLoggerName"; 
 	public static final String XML_LOG_B_TIMESTAMP = "logTimeStamp";
 	public static final String XML_LOG_B_JOBID = "logJobID";

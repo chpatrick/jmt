@@ -240,11 +240,7 @@ public class SimLoader {
 			int maxSamples = simParam.getMaxSamples();
 			
 			// Gets the timestamp value
-			// [MF08 0.7.4 (Marco Bertoli)
-			SimpleDateFormat sdf = new SimpleDateFormat();
-			sdf.applyPattern("yyyy-MM-dd'T'HH:mm:ss");
-			sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-			simParam.setTimestampValue(sdf.format(new Date()));
+			simParam.setTimestampValue(Long.toString(System.currentTimeMillis()));
 
 			//-------------- end SIM PARAMETERS -------------------//
 
