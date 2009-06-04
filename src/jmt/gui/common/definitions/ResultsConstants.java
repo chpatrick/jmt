@@ -71,6 +71,13 @@ public interface ResultsConstants {
 			+ HTML_FONT_NORM + "Average throughput of the entire system for each chosen class." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_CUSTOMERNUMBERS = HTML_START + HTML_FONT_TITLE + "Customer Number" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average customer number for each chosen class." + HTML_FONT_NOR_END + HTML_END;
+	//Added by ASHANKA START
+	//Added for System Power changes in the JSIM
+	//Its a new performance index.
+	public static final String DESCRIPTION_SYSTEMPOWER = HTML_START + HTML_FONT_TITLE + "System Power" + HTML_FONT_TIT_END + HTML_FONT_NORM
+	+ "System Power for each chosen class." + HTML_FONT_NOR_END + HTML_END;
+
+	//Added by ASHANKA STOP
 
 	// Temp measure mean label
 	public static final String TEMP_MEAN = HTML_START + HTML_FONT_NORM + "<b>Average value: </b>" + HTML_FONT_NOR_END + HTML_END;

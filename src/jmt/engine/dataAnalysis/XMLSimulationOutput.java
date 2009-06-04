@@ -204,6 +204,12 @@ public class XMLSimulationOutput extends SimulationOutput {
 			case SimConstants.SYSTEM_DROP_RATE:
 				typeName = "System Drop Rate";
 				break;
+	        //Added by ASHANKA START
+			//Adds the performance index system power for jsim
+			case SimConstants.SYSTEM_POWER:
+				typeName = "System Power";
+				break;
+			//Added by ASHANKA STOP
 		}
 
 		elem.setAttribute("measureType", typeName);

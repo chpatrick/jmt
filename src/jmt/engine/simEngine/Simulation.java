@@ -572,6 +572,12 @@ public class Simulation {
 						case SimConstants.SYSTEM_DROP_RATE:
 							network.getJobInfoList().analyzeDropRate(jClass, ms.getMeasure());
 							break;
+						//Added by ASHANKA START
+						//Added System Power performance index as a part of the global indeces.
+						case SimConstants.SYSTEM_POWER:
+							network.getJobInfoList().analyzeSystemPower(jClass, ms.getMeasure());
+							break;
+						//Added by ASHANKA STOP
 					}
 				}
 			}

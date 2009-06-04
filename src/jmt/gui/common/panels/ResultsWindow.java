@@ -124,6 +124,11 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		addTabPane(mainPanel, "System Throughput", DESCRIPTION_SYSTEMTHROUGHPUTS, results.getSystemThroughputMeasures());
 		addTabPane(mainPanel, "System Drop Rate", "todo", results.getSystemDropRateMeasures());
 		addTabPane(mainPanel, "Customer Number", DESCRIPTION_CUSTOMERNUMBERS, results.getCustomerNumberMeasures());
+		
+		//Added by ASHANKA START
+		//Adds the System Power panel in the results window
+		addTabPane(mainPanel, "System Power", DESCRIPTION_SYSTEMPOWER, results.getSystemPowerMeasures());
+		//Added by ASHANKA STOP
 
 		// Creates bottom toolbar
 		JToolBar toolbar = new JToolBar();

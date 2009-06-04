@@ -39,6 +39,14 @@ public class GlobalJobInfoList {
 	private Measure responseTime, jobNum;
 	private InverseMeasure[] throughputPerClass, dropRatePerClass;
 	private InverseMeasure throughput, dropRate;
+	
+	//Added by ASHANKA START
+	//Analyzes the system power for jobs in the queue
+	private InverseMeasure systemPower;
+	private InverseMeasure[] systemPowerPerClass;
+	//private Measure systemPower;
+	//private Measure[] systemPowerPerClass;
+	//Added by ASHANKA STOP
 
 	// To calculate throughput and job number
 	private double lastJobOutTime, lastModifyNumber, lastJobDropTime;
@@ -70,6 +78,12 @@ public class GlobalJobInfoList {
 		// Resets measures
 		responseTimePerClass = jobNumPerClass = dropRatePerClass = throughputPerClass = null;
 		responseTime = jobNum = dropRate = throughput = null;
+		
+		//Added by ASHANKA START
+		//resets 
+		systemPower = null;
+		systemPowerPerClass = null;
+		//Added by ASHANKA STOP
 	}
 
 	// --- Methods to be called on job events ---------------------------------------------
@@ -94,6 +108,11 @@ public class GlobalJobInfoList {
 		updateResponseTime(job);
 		updateThroughput(job);
 		updateJobNumber(job);
+		
+		//Added by ASHANKA START
+		//Moment is Jobis removed analyse and capture
+		updateSystemPower(job);
+		//Added by ASHANKA STOP
 
 		// Updates jobs number and throughput data structures
 		jobs--;
@@ -111,6 +130,11 @@ public class GlobalJobInfoList {
 		updateResponseTime(job);
 		updateThroughput(job);
 		updateJobNumber(job);
+		
+		//Added by ASHANKA START
+		//Analyse the sample
+		updateSystemPower(job);
+		//Added by ASHANKA STOP
 
 		// Updates jobs number and throughput data structures
 		lastModifyNumberPerClass[job.getJobClass().getId()] = lastModifyNumber = NetSystem.getTime();
@@ -308,6 +332,54 @@ public class GlobalJobInfoList {
 			dropRate.update(NetSystem.getTime() - lastJobDropTime, 1.0);
 		}
 	}
+	
+	//Added by ASHANKA START
+	//All the magic of JSIM happens here
+	/**
+	 * Analyzes System Power for a specific job class or for every class
+	 * @param jobClass specified job class. If null measure will be job independent
+	 * @param Measure reference to a Measure object
+	 */
+	public void analyzeSystemPower(JobClass jobClass, Measure Measure) {
+		if (jobClass != null) {
+			// If array is not initialized, initialize it
+			if (systemPowerPerClass == null) {
+				systemPowerPerClass = new InverseMeasure[numClass];
+				//systemPowerPerClass = new Measure[numClass];
+			}
+
+			// Sets measure
+			systemPowerPerClass[jobClass.getId()] = (InverseMeasure) Measure;
+			//systemPowerPerClass[jobClass.getId()] = Measure;
+		} else {
+			systemPower = (InverseMeasure) Measure;
+			//systemPower = Measure;
+		}		
+	}
+	
+	/**
+	 * Updates System Throughput measures.
+	 * @param job current job
+	 */
+	private void updateSystemPower(Job job) {
+
+		if (systemPowerPerClass != null) {
+			// Retrives measure (if not null)
+			// new sample is the inter-departures time (1/throughput)
+			int index = job.getJobClass().getId();
+			InverseMeasure m = systemPowerPerClass[index];
+			//Measure m = systemPowerPerClass[index];
+			if (m != null) {
+				double temp = (NetSystem.getTime() - job.getSystemEnteringTime())*(NetSystem.getTime() - lastJobOutTimePerClass[index]);
+				m.update(temp, 1.0);
+			}
+		}
+		if (systemPower != null) {
+			double tmp = (NetSystem.getTime() - job.getSystemEnteringTime())*(NetSystem.getTime() - lastJobOutTime);//(R/X)
+			systemPower.update(tmp, 1.0);
+		}
+	}
+	//Added by ASHANKA STOP
 	// ------------------------------------------------------------------------------------
 
 }

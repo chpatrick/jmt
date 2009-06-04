@@ -408,7 +408,12 @@ public class SimLoader {
 				String nodeType = e.getAttribute("nodeType"); // Node is a station or a region
 				//throughput measure requires an InverseMeasure object!!
 				if (measureType == SimConstants.THROUGHPUT || measureType == SimConstants.SYSTEM_THROUGHPUT || measureType == SimConstants.DROP_RATE
-						|| measureType == SimConstants.SYSTEM_DROP_RATE) {
+						|| measureType == SimConstants.SYSTEM_DROP_RATE
+						//Added by ASHANKA START
+						//Added System power as an Inverse Measure.
+						|| measureType == SimConstants.SYSTEM_POWER
+						//Added by ASHANKA STOP
+						) {
 					//throughput measure
 					InverseMeasure invMeasure = new InverseMeasure(e.getAttribute("name"), Double.parseDouble(e.getAttribute("alpha")), Double
 							.parseDouble(e.getAttribute("precision")), maxSamples, e.getAttribute("verbose").equalsIgnoreCase("true"));
@@ -1002,7 +1007,12 @@ public class SimLoader {
 		} else if (measure.equalsIgnoreCase("System Drop Rate")) {
 			return SimConstants.SYSTEM_DROP_RATE;
 		}
-
+		//Added by ASHANKA START
+		//This loads the System Power into the JSIM
+		else if(measure.equalsIgnoreCase("System Power")){
+			return SimConstants.SYSTEM_POWER;
+		}
+		//Added by ASHANKA STOP
 		//default value
 		return SimConstants.UTILIZATION;
 	}

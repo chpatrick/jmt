@@ -40,6 +40,13 @@ public class ResultsModel implements MeasureDefinition {
 	private Vector queueLength = new Vector(), queueTime = new Vector(), residenceTime = new Vector(), responseTime = new Vector(),
 			utilization = new Vector(), throughput = new Vector(), dropRate = new Vector(), systemResponseTime = new Vector(),
 			systemThroughput = new Vector(), customerNumber = new Vector(), systemDropRate = new Vector();
+	
+	//Added by ASHANKA START
+	//Vector ro contain the Measure index of the System Power. 
+	//This is done as a part of the addition of System Power
+	//inclusion in the JSIM as a performance Index.
+	private Vector systemPower = new Vector();
+	//Added by ASHANKA STOP
 
 	private Vector[] measuresVector; // For each TempMeasure holds a Vector with its value at every poll
 	private boolean[] finished;
@@ -104,6 +111,13 @@ public class ResultsModel implements MeasureDefinition {
 				case SimConstants.SYSTEM_DROP_RATE:
 					systemDropRate.add(new Integer(i));
 					break;
+				//Added by ASHANKA START
+				//Added as a part of addition of System Power to
+				//JSIM as a new Performance Index.
+				case SimConstants.SYSTEM_POWER:
+					systemPower.add(new Integer(i));
+					break;
+				//Added by ASHANKA STOP
 			}
 			// Adds to allMeasures HashMap a vector to collect all values of this measure
 			Vector temp_mean = new Vector();
@@ -416,6 +430,17 @@ public class ResultsModel implements MeasureDefinition {
 		return tmp;
 	}
 
+	//Added by ASHANKA START
+	//Return the Indices of each Measures related to System Power.
+	public int[] getSystemPowerMeasures(){
+		int[] tmp = new int[systemPower.size()];
+		for(int i=0;i<tmp.length;i++){
+			tmp[i] = ((Integer) systemPower.get(i)).intValue();
+		}
+		return tmp;		
+	}
+	//Added by ASHANKA STOP
+	
 	/**
 	 * Returns simulation polling interval. This is the time elapsed between two temp values.
 	 * @return simulation polling interval in seconds

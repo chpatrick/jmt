@@ -37,6 +37,12 @@ public class PAResultsModel implements MeasureDefinition {
 	private Vector queueLength = new Vector(), queueTime = new Vector(), residenceTime = new Vector(), responseTime = new Vector(),
 			utilization = new Vector(), throughput = new Vector(), dropRate = new Vector(), systemResponseTime = new Vector(),
 			systemThroughput = new Vector(), customerNumber = new Vector(), systemDropRate = new Vector();
+	//Added by ASHANKA START
+	//Added for System power changes for JSIM simulation engine.
+	//This adds the index of the measure System Power.	
+	private Vector systemPower = new Vector();
+	//Added by ASHANKA STOP
+	
 	private HashMap names = new HashMap();
 
 	//private boolean[] finished;
@@ -97,6 +103,14 @@ public class PAResultsModel implements MeasureDefinition {
 					numType = SimConstants.SYSTEM_RESPONSE_TIME;
 					systemResponseTime.add(new Integer(i));
 				}
+				//Added by ASHANKA START
+				//Added the following to Include the new
+				//performance index called System Power
+				else if  (type.endsWith("power")) {
+					numType = SimConstants.SYSTEM_POWER;
+					systemPower.add(new Integer(i));
+				}
+				//Added by ASHANKA STOP
 			} else if (type.startsWith("customer") && type.endsWith("number")) {
 				numType = SimConstants.SYSTEM_JOB_NUMBER;
 				customerNumber.add(new Integer(i));
@@ -165,6 +179,12 @@ public class PAResultsModel implements MeasureDefinition {
 			case SimConstants.SYSTEM_DROP_RATE:
 				systemDropRate.add(new Integer(measures.size() - 1));
 				break;
+			//Added by ASHANKA START
+			//Added for System Power performance Index inclusion in JSIM
+			case SimConstants.SYSTEM_POWER:
+				systemPower.add(new Integer(measures.size() - 1));
+				break;
+			//Added by ASHANKA STOP
 		}
 	}
 
@@ -606,4 +626,14 @@ public class PAResultsModel implements MeasureDefinition {
 			return valid;
 		}
 	}
+
+	//Added by ASHANKA START
+	public int[] getSystemPowerMeasures() {
+		int[] tmp = new int[systemPower.size()];
+		for(int i=0;i<tmp.length;i++){
+			tmp[i] = ((Integer) systemPower.get(i)).intValue();
+		}
+		return tmp;
+	}
+	//Added by ASHANKA STOP
 }

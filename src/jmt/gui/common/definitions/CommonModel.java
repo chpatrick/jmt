@@ -1549,7 +1549,14 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	public boolean isGlobalMeasure(Object key) {
 		String type = getMeasureType(key);
 		return type.equals(SimulationDefinition.MEASURE_S_X) || type.equals(SimulationDefinition.MEASURE_S_RP)
-				|| type.equals(SimulationDefinition.MEASURE_S_CN) || type.equals(SimulationDefinition.MEASURE_S_DR);
+				|| type.equals(SimulationDefinition.MEASURE_S_CN) || type.equals(SimulationDefinition.MEASURE_S_DR)
+				//Added by ASHANKA START
+				//Here this helps to avoid the display of the Individual Queue Service Stations in the 
+				//Combo Box in the Measure Panel as System Power is calculated at whole System or each class
+				//level but has no meaning for each station level.
+				|| type.equals(SimulationDefinition.MEASURE_S_SP)
+				//Added by ASHANKA END
+		;
 	}
 
 	/**

@@ -40,6 +40,12 @@ public class StoredResultsModel implements MeasureDefinition {
 	private Vector queueLength = new Vector(), queueTime = new Vector(), residenceTime = new Vector(), responseTime = new Vector(),
 			utilization = new Vector(), throughput = new Vector(), dropRate = new Vector(), systemResponseTime = new Vector(),
 			systemThroughput = new Vector(), customerNumber = new Vector(), systemDropRate = new Vector();
+	
+	//Added by ASHANKA START
+	//Added as a part of addition of the performance index system power to the 
+	//JSIM
+	private Vector systemPower = new Vector();
+	//Added by ASHANKA STOP
 
 	public Vector getMeasures() {
 		return measures;
@@ -290,6 +296,23 @@ public class StoredResultsModel implements MeasureDefinition {
 		}
 		return tmp;
 	}
+	
+	//Added by ASHANKA START
+	//Returns each indices of the System Power as a part of the process of adding the System Power as a new Paerformance index to the 
+	//JSIM
+	/**
+	 * Returns an array with the measureIndex of every customer number measure
+	 *
+	 * @return an array with measures' index
+	 */
+	public int[] getSystemPowerMeasures() {
+		int[] tmp = new int[systemPower.size()];
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = ((Integer) systemPower.get(i)).intValue();
+		}
+		return tmp;	
+	}
+	//Added by ASHANKA STOP
 
 	/**
 	 * Returns if simulation has finished, so results are fixed
@@ -369,6 +392,13 @@ public class StoredResultsModel implements MeasureDefinition {
 			case SimConstants.SYSTEM_DROP_RATE:
 				systemDropRate.add(new Integer(measures.size() - 1));
 				break;
+			//Added by ASHANKA START
+			//Added as a process of adding system power to the 
+			//JSIM as a new performance index
+			case SimConstants.SYSTEM_POWER:
+				systemPower.add(new Integer(measures.size()-1));
+				break;
+			//Added by ASHANKA STOP
 		}
 	}
 

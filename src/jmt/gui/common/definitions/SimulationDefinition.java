@@ -60,6 +60,11 @@ public interface SimulationDefinition {
 	public static final String MEASURE_DR = "Drop Rate";
 	/**Code for average system drop rate*/
 	public static final String MEASURE_S_DR = "System Drop Rate";
+	//Added by ASHANKA START
+	//Added as a part of process 
+	//of including the system power performance index to JSIM
+	public static final String MEASURE_S_SP = "System Power";
+	//Added by ASHANKA STOP
 
 	/*------------------------------------------------------------------------------------------
 	------------------------------Parameters for measures definition----------------------------

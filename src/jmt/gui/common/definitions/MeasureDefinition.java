@@ -185,6 +185,17 @@ public interface MeasureDefinition {
 	 * @return an array with measures' index
 	 */
 	public int[] getCustomerNumberMeasures();
+	
+	
+	//Added by ASHANKA START
+	//Added a new performance index for the JSIM Graph Simulation tool
+	//This is System Power given by the formula: System/System Response Time
+	/**
+	 * Returns an array with the measureIndex of every system power measure
+	 * @return an array with measures' index
+	 */
+	public int[] getSystemPowerMeasures();
+	//Added by ASHANKA STOP
 
 	/**
 	 * Returns the node type of a given measure

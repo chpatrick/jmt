@@ -93,7 +93,12 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 	protected static final String[] measureTypes = new String[] { SimulationDefinition.MEASURE_QL, SimulationDefinition.MEASURE_QT,
 			SimulationDefinition.MEASURE_RD, SimulationDefinition.MEASURE_RP, SimulationDefinition.MEASURE_U, SimulationDefinition.MEASURE_X,
 			SimulationDefinition.MEASURE_DR, SimulationDefinition.MEASURE_S_X, SimulationDefinition.MEASURE_S_RP, SimulationDefinition.MEASURE_S_DR,
-			SimulationDefinition.MEASURE_S_CN, };
+			SimulationDefinition.MEASURE_S_CN, 
+			//Added by ASHANKA START
+			//Adds system power index to the performance index combo box in the JSIM panel
+			SimulationDefinition.MEASURE_S_SP 
+			//Added by ASHANKA STOP
+			};
 
 	// Measure selection ComboBox
 	protected JComboBox measureSelection = new JComboBox(measureTypes);

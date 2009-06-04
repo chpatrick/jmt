@@ -148,6 +148,10 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		addTabPane(mainPanel, "System Response Time", DESCRIPTION_SYSTEMRESPONSETIMES, results.getSystemResponseTimeMeasures());
 		addTabPane(mainPanel, "System Drop Rate", "todo", results.getSystemDropRateMeasures());
 		addTabPane(mainPanel, "Customer Number", DESCRIPTION_CUSTOMERNUMBERS, results.getCustomerNumberMeasures());
+		//Added by ASHANKA START
+		//Adds the System Power panel in the results window.
+		addTabPane(mainPanel, "System Power", DESCRIPTION_SYSTEMPOWER, results.getSystemPowerMeasures());
+		//Added by ASHANKA STOP
 	}
 
 	public String getXLabel() {
@@ -1360,9 +1364,21 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			if (rowIndex == 0) {
 				return ("Mean value" + subfix);
 			} else if (rowIndex == 1) {
-				return ("Max" + subfix);
+				//Modified by ASHANKA START
+				//This Label has been modified to
+				//let the users know that the Min and Max is 
+				//Conf Interval Range and not sample Min or Max.
+				//return ("Max" + subfix);
+				return ("Max" + subfix + " (Conf Int)");
+				//Modified by ASHANKA STOP
 			} else {
-				return ("Min" + subfix);
+				//Modified by ASHANKA START
+				//return ("Min" + subfix);
+				return ("Min" + subfix + " (Conf Int)");
+				//This Label has been modified to
+				//let the users know that the Min and Max is 
+				//Conf Interval Range and not sample Min or Max.
+				//Modified by ASHANKA STOP
 			}
 		}
 

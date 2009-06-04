@@ -269,6 +269,12 @@ public class XMLResultsReader implements XMLResultsConstants {
 			} else if (tmp.startsWith("system") && tmp.endsWith("rate")) {
 				numType = SimConstants.SYSTEM_DROP_RATE;
 			}
+			//Added by ASHANAK START
+			//Added as a part of the System Power addition to the Performance index of JSIM
+			else if (tmp.startsWith("system") && tmp.endsWith("power")) {
+				numType = SimConstants.SYSTEM_POWER;
+			} 
+			//Added by ASHANKA STOP
 
 			// Adds loaded informations into model data structure
 			model.addMeasure(Name, stationName, className, alpha, precision, samples, state, numType, nodeType);

@@ -58,6 +58,11 @@ public class SimConstants {
 
 	/** Measure identifier: drop rate of the system (Bertoli Marco)  */
 	public static final int SYSTEM_DROP_RATE = 11;
+	
+	//Added by ASHANKA START
+	//Id of the system power
+	public static final int SYSTEM_POWER = 12;
+	//Added by ASHANKA STOP
 
 	//-------------------- end SIMULATION MEASURE IDENTIFIERS -------------------------//
 
