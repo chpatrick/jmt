@@ -126,9 +126,10 @@ public abstract class SimEntity {
 	 *              should be sent
 	 * @param tag An user-defined number representing the type of event.
 	 * @param data A reference to data to be sent with the event.
+	 * @return a token to remove scheduled message
 	 */
-	public final void simSchedule(int dest, double delay, int tag, Object data) {
-		SimSystem.send(me, dest, delay, tag, data);
+	public final RemoveToken simSchedule(int dest, double delay, int tag, Object data) {
+		return SimSystem.send(me, dest, delay, tag, data);
 	}
 
 	/** Send an event to another entity, by id number and with <b>no</b> data.
@@ -136,9 +137,19 @@ public abstract class SimEntity {
 	 * @param delay How long from the current simulation time the event
 	 *              should be sent
 	 * @param tag An user-defined number representing the type of event.
+	 * @return a token to remove scheduled message
 	 */
-	public final void simSchedule(int dest, double delay, int tag) {
-		SimSystem.send(me, dest, delay, tag, null);
+	public final RemoveToken simSchedule(int dest, double delay, int tag) {
+		return SimSystem.send(me, dest, delay, tag, null);
+	}
+	
+	/**
+	 * Removes a scheduled event from future or deferred queue
+	 * @param token the token to remove the element
+	 * @return true if event was found and removed, false if it was not found
+	 */
+	public final boolean simUnschedule(RemoveToken token) {
+		return SimSystem.remove(token);
 	}
 
 	/**
@@ -205,9 +216,10 @@ public abstract class SimEntity {
 
 	/** Puts an event back on the deferred queue.
 	 * @param ev The event to reinsert
+	 * @return a token to remove scheduled message
 	 */
-	public final void simPutback(SimEvent ev) {
-		SimSystem.putback((SimEvent) ev.clone());
+	public final RemoveToken simPutback(SimEvent ev) {
+		return SimSystem.putback((SimEvent) ev.clone());
 	}
 
 	/** Gets the first event matching a predicate from the deferred queue,

@@ -20,6 +20,7 @@ package jmt.engine.NodeSections;
 
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.NodeSection;
+import jmt.engine.simEngine.RemoveToken;
 
 /**
  * This abstract class implements a generic service section of a NetNode.
@@ -43,36 +44,40 @@ public abstract class ServiceSection extends PipeSection {
 	/** Sends a job to the output section.
 	 * @param job job to be sent.
 	 * @param delay Scheduling delay.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendForward(Job job, double delay) throws jmt.common.exception.NetException {
-		send(job, delay, NodeSection.OUTPUT);
+	protected RemoveToken sendForward(Job job, double delay) throws jmt.common.exception.NetException {
+		return send(job, delay, NodeSection.OUTPUT);
 	}
 
 	/** Sends a message to the output section.
 	 * @param event Message tag.
 	 * @param delay Scheduling delay.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendForward(int event, Object data, double delay) throws jmt.common.exception.NetException {
-		send(event, data, delay, NodeSection.OUTPUT);
+	protected RemoveToken sendForward(int event, Object data, double delay) throws jmt.common.exception.NetException {
+		return send(event, data, delay, NodeSection.OUTPUT);
 	}
 
 	/** Sends a job to the input section.
 	 * @param job job to be sent.
 	 * @param delay Scheduling delay.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendBackward(Job job, double delay) throws jmt.common.exception.NetException {
-		send(job, delay, NodeSection.INPUT);
+	protected RemoveToken sendBackward(Job job, double delay) throws jmt.common.exception.NetException {
+		return send(job, delay, NodeSection.INPUT);
 	}
 
 	/** Sends a message to the input section.
 	 * @param event Message tag.
 	 * @param delay Scheduling delay.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendBackward(int event, Object data, double delay) throws jmt.common.exception.NetException {
-		send(event, data, delay, NodeSection.INPUT);
+	protected RemoveToken sendBackward(int event, Object data, double delay) throws jmt.common.exception.NetException {
+		return send(event, data, delay, NodeSection.INPUT);
 	}
 }

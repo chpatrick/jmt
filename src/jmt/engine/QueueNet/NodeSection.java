@@ -22,6 +22,7 @@ import jmt.engine.dataAnalysis.InverseMeasure;
 import jmt.engine.dataAnalysis.Measure;
 import jmt.engine.log.JSimLogger;
 import jmt.engine.random.Parameter;
+import jmt.engine.simEngine.RemoveToken;
 
 /**
  * This class implements a generic section of a NetNode.
@@ -378,15 +379,16 @@ public abstract class NodeSection {
 	 * @param delay Scheduling delay.
 	 * @param destinationSection destination section.
 	 * @param destination destination node.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void send(int event, Object data, double delay, byte destinationSection, NetNode destination) throws jmt.common.exception.NetException {
+	protected RemoveToken send(int event, Object data, double delay, byte destinationSection, NetNode destination) throws jmt.common.exception.NetException {
 		if ((event == NetEvent.EVENT_JOB) && ((destination != ownerNode) || ((destination == ownerNode) && (destinationSection != sectionID)))) {
 			//it's a JOB event and the destination is not the owner node or it's the owner
 			//node but the dest section is not this section
 			updateJobsList((Job) data);
 		}
-		ownerNode.send(event, data, delay, sectionID, destinationSection, destination);
+		return ownerNode.send(event, data, delay, sectionID, destinationSection, destination);
 	}
 
 	/** Sends an event to the <b>input</b> section of a node.
@@ -394,13 +396,14 @@ public abstract class NodeSection {
 	 * @param data  data to be attached to the message.
 	 * @param delay Scheduling delay.
 	 * @param destination destination node.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void send(int event, Object data, double delay, NetNode destination) throws jmt.common.exception.NetException {
+	protected RemoveToken send(int event, Object data, double delay, NetNode destination) throws jmt.common.exception.NetException {
 		if (auto && event == NetEvent.EVENT_JOB) {
 			updateJobsList((Job) data);
 		}
-		ownerNode.send(event, data, delay, sectionID, NodeSection.INPUT, destination);
+		return ownerNode.send(event, data, delay, sectionID, NodeSection.INPUT, destination);
 	}
 
 	/** Sends an event to a section of this node.
@@ -408,13 +411,14 @@ public abstract class NodeSection {
 	 * @param data  data to be attached to the message.
 	 * @param delay Scheduling delay.
 	 * @param destinationSection Destination section.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void send(int event, Object data, double delay, byte destinationSection) throws jmt.common.exception.NetException {
+	protected RemoveToken send(int event, Object data, double delay, byte destinationSection) throws jmt.common.exception.NetException {
 		if (auto && (event == NetEvent.EVENT_JOB) && (destinationSection != sectionID)) {
 			updateJobsList((Job) data);
 		}
-		ownerNode.send(event, data, delay, sectionID, destinationSection, ownerNode);
+		return ownerNode.send(event, data, delay, sectionID, destinationSection, ownerNode);
 	}
 
 	//TODO: NOT USED
@@ -422,10 +426,11 @@ public abstract class NodeSection {
 	 * @param event event to be sent.
 	 * @param data  data to be attached to the message.
 	 * @param delay Scheduling delay.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendMe(int event, Object data, double delay) throws jmt.common.exception.NetException {
-		ownerNode.send(event, data, delay, sectionID, sectionID, ownerNode);
+	protected RemoveToken sendMe(int event, Object data, double delay) throws jmt.common.exception.NetException {
+		return ownerNode.send(event, data, delay, sectionID, sectionID, ownerNode);
 	}
 
 	//TODO: NOT USED
@@ -434,13 +439,14 @@ public abstract class NodeSection {
 	 * @param delay Scheduling delay.
 	 * @param destinationSection destination section.
 	 * @param destination destination node.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void send(Job job, double delay, byte destinationSection, NetNode destination) throws jmt.common.exception.NetException {
+	protected RemoveToken send(Job job, double delay, byte destinationSection, NetNode destination) throws jmt.common.exception.NetException {
 		if (auto && destinationSection != sectionID) {
 			updateJobsList(job);
 		}
-		ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, destinationSection, destination);
+		return ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, destinationSection, destination);
 
 	}
 
@@ -448,35 +454,38 @@ public abstract class NodeSection {
 	 * @param job job to be attached to the message.
 	 * @param delay Scheduling delay.
 	 * @param destination destination node.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void send(Job job, double delay, NetNode destination) throws jmt.common.exception.NetException {
+	protected RemoveToken send(Job job, double delay, NetNode destination) throws jmt.common.exception.NetException {
 		if (auto) {
 			updateJobsList(job);
 		}
-		ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, NodeSection.INPUT, destination);
+		return ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, NodeSection.INPUT, destination);
 	}
 
 	/** Sends a job to a section of this node.
 	 * @param job job to be attached to the message.
 	 * @param delay Scheduling delay.
 	 * @param destinationSection Destination section.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void send(Job job, double delay, byte destinationSection) throws jmt.common.exception.NetException {
+	protected RemoveToken send(Job job, double delay, byte destinationSection) throws jmt.common.exception.NetException {
 		if (auto && destinationSection != sectionID) {
 			updateJobsList(job);
 		}
-		ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, destinationSection, ownerNode);
+		return ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, destinationSection, ownerNode);
 	}
 
 	/** Sends a job to this section.
 	 * @param job job to be attached to the message.
 	 * @param delay Scheduling delay.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendMe(Job job, double delay) throws jmt.common.exception.NetException {
-		ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, sectionID, ownerNode);
+	protected RemoveToken sendMe(Job job, double delay) throws jmt.common.exception.NetException {
+		return ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, sectionID, ownerNode);
 	}
 
 	/** Sends a message to a section of all the NetNodes of the QueueNetwork.
@@ -539,16 +548,17 @@ public abstract class NodeSection {
 	 * @param delay Scheduling delay.
 	 * @param destinationSection destination section.
 	 * @param destination destination node.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void redirect(int event, Object data, double delay, byte destinationSection, NetNode destination)
+	protected RemoveToken redirect(int event, Object data, double delay, byte destinationSection, NetNode destination)
 			throws jmt.common.exception.NetException {
 		if ((event == NetEvent.EVENT_JOB) && ((destination != ownerNode) || ((destination == ownerNode) && (destinationSection != sectionID)))) {
 			//it's a JOB event and the destination is not the owner node or it's the owner
 			//node but the dest section is not this section
 			updateJobsListAfterRedirect((Job) data);
 		}
-		ownerNode.redirect(event, data, delay, sectionID, destinationSection, destination);
+		return ownerNode.redirect(event, data, delay, sectionID, destinationSection, destination);
 	}
 
 	/**
@@ -596,9 +606,10 @@ public abstract class NodeSection {
 	 * @param delay Scheduling delay.
 	 * @param destinationSection destination section.
 	 * @param destination destination node.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendAckAfterDrop(Object data, double delay, byte destinationSection, NetNode destination) throws jmt.common.exception.NetException {
+	protected RemoveToken sendAckAfterDrop(Object data, double delay, byte destinationSection, NetNode destination) throws jmt.common.exception.NetException {
 
 		if (((destination != ownerNode) || ((destination == ownerNode) && (destinationSection != sectionID)))) {
 			//the destination is not the owner node or it's the owner
@@ -623,7 +634,7 @@ public abstract class NodeSection {
 			//removes job but does not update measures
 			updateJobsListAfterDrop((Job) data);
 		}
-		ownerNode.sendAckAfterDrop(NetEvent.EVENT_ACK, data, delay, sectionID, destinationSection, destination);
+		return ownerNode.sendAckAfterDrop(NetEvent.EVENT_ACK, data, delay, sectionID, destinationSection, destination);
 	}
 	//end NEW
 

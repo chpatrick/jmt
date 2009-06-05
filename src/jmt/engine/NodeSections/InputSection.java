@@ -26,6 +26,7 @@ package jmt.engine.NodeSections;
 
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.NodeSection;
+import jmt.engine.simEngine.RemoveToken;
 
 /**
  * This abstract class implements a generic input section of a NetNode.
@@ -49,19 +50,21 @@ public abstract class InputSection extends PipeSection {
 	/** Sends a job to the service section.
 	 * @param Job Job to be sent.
 	 * @param Delay Scheduling delay.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendForward(Job Job, double Delay) throws jmt.common.exception.NetException {
-		send(Job, Delay, NodeSection.SERVICE);
+	protected RemoveToken sendForward(Job Job, double Delay) throws jmt.common.exception.NetException {
+		return send(Job, Delay, NodeSection.SERVICE);
 	}
 
 	/** Sends a message to the service section.
 	 * @param Event Message tag.
 	 * @param Data Data to be sent.
 	 * @param Delay Scheduling delay.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected void sendForward(int Event, Object Data, double Delay) throws jmt.common.exception.NetException {
-		send(Event, Data, Delay, NodeSection.SERVICE);
+	protected RemoveToken sendForward(int Event, Object Data, double Delay) throws jmt.common.exception.NetException {
+		return send(Event, Data, Delay, NodeSection.SERVICE);
 	}
 }

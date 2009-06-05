@@ -25,6 +25,7 @@ import jmt.engine.dataAnalysis.InverseMeasure;
 import jmt.engine.dataAnalysis.Measure;
 import jmt.engine.dataAnalysis.SimParameters;
 import jmt.engine.log.JSimLogger;
+import jmt.engine.simEngine.RemoveToken;
 import jmt.engine.simEngine.SimEntity;
 import jmt.engine.simEngine.SimEvent;
 import jmt.engine.simEngine.SimSystem;
@@ -601,9 +602,10 @@ public class NetNode extends SimEntity {
 	 * @param SourceSection The source section.
 	 * @param DestinationSection The destination section.
 	 * @param Destination The destination node.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException Exception
 	 */
-	void send(int Event, Object Data, double Delay, byte SourceSection, byte DestinationSection, NetNode Destination)
+	RemoveToken send(int Event, Object Data, double Delay, byte SourceSection, byte DestinationSection, NetNode Destination)
 			throws jmt.common.exception.NetException {
 		int Tag;
 		//TODO: vedi analogo problema per receive
@@ -646,7 +648,7 @@ public class NetNode extends SimEntity {
 		Tag = Event & NetEvent.EVENT_MASK;
 		Tag += SourceSection << NodeSection.SOURCE_SHIFT;
 		Tag += DestinationSection << NodeSection.DESTINATION_SHIFT;
-		simSchedule(Destination.getId(), Delay, Tag, Data);
+		return simSchedule(Destination.getId(), Delay, Tag, Data);
 	}
 
 	//TODO: non usato
@@ -725,9 +727,10 @@ public class NetNode extends SimEntity {
 	 * @param SourceSection The source section.
 	 * @param DestinationSection The destination section.
 	 * @param Destination The destination node.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException Exception
 	 */
-	void redirect(int Event, Object Data, double Delay, byte SourceSection, byte DestinationSection, NetNode Destination)
+	RemoveToken redirect(int Event, Object Data, double Delay, byte SourceSection, byte DestinationSection, NetNode Destination)
 			throws jmt.common.exception.NetException {
 		int Tag;
 
@@ -746,7 +749,7 @@ public class NetNode extends SimEntity {
 		Tag += SourceSection << NodeSection.SOURCE_SHIFT;
 		Tag += DestinationSection << NodeSection.DESTINATION_SHIFT;
 
-		simSchedule(Destination.getId(), Delay, Tag, Data);
+		return simSchedule(Destination.getId(), Delay, Tag, Data);
 	}
 
 	/** Sends an "ack" message to a NetNode, to inform it that
@@ -763,9 +766,10 @@ public class NetNode extends SimEntity {
 	 * @param SourceSection The source section.
 	 * @param DestinationSection The destination section.
 	 * @param Destination The destination node.
+	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException Exception
 	 */
-	void sendAckAfterDrop(int Event, Object Data, double Delay, byte SourceSection, byte DestinationSection, NetNode Destination)
+	RemoveToken sendAckAfterDrop(int Event, Object Data, double Delay, byte SourceSection, byte DestinationSection, NetNode Destination)
 			throws jmt.common.exception.NetException {
 
 		int Tag;
@@ -788,7 +792,7 @@ public class NetNode extends SimEntity {
 		Tag = Event & NetEvent.EVENT_MASK;
 		Tag += SourceSection << NodeSection.SOURCE_SHIFT;
 		Tag += DestinationSection << NodeSection.DESTINATION_SHIFT;
-		simSchedule(Destination.getId(), Delay, Tag, Data);
+		return simSchedule(Destination.getId(), Delay, Tag, Data);
 	}
 
 	//end NEW
