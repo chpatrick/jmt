@@ -20,6 +20,7 @@ package jmt.framework.data;
 import java.io.Serializable;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -386,7 +387,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 		// Allocates array
 		int arraySize = s.readInt();
 		head = 0;
-		tail = 0;
+		tail = -1;
 		elements = new Object[arraySize];
 		
 		for (int i=0; i<size; i++) {
@@ -405,13 +406,15 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 		c.subList(0, 4).clear();
 		a.subList(0, 4).clear();
 		
-		for (int i=0; i<7; i++) {
+		for (int i=0; i<10; i++) {
 			Object value = c.remove(0);
 			c.add((i+1)*2, value);
 			value = a.remove(0);
 			a.add((i+1)*2, value);
 		}
 		
+		c.addAll(Arrays.asList(new Object[] {"p", "q", "r"}));
+		a.addAll(Arrays.asList(new Object[] {"p", "q", "r"}));
 		c.subList(5, 19).clear();
 		a.subList(5, 19).clear();
 		for (int i=1000; i<1015;i++) {
