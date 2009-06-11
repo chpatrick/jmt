@@ -19,6 +19,7 @@ package jmt.framework.data;
 
 import java.io.Serializable;
 import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -67,7 +68,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	private void init(int size) {
 		elements = new Object[size];
 		head = 0;
-		tail = 0;
+		tail = -1;
 	}
 	
 	/* (non-Javadoc)
@@ -117,7 +118,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	 */
 	private void ensureCapacity(int capacity) {
 		if (capacity > elements.length) {
-			Object[] tmp = new Object[(elements.length * 2) + 1];
+			Object[] tmp = new Object[(elements.length * 2)];
 
             int j = 0, i = head;
             while (j < size) {
@@ -133,7 +134,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
             }
 
             head = 0;
-            tail = j;
+            tail = j - 1;
             elements = tmp;
 		}
 	}
@@ -380,5 +381,17 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 		for (int i=0; i<size; i++) {
 			elements[++tail] = s.readObject();
 		}
+	}
+	
+	public static void main(String[] args) {
+		CircularList c = new CircularList(1);
+		ArrayList a = new ArrayList(1);
+		for (int i=0; i<100;i++) {
+			Long value = new Long(Math.round(Math.random() * 1000));
+			c.add(value);
+			a.add(value);
+		}
+		
+		System.out.println(c.equals(a));
 	}
 }
