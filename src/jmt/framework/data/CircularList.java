@@ -314,16 +314,27 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 		modCount++;
 		
 		int num = toIndex - fromIndex;
-		for (int i=fromIndex; i<size - 1; i++) {
-			if (num + i < size) {
-				elements[doTranslateIndex(i)] = elements[doTranslateIndex(i+num)];
-				elements[doTranslateIndex(i+num)] = null;
-			} else {
+		
+		if (fromIndex == 0) {
+			// Removes from the head of the list
+			for (int i=fromIndex; i<toIndex; i++) {
 				elements[doTranslateIndex(i)] = null;
 			}
+			
+			head = increment(head, num);
+		} else {
+			// Removes from the tail of the list
+			for (int i=fromIndex; i<size - 1; i++) {
+				if (num + i < size) {
+					elements[doTranslateIndex(i)] = elements[doTranslateIndex(i+num)];
+					elements[doTranslateIndex(i+num)] = null;
+				} else {
+					elements[doTranslateIndex(i)] = null;
+				}
+			}
+			
+			tail = increment(tail, -num);
 		}
-		
-		tail = increment(tail, -num);
 		size-=num;
 	}
 
@@ -387,7 +398,24 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 		CircularList c = new CircularList(1);
 		ArrayList a = new ArrayList(1);
 		for (int i=0; i<100;i++) {
-			Long value = new Long(Math.round(Math.random() * 1000));
+			Long value = new Long(i);
+			c.add(value);
+			a.add(value);
+		}
+		c.subList(0, 4).clear();
+		a.subList(0, 4).clear();
+		
+		for (int i=0; i<7; i++) {
+			Object value = c.remove(0);
+			c.add((i+1)*2, value);
+			value = a.remove(0);
+			a.add((i+1)*2, value);
+		}
+		
+		c.subList(5, 19).clear();
+		a.subList(5, 19).clear();
+		for (int i=1000; i<1015;i++) {
+			Long value = new Long(i);
 			c.add(value);
 			a.add(value);
 		}
