@@ -30,9 +30,13 @@ import java.util.RandomAccess;
 /**
  * <p><b>Name:</b> CircularQueue</p> 
  * <p><b>Description:</b> 
- * A circular list based on an array, optimized for speed in append and remove operations in the head or tail of the list.
- * The array is able to grow when capacity is finished. It's optimized to have O(1) priority on insertion and remove operations
- * at the beginning and at the end of the list.
+ * A random access circular list based on an array, optimized for speed in append and remove 
+ * operations in the head or tail of the list.
+ * The array is able to grow when capacity is finished, with an O(n) complexity.
+ * <br>
+ * CircularQueue is optimized to have O(1) complexity on each get operation and in add and remove operations
+ * at the beginning and at the end of the list. Other operations are O(n). This implementation is good for
+ * unordered LIFO/FIFO buffers.
  * </p>
  * <p><b>Date:</b> 10/giu/2009
  * <b>Time:</b> 19:22:03</p>
@@ -91,12 +95,31 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
         return true;
 	}
 	
+	/**
+	 * Adds an object at the beginning of the list
+	 * @param o the object to add
+	 */
+	public void addFirst(final Object o) {
+		ensureCapacity(size + 1);
+		head = increment(head, -1);
+		elements[head] = o;
+		size++;
+		modCount++;
+	}
 	
+	/**
+	 * Adds an object to the end of the list. It's a copy of add method.
+	 * @param o the object to add
+	 * @see #add(Object)
+	 */
+	public void addLast(final Object o) {
+		add(o);
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.util.AbstractList#addAll(int, java.util.Collection)
 	 */
-	public boolean addAll(int index, Collection c) {
+	public boolean addAll(int index, final Collection c) {
 		ensureCapacity(size + c.size());
 		
 		for (Iterator it = c.iterator(); it.hasNext();) {
@@ -145,6 +168,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	 */
 	public void clear() {
 		init(elements.length);
+		modCount++;
 	}
 
 	/* (non-Javadoc)
@@ -161,6 +185,28 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	 */
 	public Object get(int index) {
 		return elements[translateIndex(index)];
+	}
+	
+	/**
+	 * @return the first element of the list
+	 * @throws IllegalArgumentException if the list is empty
+	 */
+	public Object getFirst() {
+		if (size == 0) {
+			throw new IndexOutOfBoundsException("Size is 0");
+		}
+		return elements[head];
+	}
+
+	/**
+	 * @return the last element of the list
+	 * @throws IllegalArgumentException if the list is empty
+	 */
+	public Object getLast() {
+		if (size == 0) {
+			throw new IndexOutOfBoundsException("Size is 0");
+		}
+		return elements[tail];
 	}
 	
 	/**
@@ -205,7 +251,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 		if (ret >= elements.length) {
 			return ret - elements.length;
 		} else if (ret < 0) {
-			return elements.length - ret;
+			return elements.length + ret;
 		} else {
 			return ret;
 		}
@@ -217,6 +263,9 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	public void add(int index, final Object element) {
 		if (index == size) {
 			add(element);
+			return;
+		} else if (index == 0) {
+			addFirst(element);
 			return;
 		}
 		
@@ -237,7 +286,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	/* (non-Javadoc)
 	 * @see java.util.AbstractList#indexOf(java.lang.Object)
 	 */
-	public int indexOf(Object o) {
+	public int indexOf(final Object o) {
 		if (o == null) {
 			for (int i=0; i<size; i++) {
 				if (elements[doTranslateIndex(i)] == null) {
@@ -257,7 +306,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	/* (non-Javadoc)
 	 * @see java.util.AbstractList#lastIndexOf(java.lang.Object)
 	 */
-	public int lastIndexOf(Object o) {
+	public int lastIndexOf(final Object o) {
 		if (o == null) {
 			for (int i=size-1; i>=0; i--) {
 				if (elements[doTranslateIndex(i)] == null) {
@@ -278,26 +327,54 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	 * @see java.util.AbstractList#remove(int)
 	 */
 	public Object remove(int index) {
-		Object obj;
 		if (index == 0) {
-			obj = elements[head];
-			elements[head] = null;
-			head = increment(head, 1);
+			return removeFirst();
 		} else if (index == size - 1) {
-			obj = elements[tail];
-			elements[tail] = null;
-			tail = increment(tail, -1);
+			return removeLast();
 		} else if (index < 0 || index >= size) {
 			throw new IndexOutOfBoundsException("size: " + size() + ", requested index: " + index);
-		} else {
-			obj = elements[doTranslateIndex(index)];
-			// Shifts backwards elements
-			for (int i=index; i<size - 1; i++) {
-				elements[doTranslateIndex(i)] = elements[doTranslateIndex(i+1)];
-			}
-			elements[tail] = null;
-			tail = increment(tail, -1);
+		} 
+		Object obj = elements[doTranslateIndex(index)];
+		// Shifts backwards elements
+		for (int i=index; i<size - 1; i++) {
+			elements[doTranslateIndex(i)] = elements[doTranslateIndex(i+1)];
 		}
+		elements[tail] = null;
+		tail = increment(tail, -1);
+		size--;
+		modCount++;
+		return obj;
+	}
+	
+	/**
+	 * Removes the first element of the list and returns it.
+	 * @return the first element of the list
+	 * @throws IndexOutOfBoundsException if size is zero
+	 */
+	public Object removeFirst() {
+		if (size == 0) {
+			throw new IndexOutOfBoundsException("Size is 0");
+		}
+		Object obj = elements[head];
+		elements[head] = null;
+		head = increment(head, 1);
+		size--;
+		modCount++;
+		return obj;
+	}
+	
+	/**
+	 * Removes the last element of the list and returns it
+	 * @return the last element of the list
+	 * @throws IndexOutOfBoundsException if size is zero
+	 */
+	public Object removeLast() {
+		if (size == 0) {
+			throw new IndexOutOfBoundsException("Size is 0");
+		}
+		Object obj = elements[tail];
+		elements[tail] = null;
+		tail = increment(tail, -1);
 		size--;
 		modCount++;
 		return obj;
@@ -342,7 +419,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	/* (non-Javadoc)
 	 * @see java.util.AbstractList#set(int, java.lang.Object)
 	 */
-	public Object set(int index, Object element) {
+	public Object set(int index, final Object element) {
 		int pos = translateIndex(index);
 		Object ret = elements[pos];
 		elements[pos] = element;
@@ -356,7 +433,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	 * @param s
 	 * @throws java.io.IOException
 	 */
-	private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException{
+	private void writeObject(final java.io.ObjectOutputStream s) throws java.io.IOException{
 		int expectedModCount = modCount;
 		// Write size
 		s.defaultWriteObject();
@@ -380,7 +457,7 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	 * @throws java.io.IOException
 	 * @throws ClassNotFoundException
 	 */
-	private void readObject(java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
+	private void readObject(final java.io.ObjectInputStream s) throws java.io.IOException, ClassNotFoundException {
 		// Read size
 		s.defaultReadObject();
 		
@@ -398,6 +475,10 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 	public static void main(String[] args) {
 		CircularList c = new CircularList(1);
 		ArrayList a = new ArrayList(1);
+		c.add(0, "a");
+		a.add(0, "a");
+		c.add(0, "b");
+		a.add(0, "b");
 		for (int i=0; i<100;i++) {
 			Long value = new Long(i);
 			c.add(value);
@@ -405,13 +486,21 @@ public class CircularList extends AbstractList implements List, RandomAccess, Cl
 		}
 		c.subList(0, 4).clear();
 		a.subList(0, 4).clear();
-		
+		c.add(0, "a");
+		a.add(0, "a");
+		c.add(0, "b");
+		a.add(0, "b");
+
 		for (int i=0; i<10; i++) {
 			Object value = c.remove(0);
 			c.add((i+1)*2, value);
 			value = a.remove(0);
 			a.add((i+1)*2, value);
 		}
+		c.removeFirst();
+		a.remove(0);
+		c.removeLast();
+		a.remove(a.size() - 1);
 		
 		c.addAll(Arrays.asList(new Object[] {"p", "q", "r"}));
 		a.addAll(Arrays.asList(new Object[] {"p", "q", "r"}));
