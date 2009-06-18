@@ -28,10 +28,7 @@ public class JobClass {
 	private String name;
 	//job class id
 	private int Id;
-
-	//NEW
-	//@author Stefano Omini
-
+	
 	/* Closed class type */
 	public static final int CLOSED_CLASS = 0;
 	/* Open class type */
@@ -43,8 +40,6 @@ public class JobClass {
 	private int priority;
 
 	private String referenceNodeName;
-
-	//end NEW
 
 	//----------------------CONSTRUCTORS---------------------------///
 
@@ -100,9 +95,6 @@ public class JobClass {
 		return name;
 	}
 
-	//NEW
-	//@author Stefano Omini
-
 	public int getPriority() {
 		return priority;
 	}
@@ -126,7 +118,4 @@ public class JobClass {
 	public void setReferenceNodeName(String referenceNodeName) {
 		this.referenceNodeName = referenceNodeName;
 	}
-
-	//end NEW
-
 }
