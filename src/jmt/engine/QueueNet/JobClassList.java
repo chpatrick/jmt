@@ -18,7 +18,7 @@
 
 package jmt.engine.QueueNet;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.ListIterator;
 
 /** This class implements a list of job classes. Note that only classes of QueueNet
@@ -27,47 +27,33 @@ import java.util.ListIterator;
  */
 public class JobClassList {
 
-	private LinkedList JobClasses;
+	private ArrayList jobClasses;
 
 	/** Creates a new instance of JobClassList object
 	 */
 	JobClassList() {
-		JobClasses = new LinkedList();
+		jobClasses = new ArrayList();
 	}
 
 	/** Adds a new job class to the list.
 	 * @param JobClass Reference to the JobClass to be added.
 	 */
 	void add(JobClass JobClass) {
-		JobClasses.add(JobClass);
+		jobClasses.add(JobClass);
 	}
 
 	/** Removes a job class from the list.
 	 * @param JobClass Reference to the JobClass to be removed.
 	 */
 	void remove(JobClass JobClass) {
-		JobClasses.remove(JobClass);
-	}
-
-	/** Gets the first job class in the list.
-	 * @return First job class in the list.
-	 */
-	public JobClass getFirst() {
-		return (JobClass) JobClasses.getFirst();
-	}
-
-	/** Gets the last job class in the list.
-	 * @return Last job class in the list.
-	 */
-	public JobClass getLast() {
-		return (JobClass) JobClasses.getLast();
+		jobClasses.remove(JobClass);
 	}
 
 	/** Gets i-th job class in the list.
 	 * @return Index-th job class in the list.
 	 */
 	public JobClass get(int Index) {
-		return (JobClass) JobClasses.get(Index);
+		return (JobClass) jobClasses.get(Index);
 	}
 
 	/**Gets, if it exists, the job class with the specified name.
@@ -76,7 +62,7 @@ public class JobClassList {
 	 * @return the job class. Null if it doesn't exist.
 	 */
 	public JobClass get(String Name) {
-		ListIterator iterator = JobClasses.listIterator();
+		ListIterator iterator = jobClasses.listIterator();
 		JobClass jc;
 		while (iterator.hasNext()) {
 			jc = (JobClass) iterator.next();
@@ -91,14 +77,14 @@ public class JobClassList {
 	 * @return Number of job classes in the list.
 	 */
 	public int size() {
-		return JobClasses.size();
+		return jobClasses.size();
 	}
 
 	public ListIterator listIterator() {
-		return JobClasses.listIterator();
+		return jobClasses.listIterator();
 	}
 
 	int indexOf(JobClass JobClass) {
-		return JobClasses.indexOf(JobClass);
+		return jobClasses.indexOf(JobClass);
 	}
 }
