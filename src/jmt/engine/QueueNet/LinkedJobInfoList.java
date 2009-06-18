@@ -29,7 +29,7 @@ import jmt.engine.dataAnalysis.Measure;
 /** This class implements a job info list.
  * @author Francesco Radaelli, Stefano Omini.
  */
-public class JobInfoList {
+public class LinkedJobInfoList {
 
 	private static final boolean DEBUG = false;
 
@@ -56,7 +56,7 @@ public class JobInfoList {
 	* @param Save True to create and use a list to add/remove
 	* each job which arrives/departes, false otherwise.
 	*/
-	public JobInfoList(int NumberOfJobClasses, boolean Save) {
+	public LinkedJobInfoList(int NumberOfJobClasses, boolean Save) {
 		int i;
 		if (Save) {
 			list = new LinkedList();

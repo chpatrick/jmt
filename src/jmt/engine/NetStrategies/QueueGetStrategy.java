@@ -20,7 +20,7 @@ package jmt.engine.NetStrategies;
 
 import jmt.common.AutoCheck;
 import jmt.engine.QueueNet.Job;
-import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.LinkedJobInfoList;
 
 /**
  * Use this class to implement a specific queue get strategy.
@@ -36,7 +36,7 @@ public abstract class QueueGetStrategy implements AutoCheck {
 	 * @return Job selected and removed from the list.
 	 * @throws jmt.common.exception.NetException
 	 */
-	public abstract Job get(JobInfoList Queue) throws jmt.common.exception.NetException;
+	public abstract Job get(LinkedJobInfoList Queue) throws jmt.common.exception.NetException;
 
 	public boolean check() {
 		return true;

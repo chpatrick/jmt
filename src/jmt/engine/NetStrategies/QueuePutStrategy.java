@@ -21,7 +21,7 @@ package jmt.engine.NetStrategies;
 import jmt.common.AutoCheck;
 import jmt.common.exception.NetException;
 import jmt.engine.QueueNet.Job;
-import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.LinkedJobInfoList;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeSection;
 
@@ -40,7 +40,7 @@ public abstract class QueuePutStrategy implements AutoCheck {
 	 * @param callingSection The section which calls this strategy.
 	 * @throws jmt.common.exception.NetException
 	 */
-	public abstract void put(Job job, JobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) throws NetException;
+	public abstract void put(Job job, LinkedJobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) throws NetException;
 
 	public boolean check() {
 		return true;

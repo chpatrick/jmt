@@ -21,7 +21,7 @@ package jmt.engine.NetStrategies.QueuePutStrategies;
 import jmt.engine.NetStrategies.QueuePutStrategy;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobInfo;
-import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.LinkedJobInfoList;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeSection;
 
@@ -40,7 +40,7 @@ public class HeadStrategy extends QueuePutStrategy {
 	 * @param sourceNode Job source node.
 	 * @param callingSection The section which calls this strategy.
 	 */
-	public void put(Job job, JobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) {
+	public void put(Job job, LinkedJobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) {
 		queue.addFirst(new JobInfo(job));
 	}
 }

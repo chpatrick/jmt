@@ -20,7 +20,7 @@ package jmt.engine.NetStrategies.QueueGetStrategies;
 
 import jmt.engine.NetStrategies.QueueGetStrategy;
 import jmt.engine.QueueNet.Job;
-import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.LinkedJobInfoList;
 
 /**
  *	This class implements a FCFS strategy (First Come First Served).
@@ -32,7 +32,7 @@ public class FCFSstrategy extends QueueGetStrategy {
 	 @param Queue Jobs queue.
 	 * @return First job in the list.
 	 */
-	public Job get(JobInfoList Queue) throws jmt.common.exception.NetException {
+	public Job get(LinkedJobInfoList Queue) throws jmt.common.exception.NetException {
 		return Queue.removeFirst().getJob();
 	}
 

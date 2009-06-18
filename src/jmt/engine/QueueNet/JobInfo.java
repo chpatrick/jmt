@@ -20,7 +20,7 @@ package jmt.engine.QueueNet;
 
 /**
  * This class is a generic job information storage class.
- * @see JobInfoList
+ * @see LinkedJobInfoList
  * @author Francesco Radaelli
  */
 public class JobInfo {

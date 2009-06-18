@@ -20,7 +20,7 @@ package jmt.engine.NodeSections;
 
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobInfo;
-import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.LinkedJobInfoList;
 import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
 import jmt.engine.QueueNet.NetNode;
@@ -31,7 +31,7 @@ import jmt.engine.QueueNet.NetNode;
  */
 public class JobSink extends InputSection {
 
-	private JobInfoList jobsList_node;
+	private LinkedJobInfoList jobsList_node;
 
 	/**
 	 * Default Constructor creates the JobSink that can be used only as Input Section

@@ -32,7 +32,7 @@ import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
 import jmt.engine.QueueNet.JobClassList;
 import jmt.engine.QueueNet.JobInfo;
-import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.LinkedJobInfoList;
 import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
 import jmt.engine.QueueNet.NetNode;
@@ -93,13 +93,13 @@ public class Queue extends InputSection {
 
 	//the JobInfoList of the owner NetNode (use to control the number of jobs in
 	//case of finite queue)
-	private JobInfoList nodeJobsList;
+	private LinkedJobInfoList nodeJobsList;
 
 	//number of dropped jobs
 	private int droppedJobs;
 	private int[] droppedJobsPerClass;
 
-	private JobInfoList waitingRequests;
+	private LinkedJobInfoList waitingRequests;
 
 	private QueueGetStrategy getStrategy;
 
@@ -196,7 +196,7 @@ public class Queue extends InputSection {
 	 * @param getStrategy Queue get strategy: if null FCFS strategy is used.
 	 * @param putStrategy Queue put strategy: if null Tail strategy is used.
 	 */
-	public Queue(JobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[]) {
+	public Queue(LinkedJobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[]) {
 
 		//OLD
 		//super();
@@ -241,7 +241,7 @@ public class Queue extends InputSection {
 	 * @param drop True if the queue should rejects new jobs when it's full,
 	 * false otherwise.
 	 */
-	public Queue(int size, boolean drop, JobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[]) {
+	public Queue(int size, boolean drop, LinkedJobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[]) {
 		super(false);
 		this.size = size;
 		infinite = false;
@@ -308,7 +308,7 @@ public class Queue extends InputSection {
 	 * @param putStrategy Queue put strategy: if null Tail strategy is used.
 	 * @param myReg the blocking region to which the owner node of this queue belongs
 	 */
-	public Queue(JobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[], BlockingRegion myReg) {
+	public Queue(LinkedJobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[], BlockingRegion myReg) {
 		//uses constructor for generic queue
 		this(preLoad, getStrategy, putStrategy);
 
@@ -327,7 +327,7 @@ public class Queue extends InputSection {
 	 * false otherwise.
 	 * @param myReg the blocking region to which the owner node of this queue belongs
 	 */
-	public Queue(int size, boolean drop, JobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[], BlockingRegion myReg) {
+	public Queue(int size, boolean drop, LinkedJobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[], BlockingRegion myReg) {
 
 		//uses constructor for generic queue
 		this(size, drop, preLoad, getStrategy, putStrategy);
@@ -347,7 +347,7 @@ public class Queue extends InputSection {
 	 * false otherwise.
 	 * @param myReg the blocking region to which the owner node of this queue belongs
 	 */
-	public Queue(Integer size, Boolean drop, JobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[], BlockingRegion myReg) {
+	public Queue(Integer size, Boolean drop, LinkedJobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[], BlockingRegion myReg) {
 		this(size.intValue(), drop.booleanValue(), preLoad, getStrategy, putStrategy, myReg);
 	}
 
@@ -464,7 +464,7 @@ public class Queue extends InputSection {
 
 	protected void nodeLinked(NetNode node) {
 		// Sets netnode dependent properties
-		waitingRequests = new JobInfoList(getJobClasses().size(), true);
+		waitingRequests = new LinkedJobInfoList(getJobClasses().size(), true);
 		if (putStrategy == null) {
 			putStrategy = new QueuePutStrategy[getJobClasses().size()];
 			for (int i = 0; i < getJobClasses().size(); i++) {
@@ -472,7 +472,7 @@ public class Queue extends InputSection {
 			}
 		}
 		if (jobsList == null) {
-			jobsList = new JobInfoList(getJobClasses().size(), true);
+			jobsList = new LinkedJobInfoList(getJobClasses().size(), true);
 		}
 
 		if (!infinite) {

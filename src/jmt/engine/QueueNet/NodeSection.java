@@ -87,7 +87,7 @@ public abstract class NodeSection {
 	/** Identifier of this NodeSection. */
 	private byte sectionID;
 
-	protected JobInfoList jobsList;
+	protected LinkedJobInfoList jobsList;
 
 	protected JSimLogger logger = JSimLogger.getLogger(this.getClass());
 
@@ -523,7 +523,7 @@ public abstract class NodeSection {
 	void setOwnerNode(NetNode ownerNode) {
 		this.ownerNode = ownerNode;
 		//if (auto)
-		jobsList = new JobInfoList(getJobClasses().size(), ownerNode.getOutputNodes().size() > 0);
+		jobsList = new LinkedJobInfoList(getJobClasses().size(), ownerNode.getOutputNodes().size() > 0);
 		nodeLinked(ownerNode);
 	}
 

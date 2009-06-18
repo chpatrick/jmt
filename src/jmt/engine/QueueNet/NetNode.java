@@ -75,7 +75,7 @@ public class NetNode extends SimEntity {
 	 */
 	protected QueueNetwork Network;
 
-	private JobInfoList jobsList;
+	private LinkedJobInfoList jobsList;
 
 	/** Input section of the NetNode.
 	 *
@@ -171,7 +171,7 @@ public class NetNode extends SimEntity {
 	 * Gets the JobInfoList of this node.
 	 *
 	 */
-	public JobInfoList getJobInfoList() {
+	public LinkedJobInfoList getJobInfoList() {
 		return jobsList;
 	}
 
@@ -697,7 +697,7 @@ public class NetNode extends SimEntity {
 		this.Network = Network;
 		// When a node is linked to a network, connections between nodes must
 		// have been already done!!!
-		jobsList = new JobInfoList(getJobClasses().size(), true);
+		jobsList = new LinkedJobInfoList(getJobClasses().size(), true);
 	}
 
 	public void start() {

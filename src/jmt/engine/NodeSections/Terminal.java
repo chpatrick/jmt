@@ -24,7 +24,7 @@ import java.util.ListIterator;
 import jmt.common.exception.NetException;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
-import jmt.engine.QueueNet.JobInfoList;
+import jmt.engine.QueueNet.LinkedJobInfoList;
 import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
 import jmt.engine.QueueNet.NetNode;
@@ -45,7 +45,7 @@ public class Terminal extends InputSection {
 	//TODO: se riusciamo a convertire in job info list è meglio
 	private LinkedList waitingJobs; //job waiting to be sent to service section
 
-	private JobInfoList waitingRequests;
+	private LinkedJobInfoList waitingRequests;
 
 	private int jobsPerClass[]; //number of jobs per class
 
@@ -91,7 +91,7 @@ public class Terminal extends InputSection {
 
 	protected void nodeLinked(NetNode node) {
 		// Sets netnode dependent properties
-		waitingRequests = new JobInfoList(getJobClasses().size(), true);
+		waitingRequests = new LinkedJobInfoList(getJobClasses().size(), true);
 		//TODO: togliere??
 		//if (jobsList == null)
 		//	jobsList = new JobInfoList(getJobClasses().size(), true);
