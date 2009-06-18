@@ -28,7 +28,7 @@ public class JobClass {
 	private String name;
 	//job class id
 	private int Id;
-	
+
 	/* Closed class type */
 	public static final int CLOSED_CLASS = 0;
 	/* Open class type */

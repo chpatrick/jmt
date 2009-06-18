@@ -39,7 +39,7 @@ public class GlobalJobInfoList {
 	private Measure responseTime, jobNum;
 	private InverseMeasure[] throughputPerClass, dropRatePerClass;
 	private InverseMeasure throughput, dropRate;
-	
+
 	//Added by ASHANKA START
 	//Analyzes the system power for jobs in the queue
 	private InverseMeasure systemPower;
@@ -78,7 +78,7 @@ public class GlobalJobInfoList {
 		// Resets measures
 		responseTimePerClass = jobNumPerClass = dropRatePerClass = throughputPerClass = null;
 		responseTime = jobNum = dropRate = throughput = null;
-		
+
 		//Added by ASHANKA START
 		//resets 
 		systemPower = null;
@@ -108,7 +108,7 @@ public class GlobalJobInfoList {
 		updateResponseTime(job);
 		updateThroughput(job);
 		updateJobNumber(job);
-		
+
 		//Added by ASHANKA START
 		//Moment is Jobis removed analyse and capture
 		updateSystemPower(job);
@@ -130,7 +130,7 @@ public class GlobalJobInfoList {
 		updateResponseTime(job);
 		updateThroughput(job);
 		updateJobNumber(job);
-		
+
 		//Added by ASHANKA START
 		//Analyse the sample
 		updateSystemPower(job);
@@ -332,7 +332,7 @@ public class GlobalJobInfoList {
 			dropRate.update(NetSystem.getTime() - lastJobDropTime, 1.0);
 		}
 	}
-	
+
 	//Added by ASHANKA START
 	//All the magic of JSIM happens here
 	/**
@@ -354,9 +354,9 @@ public class GlobalJobInfoList {
 		} else {
 			systemPower = (InverseMeasure) Measure;
 			//systemPower = Measure;
-		}		
+		}
 	}
-	
+
 	/**
 	 * Updates System Throughput measures.
 	 * @param job current job
@@ -370,12 +370,12 @@ public class GlobalJobInfoList {
 			InverseMeasure m = systemPowerPerClass[index];
 			//Measure m = systemPowerPerClass[index];
 			if (m != null) {
-				double temp = (NetSystem.getTime() - job.getSystemEnteringTime())*(NetSystem.getTime() - lastJobOutTimePerClass[index]);
+				double temp = (NetSystem.getTime() - job.getSystemEnteringTime()) * (NetSystem.getTime() - lastJobOutTimePerClass[index]);
 				m.update(temp, 1.0);
 			}
 		}
 		if (systemPower != null) {
-			double tmp = (NetSystem.getTime() - job.getSystemEnteringTime())*(NetSystem.getTime() - lastJobOutTime);//(R/X)
+			double tmp = (NetSystem.getTime() - job.getSystemEnteringTime()) * (NetSystem.getTime() - lastJobOutTime);//(R/X)
 			systemPower.update(tmp, 1.0);
 		}
 	}

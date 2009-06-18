@@ -27,17 +27,9 @@ import jmt.engine.simEngine.SimSystem;
  */
 
 class NetController {
-
-	private final boolean DEBUG = false;
-
 	private boolean running;
 
 	private double startTime, stopTime;
-
-	private int stopLevel, abortLevel;
-
-	//NEW
-	//@author Stefano Omini
 
 	//number of system "ticks"
 	private int n;
@@ -48,32 +40,17 @@ class NetController {
 	//WARNING: this samples number must be a multiple of refreshPeriod!!
 	private int reachabilityTest = refreshPeriod * 10;
 
-	//log object
-	//private NetLog log;
-	//end NEW
-
-	//NEW
-	//@author Stefano Omini
 	private boolean blocked = false;
-
-	//end NEW
 
 	NetController() {
 
 		running = false;
-		//NEW
-		//@author Stefano Omini
 		//initializes tick counter
 		n = 0;
-		//end NEW
 	}
 
 	/** This is the run method of the NetController (thread). */
 	public void run() {
-
-		//Date dateTime;
-		//dateTime = new Date();
-
 		try {
 			SimSystem.runStart();
 			startTime = NetSystem.getElapsedTime();
@@ -81,9 +58,6 @@ class NetController {
 			while (SimSystem.runTick()) {
 
 				synchronized (this) {
-
-					//NEW
-					//@author Stefano Omini
 					//the presence of this "if" allows pause control
 					if (blocked) {
 						try {
@@ -92,12 +66,9 @@ class NetController {
 							e.printStackTrace();
 						}
 					}
-					//end NEW
-
 					n++;
 
 					if (n % refreshPeriod == 0) {
-
 						//User may have defined measures that will not receive any sample
 						if (n % reachabilityTest == 0) {
 							//stop measures which haven't collected samples yet
@@ -106,9 +77,7 @@ class NetController {
 						//refresh measures
 						NetSystem.checkMeasures();
 					}
-
 				}
-
 			}
 			//sim is finished: get stop time
 			stopTime = NetSystem.getElapsedTime();
@@ -136,22 +105,6 @@ class NetController {
 	 */
 	synchronized double getSimulationTime() {
 		return stopTime - startTime;
-	}
-
-	/** Imposes that NetController should be stopped if a specific getLog level is
-	 * reached.
-	 * @param StopLevel Level which NetSystem should be stopped.
-	 */
-	synchronized void stopOnLogLevel(int StopLevel) {
-		this.stopLevel = StopLevel;
-	}
-
-	/** Imposes that NetController should be aborted if a specific getLog level is
-	 * reached.
-	 * @param AbortLevel Level which NetSystem should be aborted.
-	 */
-	synchronized void abortOnLogLevel(int AbortLevel) {
-		this.abortLevel = AbortLevel;
 	}
 
 	/**

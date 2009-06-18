@@ -107,7 +107,7 @@ public class NetNode extends SimEntity {
 	private NodeList InputNodes;
 
 	private NodeList OutputNodes;
-	
+
 	private SimParameters simParameters;
 
 	/** Creates a new instance of NetNode.
@@ -634,7 +634,6 @@ public class NetNode extends SimEntity {
 		}
 		*/
 		//end NEW
-
 		//
 		//EVENT_MASK        = 0x0000FFFF;
 		//SOURCE_MASK       = 0xFF000000;
@@ -844,7 +843,5 @@ public class NetNode extends SimEntity {
 	public void setSimParameters(SimParameters simParameters) {
 		this.simParameters = simParameters;
 	}
-	
-	
 
 }

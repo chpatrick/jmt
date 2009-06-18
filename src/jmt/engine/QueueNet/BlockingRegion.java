@@ -40,9 +40,6 @@ import jmt.engine.simEngine.Simulation;
  *
  */
 public class BlockingRegion {
-
-	private static final boolean DEBUG = false;
-
 	/** The name of the blocking region */
 	protected String name;
 

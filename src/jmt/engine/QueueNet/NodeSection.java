@@ -382,7 +382,8 @@ public abstract class NodeSection {
 	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected RemoveToken send(int event, Object data, double delay, byte destinationSection, NetNode destination) throws jmt.common.exception.NetException {
+	protected RemoveToken send(int event, Object data, double delay, byte destinationSection, NetNode destination)
+			throws jmt.common.exception.NetException {
 		if ((event == NetEvent.EVENT_JOB) && ((destination != ownerNode) || ((destination == ownerNode) && (destinationSection != sectionID)))) {
 			//it's a JOB event and the destination is not the owner node or it's the owner
 			//node but the dest section is not this section
@@ -609,7 +610,8 @@ public abstract class NodeSection {
 	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException
 	 */
-	protected RemoveToken sendAckAfterDrop(Object data, double delay, byte destinationSection, NetNode destination) throws jmt.common.exception.NetException {
+	protected RemoveToken sendAckAfterDrop(Object data, double delay, byte destinationSection, NetNode destination)
+			throws jmt.common.exception.NetException {
 
 		if (((destination != ownerNode) || ((destination == ownerNode) && (destinationSection != sectionID)))) {
 			//the destination is not the owner node or it's the owner

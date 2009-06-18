@@ -160,7 +160,7 @@ public class NetMessage implements Cloneable {
 	public boolean sentBy(byte section, NetNode node) {
 		return ((sourceSection == section) && (Source == node));
 	}
-	
+
 	public Object clone() {
 		try {
 			return super.clone();

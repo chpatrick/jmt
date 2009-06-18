@@ -248,22 +248,6 @@ public class NetSystem {
 		}
 	}
 
-	/** Imposes that NetSystem should be stopped if a specific getLog level is
-	 *  reached.
-	 * @param StopLevel Level which NetSystem should be stopped.
-	 */
-	public static void stopOnLogLevel(int StopLevel) {
-		netController.stopOnLogLevel(StopLevel);
-	}
-
-	/** Imposes that NetSystem should be aborted if a specific getLog level is
-	 *  reached.
-	 * @param AbortLevel Level which NetSystem should be aborted.
-	 */
-	public static void abortOnLogLevel(int AbortLevel) {
-		netController.abortOnLogLevel(AbortLevel);
-	}
-
 	/** Adds a new network to the NetSystem.
 	 * @param Network Reference to the network to be added.*/
 	public static void addNetwork(QueueNetwork Network) {
