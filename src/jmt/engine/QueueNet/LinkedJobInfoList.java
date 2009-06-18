@@ -26,10 +26,10 @@ import java.util.ListIterator;
 import jmt.engine.dataAnalysis.InverseMeasure;
 import jmt.engine.dataAnalysis.Measure;
 
-/** This class implements a job info list.
+/** This class implements a job info list based on a linked list.
  * @author Francesco Radaelli, Stefano Omini.
  */
-public class LinkedJobInfoList {
+public class LinkedJobInfoList implements JobInfoList {
 
 	private static final boolean DEBUG = false;
 

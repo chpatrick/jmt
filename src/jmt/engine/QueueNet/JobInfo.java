@@ -25,37 +25,37 @@ package jmt.engine.QueueNet;
  */
 public class JobInfo {
 
-	private Job Job;
+	private Job job;
 
-	private double Time;
+	private double time;
 
 	/** Creates a new instance of JobInfo object.
 	 * @param Job Reference to the job to be described.
 	 */
 	public JobInfo(Job Job) {
-		this.Job = Job;
-		Time = NetSystem.getTime();
+		this.job = Job;
+		time = NetSystem.getTime();
 	}
 
 	/** Gets the job referenced by this JobInfo
 	 * @return Referenced job.
 	 */
 	public Job getJob() {
-		return Job;
+		return job;
 	}
 
 	/** Gets Time property value .
 	 * @return Time property value.
 	 */
 	public double getTime() {
-		return Time;
+		return time;
 	}
 
 	/** Sets Time property value .
 	 * @param time Time property value.
 	 */
 	protected void setTime(double time) {
-		Time = time;
+		this.time = time;
 	}
 
 }
