@@ -32,11 +32,11 @@ import java.util.RandomAccess;
  * <p><b>Description:</b> 
  * A random access circular list based on an array, optimized for speed in append and remove 
  * operations in the head or tail of the list.
- * The array is able to grow when capacity is finished, with an O(n) complexity.
+ * The array is able to grow when internal capacity is finished, with an O(n) complexity.
  * <br>
  * CircularQueue is optimized to have O(1) complexity on each get operation and in add and remove operations
  * at the beginning and at the end of the list. Other operations are O(n). This implementation is good for
- * unordered LIFO/FIFO buffers.
+ * unordered, unbounded LIFO/FIFO queues.
  * </p>
  * <p><b>Date:</b> 10/giu/2009
  * <b>Time:</b> 19:22:03</p>
