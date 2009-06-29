@@ -29,6 +29,7 @@ import jmt.engine.NetStrategies.QueuePutStrategies.TailStrategyPriority;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
 import jmt.engine.QueueNet.JobInfo;
+import jmt.engine.QueueNet.JobInfoList;
 import jmt.engine.QueueNet.LinkedJobInfoList;
 
 /**
@@ -57,7 +58,7 @@ public class TestClassPriorityStrategy {
 			return;
 		}
 
-		LinkedJobInfoList list = new LinkedJobInfoList(3, true);
+		JobInfoList list = new LinkedJobInfoList(3, true);
 
 		QueuePutStrategy putStrategy_H = new HeadStrategy();
 		QueuePutStrategy putStrategy_T = new TailStrategy();

@@ -24,7 +24,7 @@ import jmt.engine.QueueNet.ForkJob;
 import jmt.engine.QueueNet.GlobalJobInfoList;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobInfo;
-import jmt.engine.QueueNet.LinkedJobInfoList;
+import jmt.engine.QueueNet.JobInfoList;
 import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
 
@@ -72,7 +72,7 @@ public class Join extends InputSection {
 					ForkJob fJob = (ForkJob) job;
 
 					// Removes job from global node list
-					LinkedJobInfoList info = getOwnerNode().getJobInfoList();
+					JobInfoList info = getOwnerNode().getJobInfoList();
 					JobInfo jobData = info.lookFor(job);
 					if (jobData != null) {
 						info.remove(jobData);

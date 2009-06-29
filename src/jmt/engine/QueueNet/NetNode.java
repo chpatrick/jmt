@@ -75,7 +75,7 @@ public class NetNode extends SimEntity {
 	 */
 	protected QueueNetwork Network;
 
-	private LinkedJobInfoList jobsList;
+	private JobInfoList jobsList;
 
 	/** Input section of the NetNode.
 	 *
@@ -171,7 +171,7 @@ public class NetNode extends SimEntity {
 	 * Gets the JobInfoList of this node.
 	 *
 	 */
-	public LinkedJobInfoList getJobInfoList() {
+	public JobInfoList getJobInfoList() {
 		return jobsList;
 	}
 

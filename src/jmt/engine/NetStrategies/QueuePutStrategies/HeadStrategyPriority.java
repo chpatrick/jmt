@@ -24,7 +24,7 @@ import java.util.ListIterator;
 import jmt.engine.NetStrategies.QueuePutStrategy;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobInfo;
-import jmt.engine.QueueNet.LinkedJobInfoList;
+import jmt.engine.QueueNet.JobInfoList;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeSection;
 
@@ -43,7 +43,7 @@ public class HeadStrategyPriority extends QueuePutStrategy {
 	 * @param sourceNode Job source node.
 	 * @param callingSection The section which calls this strategy.
 	 */
-	public void put(Job job, LinkedJobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) {
+	public void put(Job job, JobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) {
 
 		//priority of this job
 		int priority = job.getJobClass().getPriority();

@@ -29,7 +29,7 @@ import jmt.engine.dataAnalysis.Measure;
 /** This class implements a job info list based on a linked list.
  * @author Francesco Radaelli, Stefano Omini.
  */
-public class LinkedJobInfoList {
+public class LinkedJobInfoList implements JobInfoList {
 
 	private static final boolean DEBUG = false;
 
@@ -105,9 +105,8 @@ public class LinkedJobInfoList {
 	 *-------------------- "GET" METHODS -----------------------------------
 	 *---------------------------------------------------------------------*/
 
-	/** Gets list size.
-	 * @return Number of job info object in the list.
-	 * @throws jmt.common.exception.NetException
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#size()
 	 */
 	public int size() throws jmt.common.exception.NetException {
 		if (list != null) {
@@ -117,10 +116,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/**
-	 * Returns the number of jobs of a specific job class in the list.
-	 * @param JobClass Job class to look for.
-	 * @return Number of jobs of a specified job class.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#size(jmt.engine.QueueNet.JobClass)
 	 */
 	public int size(JobClass JobClass) throws jmt.common.exception.NetException {
 		if (listPerClass != null) {
@@ -130,53 +127,50 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Gets the number of jobs added to the list.
-	 * @return Arrived Jobs.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getJobsIn()
 	 */
 	public int getJobsIn() {
 		return jobsIn;
 	}
 
-	/** Gets the number of jobs of a specific job class added to the list.
-	 * @param JobClass Job class to look for.
-	 * @return Arrived jobs of a specific job class.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getJobsInPerClass(jmt.engine.QueueNet.JobClass)
 	 */
 	public int getJobsInPerClass(JobClass JobClass) {
 		return jobsInPerClass[JobClass.getId()];
 	}
 
-	/** Gets the number of jobs added to the list for each job class.
-	 * @return Arrived jobs for each job class.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getJobsInPerClass()
 	 */
 	public int[] getJobsInPerClass() {
 		return jobsInPerClass;
 	}
 
-	/** Gets the number of jobs removed from the list.
-	 * @return Departed Jobs.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getJobsOut()
 	 */
 	public int getJobsOut() {
 		return jobsOut;
 	}
 
-	/** Gets the number of jobs of a specific job class removed from the list.
-	 * @param JobClass Job class to look for.
-	 * @return Departed jobs of a specific job class.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getJobsOutPerClass(jmt.engine.QueueNet.JobClass)
 	 */
 	public int getJobsOutPerClass(JobClass JobClass) {
 		return jobsOutPerClass[JobClass.getId()];
 	}
 
-	/** Gets the number of jobs added to the list for each job class.
-	 * @return Arrived jobs per each job class.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getJobsOutPerClass()
 	 */
 	public int[] getJobsOutPerClass() {
 		return jobsOutPerClass;
 	}
 
-	/** Gets busy time.
-	 * @return Busy time.
-	 * @throws jmt.common.exception.NetException
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getBusyTime()
 	 */
 	public double getBusyTime() throws jmt.common.exception.NetException {
 		if (list != null) {
@@ -186,9 +180,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Gets busy time for job class.
-	 * @return Busy time for job class.
-	 * @throws jmt.common.exception.NetException
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getBusyTimePerClass(jmt.engine.QueueNet.JobClass)
 	 */
 	public double getBusyTimePerClass(JobClass JobClass) throws jmt.common.exception.NetException {
 		if (listPerClass != null) {
@@ -198,50 +191,50 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Gets time of the last job arrived.
-	 * @return Time of last job arrived.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getLastJobInTime()
 	 */
 	public double getLastJobInTime() {
 		return lastJobInTime;
 	}
 
-	/** Gets time of the last job arrived of a specified job class.
-	 * @return Time of last job arrived of a specified job class.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getLastJobInTimePerClass(jmt.engine.QueueNet.JobClass)
 	 */
 	public double getLastJobInTimePerClass(JobClass JobClass) {
 		return lastJobInTimePerClass[JobClass.getId()];
 	}
 
-	/** Gets time of the last job was dropped.
-	 * @return Time of last job departed.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getLastJobOutTime()
 	 */
 	public double getLastJobOutTime() {
 		return lastJobOutTime;
 	}
 
-	/** Gets time of the last job was dropped.
-	 * @return Time of last job departed.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getLastJobDropTime()
 	 */
 	public double getLastJobDropTime() {
 		return lastJobDropTime;
 	}
 
-	/** Gets time of the last job departed of a specified job class.
-	 * @return Time of last job departed of a specified job class.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getLastJobOutTimePerClass(jmt.engine.QueueNet.JobClass)
 	 */
 	public double getLastJobOutTimePerClass(JobClass JobClass) {
 		return lastJobOutTimePerClass[JobClass.getId()];
 	}
 
-	/** Gets time of the last job dropped of a specified job class.
-	 * @return Time of last job dropped of a specified job class.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getLastJobDropTimePerClass(jmt.engine.QueueNet.JobClass)
 	 */
 	public double getLastJobDropTimePerClass(JobClass JobClass) {
 		return lastJobDropTimePerClass[JobClass.getId()];
 	}
 
-	/** Gets time of the last modify of the list.
-	 * @return Time of last modify of the list.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getLastModifyTime()
 	 */
 	public double getLastModifyTime() {
 		if (lastJobOutTime >= lastJobInTime && lastJobOutTime >= lastJobDropTime) {
@@ -253,8 +246,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Gets time of the last modify of the list for a specified job class.
-	 * @return Time of the last modify of the list for a specified job class.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getLastModifyTimePerClass(jmt.engine.QueueNet.JobClass)
 	 */
 	public double getLastModifyTimePerClass(JobClass JobClass) {
 		if (lastJobOutTimePerClass[JobClass.getId()] >= lastJobInTimePerClass[JobClass.getId()]
@@ -268,9 +261,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Looks for an information job object which references to a specific job.
-	 * @param Job The specified job.
-	 * @return JobInfo object which references to the specified job, null otherwise.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#lookFor(jmt.engine.QueueNet.Job)
 	 */
 	public JobInfo lookFor(Job Job) throws jmt.common.exception.NetException {
 		if (listPerClass == null) {
@@ -289,8 +281,8 @@ public class LinkedJobInfoList {
 		return null;
 	}
 
-	/**
-	 * Gets the job info list
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#getJobList()
 	 */
 	public List getJobList() {
 		return list;
@@ -300,10 +292,8 @@ public class LinkedJobInfoList {
 	 *-------------------- "ADD" AND "REMOVE" METHODS ----------------------
 	 *---------------------------------------------------------------------*/
 
-	/** Adds a new job info to the list.
-	 * @param jobInfo Reference to the job info to be added.
-	 * @return True if the job has been added (True if <tt>Save</tt> property is true,
-	 * otherwise no list was created by the constructor)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#add(jmt.engine.QueueNet.JobInfo)
 	 */
 	public boolean add(JobInfo jobInfo) {
 		if (list != null) {
@@ -316,10 +306,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Adds a new job info to the top of the list.
-	 * @param jobInfo reference to job info to be added.
-	 * @return True if the job has been added (True if <tt>Save</tt> property is true,
-	 * otherwise no list was created by the constructor)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#addFirst(jmt.engine.QueueNet.JobInfo)
 	 */
 	public boolean addFirst(JobInfo jobInfo) {
 		if (list != null) {
@@ -337,17 +325,8 @@ public class LinkedJobInfoList {
 	//NEW
 	//@author Stefano Omini
 
-	/** Adds a new job info in the specified position.
-	 * The jobs must be inserted in both general and class jobs lists. The
-	 * specified position is relative to general list. In its own class job list, a job
-	 * can be put at the beginning (head) or at the end (tail).
-	 *
-	 * @param index the specified position
-	 * @param jobInfo reference to job info to be added.
-	 * @param isClassTail if true, job will be put in the last position of its own class job list (tail
-	 * strategy); if false, it will be put in first position (head strategy)
-	 * @return True if the job has been added (True if <tt>Save</tt> property is true,
-	 * otherwise no list was created by the constructor)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#add(int, jmt.engine.QueueNet.JobInfo, boolean)
 	 */
 	public boolean add(int index, JobInfo jobInfo, boolean isClassTail) {
 
@@ -367,16 +346,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Adds a new job info in the specified position.
-	 * The jobs must be inserted in both general and class jobs lists. The
-	 * specified position is relative to general list. In its own class job list, a job
-	 * can be put at the beginning (head) or at the end (tail).
-	 *
-	 * @param jobInfo reference to job info to be added.
-	 * @param isClassTail if true, job will be put in the last position of its own class job list (tail
-	 * strategy); if false, it will be put in first position (head strategy)
-	 * @return True if the job has been added (True if <tt>Save</tt> property is true,
-	 * otherwise no list was created by the constructor)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#addFirst(jmt.engine.QueueNet.JobInfo, boolean)
 	 */
 	public boolean addFirst(JobInfo jobInfo, boolean isClassTail) {
 
@@ -396,16 +367,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Adds a new job info in the specified position.
-	 * The jobs must be inserted in both general and class jobs lists. The
-	 * specified position is relative to general list. In its own class job list, a job
-	 * can be put at the beginning (head) or at the end (tail).
-	 *
-	 * @param jobInfo reference to job info to be added.
-	 * @param isClassTail if true, job will be put in the last position of its own class job list (tail
-	 * strategy); if false, it will be put in first position (head strategy)
-	 * @return True if the job has been added (True if <tt>Save</tt> property is true,
-	 * otherwise no list was created by the constructor)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#addLast(jmt.engine.QueueNet.JobInfo, boolean)
 	 */
 	public boolean addLast(JobInfo jobInfo, boolean isClassTail) {
 
@@ -429,10 +392,8 @@ public class LinkedJobInfoList {
 
 	//----------------end METHODS USED BY PRIORITY BASED STRATEGIES---------------//
 
-	/** Adds a new job info to the bottom of the list.
-	 * @param jobInfo reference to job info to be added.
-	 * @return True if the job has been added (True if <tt>Save</tt> property is true,
-	 * otherwise no list was created by the constructor)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#addLast(jmt.engine.QueueNet.JobInfo)
 	 */
 	public boolean addLast(JobInfo jobInfo) throws jmt.common.exception.NetException {
 		if (list != null) {
@@ -499,20 +460,15 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Removes a job info from the list and updates the measures related to
-	 * throughput, utilization and response time.
-	 * @param jobInfo reference to job info to be removed.
-	 * @return True if the job has been removed (True if <tt>Save</tt> property is true,
-	 * otherwise no list was created by the constructor)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#remove(jmt.engine.QueueNet.JobInfo)
 	 */
 	public boolean remove(JobInfo jobInfo) throws jmt.common.exception.NetException {
 		return doRemove(jobInfo, 0, 0);
 	}
 
-	/** Removes a job info from the top of the list and updates the measures related to
-	 * throughput, utilization and response time.
-	 * @return A Job info object if it has been found, null otherwise (list
-	 * empty or Save property is false)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#removeFirst()
 	 */
 	public JobInfo removeFirst() throws jmt.common.exception.NetException {
 		if (list != null) {
@@ -528,10 +484,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Removes a job info of a specified job class from the top of the list and updates the measures related to
-	 * throughput, utilization and response time.
-	 * @return A Job info object if it has been found, null otherwise (list
-	 * empty or Save property is false)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#removeFirst(jmt.engine.QueueNet.JobClass)
 	 */
 	public JobInfo removeFirst(JobClass jobClass) throws jmt.common.exception.NetException {
 		if (list != null) {
@@ -548,10 +502,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Removes a job info from the bottom of the list and updates the measures related to
-	 * throughput, utilization and response time.
-	 * @return A Job info object if it has been found, null otherwise (list
-	 * empty or Save property is false)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#removeLast()
 	 */
 	public JobInfo removeLast() throws jmt.common.exception.NetException {
 		if (list != null) {
@@ -567,10 +519,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Removes a job info of a specified job class from the bottom of the list  and updates the measures related to
-	 * throughput, utilization and response time.
-	 * @return A Job info object if it has been found, null otherwise (list
-	 * empty or Save property is false)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#removeLast(jmt.engine.QueueNet.JobClass)
 	 */
 	public JobInfo removeLast(JobClass jobClass) throws jmt.common.exception.NetException {
 		if (list != null) {
@@ -591,10 +541,8 @@ public class LinkedJobInfoList {
 	 *---------------- "ANALYZE" AND "UPDATE" METHODS ----------------------
 	 *---------------------------------------------------------------------*/
 
-	/** Analyzes class utilization.
-	 * @param jobClass Job class to be analyzed. If null, measure will be
-	 * job class independent.
-	 * @param Measurement Reference to a measure object.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#analyzeUtilization(jmt.engine.QueueNet.JobClass, jmt.engine.dataAnalysis.Measure)
 	 */
 	public void analyzeUtilization(JobClass jobClass, Measure Measurement) {
 		if (jobClass != null) {
@@ -607,10 +555,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Analyzes class response time.
-	 * @param jobClass Job class to be analyzed. If null, measure will be
-	 * job class independent.
-	 * @param Measurement Reference to a measure object.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#analyzeResponseTime(jmt.engine.QueueNet.JobClass, jmt.engine.dataAnalysis.Measure)
 	 */
 	public void analyzeResponseTime(JobClass jobClass, Measure Measurement) {
 		if (jobClass != null) {
@@ -623,10 +569,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Analyzes class drop rate. Bertoli Marco
-	 * @param jobClass Job class to be analyzed. If null, measure will be
-	 * job class independent.
-	 * @param Measurement Reference to a measure object.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#analyzeDropRate(jmt.engine.QueueNet.JobClass, jmt.engine.dataAnalysis.InverseMeasure)
 	 */
 	public void analyzeDropRate(JobClass jobClass, InverseMeasure Measurement) {
 		if (jobClass != null) {
@@ -639,19 +583,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/**
-	 *
-	 * Analyzes class throughput. <br>
-	 * WARNING: An InverseMeasure must be used.
-	 * The aim is to save computational time: in fact it's easier to analyze throughput
-	 * by passing samples which are equals to 1/X,
-	 * instead of doing one division for each sample (this would make simulation much slower).
-	 * At the end the correct value is passed.
-	 * @param JobClass Job class to be analyzed. If null, measure will be
-	 * job class independent.
-	 * @param Measurement Reference to a InverseMeasure object.
-	 *
-	 *
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#analyzeThroughput(jmt.engine.QueueNet.JobClass, jmt.engine.dataAnalysis.InverseMeasure)
 	 */
 
 	public void analyzeThroughput(JobClass JobClass, InverseMeasure Measurement) {
@@ -665,10 +598,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Analyzes class residence time.
-	 * @param JobClass Job class to be analyzed. If null, measure will be
-	 * job class independent.
-	 * @param Measurement Reference to a measure object.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#analyzeResidenceTime(jmt.engine.QueueNet.JobClass, jmt.engine.dataAnalysis.Measure)
 	 */
 	public void analyzeResidenceTime(JobClass JobClass, Measure Measurement) {
 		if (JobClass != null) {
@@ -778,10 +709,8 @@ public class LinkedJobInfoList {
 	//@author Stefano Omini
 	//modified 21/5/2004
 
-	/** Analyzes list residence time.
-	 * @param JobClass Job class to be analyzed. If null, measure will be
-	 * job class independent.
-	 * @param Measurement Reference to a measure object.
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#analyzeQueueLength(jmt.engine.QueueNet.JobClass, jmt.engine.dataAnalysis.Measure)
 	 */
 	public void analyzeQueueLength(JobClass JobClass, Measure Measurement) {
 		if (JobClass != null) {
@@ -821,11 +750,8 @@ public class LinkedJobInfoList {
 	//NEW
 	//@author Stefano Omini
 
-	/** Removes a job info from the list without updating measures.
-	 *
-	 * @param JobInfo reference to job info to be removed.
-	 * @return True if the job has been removed (True if <tt>Save</tt> property is true,
-	 * otherwise no list was created by the constructor)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#removeAfterRedirect(jmt.engine.QueueNet.JobInfo)
 	 */
 	public boolean removeAfterRedirect(JobInfo JobInfo) throws jmt.common.exception.NetException {
 		if (list != null) {
@@ -846,11 +772,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** Removes a job info from the list after drop.
-	 *
-	 * @param JobInfo reference to job info to be removed.
-	 * @return True if the job has been removed (True if <tt>Save</tt> property is true,
-	 * otherwise no list was created by the constructor)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#removeAfterDrop(jmt.engine.QueueNet.JobInfo)
 	 */
 	public boolean removeAfterDrop(JobInfo JobInfo) throws jmt.common.exception.NetException {
 		if (list != null) {
@@ -867,11 +790,8 @@ public class LinkedJobInfoList {
 		}
 	}
 
-	/** drops a Job. This method must be called when a job is dropped but it was not in the info list.
-	*
-	 * @param JobInfo reference to job info to be removed.
-	 * @return True if the job has been removed (True if <tt>Save</tt> property is true,
-	* otherwise no list was created by the constructor)
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#dropJob(jmt.engine.QueueNet.Job)
 	 */
 	public boolean dropJob(Job job) throws jmt.common.exception.NetException {
 		if (list != null) {

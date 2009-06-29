@@ -87,7 +87,7 @@ public abstract class NodeSection {
 	/** Identifier of this NodeSection. */
 	private byte sectionID;
 
-	protected LinkedJobInfoList jobsList;
+	protected JobInfoList jobsList;
 
 	protected JSimLogger logger = JSimLogger.getLogger(this.getClass());
 

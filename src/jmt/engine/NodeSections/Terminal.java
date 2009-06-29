@@ -24,6 +24,7 @@ import java.util.ListIterator;
 import jmt.common.exception.NetException;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
+import jmt.engine.QueueNet.JobInfoList;
 import jmt.engine.QueueNet.LinkedJobInfoList;
 import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
@@ -45,7 +46,7 @@ public class Terminal extends InputSection {
 	//TODO: se riusciamo a convertire in job info list è meglio
 	private LinkedList waitingJobs; //job waiting to be sent to service section
 
-	private LinkedJobInfoList waitingRequests;
+	private JobInfoList waitingRequests;
 
 	private int jobsPerClass[]; //number of jobs per class
 

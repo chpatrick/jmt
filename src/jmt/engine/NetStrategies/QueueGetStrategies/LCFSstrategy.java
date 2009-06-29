@@ -20,7 +20,7 @@ package jmt.engine.NetStrategies.QueueGetStrategies;
 
 import jmt.engine.NetStrategies.QueueGetStrategy;
 import jmt.engine.QueueNet.Job;
-import jmt.engine.QueueNet.LinkedJobInfoList;
+import jmt.engine.QueueNet.JobInfoList;
 
 /**
  *	This class implements a LCFS strategy (Last Come First Served).
@@ -32,7 +32,7 @@ public class LCFSstrategy extends QueueGetStrategy {
 	 * @param Queue Jobs queue.
 	 * @return Last job in the list.
 	 */
-	public Job get(LinkedJobInfoList Queue) throws jmt.common.exception.NetException {
+	public Job get(JobInfoList Queue) throws jmt.common.exception.NetException {
 		return Queue.removeLast().getJob();
 	}
 }

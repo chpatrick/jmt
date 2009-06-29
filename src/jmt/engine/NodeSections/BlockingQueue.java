@@ -26,6 +26,7 @@ import jmt.engine.QueueNet.BlockingRegion;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
 import jmt.engine.QueueNet.JobInfo;
+import jmt.engine.QueueNet.JobInfoList;
 import jmt.engine.QueueNet.LinkedJobInfoList;
 import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
@@ -73,7 +74,7 @@ public class BlockingQueue extends InputSection {
 	private int[] droppedJobsPerClass;
 
 	//job info list of the owner node: used to remove job after drop
-	private LinkedJobInfoList jobsList_node;
+	private JobInfoList jobsList_node;
 
 	/**
 	 * Creates a new instance of infinite BlockingQueue.
