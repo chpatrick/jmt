@@ -3,9 +3,10 @@ package jmt.engine.simEngine;
 import java.util.Comparator;
 import java.util.Iterator;
 
+import jmt.framework.data.CircularList;
+
 import org.apache.commons.collections.Buffer;
 import org.apache.commons.collections.buffer.PriorityBuffer;
-import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
 
 /**
  * <p><b>Name:</b> HybridEventQueue</p> 
@@ -22,7 +23,7 @@ import org.apache.commons.collections.buffer.UnboundedFifoBuffer;
 public class HybridEventQueue implements EventQueue{
 	private int DEFAULT_INITIAL_CAPACITY = 111;
 	/** Current events */
-	private Buffer current;
+	private CircularList current;
 	/** Future events*/
 	private Buffer future;
 	/** Current time. All events in current event queue will have this time. */
@@ -55,7 +56,7 @@ public class HybridEventQueue implements EventQueue{
 	 * @see jmt.engine.simEngine.EventQueue#clear()
 	 */
 	public void clear() {
-		current = new UnboundedFifoBuffer();
+		current = new CircularList();
 		future = new PriorityBuffer(DEFAULT_INITIAL_CAPACITY, new SimEventComparator());
 		currentTime = 0.0;
 		order = Integer.MIN_VALUE;
@@ -73,7 +74,7 @@ public class HybridEventQueue implements EventQueue{
 	public SimEvent peek() {
 		handleCurrent();
 		if (current.size() > 0) {
-			return (SimEvent) current.get();
+			return (SimEvent) current.getFirst();
 		} else {
 			return null;
 		}
@@ -85,7 +86,7 @@ public class HybridEventQueue implements EventQueue{
 	public SimEvent pop() {
 		handleCurrent();
 		if (current.size() > 0) {
-			return (SimEvent) current.remove();
+			return (SimEvent) current.removeFirst();
 		} else {
 			return null;
 		}
@@ -112,7 +113,7 @@ public class HybridEventQueue implements EventQueue{
 	 */
 	private void moveCurrentToFuture() {
 		while (current.size() > 0) {
-			addToFuture((SimEvent)current.remove());
+			addToFuture((SimEvent)current.removeFirst());
 		}
 	}
 	

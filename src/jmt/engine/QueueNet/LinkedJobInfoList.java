@@ -29,7 +29,7 @@ import jmt.engine.dataAnalysis.Measure;
 /** This class implements a job info list based on a linked list.
  * @author Francesco Radaelli, Stefano Omini.
  */
-public class LinkedJobInfoList implements JobInfoList {
+public class LinkedJobInfoList {
 
 	private static final boolean DEBUG = false;
 
@@ -448,10 +448,12 @@ public class LinkedJobInfoList implements JobInfoList {
 	/** Removes a job info from the list and updates the measures related to
 	 * throughput, utilization and response time.
 	 * @param jobInfo reference to job info to be removed.
+	 * @param position 0 to remove from a random location, 1 from head, 2 from tail.
+	 * @param perClassPosition 0 to remove from a random location, 1 from head, 2 from tail.
 	 * @return True if the job has been removed (True if <tt>Save</tt> property is true,
 	 * otherwise no list was created by the constructor)
 	 */
-	public boolean remove(JobInfo jobInfo) throws jmt.common.exception.NetException {
+	private boolean doRemove(JobInfo jobInfo, int position, int perClassPosition) throws jmt.common.exception.NetException {
 		if (list != null) {
 			Job job = jobInfo.getJob();
 			JobClass jobClass = job.getJobClass();
@@ -467,9 +469,9 @@ public class LinkedJobInfoList implements JobInfoList {
 			//end NEW
 
 			updateResponseTime(jobInfo);
-
-			listPerClass[c].remove(jobInfo);
-			list.remove(jobInfo);
+			
+			finalRemove(jobInfo, listPerClass[c], perClassPosition);
+			finalRemove(jobInfo, list, position);
 			lastJobOutTimePerClass[c] = lastJobOutTime = NetSystem.getTime();
 			double time = lastJobOutTime - jobInfo.getTime();
 			jobsOut++;
@@ -482,6 +484,30 @@ public class LinkedJobInfoList implements JobInfoList {
 			return false;
 		}
 	}
+	
+	private void finalRemove(JobInfo what, LinkedList list, int position) {
+		switch (position) {
+			case 1:
+				list.removeFirst();
+				break;
+			case 2:
+				list.removeLast();
+				break;
+			default:
+				list.remove(what);
+				break;
+		}
+	}
+
+	/** Removes a job info from the list and updates the measures related to
+	 * throughput, utilization and response time.
+	 * @param jobInfo reference to job info to be removed.
+	 * @return True if the job has been removed (True if <tt>Save</tt> property is true,
+	 * otherwise no list was created by the constructor)
+	 */
+	public boolean remove(JobInfo jobInfo) throws jmt.common.exception.NetException {
+		return doRemove(jobInfo, 0, 0);
+	}
 
 	/** Removes a job info from the top of the list and updates the measures related to
 	 * throughput, utilization and response time.
@@ -492,7 +518,7 @@ public class LinkedJobInfoList implements JobInfoList {
 		if (list != null) {
 			JobInfo jobInfo = ((JobInfo) list.getFirst());
 			if (jobInfo != null) {
-				remove(jobInfo);
+				doRemove(jobInfo, 1, 1);
 				return jobInfo;
 			} else {
 				return null;
@@ -510,10 +536,10 @@ public class LinkedJobInfoList implements JobInfoList {
 	public JobInfo removeFirst(JobClass jobClass) throws jmt.common.exception.NetException {
 		if (list != null) {
 			int c = jobClass.getId();
-			JobInfo JobInfo = ((JobInfo) listPerClass[c].getFirst());
-			if (JobInfo != null) {
-				remove(JobInfo);
-				return JobInfo;
+			JobInfo jobInfo = ((JobInfo) listPerClass[c].getFirst());
+			if (jobInfo != null) {
+				doRemove(jobInfo, 0, 1);
+				return jobInfo;
 			} else {
 				return null;
 			}
@@ -529,10 +555,10 @@ public class LinkedJobInfoList implements JobInfoList {
 	 */
 	public JobInfo removeLast() throws jmt.common.exception.NetException {
 		if (list != null) {
-			JobInfo JobInfo = (JobInfo) list.getLast();
-			if (JobInfo != null) {
-				remove(JobInfo);
-				return JobInfo;
+			JobInfo jobInfo = (JobInfo) list.getLast();
+			if (jobInfo != null) {
+				doRemove(jobInfo, 2, 2);
+				return jobInfo;
 			} else {
 				return null;
 			}
@@ -549,10 +575,10 @@ public class LinkedJobInfoList implements JobInfoList {
 	public JobInfo removeLast(JobClass jobClass) throws jmt.common.exception.NetException {
 		if (list != null) {
 			int c = jobClass.getId();
-			JobInfo JobInfo = (JobInfo) listPerClass[c].getLast();
-			if ((JobInfo != null)) {
-				remove(JobInfo);
-				return JobInfo;
+			JobInfo jobInfo = (JobInfo) listPerClass[c].getLast();
+			if ((jobInfo != null)) {
+				doRemove(jobInfo, 0, 2);
+				return jobInfo;
 			} else {
 				return null;
 			}

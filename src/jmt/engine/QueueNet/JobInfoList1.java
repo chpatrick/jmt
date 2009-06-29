@@ -28,6 +28,6 @@ package jmt.engine.QueueNet;
  * @author Bertoli Marco
  * @version 1.0
  */
-public interface JobInfoList {
+public interface JobInfoList1 {
 
 }
