@@ -59,11 +59,6 @@ public interface JobInfoList {
 	 */
 	public abstract int getJobsInPerClass(JobClass JobClass);
 
-	/** Gets the number of jobs added to the list for each job class.
-	 * @return Arrived jobs for each job class.
-	 */
-	public abstract int[] getJobsInPerClass();
-
 	/** Gets the number of jobs removed from the list.
 	 * @return Departed Jobs.
 	 */
@@ -74,11 +69,6 @@ public interface JobInfoList {
 	 * @return Departed jobs of a specific job class.
 	 */
 	public abstract int getJobsOutPerClass(JobClass JobClass);
-
-	/** Gets the number of jobs added to the list for each job class.
-	 * @return Arrived jobs per each job class.
-	 */
-	public abstract int[] getJobsOutPerClass();
 
 	/** Gets busy time.
 	 * @return Busy time.
