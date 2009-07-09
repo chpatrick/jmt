@@ -1038,8 +1038,6 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
     		return loggerGlbParams.decimalSeparator;
     	else if (selector.equalsIgnoreCase("autoAppend") == true)
     		return loggerGlbParams.autoAppendMode.toString();
-    	else if (selector.equalsIgnoreCase("logExecutionTimestamp") == true)
-    		return loggerGlbParams.logExecutionTimestamp;
     	else
     		debugLog.error("No such selector " + selector + " for " +
     				new Exception().getStackTrace()[0] + "\n" + new Exception().getStackTrace()[1]);
@@ -1063,8 +1061,6 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
     		this.loggerGlbParams.delimiter = value;
     	else if (selector.equalsIgnoreCase("autoAppend") == true)
     		this.loggerGlbParams.autoAppendMode = new Integer(value);
-    	else if (selector.equalsIgnoreCase("logExecutionTimestamp") == true)
-    		this.loggerGlbParams.logExecutionTimestamp = value;
     	else
     	{
     		debugLog.error("No such selector " + selector + " for " +
@@ -2361,7 +2357,6 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		public String delimiter;
 		public String decimalSeparator;
 		public Integer autoAppendMode;
-		public String logExecutionTimestamp;
 		
 		LoggerGlobalParameters()
 		{
@@ -2369,7 +2364,6 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			delimiter = Defaults.get("loggerDelimiter");
 			decimalSeparator = Defaults.get("loggerDecimalSeparator");
 			autoAppendMode = Defaults.getAsInteger("loggerAutoAppend");
-			logExecutionTimestamp = "true";
 			
 			// debugLog.debug("LoggerGlobalParameters constructor called by \n  " + new Exception().getStackTrace()[1] + "\n  " + new Exception().getStackTrace()[2]);
 		}

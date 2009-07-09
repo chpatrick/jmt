@@ -277,10 +277,6 @@ public class SimLoader {
 				String temp_lr = root.getAttribute("logReplaceMode");
 				simParam.setLogReplaceMode(temp_lr);
 			}
-			if (root.hasAttribute("logExecutionTimestamp")) {
-				String temp_lt = root.getAttribute("logExecutionTimestamp");
-				simParam.setLogExecutionTimestamp(temp_lt);
-			}
 			if (root.hasAttribute("lastRunTime")) {
 				String temp_ltv = root.getAttribute("lastRunTime");
 				simParam.setTimestampValue(temp_ltv);

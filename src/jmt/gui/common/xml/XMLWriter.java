@@ -38,9 +38,8 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import jmt.engine.random.EmpiricalEntry;
-import jmt.engine.log.JSimLogger;
 import jmt.engine.log.LoggerParameters;
+import jmt.engine.random.EmpiricalEntry;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.distributions.Distribution;
@@ -61,10 +60,6 @@ import org.w3c.dom.Node;
  * Modified by Bertoli Marco
  */
 public class XMLWriter implements CommonConstants, XMLConstantNames {
-
-	/*defines default logger*/
-	private static final jmt.engine.log.JSimLogger debugLog = jmt.engine.log.JSimLogger.getLogger(JSimLogger.STD_LOGGER);
-
 	/*defines matching between gui representation and engine names for queue
 	strategies, e.g. FCFS = TailStrategy.*/
 	protected static final HashMap queuePutStrategyNamesMatchings = new HashMap() {
@@ -191,7 +186,6 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 		elem.setAttribute(XML_A_ROOT_LOGREPLACE,model.getLoggingGlbParameter("autoAppend"));
 		elem.setAttribute(XML_A_ROOT_LOGDELIM,model.getLoggingGlbParameter("delim"));
 		elem.setAttribute(XML_A_ROOT_LOGDECIMALSEPARATOR,model.getLoggingGlbParameter("decimalSeparator"));
-		elem.setAttribute(XML_A_ROOT_LOGEXECUTIONTIMESTAMP,model.getLoggingGlbParameter("logExecutionTimestamp"));
 		// Write all elements
 		writeClasses(modelDoc, elem, model);
 		writeStations(modelDoc, elem, model);
@@ -525,10 +519,6 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 
         // Get this station's logger parameters
         LoggerParameters loggerParameters = (LoggerParameters)model.getLoggingParameters(stationKey);
-        
-        String strAutoAppend, strDelimiter;
-    	strAutoAppend = model.getLoggingGlbParameter("autoAppend");
-    	strDelimiter = model.getLoggingGlbParameter("delim");
 
         XMLParameter name = new XMLParameter(
         		XML_LOG_FILENAME, "java.lang.String", null, loggerParameters.name.toString(), false

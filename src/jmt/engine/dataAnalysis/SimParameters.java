@@ -59,7 +59,7 @@ public class SimParameters {
 	private boolean disableStatisticStop = false;
 	
 	// logging attributes: path, replacement, delimiter, execution time
-	String logfilepath, logreplacemode, logdelimiterchar, logdeciamlseparatorchar, logexecutiontimestamp, logtimestampvalue;
+	String logfilepath, logreplacemode, logdelimiterchar, logdeciamlseparatorchar, logtimestampvalue;
 
 	public SimParameters() {
 
@@ -190,9 +190,6 @@ public class SimParameters {
 	public void setLogReplaceMode(String logreplacemode) {
 		this.logreplacemode = logreplacemode;
 	}
-	public void setLogExecutionTimestamp(String logets) {
-		this.logexecutiontimestamp = logets;
-	}
 	public void setTimestampValue(String logtimestamp) {
 		this.logtimestampvalue = logtimestamp;
 	}
@@ -208,9 +205,6 @@ public class SimParameters {
 	}
 	public String getLogReplaceMode() {
 		return logreplacemode;
-	}
-	public String getLogExecutionTimestamp() {
-		return logexecutiontimestamp;
 	}
 	public String getTimestampValue() {
 		return logtimestampvalue;

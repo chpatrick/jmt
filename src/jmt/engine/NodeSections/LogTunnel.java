@@ -50,7 +50,6 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 
 	private char chDelimiter, decimalSeparator;
 	private int intReplacePolicy;
-	private boolean boolExecutionTimestamp;
 	private String strTimestampValue;
 	private LoggerParameters lp;
 	private JSimLogger localLog;
@@ -116,7 +115,6 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 		numberFormat.setMaximumFractionDigits(340);
 		numberFormat.setMaximumIntegerDigits(340);
 		
-		boolExecutionTimestamp = new Boolean(getOwnerNode().getSimParameters().getLogExecutionTimestamp()).booleanValue();
 		strTimestampValue = getOwnerNode().getSimParameters().getTimestampValue();
 
 		// Add an initial file-separator if none exists
@@ -342,7 +340,7 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 							s.append("");
 						}
 
-						s.append(strTimestampValue, boolExecutionTimestamp);
+						s.append(strTimestampValue, lp.boolExecTimestamp.booleanValue());
 
 						/* the composed line is now written out to the logfile */
 						localLog.info(s.toString());

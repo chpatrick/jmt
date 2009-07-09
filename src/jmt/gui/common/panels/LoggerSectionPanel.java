@@ -161,7 +161,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
         gbc.fill = GridBagConstraints.HORIZONTAL; gbc.gridx = 0; gbc.gridy = 1;
         loggerPanelTop.add(checkLoggername,gbc);
         final JCheckBox checkTimeStamp = new JCheckBox();
-        checkTimeStamp.setText("Job arrival time  ");
+        checkTimeStamp.setText("Timestamp  ");
         help.addHelp(checkTimeStamp, "Timestamp of arrival of the job (ref. to sim time).  (e.g. 0.7532)");
         gbc.gridx = 1; gbc.gridy = 1;
         loggerPanelTop.add(checkTimeStamp,gbc);
@@ -298,7 +298,6 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
             }});
         checkExecutionTimestamp.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	//stationData.setLoggingGlbParameter("logExecutionTimestamp", ""+checkExecutionTimestamp.isSelected() );
             	loggerParameters.boolExecTimestamp = new Boolean(checkExecutionTimestamp.isSelected()); 
             }});
         checkLoggername.addActionListener(new ActionListener() {
@@ -402,7 +401,6 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
     {
     	preventSaveReplacement = true; // keeps the other combo boxes (delim/append) from changing
     	//if (loggerParameters.isGlobal() == true) {
-    		checkExecutionTimestamp.setSelected( new Boolean(stationData.getLoggingGlbParameter("logExecutionTimestamp")).booleanValue() );
 	    	delimiterChooser.setSelectedIndex(getDelimiterIndex(stationData.getLoggingGlbParameter("delim")));
 	    	decimalSeparatorChooser.setSelectedIndex(getDecimalSeparatorIndex(stationData.getLoggingGlbParameter("decimalSeparator")));
 	    	autoAppendChooser.setSelectedIndex( Integer.parseInt(stationData.getLoggingGlbParameter("autoAppend")) );

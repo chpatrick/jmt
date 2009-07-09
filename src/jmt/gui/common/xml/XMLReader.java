@@ -203,13 +203,6 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		else {
 			model.setLoggingGlbParameter("decimalSeparator",".");
 		}
-		String logExecutionTimestamp = root.getAttribute(XML_A_ROOT_LOGEXECUTIONTIMESTAMP);
-		if (logExecutionTimestamp != null && logExecutionTimestamp != "") {
-			model.setLoggingGlbParameter("logExecutionTimestamp",logExecutionTimestamp);
-		}
-		else {
-			model.setLoggingGlbParameter("logExecutionTimestamp","true");
-		}
 
 		
 		parseClasses(root, model);
