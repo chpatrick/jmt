@@ -30,6 +30,10 @@ import jmt.gui.common.xml.XMLConstantNames;
  * Date: 22-feb-2006
  * Time: 12.17.58
  * To change this template use File | Settings | File Templates.
+ * 
+ * Modified the code in PAResultsModel(CommonModel model) for including the label change from Queue Length to Customer Number 
+ * and from Customer Number to System Customer Number
+ * user: Ashanka Das
  */
 public class PAResultsModel implements MeasureDefinition {
 	private Vector measures; // An array with all Measures
@@ -75,14 +79,14 @@ public class PAResultsModel implements MeasureDefinition {
 			// Decodes measure type
 			type = type.toLowerCase();
 			int numType = 0;
-			if (type.startsWith("queue") && type.endsWith("length")) {
+			//if (type.startsWith("queue") && type.endsWith("length")) {
+			if ((type.startsWith("customer") && type.endsWith("number"))||(type.startsWith("queue") && type.endsWith("length"))) {//second OR condition is for backward compatibility
 				numType = SimConstants.QUEUE_LENGTH;
 				queueLength.add(new Integer(i));
 			} else if (type.startsWith("utilization")) {
 				numType = SimConstants.UTILIZATION;
 				utilization.add(new Integer(i));
 			}
-
 			else if (type.startsWith("throughput")) {
 				numType = SimConstants.THROUGHPUT;
 				throughput.add(new Integer(i));
@@ -111,7 +115,8 @@ public class PAResultsModel implements MeasureDefinition {
 					systemPower.add(new Integer(i));
 				}
 				//Added by ASHANKA STOP
-			} else if (type.startsWith("customer") && type.endsWith("number")) {
+			//} else if (type.startsWith("customer") && type.endsWith("number")) {
+			} else if (type.startsWith("system") && type.endsWith("number")) {			
 				numType = SimConstants.SYSTEM_JOB_NUMBER;
 				customerNumber.add(new Integer(i));
 			} else if (type.startsWith("drop") && type.endsWith("rate")) {

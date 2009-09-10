@@ -22,6 +22,10 @@ package jmt.gui.exact;
  * This class contains some constants for exact models.
  * @author alyf (Andrea Conti), Bertoli Marco
  * @version Date: 11-set-2003 Time: 16.40.25
+ * 
+ * @author Ashanka 
+ * Added modifications regarding the renaming of QueueLength to Customer Number
+ * @version Date: Aug-2009
  */
 public interface ExactConstants {
 
@@ -51,9 +55,10 @@ public interface ExactConstants {
 
 	// Performance indices
 	//Modified by ASHANKA START
-	//TODO Later System Power will be replaced for Residence Time2
 	//public static final String[] INDICES_TYPES = { "Throughput", "Queue length", "Residence Times", "Utilization" };
-	public static final String[] INDICES_TYPES = { "Throughput", "Queue length", "Residence Times", "Utilization", "System Power"};
+	//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA
+	//public static final String[] INDICES_TYPES = { "Throughput", "Queue length", "Residence Times", "Utilization", "System Power"};
+	public static final String[] INDICES_TYPES = { "Throughput", "Customer Number", "Residence Times", "Utilization", "System Power"};
 	//Modified by ASHANKA STOP
 	// Aggregate performance indices
 	public static final String[] AGGREGATE_TYPES = { "System Response Time", "System Throughput", "Number of Customers" };
@@ -79,8 +84,11 @@ public interface ExactConstants {
 			+ " Press \"Service Times and Visits\" button to enter service times and visits instead of service demands.</font></body></html>";
 	public static final String DESCRIPTION_COMMENT = "<html><body align=\"left\"><font size=\"4\"><b>Comment</b>"
 			+ "</font><font size=\"3\"><br>Input an optional short comment.<br></body></html>";
-	public static final String DESCRIPTION_QUEUELENGTHS = "<html><body align=\"left\"><font size=\"4\"><b>QueueLength</b>"
-			+ "</font><font size=\"3\"><br>Average number of customers for each class at each station.</body></html>";
+	//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA
+	/*public static final String DESCRIPTION_QUEUELENGTHS = "<html><body align=\"left\"><font size=\"4\"><b>QueueLength</b>"
+			+ "</font><font size=\"3\"><br>Average number of customers for each class at each station.</body></html>";*/
+	public static final String DESCRIPTION_QUEUELENGTHS = "<html><body align=\"left\"><font size=\"4\"><b>Customer Number</b>"
+		+ "</font><font size=\"3\"><br>Average number of customers for each class at each station.</body></html>";
 	public static final String DESCRIPTION_THROUGHPUTS = "<html><body align=\"left\"><font size=\"4\"><b>Throughput</b>"
 			+ "</font><font size=\"3\"><br>Throughput for each class at each station.</body></html>";
 	public static final String DESCRIPTION_RESPONSETIMES = "<html><body align=\"left\"><font size=\"4\"><b>Residence Times</b>"

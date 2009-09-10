@@ -67,7 +67,15 @@ import org.xml.sax.SAXNotSupportedException;
  *
  * @author Federico Granata, Stefano Omini, Bertoli Marco
  * @version 26-ago-2003 14.23.27
- *
+ * 
+ * Modified by ASHANKA Start
+ * Basically the name Queue Length is little misguiding,
+ * so decided to change the label from Queue Length to Customer Number.
+ * I have still kept the Queue Length because of the backward compatibitlity
+ * i.e. for people who already had the model saved as Queue Length and have migrated to
+ * to this new patch .
+ * Modified the label from Number of Customers to System Customer Number, as this measure type is a global
+ * performance index. 
  */
 public class SimLoader {
 
@@ -976,7 +984,8 @@ public class SimLoader {
 	 * @return the int type of measure
 	 */
 	private int obtainMeasureType(String measure) {
-		if (measure.equalsIgnoreCase("Queue length")) {
+		//if (measure.equalsIgnoreCase("Queue length")) {
+		if (measure.equalsIgnoreCase("Queue length")||measure.equalsIgnoreCase("Customer Number")){
 			return SimConstants.QUEUE_LENGTH;
 		} else if (measure.equalsIgnoreCase("Utilization")) {
 			return SimConstants.UTILIZATION;
@@ -994,7 +1003,11 @@ public class SimLoader {
 			return SimConstants.SYSTEM_RESPONSE_TIME;
 		} else if (measure.equalsIgnoreCase("System Throughput")) {
 			return SimConstants.SYSTEM_THROUGHPUT;
-		} else if (measure.equalsIgnoreCase("Customer Number") || measure.equalsIgnoreCase("Number of Customers")) {
+		//This performane index measures the number of customer in the whole System
+		//I am removing the reference of Customer Number from very old backward compatibility as
+		//it is interfering with the new performance index name used in the place of Queue Length 
+		//} else if (measure.equalsIgnoreCase("Customer Number") || measure.equalsIgnoreCase("Number of Customers")) {
+		} else if (measure.equalsIgnoreCase("System Customer Number")|| measure.equalsIgnoreCase("Number of Customers")) {//Second OR condition is for the present backward compatibility
 			return SimConstants.SYSTEM_JOB_NUMBER;
 		} else if (measure.equalsIgnoreCase("System Drop Rate")) {
 			return SimConstants.SYSTEM_DROP_RATE;

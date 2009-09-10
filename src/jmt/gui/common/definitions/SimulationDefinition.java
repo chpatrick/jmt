@@ -33,7 +33,10 @@ import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
  * Modified by Bertoli Marco 3-oct-2005
  *
  * Modified by Francesco D'Aquino
- *
+ * 
+ * Modified the code to include the changes for label changes from Queue Length to Customer Number and from Number of Customers to System Customer 
+ * Number by Ashanka Das
+ * 
  * @author Bertoli Marco (new measures)
  */
 public interface SimulationDefinition {
@@ -43,7 +46,8 @@ public interface SimulationDefinition {
 	/**Code for residence time measure*/
 	public static final String MEASURE_RD = "Residence Time";
 	/**Code for queue length measure*/
-	public static final String MEASURE_QL = "Queue Length";
+	//public static final String MEASURE_QL = "Queue Length";
+	public static final String MEASURE_QL = "Customer Number";
 	/**Code for average queue time measure*/
 	public static final String MEASURE_QT = "Queue Time";
 	/**Code for average utilization*/
@@ -55,7 +59,8 @@ public interface SimulationDefinition {
 	/**Code for average system response time*/
 	public static final String MEASURE_S_RP = "System Response Time";
 	/**Code for average system customer number*/
-	public static final String MEASURE_S_CN = "Number of Customers";
+	//public static final String MEASURE_S_CN = "Number of Customers";
+	public static final String MEASURE_S_CN = "System Customer Number";
 	/**Code for average drop rate*/
 	public static final String MEASURE_DR = "Drop Rate";
 	/**Code for average system drop rate*/

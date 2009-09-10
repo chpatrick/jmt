@@ -39,6 +39,10 @@ import org.w3c.dom.NodeList;
  * ACCESS TO THIS OBJECT MUST BE IMPLEMENTED IN A TRANSACTION-LIKE SYNCHRONIZED WAY!
  *
  * @author alyf (Andrea Conti), Stefano Omini, Bertoli Marco
+ * 
+ * @author Ashanka 
+ * Added modifications regarding the renaming of QueueLength to Customer Number
+ * @version Date: Aug-2009
  */
 public class ExactModel implements ExactConstants {
 
@@ -888,7 +892,11 @@ public class ExactModel implements ExactConstants {
 				.append("classData=").append(ArrayUtils.toString(classData)).append("\n").append("visits=").append(ArrayUtils.toString2(visits))
 				.append("\n").append("serviceTimes=").append(ArrayUtils.toString3(serviceTimes)).append("\n");
 		if (hasResults) {
-			s.append("queue lengths=").append(ArrayUtils.toString3(queueLen)).append("\n").append("throughput=").append(
+			//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA
+			/*s.append("queue lengths=").append(ArrayUtils.toString3(queueLen)).append("\n").append("throughput=").append(
+					ArrayUtils.toString3(throughput)).append("\n").append("resTimes=").append(ArrayUtils.toString3(resTimes)).append("\n").append(
+					"utilization=").append(ArrayUtils.toString3(util)).append("\n");*/
+			s.append("customer number=").append(ArrayUtils.toString3(queueLen)).append("\n").append("throughput=").append(
 					ArrayUtils.toString3(throughput)).append("\n").append("resTimes=").append(ArrayUtils.toString3(resTimes)).append("\n").append(
 					"utilization=").append(ArrayUtils.toString3(util)).append("\n");
 		}
@@ -1213,7 +1221,9 @@ public class ExactModel implements ExactConstants {
 					classesresults_element.setAttribute("customerclass", classNames[j]);
 
 					Element Q_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
-					Q_element.setAttribute("measureType", "Queue length");
+					//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA 
+					//Q_element.setAttribute("measureType", "Queue length");
+					Q_element.setAttribute("measureType", "Customer Number");
 					Q_element.setAttribute("successful", "true");
 					Q_element.setAttribute("meanValue", Double.toString(this.queueLen[i][j][k]));
 
@@ -1529,7 +1539,9 @@ public class ExactModel implements ExactConstants {
 			Element solution = (Element) sol.item(i);
 			String status = solution.getAttribute("ok");
 			resultsOK = resultsOK && (status.equals("true"));
-			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Queue length"), queueLen, i);
+			//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA
+			//ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Queue length"), queueLen, i);
+			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Customer Number"), queueLen, i);
 			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Throughput"), throughput, i);
 			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Residence time"), resTimes, i);
 			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Utilization"), util, i);

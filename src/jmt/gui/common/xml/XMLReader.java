@@ -61,6 +61,8 @@ import org.xml.sax.SAXException;
  * @author Bertoli Marco
  *         Date: 27-lug-2005
  *         Time: 13.59.48
+ *         
+ * Modified changes for performance Index Queue Length being renamed as Customer Number
  */
 public class XMLReader implements XMLConstantNames, CommonConstants {
 	protected static TreeMap classes; // Data structure used to map between class name and its key
@@ -898,11 +900,15 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 				classKey = null;
 			}
 			type = ((Element) measures.item(i)).getAttribute(XML_A_MEASURE_TYPE);
+			//Removing the support for old name of Customer Number as it is now going to be used as New performance Index instead of Queue Length
 			// Supports old names
-			if ("Customer Number".equalsIgnoreCase(type)) {
+			/*if ("Customer Number".equalsIgnoreCase(type)) {
 				type = SimulationDefinition.MEASURE_S_CN;
+			}*/
+			//Instead adding a new backward compatibility for old names.
+			if ("Queue Length".equalsIgnoreCase(type)) {
+				type = SimulationDefinition.MEASURE_QL;
 			}
-			
 			// Inverts alpha
 			alpha = new Double(1 - Double.parseDouble(((Element) measures.item(i)).getAttribute(XML_A_MEASURE_ALPHA)));
 			precision = Double.valueOf(((Element) measures.item(i)).getAttribute(XML_A_MEASURE_PRECISION));

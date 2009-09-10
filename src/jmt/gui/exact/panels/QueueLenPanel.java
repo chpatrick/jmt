@@ -27,7 +27,10 @@ import jmt.gui.exact.table.ExactTableModel;
  * @author alyf (Andrea Conti)
  * Date: 11-set-2003
  * Time: 23.48.19
-
+ * 
+ * @author Ashanka 
+ * Added modifications regarding the renaming of QueueLength to Customer Number
+ * @version Date: Aug-2009
  */
 
 /**
@@ -48,8 +51,11 @@ public final class QueueLenPanel extends SolutionPanel {
 
 	public QueueLenPanel(ExactWizard ew) {
 		super(ew);
-		helpText = "<html>Queue length</html>";
-		name = "Queue length";
+		//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA
+		/*helpText = "<html>Queue length</html>";
+		name = "Queue length";*/
+		helpText = "<html>Customer Number</html>";
+		name = "Customer Number";
 	}
 
 	/**

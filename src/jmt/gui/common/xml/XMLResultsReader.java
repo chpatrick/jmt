@@ -39,6 +39,9 @@ import org.w3c.dom.NodeList;
  * @author Bertoli Marco
  *         Date: 3-ott-2005
  *         Time: 12.27.00
+ * 
+ * Modified code to Include the label changes from Queue Length to Customer Number and from Customer Number to System Customer Number
+ * by Ashanka
  */
 public class XMLResultsReader implements XMLResultsConstants {
 
@@ -246,7 +249,8 @@ public class XMLResultsReader implements XMLResultsConstants {
 			// Decodes measure type
 			String tmp = type.toLowerCase();
 			int numType = 0;
-			if (tmp.startsWith("queue") && tmp.endsWith("length")) {
+			//if (tmp.startsWith("queue") && tmp.endsWith("length")) { Label changed from Queue Length to Customer Number
+			if ((tmp.startsWith("customer ") && tmp.endsWith("number"))||(tmp.startsWith("queue") && tmp.endsWith("length"))) {//Second OR condition is for backward compatibility
 				numType = SimConstants.QUEUE_LENGTH;
 			} else if (tmp.startsWith("utilization")) {
 				numType = SimConstants.UTILIZATION;
@@ -262,9 +266,11 @@ public class XMLResultsReader implements XMLResultsConstants {
 				numType = SimConstants.SYSTEM_RESPONSE_TIME;
 			} else if (tmp.startsWith("system") && tmp.endsWith("throughput")) {
 				numType = SimConstants.SYSTEM_THROUGHPUT;
-			} else if (tmp.startsWith("customer") && tmp.endsWith("number")) {
+			//} else if (tmp.startsWith("customer") && tmp.endsWith("number")) {
+			} else if (tmp.startsWith("system") && tmp.endsWith("number")) {//Label changed from customer Number to System Customer Number
 				numType = SimConstants.SYSTEM_JOB_NUMBER;
-			} else if (tmp.startsWith("drop") && tmp.endsWith("rate")) {
+			//Modified by ASHANKA Stop
+			} else if (tmp.startsWith("drop") && tmp.endsWith("rate")) {				
 				numType = SimConstants.DROP_RATE;
 			} else if (tmp.startsWith("system") && tmp.endsWith("rate")) {
 				numType = SimConstants.SYSTEM_DROP_RATE;

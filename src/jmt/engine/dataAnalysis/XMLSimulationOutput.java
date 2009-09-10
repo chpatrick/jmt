@@ -49,6 +49,8 @@ import org.w3c.dom.Element;
  * @version 13-dic-2004 17.34.35
  * Modified by Bertoli Marco 01-jan-2006 --> BugFixed for linux
  * 8-mar-2006 Added support for global measures
+ * Modified by ASHANKA : Added the modification from "Queue Length" to "Customer Number" 
+ * and from "Number of Customers" to "System Customer Number".
  */
 public class XMLSimulationOutput extends SimulationOutput {
 	private static final String SEPARATOR = System.getProperty("file.separator");
@@ -164,7 +166,8 @@ public class XMLSimulationOutput extends SimulationOutput {
 
 		switch (type) {
 			case SimConstants.QUEUE_LENGTH:
-				typeName = "Queue Length";
+				//typeName = "Queue Length";
+				typeName = "Customer Number";
 				break;
 
 			case SimConstants.QUEUE_TIME:
@@ -196,7 +199,8 @@ public class XMLSimulationOutput extends SimulationOutput {
 				break;
 
 			case SimConstants.SYSTEM_JOB_NUMBER:
-				typeName = "Customer Number";
+				//typeName = "Customer Number";
+				typeName = "System Customer Number";				
 				break;
 			case SimConstants.DROP_RATE:
 				typeName = "Drop Rate";
@@ -498,7 +502,9 @@ public class XMLSimulationOutput extends SimulationOutput {
 			for (int m = 0; m < measureNumber; m++) {
 				currentMeasure = (Element) measureList.item(m);
 
-				if (!currentMeasure.getAttribute("measureType").equalsIgnoreCase("Queue Length")) {
+				//if (!currentMeasure.getAttribute("measureType").equalsIgnoreCase("Queue Length")) {
+				if (!currentMeasure.getAttribute("measureType").equalsIgnoreCase("Queue Length")
+						&& !currentMeasure.getAttribute("measureType").equalsIgnoreCase("Customer Number")) {
 					continue;
 				}
 
