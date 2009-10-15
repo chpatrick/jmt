@@ -62,7 +62,15 @@ import org.xml.sax.SAXException;
  *         Date: 27-lug-2005
  *         Time: 13.59.48
  *         
- * Modified changes for performance Index Queue Length being renamed as Customer Number
+ * Modified by Ashanka (Aug 09):
+ * Desc: The code to include the changes for label changes from 
+ *       1. Queue Length to Customer Number 
+ *       2. Number of Customers to System Customer Number 
+ * 
+ * Modified by Ashanka (Sep 09):
+ * Desc: The code to include the changes for label changes from 
+ *       1. Customer Number to Number of Customers
+ *       2. System Customer Number to System Number of Customers.
  */
 public class XMLReader implements XMLConstantNames, CommonConstants {
 	protected static TreeMap classes; // Data structure used to map between class name and its key
@@ -900,15 +908,25 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 				classKey = null;
 			}
 			type = ((Element) measures.item(i)).getAttribute(XML_A_MEASURE_TYPE);
-			//Removing the support for old name of Customer Number as it is now going to be used as New performance Index instead of Queue Length
+			
+			//Begins all backward compatibility conditions for Changes of Labels of Perf Index.
 			// Supports old names
-			/*if ("Customer Number".equalsIgnoreCase(type)) {
+			if ("Customer Number".equalsIgnoreCase(type) && "".equalsIgnoreCase(stationName)) {
 				type = SimulationDefinition.MEASURE_S_CN;
-			}*/
-			//Instead adding a new backward compatibility for old names.
+			}
+			if ("System Customer Number".equalsIgnoreCase(type)) {
+				type = SimulationDefinition.MEASURE_S_CN;
+			}
+			if("Number of Customers".equalsIgnoreCase(type) && "".equalsIgnoreCase(stationName)){
+				type = SimulationDefinition.MEASURE_S_CN;
+			}
 			if ("Queue Length".equalsIgnoreCase(type)) {
 				type = SimulationDefinition.MEASURE_QL;
 			}
+			if ("Customer Number".equalsIgnoreCase(type) && !"".equalsIgnoreCase(stationName)) {
+				type = SimulationDefinition.MEASURE_QL;
+			}
+			//Ends the backward compatibility conditions
 			// Inverts alpha
 			alpha = new Double(1 - Double.parseDouble(((Element) measures.item(i)).getAttribute(XML_A_MEASURE_ALPHA)));
 			precision = Double.valueOf(((Element) measures.item(i)).getAttribute(XML_A_MEASURE_PRECISION));

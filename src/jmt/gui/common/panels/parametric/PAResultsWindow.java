@@ -100,8 +100,15 @@ import jmt.gui.exact.table.ExactTableModel;
  *         Date: 28-gen-2006
  *         Time: 10.48.11
  *         
- * Modified the code to include the changes for label changes from Queue Length to Customer Number and from Number of Customers to System Customer 
- * Number by Ashanka Das
+ * Modified by Ashanka (Aug 09):
+ * Desc: The code to include the changes for label changes from 
+ *       1. Queue Length to Customer Number 
+ *       2. Number of Customers to System Customer Number 
+ * 
+ * Modified by Ashanka (Sep 09):
+ * Desc: The code to include the changes for label changes from 
+ *       1. Customer Number to Number of Customers
+ *       2. System Customer Number to System Number of Customers.
  */
 public class PAResultsWindow extends JMTFrame implements ResultsConstants, ParametricAnalysis {
 	/**
@@ -140,8 +147,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		JTabbedPane mainPanel = new JTabbedPane();
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(mainPanel, BorderLayout.CENTER);
-		//addTabPane(mainPanel, "Queue Length", DESCRIPTION_QUEUELENGTHS, results.getQueueLengthMeasures());
-		addTabPane(mainPanel, "Customer Number", DESCRIPTION_QUEUELENGTHS, results.getQueueLengthMeasures());
+		addTabPane(mainPanel, "Number of Customers", DESCRIPTION_QUEUELENGTHS, results.getQueueLengthMeasures());
 		addTabPane(mainPanel, "Queue Time", DESCRIPTION_QUEUETIMES, results.getQueueTimeMeasures());
 		addTabPane(mainPanel, "Residence Time", DESCRIPTION_RESIDENCETIMES, results.getResidenceTimeMeasures());
 		addTabPane(mainPanel, "Response Time", DESCRIPTION_RESPONSETIMES, results.getResponseTimeMeasures());
@@ -151,8 +157,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		addTabPane(mainPanel, "System Throughput", DESCRIPTION_SYSTEMTHROUGHPUTS, results.getSystemThroughputMeasures());
 		addTabPane(mainPanel, "System Response Time", DESCRIPTION_SYSTEMRESPONSETIMES, results.getSystemResponseTimeMeasures());
 		addTabPane(mainPanel, "System Drop Rate", "todo", results.getSystemDropRateMeasures());
-		//addTabPane(mainPanel, "Customer Number", DESCRIPTION_CUSTOMERNUMBERS, results.getCustomerNumberMeasures());
-		addTabPane(mainPanel, "System Customer Number", DESCRIPTION_CUSTOMERNUMBERS, results.getCustomerNumberMeasures());
+		addTabPane(mainPanel, "System Number of Customers", DESCRIPTION_CUSTOMERNUMBERS, results.getCustomerNumberMeasures());
 		//Added by ASHANKA START
 		//Adds the System Power panel in the results window.
 		addTabPane(mainPanel, "System Power", DESCRIPTION_SYSTEMPOWER, results.getSystemPowerMeasures());

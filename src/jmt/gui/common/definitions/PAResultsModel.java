@@ -31,9 +31,12 @@ import jmt.gui.common.xml.XMLConstantNames;
  * Time: 12.17.58
  * To change this template use File | Settings | File Templates.
  * 
- * Modified the code in PAResultsModel(CommonModel model) for including the label change from Queue Length to Customer Number 
- * and from Customer Number to System Customer Number
- * user: Ashanka Das
+ * Modified by Ashanka: In PAResultsModel(CommonModel model) for including the label change from "Queue Length" to "Customer Number"
+ *                      and from "Customer Number" to "System Customer Number". The later is a System Level Perf Index.
+ * 
+ * 
+ * Modified by Ashanka: In PAResultsModel(CommonModel model) for including the label change from "Customer Number" to "Number of Customers" 
+ * 		                and "System Customer Number" to "System Number of Customers".
  */
 public class PAResultsModel implements MeasureDefinition {
 	private Vector measures; // An array with all Measures
@@ -79,8 +82,9 @@ public class PAResultsModel implements MeasureDefinition {
 			// Decodes measure type
 			type = type.toLowerCase();
 			int numType = 0;
-			//if (type.startsWith("queue") && type.endsWith("length")) {
-			if ((type.startsWith("customer") && type.endsWith("number"))||(type.startsWith("queue") && type.endsWith("length"))) {//second OR condition is for backward compatibility
+			if ((type.startsWith("customer") && type.endsWith("number") && !"".equalsIgnoreCase(stationName)) //condition is for backward compatibility
+					||(type.startsWith("queue") && type.endsWith("length"))// OR condition is for backward compatibility
+						||(type.startsWith("number") && type.endsWith("customers"))) {//present name is "Number of Customers"
 				numType = SimConstants.QUEUE_LENGTH;
 				queueLength.add(new Integer(i));
 			} else if (type.startsWith("utilization")) {
@@ -115,8 +119,9 @@ public class PAResultsModel implements MeasureDefinition {
 					systemPower.add(new Integer(i));
 				}
 				//Added by ASHANKA STOP
-			//} else if (type.startsWith("customer") && type.endsWith("number")) {
-			} else if (type.startsWith("system") && type.endsWith("number")) {			
+			} else if ((type.startsWith("customer") && type.endsWith("number") && "".equalsIgnoreCase(stationName))//Backward compatibility condition
+					||(type.startsWith("system") && type.endsWith("number")) //Backward compatibility condition
+							||(type.startsWith("system") && type.endsWith("customers"))){//Present name of the perf index which is System Number of Customers
 				numType = SimConstants.SYSTEM_JOB_NUMBER;
 				customerNumber.add(new Integer(i));
 			} else if (type.startsWith("drop") && type.endsWith("rate")) {

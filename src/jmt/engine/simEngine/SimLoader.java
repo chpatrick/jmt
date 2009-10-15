@@ -68,14 +68,15 @@ import org.xml.sax.SAXNotSupportedException;
  * @author Federico Granata, Stefano Omini, Bertoli Marco
  * @version 26-ago-2003 14.23.27
  * 
- * Modified by ASHANKA Start
- * Basically the name Queue Length is little misguiding,
- * so decided to change the label from Queue Length to Customer Number.
- * I have still kept the Queue Length because of the backward compatibitlity
- * i.e. for people who already had the model saved as Queue Length and have migrated to
- * to this new patch .
- * Modified the label from Number of Customers to System Customer Number, as this measure type is a global
- * performance index. 
+ * Modified by Ashanka (Aug 09):
+ * Desc: The code to include the changes for label changes from 
+ *       1. Queue Length to Customer Number 
+ *       2. Number of Customers to System Customer Number 
+ * 
+ * Modified by Ashanka (Sep 09):
+ * Desc: The code to include the changes for label changes from 
+ *       1. Customer Number to Number of Customers
+ *       2. System Customer Number to System Number of Customers.
  */
 public class SimLoader {
 
@@ -93,6 +94,7 @@ public class SimLoader {
 
 	//path of the xml file containing the sim model
 	private String simModelPath;
+	
 
 	/**
 	 * Creates a Simulation object, loading all the model definition from the
@@ -404,7 +406,11 @@ public class SimLoader {
 				Element e = (Element) measureList.item(i);
 
 				String type = e.getAttribute("type");
-				int measureType = obtainMeasureType(type);
+				//Added variable referenceNode as a step to control backward compatibility in obtainMeasureType to differentiate between
+				//new Number of Customers (orig. Queue Length) and old Number of Customers (presently System Number of Customers)
+				//because we know that Queue Length is a node level perf index where other one is system and hence has blank node.
+				String referenceNode = e.getAttribute("referenceNode");
+				int measureType = obtainMeasureType(type,referenceNode);
 				String nodeType = e.getAttribute("nodeType"); // Node is a station or a region
 				//throughput measure requires an InverseMeasure object!!
 				if (measureType == SimConstants.THROUGHPUT || measureType == SimConstants.SYSTEM_THROUGHPUT || measureType == SimConstants.DROP_RATE
@@ -983,9 +989,12 @@ public class SimLoader {
 	 * @param measure the String type of measure
 	 * @return the int type of measure
 	 */
-	private int obtainMeasureType(String measure) {
-		//if (measure.equalsIgnoreCase("Queue length")) {
-		if (measure.equalsIgnoreCase("Queue length")||measure.equalsIgnoreCase("Customer Number")){
+	private int obtainMeasureType(String measure, String referenceNode) {
+		if (measure.equalsIgnoreCase("Queue length")//This is for backward compatibility as previously this index was known as Queue Length
+				||measure.equalsIgnoreCase("Customer Number")//This is also for backward compatibility as Queue Length it was known as Customer Number
+					||(measure.equalsIgnoreCase("Number of Customers")&& !"".equalsIgnoreCase(referenceNode))){
+					// The above is the present name of the performance index, the AND is used to differentiate it from the old label of System Number of Customers
+					// This Perf Index is not system level so it will always refer to some Node. eg Fork, Queueing Station etc.
 			return SimConstants.QUEUE_LENGTH;
 		} else if (measure.equalsIgnoreCase("Utilization")) {
 			return SimConstants.UTILIZATION;
@@ -1003,11 +1012,10 @@ public class SimLoader {
 			return SimConstants.SYSTEM_RESPONSE_TIME;
 		} else if (measure.equalsIgnoreCase("System Throughput")) {
 			return SimConstants.SYSTEM_THROUGHPUT;
-		//This performane index measures the number of customer in the whole System
-		//I am removing the reference of Customer Number from very old backward compatibility as
-		//it is interfering with the new performance index name used in the place of Queue Length 
-		//} else if (measure.equalsIgnoreCase("Customer Number") || measure.equalsIgnoreCase("Number of Customers")) {
-		} else if (measure.equalsIgnoreCase("System Customer Number")|| measure.equalsIgnoreCase("Number of Customers")) {//Second OR condition is for the present backward compatibility
+		} else if (measure.equalsIgnoreCase("System Number of Customers")//Present name of this perf Index
+					|| measure.equalsIgnoreCase("System Customer Number")//Previous Name of the Perf Index
+						|| (measure.equalsIgnoreCase("Number of Customers")&& "".equalsIgnoreCase(referenceNode))) {//Initial Name of the perf index
+						//Above OR conditions are for the backward compatibility
 			return SimConstants.SYSTEM_JOB_NUMBER;
 		} else if (measure.equalsIgnoreCase("System Drop Rate")) {
 			return SimConstants.SYSTEM_DROP_RATE;

@@ -43,6 +43,16 @@ import org.w3c.dom.NodeList;
  * @author Ashanka 
  * Added modifications regarding the renaming of QueueLength to Customer Number
  * @version Date: Aug-2009
+ * 
+ * @author Ashanka
+ * Cleaned code by removing unnecesary comments of old code.
+ * @version Date: Sep-2009
+ * 
+ * @author Ashanka
+ * Added a backward compatible clause in loadResultsMatrix to open existing JMVA models correctly.
+ * If we are looking to open measures of Number of Customers from existing JMVA files then we should look for 
+ * Queue length as this was the previous name of the label. 
+ * @version Date: Sep-2009
  */
 public class ExactModel implements ExactConstants {
 
@@ -892,11 +902,7 @@ public class ExactModel implements ExactConstants {
 				.append("classData=").append(ArrayUtils.toString(classData)).append("\n").append("visits=").append(ArrayUtils.toString2(visits))
 				.append("\n").append("serviceTimes=").append(ArrayUtils.toString3(serviceTimes)).append("\n");
 		if (hasResults) {
-			//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA
-			/*s.append("queue lengths=").append(ArrayUtils.toString3(queueLen)).append("\n").append("throughput=").append(
-					ArrayUtils.toString3(throughput)).append("\n").append("resTimes=").append(ArrayUtils.toString3(resTimes)).append("\n").append(
-					"utilization=").append(ArrayUtils.toString3(util)).append("\n");*/
-			s.append("customer number=").append(ArrayUtils.toString3(queueLen)).append("\n").append("throughput=").append(
+			s.append("number of customers=").append(ArrayUtils.toString3(queueLen)).append("\n").append("throughput=").append(
 					ArrayUtils.toString3(throughput)).append("\n").append("resTimes=").append(ArrayUtils.toString3(resTimes)).append("\n").append(
 					"utilization=").append(ArrayUtils.toString3(util)).append("\n");
 		}
@@ -1221,9 +1227,7 @@ public class ExactModel implements ExactConstants {
 					classesresults_element.setAttribute("customerclass", classNames[j]);
 
 					Element Q_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
-					//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA 
-					//Q_element.setAttribute("measureType", "Queue length");
-					Q_element.setAttribute("measureType", "Customer Number");
+					Q_element.setAttribute("measureType", "Number of Customers" );
 					Q_element.setAttribute("successful", "true");
 					Q_element.setAttribute("meanValue", Double.toString(this.queueLen[i][j][k]));
 
@@ -1539,9 +1543,7 @@ public class ExactModel implements ExactConstants {
 			Element solution = (Element) sol.item(i);
 			String status = solution.getAttribute("ok");
 			resultsOK = resultsOK && (status.equals("true"));
-			//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA
-			//ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Queue length"), queueLen, i);
-			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Customer Number"), queueLen, i);
+			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Number of Customers"), queueLen, i);
 			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Throughput"), throughput, i);
 			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Residence time"), resTimes, i);
 			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Utilization"), util, i);
@@ -1571,6 +1573,13 @@ public class ExactModel implements ExactConstants {
 
 				for (int m = 0; m < measure_list.getLength(); m++) {
 					measure = (Element) measure_list.item(m);
+					//Below IF clause is added for backward compatibility of the Perf Index : Number of customers
+					//as previously it was known as Queue Length.
+					if(res.equalsIgnoreCase("Number of Customers")){//This is the present name of Label
+						if(measure.getAttribute("measureType").equalsIgnoreCase("Queue length")){//Previously known as "Queue length" in old JMVA files.
+							res = "Queue length";
+						}
+					}					
 					if (measure.getAttribute("measureType").equalsIgnoreCase(res)) {
 						//it's the measure we are searching for
 						value = measure.getAttribute("meanValue");

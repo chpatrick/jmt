@@ -49,8 +49,16 @@ import org.w3c.dom.Element;
  * @version 13-dic-2004 17.34.35
  * Modified by Bertoli Marco 01-jan-2006 --> BugFixed for linux
  * 8-mar-2006 Added support for global measures
- * Modified by ASHANKA : Added the modification from "Queue Length" to "Customer Number" 
- * and from "Number of Customers" to "System Customer Number".
+ * 
+ * Modified by Ashanka (Aug 09):
+ * Desc: The code to include the changes for label changes from 
+ *       1. Queue Length to Customer Number 
+ *       2. Number of Customers to System Customer Number 
+ * 
+ * Modified by Ashanka (Sep 09):
+ * Desc: The code to include the changes for label changes from 
+ *       1. Customer Number to Number of Customers
+ *       2. System Customer Number to System Number of Customers.
  */
 public class XMLSimulationOutput extends SimulationOutput {
 	private static final String SEPARATOR = System.getProperty("file.separator");
@@ -166,8 +174,7 @@ public class XMLSimulationOutput extends SimulationOutput {
 
 		switch (type) {
 			case SimConstants.QUEUE_LENGTH:
-				//typeName = "Queue Length";
-				typeName = "Customer Number";
+				typeName = "Number of Customers";
 				break;
 
 			case SimConstants.QUEUE_TIME:
@@ -199,8 +206,7 @@ public class XMLSimulationOutput extends SimulationOutput {
 				break;
 
 			case SimConstants.SYSTEM_JOB_NUMBER:
-				//typeName = "Customer Number";
-				typeName = "System Customer Number";				
+				typeName = "System Number of Customers";				
 				break;
 			case SimConstants.DROP_RATE:
 				typeName = "Drop Rate";
@@ -502,9 +508,9 @@ public class XMLSimulationOutput extends SimulationOutput {
 			for (int m = 0; m < measureNumber; m++) {
 				currentMeasure = (Element) measureList.item(m);
 
-				//if (!currentMeasure.getAttribute("measureType").equalsIgnoreCase("Queue Length")) {
-				if (!currentMeasure.getAttribute("measureType").equalsIgnoreCase("Queue Length")
-						&& !currentMeasure.getAttribute("measureType").equalsIgnoreCase("Customer Number")) {
+				if (!currentMeasure.getAttribute("measureType").equalsIgnoreCase("Queue Length")//backward compatibility condition
+						&& !currentMeasure.getAttribute("measureType").equalsIgnoreCase("Customer Number")//backward compatibility condition
+							&& !currentMeasure.getAttribute("measureType").equalsIgnoreCase("Number of Customers")) {//Present condition
 					continue;
 				}
 

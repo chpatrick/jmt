@@ -27,8 +27,15 @@ package jmt.gui.common.definitions;
  *         Date: 26-set-2005
  *         Time: 11.06.50
  *         
- * Modified the code to include the changes for label changes from Queue Length to Customer Number and from Number of Customers to System Customer 
- * Number by Ashanka Das
+ * Modified by Ashanka (Aug 09):
+ * Desc: The code to include the changes for label changes from 
+ *       1. Queue Length to Customer Number 
+ *       2. Number of Customers to System Customer Number 
+ * 
+ * Modified by Ashanka (Sep 09):
+ * Desc: The code to include the changes for label changes from 
+ *       1. Customer Number to Number of Customers
+ *       2. System Customer Number to System Number of Customers.
  */
 public interface ResultsConstants {
 	public static final int BORDERSIZE = 20;
@@ -52,10 +59,8 @@ public interface ResultsConstants {
 	final static String HTML_FONT_NOR_END = "</font>";
 
 	// Tabbed panels description
-	/*public static final String DESCRIPTION_QUEUELENGTHS = HTML_START + HTML_FONT_TITLE + "Queue Length" + HTML_FONT_TIT_END + HTML_FONT_NORM
-			+ "Average number of customers for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;*/
-	public static final String DESCRIPTION_QUEUELENGTHS = HTML_START + HTML_FONT_TITLE + "Customer Number" + HTML_FONT_TIT_END + HTML_FONT_NORM
-			+ "Average number of customers for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;
+	public static final String DESCRIPTION_QUEUELENGTHS = HTML_START + HTML_FONT_TITLE + "Number of Customers" + HTML_FONT_TIT_END + HTML_FONT_NORM
+	+ "Average number of customers for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_THROUGHPUTS = HTML_START + HTML_FONT_TITLE + "Throughput" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average throughput for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_RESPONSETIMES = HTML_START + HTML_FONT_TITLE + "Response Time" + HTML_FONT_TIT_END + HTML_FONT_NORM
@@ -74,10 +79,8 @@ public interface ResultsConstants {
 			+ HTML_FONT_NORM + "Average response time of the entire system for each chosen class." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_SYSTEMTHROUGHPUTS = HTML_START + HTML_FONT_TITLE + "System Throughput" + HTML_FONT_TIT_END
 			+ HTML_FONT_NORM + "Average throughput of the entire system for each chosen class." + HTML_FONT_NOR_END + HTML_END;
-	public static final String DESCRIPTION_CUSTOMERNUMBERS = HTML_START + HTML_FONT_TITLE + "System Customer Number" + HTML_FONT_TIT_END + HTML_FONT_NORM
+	public static final String DESCRIPTION_CUSTOMERNUMBERS = HTML_START + HTML_FONT_TITLE + "System Number of Customers" + HTML_FONT_TIT_END + HTML_FONT_NORM
 	+ "Average customer number for each chosen class." + HTML_FONT_NOR_END + HTML_END;
-	/*public static final String DESCRIPTION_CUSTOMERNUMBERS = HTML_START + HTML_FONT_TITLE + "Customer Number" + HTML_FONT_TIT_END + HTML_FONT_NORM
-			+ "Average customer number for each chosen class." + HTML_FONT_NOR_END + HTML_END;*/
 	//Added by ASHANKA START
 	//Added for System Power changes in the JSIM
 	//Its a new performance index.

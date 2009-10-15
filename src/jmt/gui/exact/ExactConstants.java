@@ -26,6 +26,15 @@ package jmt.gui.exact;
  * @author Ashanka 
  * Added modifications regarding the renaming of QueueLength to Customer Number
  * @version Date: Aug-2009
+ * 
+ * @author Ashanka 
+ * Added modifications regarding the renaming of Customer Number to Number of Customers which is station based
+ * Added modifications regarding the renaming of Number of Customers to System Customer Number which is for global
+ * @version Date: Sep-2009
+ * 
+ * @author Ashanka 
+ * Added modifications regarding the renaming of System Customer Number to System Number of Customers
+ * @version Date: Sep-2009
  */
 public interface ExactConstants {
 
@@ -54,14 +63,9 @@ public interface ExactConstants {
 	public static final int MAX_STATIONS = 50;
 
 	// Performance indices
-	//Modified by ASHANKA START
-	//public static final String[] INDICES_TYPES = { "Throughput", "Queue length", "Residence Times", "Utilization" };
-	//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA
-	//public static final String[] INDICES_TYPES = { "Throughput", "Queue length", "Residence Times", "Utilization", "System Power"};
-	public static final String[] INDICES_TYPES = { "Throughput", "Customer Number", "Residence Times", "Utilization", "System Power"};
-	//Modified by ASHANKA STOP
+	public static final String[] INDICES_TYPES = { "Throughput", "Number of Customers" , "Residence Times", "Utilization", "System Power"};
 	// Aggregate performance indices
-	public static final String[] AGGREGATE_TYPES = { "System Response Time", "System Throughput", "Number of Customers" };
+	public static final String[] AGGREGATE_TYPES = { "System Response Time", "System Throughput", "System Number of Customers"};
 
 	public static final String DESCRIPTION_CLASSES = "<html><body align=\"left\"><font size=\"4\"><b>Classes characteristics</b>"
 			+ "</font><font size=\"3\"><br>Number, customized name, type of classes and number of "
@@ -84,10 +88,7 @@ public interface ExactConstants {
 			+ " Press \"Service Times and Visits\" button to enter service times and visits instead of service demands.</font></body></html>";
 	public static final String DESCRIPTION_COMMENT = "<html><body align=\"left\"><font size=\"4\"><b>Comment</b>"
 			+ "</font><font size=\"3\"><br>Input an optional short comment.<br></body></html>";
-	//Commented the below code to implement the name change from Queue Length to Customer Number for the JMVA
-	/*public static final String DESCRIPTION_QUEUELENGTHS = "<html><body align=\"left\"><font size=\"4\"><b>QueueLength</b>"
-			+ "</font><font size=\"3\"><br>Average number of customers for each class at each station.</body></html>";*/
-	public static final String DESCRIPTION_QUEUELENGTHS = "<html><body align=\"left\"><font size=\"4\"><b>Customer Number</b>"
+	public static final String DESCRIPTION_QUEUELENGTHS = "<html><body align=\"left\"><font size=\"4\"><b>Number of Customers</b>"
 		+ "</font><font size=\"3\"><br>Average number of customers for each class at each station.</body></html>";
 	public static final String DESCRIPTION_THROUGHPUTS = "<html><body align=\"left\"><font size=\"4\"><b>Throughput</b>"
 			+ "</font><font size=\"3\"><br>Throughput for each class at each station.</body></html>";
