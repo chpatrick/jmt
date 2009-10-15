@@ -2,11 +2,10 @@ package jmt.engine.simEngine;
 
 import java.util.Comparator;
 import java.util.Iterator;
+import java.util.PriorityQueue;
+import java.util.Queue;
 
 import jmt.framework.data.CircularList;
-
-import org.apache.commons.collections.Buffer;
-import org.apache.commons.collections.buffer.PriorityBuffer;
 
 /**
  * <p><b>Name:</b> HybridEventQueue</p> 
@@ -18,27 +17,27 @@ import org.apache.commons.collections.buffer.PriorityBuffer;
  * <p><b>Date:</b> 12/mag/2009
  * <b>Time:</b> 18:40:26</p>
  * @author Bertoli Marco
- * @version 1.0
+ * @version 1.1
  */
-public class HybridEventQueue implements EventQueue{
+public class HybridEventQueue implements EventQueue {
 	private int DEFAULT_INITIAL_CAPACITY = 111;
 	/** Current events */
-	private CircularList current;
+	private CircularList<SimEvent> current;
 	/** Future events*/
-	private Buffer future;
+	private Queue<SimEvent> future;
 	/** Current time. All events in current event queue will have this time. */
 	private double currentTime;
 	/** A counter used to order future events basing on event time and insertion order */
 	private int order;
-	
+
 	public HybridEventQueue() {
 		clear();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jmt.engine.simEngine.EventQueue#add(jmt.engine.simEngine.SimEvent)
 	 */
-	public void add(SimEvent event) {
+	public boolean add(SimEvent event) {
 		double eventTime = event.eventTime();
 		if (eventTime == currentTime) {
 			current.add(event);
@@ -51,61 +50,64 @@ public class HybridEventQueue implements EventQueue{
 			currentTime = eventTime;
 			current.add(event);
 		}
+		return true;
 	}
+
 	/* (non-Javadoc)
 	 * @see jmt.engine.simEngine.EventQueue#clear()
 	 */
 	public void clear() {
-		current = new CircularList();
-		future = new PriorityBuffer(DEFAULT_INITIAL_CAPACITY, new SimEventComparator());
+		current = new CircularList<SimEvent>();
+		future = new PriorityQueue<SimEvent>(DEFAULT_INITIAL_CAPACITY, new SimEventComparator());
 		currentTime = 0.0;
 		order = Integer.MIN_VALUE;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jmt.engine.simEngine.EventQueue#iterator()
 	 */
-	public Iterator iterator() {
+	public Iterator<SimEvent> iterator() {
 		return new Iter();
 	}
+
 	/* (non-Javadoc)
 	 * @see jmt.engine.simEngine.EventQueue#peek()
 	 */
 	public SimEvent peek() {
 		handleCurrent();
 		if (current.size() > 0) {
-			return (SimEvent) current.getFirst();
+			return current.getFirst();
 		} else {
 			return null;
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jmt.engine.simEngine.EventQueue#pop()
 	 */
 	public SimEvent pop() {
 		handleCurrent();
 		if (current.size() > 0) {
-			return (SimEvent) current.removeFirst();
+			return current.removeFirst();
 		} else {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * This method will move events from future to current queue if it's empty.
 	 */
 	private void handleCurrent() {
 		if (current.size() == 0 && future.size() > 0) {
-			SimEvent first = (SimEvent) future.remove();
+			SimEvent first = future.remove();
 			currentTime = first.eventTime();
 			current.add(first);
-			while (future.size() > 0 && ((SimEvent)future.get()).eventTime() == currentTime) {
-				current.add(future.remove());
+			while (future.size() > 0 && future.peek().eventTime() == currentTime) {
+				current.add(future.poll());
 			}
 		}
 	}
-	
+
 	/**
 	 * This method will move the entire current queue to future. This is needed when an event 
 	 * older than current one is queued. Probably will never happen because the simulator currently 
@@ -113,23 +115,23 @@ public class HybridEventQueue implements EventQueue{
 	 */
 	private void moveCurrentToFuture() {
 		while (current.size() > 0) {
-			addToFuture((SimEvent)current.removeFirst());
+			addToFuture(current.removeFirst());
 		}
 	}
-	
+
 	/**
 	 * This method will build a new future buffer with new order indices. As the total number of indices is
 	 * 2^32 this method probably will never be called.
 	 */
 	private void rebuildOrderIndices() {
-		Buffer tmp = future;
-		future = new PriorityBuffer(DEFAULT_INITIAL_CAPACITY, new SimEventComparator());
+		Queue<SimEvent> tmp = future;
+		future = new PriorityQueue<SimEvent>(DEFAULT_INITIAL_CAPACITY, new SimEventComparator());
 		order = Integer.MIN_VALUE;
 		while (tmp.size() > 0) {
-			addToFuture((SimEvent)tmp.remove());
+			addToFuture(tmp.remove());
 		}
 	}
-	
+
 	/**
 	 * Adds an event to future queue.
 	 * @param event
@@ -143,7 +145,7 @@ public class HybridEventQueue implements EventQueue{
 		event.internalOrdering = order++;
 		future.add(event);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jmt.engine.simEngine.EventQueue#remove(jmt.engine.simEngine.SimEvent)
 	 */
@@ -154,21 +156,22 @@ public class HybridEventQueue implements EventQueue{
 			return future.remove(ev);
 		}
 	}
+
 	/* (non-Javadoc)
 	 * @see jmt.engine.simEngine.EventQueue#size()
 	 */
 	public int size() {
 		return current.size() + future.size();
 	}
-	
+
 	/**
 	 * Internal Iterator implementation
 	 */
-	private class Iter implements Iterator {
-		private Iterator currentIter = current.iterator();
-		private Iterator futureIter = future.iterator();
+	private class Iter implements Iterator<SimEvent> {
+		private Iterator<SimEvent> currentIter = current.iterator();
+		private Iterator<SimEvent> futureIter = future.iterator();
 		private boolean isCurrent = true;
-		
+
 		/* (non-Javadoc)
 		 * @see java.util.Iterator#hasNext()
 		 */
@@ -179,7 +182,7 @@ public class HybridEventQueue implements EventQueue{
 		/* (non-Javadoc)
 		 * @see java.util.Iterator#next()
 		 */
-		public Object next() {
+		public SimEvent next() {
 			if (currentIter.hasNext()) {
 				isCurrent = true;
 				return currentIter.next();
@@ -199,20 +202,17 @@ public class HybridEventQueue implements EventQueue{
 				futureIter.remove();
 			}
 		}
-		
+
 	}
-	
-	private static class SimEventComparator implements Comparator {
+
+	private static class SimEventComparator implements Comparator<SimEvent> {
 		/* (non-Javadoc)
 		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
 		 */
-		public int compare(Object o1, Object o2) {
-			SimEvent e1 = (SimEvent) o1;
-			SimEvent e2 = (SimEvent) o2;
-			
+		public int compare(SimEvent e1, SimEvent e2) {
 			if (e1.eventTime() > e2.eventTime()) {
 				return 1;
-			} else if (e1.eventTime() < e2.eventTime()){
+			} else if (e1.eventTime() < e2.eventTime()) {
 				return -1;
 			} else {
 				if (e1.internalOrdering > e2.internalOrdering) {
@@ -224,7 +224,7 @@ public class HybridEventQueue implements EventQueue{
 				}
 			}
 		}
-		
+
 	}
-	
+
 }

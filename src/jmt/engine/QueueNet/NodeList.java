@@ -27,12 +27,12 @@ import java.util.ListIterator;
  */
 public class NodeList {
 
-	private LinkedList nodes;
+	private LinkedList<NetNode> nodes;
 
 	/** Creates a new instance of NodeList class.
 	 */
 	public NodeList() {
-		nodes = new LinkedList();
+		nodes = new LinkedList<NetNode>();
 	}
 
 	/** Adds a new node to the list
@@ -53,24 +53,24 @@ public class NodeList {
 	 * @return Reference to the first node.
 	 */
 	public NetNode getFirst() {
-		return (NetNode) nodes.getFirst();
+		return nodes.getFirst();
 	}
 
 	/** Gets the last node in the list.
 	 * @return Reference to the last node.
 	 */
 	public NetNode getLast() {
-		return (NetNode) nodes.getLast();
+		return nodes.getLast();
 	}
 
 	/** Gets the node with a specific name in the list.
 	 * @return Reference to the node .
 	 */
 	public NetNode get(String name) {
-		ListIterator iterator = nodes.listIterator();
+		ListIterator<NetNode> iterator = nodes.listIterator();
 		NetNode node;
 		while (iterator.hasNext()) {
-			node = (NetNode) iterator.next();
+			node = iterator.next();
 			if (node.getName().compareTo(name) == 0) {
 				return node;
 			}
@@ -83,7 +83,7 @@ public class NodeList {
 	 * @return Reference to the i-th node.
 	 */
 	public NetNode get(int index) {
-		return (NetNode) nodes.get(index);
+		return nodes.get(index);
 	}
 
 	/** Gets list size.
@@ -96,7 +96,7 @@ public class NodeList {
 	/** Gets a list iterator.
 	 * @return List iterator.
 	 */
-	public ListIterator listIterator() {
+	public ListIterator<NetNode> listIterator() {
 		return nodes.listIterator();
 	}
 
@@ -104,7 +104,7 @@ public class NodeList {
 	 * Converts the NodeList into an array of NetNode objects.
 	 */
 	public NetNode[] toArray() {
-		return (NetNode[]) nodes.toArray(new NetNode[nodes.size()]);
+		return nodes.toArray(new NetNode[nodes.size()]);
 	}
 
 	/**

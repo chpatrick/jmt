@@ -33,7 +33,7 @@ import jmt.engine.QueueNet.NetMessage;
  */
 public class Delay extends ServiceSection {
 
-	private LinkedList waitingJobs;
+	private LinkedList<Job> waitingJobs;
 
 	private boolean coolStart;
 
@@ -46,15 +46,11 @@ public class Delay extends ServiceSection {
 	 */
 	public Delay(ServiceStrategy serviceStrategy[]) throws jmt.common.exception.NetException {
 		this.serviceStrategy = serviceStrategy;
-		waitingJobs = new LinkedList();
+		waitingJobs = new LinkedList<Job>();
 		coolStart = true;
-
-		//NEW
-		//@author Stefano Omini
-		//log = NetSystem.getLog();
-		//end NEW
 	}
 
+	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 		Job job;
 		switch (message.getEvent()) {
@@ -80,7 +76,7 @@ public class Delay extends ServiceSection {
 				if (isMine(message)) {
 					if (coolStart) {
 						// Sends job
-						forward(job);
+						sendForward(job, 0.0);
 						coolStart = false;
 					} else {
 						waitingJobs.add(job);
@@ -106,8 +102,8 @@ public class Delay extends ServiceSection {
 				//otherwise coolStart is set to true.
 
 				if (waitingJobs.size() != 0) {
-					job = (Job) waitingJobs.removeFirst();
-					forward(job);
+					job = waitingJobs.removeFirst();
+					sendForward(job, 0.0);
 				} else {
 					coolStart = true;
 				}
@@ -118,11 +114,4 @@ public class Delay extends ServiceSection {
 		}
 		return MSG_PROCESSED;
 	}
-
-	private void forward(Job job) throws jmt.common.exception.NetException {
-		sendForward(job, 0.0);
-
-		//log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
-	}
-
 }

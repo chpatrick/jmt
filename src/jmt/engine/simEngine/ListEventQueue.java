@@ -20,7 +20,7 @@ import java.util.Iterator;
  * moved down one space. A better method would be to use a circular array.
  */
 
-public class ListEventQueue extends ArrayList implements EventQueue {
+public class ListEventQueue extends ArrayList<SimEvent> implements EventQueue {
 	/**
 	 * 
 	 */
@@ -47,7 +47,7 @@ public class ListEventQueue extends ArrayList implements EventQueue {
 	 * @return           The next event.
 	 */
 	public SimEvent pop() {
-		return (SimEvent) this.remove(0);
+		return this.remove(0);
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class ListEventQueue extends ArrayList implements EventQueue {
 	 * @return	The next event.
 	 */
 	public SimEvent top() {
-		return (SimEvent) this.get(0);
+		return this.get(0);
 	}
 
 	/**
@@ -63,19 +63,21 @@ public class ListEventQueue extends ArrayList implements EventQueue {
 	 * events in the queue.
 	 * @param new_event	The event to be put on the queue.
 	 */
-	public void add(SimEvent new_event) {
+	@Override
+	public boolean add(SimEvent new_event) {
 		int i = -1;
-		for (Iterator it = this.iterator(); it.hasNext() && (i == -1);) {
-			SimEvent event = (SimEvent) it.next();
+		for (Iterator<SimEvent> it = this.iterator(); it.hasNext() && (i == -1);) {
+			SimEvent event = it.next();
 			if (event.eventTime() > new_event.eventTime()) {
 				i = indexOf(event);
 			}
 		}
 
 		if (i == -1) {
-			super.add(new_event);
+			return super.add(new_event);
 		} else {
 			super.add(i, new_event);
+			return true;
 		}
 	}
 
@@ -85,5 +87,5 @@ public class ListEventQueue extends ArrayList implements EventQueue {
 
 	public boolean remove(SimEvent ev) {
 		return super.remove(ev);
-	}	
+	}
 }

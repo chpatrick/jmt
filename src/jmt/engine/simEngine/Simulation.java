@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2009, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -20,8 +20,9 @@ package jmt.engine.simEngine;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import jmt.common.exception.LoadException;
 import jmt.common.exception.NetException;
@@ -73,17 +74,17 @@ public class Simulation {
 	//classes of the system
 	private JobClass[] classes = null;
 	//service centers of the system
-	private Vector nodes = new Vector();
+	private List<SimNode> nodes = new ArrayList<SimNode>();
 	//Burst distributions to register to the event handler
-	private Vector distrNetNodes = new Vector();
+	private List<NetNode> distrNetNodes = new ArrayList<NetNode>();
 	//connections
-	private Vector connections = new Vector();
+	private List<Connection> connections = new ArrayList<Connection>();
 	//measures requested by the simulation
-	private Vector measures = new Vector();
+	private List<SimMeasure> measures = new ArrayList<SimMeasure>();
 	// blocking region measures requested by the simulator
-	private Vector regionMeasures = new Vector();
+	private List<SimMeasure> regionMeasures = new ArrayList<SimMeasure>();
 	//blocking regions
-	private Vector regions = new Vector();
+	private List<BlockingRegion> regions = new ArrayList<BlockingRegion>();
 
 	//used to run the simulation only if the queue network has been initialized
 	private boolean initialized = false;
@@ -344,27 +345,27 @@ public class Simulation {
 		NetSystem.addNetwork(network);
 
 		//add all job classes to QueueNetwork
-		for (int i = 0; i < classes.length; i++) {
-			network.addJobClass(classes[i]);
+		for (JobClass classe : classes) {
+			network.addJobClass(classe);
 		}
 
 		try {
 			//creates all nodes
 			NetNode[] netNodes = new NetNode[nodes.size()];
 			for (int i = 0; i < nodes.size(); i++) {
-				netNodes[i] = ((SimNode) nodes.get(i)).getNode();
+				netNodes[i] = (nodes.get(i)).getNode();
 			}
 
 			//add connections
 			for (int i = 0; i < connections.size(); i++) {
-				int nodePosition1 = findNodePosition(((Connection) connections.get(i)).getStart());
-				int nodePosition2 = findNodePosition(((Connection) connections.get(i)).getEnd());
+				int nodePosition1 = findNodePosition(connections.get(i).getStart());
+				int nodePosition2 = findNodePosition(connections.get(i).getEnd());
 				netNodes[nodePosition1].connect(netNodes[nodePosition2]);
 			}
 
 			//add all nodes to QueueNetwork
 			for (int i = 0; i < nodes.size(); i++) {
-				SimNode simNode = ((SimNode) nodes.get(i));
+				SimNode simNode = (nodes.get(i));
 				if (simNode.isReference()) {
 					//reference nodes are the nodes (random source, terminal, ..)
 					//which create jobs: these nodes must receive the start event
@@ -376,12 +377,12 @@ public class Simulation {
 
 			//add distribution net nodes to QueueNetwork
 			for (int i = 0; i < distrNetNodes.size(); i++) {
-				network.addNode((NetNode) distrNetNodes.get(i));
+				network.addNode(distrNetNodes.get(i));
 			}
 
 			//add all nodes sections
 			for (int i = 0; i < nodes.size(); i++) {
-				SimNode n = (SimNode) nodes.get(i);
+				SimNode n = nodes.get(i);
 				if (n.getInput() != null) {
 					n.getNode().addSection(n.getInput());
 				}
@@ -399,7 +400,7 @@ public class Simulation {
 			//add blocking regions
 			BlockingRegion br;
 			for (int i = 0; i < regions.size(); i++) {
-				br = (BlockingRegion) regions.get(i);
+				br = regions.get(i);
 
 				String regionName = br.getName();
 				String inputStationName = regionName + "_inputStation";
@@ -436,8 +437,8 @@ public class Simulation {
 
 				//sets blocking region behaviour for inner nodes
 				String[] regNodes = br.getRegionNodeNames();
-				for (int j = 0; j < regNodes.length; j++) {
-					NetNode innerNode = br.getRegionNode(regNodes[j]);
+				for (String regNode : regNodes) {
+					NetNode innerNode = br.getRegionNode(regNode);
 
 					//at the moment inner stations must have a Queue-type input section
 					//and a Router-type output section
@@ -464,8 +465,8 @@ public class Simulation {
 				}
 				if (regionMeasures.size() > 0) {
 					//adds measures in blocking region input station
-					for (Iterator it = regionMeasures.iterator(); it.hasNext();) {
-						SimMeasure measure = (SimMeasure) it.next();
+					for (Iterator<SimMeasure> it = regionMeasures.iterator(); it.hasNext();) {
+						SimMeasure measure = it.next();
 						if (measure.getNodeName().equals(regionName)) {
 							addMeasure(measure.getMeasureType(), inputStationName, measure.getMeasure(), measure.getjClass());
 							it.remove();
@@ -480,7 +481,7 @@ public class Simulation {
 			//refresh nodes list, after input stations has been added
 			netNodes = new NetNode[nodes.size()];
 			for (int i = 0; i < nodes.size(); i++) {
-				netNodes[i] = ((SimNode) nodes.get(i)).getNode();
+				netNodes[i] = (nodes.get(i)).getNode();
 			}
 			//end NEW
 
@@ -488,7 +489,7 @@ public class Simulation {
 			SimMeasure ms;
 
 			for (int i = 0; i < measures.size(); i++) {
-				ms = (SimMeasure) measures.get(i);
+				ms = measures.get(i);
 				boolean verbose = ms.getMeasure().getVerbose();
 
 				if (verbose) {
@@ -505,7 +506,7 @@ public class Simulation {
 
 			//intialize measures
 			for (int i = 0; i < measures.size(); i++) {
-				ms = (SimMeasure) measures.get(i);
+				ms = measures.get(i);
 
 				//NEW
 				//@author Stefano Omini
@@ -656,21 +657,12 @@ public class Simulation {
 	//check if exists a node with the given name
 	private boolean isNode(String name) {
 		for (int i = 0; i < nodes.size(); i++) {
-			String netNode = ((SimNode) nodes.elementAt(i)).getNode().getName();
+			String netNode = (nodes.get(i)).getNode().getName();
 			if (netNode.equals(name)) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Gets the measures contained in the measure buffer.
-	 * if possible change this method of obtaining intermediate
-	 * values of measures
-	 */
-	public QueueMeasure getQueueMeasure() {
-		return NetSystem.getQueueMeasure();
 	}
 
 	//finds the position of the classes from the giving names
@@ -691,7 +683,7 @@ public class Simulation {
 	//finds the node
 	private int findNodePosition(String name) throws LoadException {
 		for (int i = 0; i < nodes.size(); i++) {
-			if (((SimNode) nodes.get(i)).getNode().getName().equals(name)) {
+			if ((nodes.get(i)).getNode().getName().equals(name)) {
 				return i;
 			}
 		}
@@ -705,7 +697,7 @@ public class Simulation {
 	public Document[] getAllMeasures() {
 		Document[] tempMeasures = new Document[measures.size()];
 		for (int i = 0; i < measures.size(); i++) {
-			SimMeasure simMeasure = (SimMeasure) measures.elementAt(i);
+			SimMeasure simMeasure = measures.get(i);
 			tempMeasures[i] = simMeasure.getMeasure().getNewData();
 		}
 		return tempMeasures;
@@ -830,7 +822,7 @@ public class Simulation {
 		BlockingRegion[] regions_vector = new BlockingRegion[regions.size()];
 
 		for (int br = 0; br < regions.size(); br++) {
-			regions_vector[br] = (BlockingRegion) regions.get(br);
+			regions_vector[br] = regions.get(br);
 		}
 		return regions_vector;
 	}
@@ -982,7 +974,7 @@ public class Simulation {
 			this.output = outSec;
 			//
 			nodeInit = true;
-			
+
 			if (simParameters != null) {
 				this.node.setSimParameters(simParameters);
 			}
@@ -1000,6 +992,7 @@ public class Simulation {
 		 * @deprecated
 		 * @param nodeName
 		 */
+		@Deprecated
 		public SimNode(String nodeName) {
 			this.node = new NetNode(nodeName);
 			input = null;

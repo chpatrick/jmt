@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2009, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -97,6 +97,7 @@ public class Server extends ServiceSection {
 
 	}
 
+	@Override
 	public int getIntSectionProperty(int id) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_BUSY_COUNTER:
@@ -108,6 +109,7 @@ public class Server extends ServiceSection {
 		}
 	}
 
+	@Override
 	public int getIntSectionProperty(int id, JobClass jobClass) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_VISITS_PER_CLASS:
@@ -117,6 +119,7 @@ public class Server extends ServiceSection {
 		}
 	}
 
+	@Override
 	public Object getObject(int id, JobClass jobClass) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_SERVICE_STRATEGY:
@@ -126,6 +129,7 @@ public class Server extends ServiceSection {
 		}
 	}
 
+	@Override
 	public Object getObject(int id) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_SERVICE_STRATEGY:
@@ -135,11 +139,13 @@ public class Server extends ServiceSection {
 		}
 	}
 
+	@Override
 	protected void nodeLinked(NetNode node) {
 		//if (numberOfVisitsPerClass != null)
 		//	tempJobsList = new JobInfoList(getJobClasses().size(), true);
 	}
 
+	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 		int c;
 		Job job;

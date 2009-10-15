@@ -22,7 +22,6 @@ import java.util.ListIterator;
 
 import jmt.common.exception.NetException;
 import jmt.engine.dataAnalysis.Measure;
-import jmt.engine.simEngine.QueueMeasure;
 import jmt.engine.simEngine.SimSystem;
 
 /**
@@ -48,19 +47,6 @@ public class NetSystem {
 
 	private static NetworkList networkList;
 
-	//QueueMeasure is used as a buffer: it contains the partial results
-	//of measure computations, which are passed to the gui (which plots them)
-	private static QueueMeasure queueMeasure = null;
-
-	//NEW
-	//@author Stefano Omini
-
-	//true if the engine is connected to the gui, false otherwise
-	//if true, the QueueMeasure is not used (to increase performances)
-	private static boolean GUImode = false;
-
-	//end NEW
-
 	private NetSystem() {
 	};
 
@@ -69,18 +55,9 @@ public class NetSystem {
 	 *
 	 */
 	public static void initialize() {
-
 		netController = new NetController();
 		SimSystem.initialize();
 		networkList = new NetworkList();
-
-		//NEW
-		//@author Stefano Omini
-		if (GUImode) {
-			queueMeasure = new QueueMeasure();
-		}
-		//end NEW
-
 	}
 
 	/** Terminates NetSystem and closes the log. You should recall the initialize method, rebuild
@@ -113,24 +90,19 @@ public class NetSystem {
 	 */
 	public static void start() throws Exception {
 		NetNode Node;
-		ListIterator Nets = networkList.listIterator();
-		ListIterator Nodes;
+		ListIterator<QueueNetwork> nets = networkList.listIterator();
+		ListIterator<NetNode> nodes;
 		QueueNetwork Network;
 		startTime = System.currentTimeMillis();
 
-		//OLD
-		// netController.start();
-
-		while (Nets.hasNext()) {
-			Network = (QueueNetwork) Nets.next();
+		while (nets.hasNext()) {
+			Network = nets.next();
 			if (Network.getState() == QueueNetwork.STATE_READY) {
 
-				//TODO: proviamo a cambiare
-				//Nodes = Network.getReferenceNodes().listIterator();
-				Nodes = Network.getNodes().listIterator();
+				nodes = Network.getNodes().listIterator();
 
-				while (Nodes.hasNext()) {
-					Node = (NetNode) Nodes.next();
+				while (nodes.hasNext()) {
+					Node = nodes.next();
 					Node.send(NetEvent.EVENT_START, null, 0.0, NodeSection.NO_ADDRESS, NodeSection.INPUT, Node);
 				}
 				Network.setState(QueueNetwork.STATE_RUNNING);
@@ -138,10 +110,7 @@ public class NetSystem {
 			}
 		}
 
-		//NEW
-		//@author Stefano Omini
 		netController.start();
-		//end NEW
 
 		netController.run();
 	}
@@ -174,11 +143,11 @@ public class NetSystem {
 	 * @throws jmt.common.exception.NetException
 	 */
 	public static void stop() throws jmt.common.exception.NetException {
-		ListIterator Nets = networkList.listIterator();
-		QueueNetwork Network;
-		while (Nets.hasNext()) {
-			Network = (QueueNetwork) Nets.next();
-			stop(Network);
+		ListIterator<QueueNetwork> nets = networkList.listIterator();
+		QueueNetwork network;
+		while (nets.hasNext()) {
+			network = nets.next();
+			stop(network);
 		}
 	}
 
@@ -187,24 +156,14 @@ public class NetSystem {
 	 * @throws jmt.common.exception.NetException
 	 */
 	public static void stop(QueueNetwork Network) throws jmt.common.exception.NetException {
-		NetNode Node;
+		NetNode node;
 		if (Network.getState() == QueueNetwork.STATE_RUNNING) {
-			/* --- Bertoli Marco: Informs ALL nodes of stop event and not only Reference nodes
-			ListIterator Nodes = Network.getReferenceNodes().listIterator();
-			if (Network.getReferenceNodes().size() > 0) {
-			 while (Nodes.hasNext()) {
-			  Node = (NetNode) Nodes.next();
-			  Node.send(NetEvent.EVENT_STOP, null, 0.0,
-			    NodeSection.NO_ADDRESS,
-			    NodeSection.NO_ADDRESS,
-			    Node);
-			 }
-			} else {  */
-			ListIterator Nodes = Network.getNodes().listIterator();
+			/* Informs ALL nodes of stop event and not only Reference nodes */
+			ListIterator<NetNode> nodes = Network.getNodes().listIterator();
 
-			while (Nodes.hasNext()) {
-				Node = (NetNode) Nodes.next();
-				Node.send(NetEvent.EVENT_STOP, null, 0.0, NodeSection.NO_ADDRESS, NodeSection.NO_ADDRESS, Node);
+			while (nodes.hasNext()) {
+				node = nodes.next();
+				node.send(NetEvent.EVENT_STOP, null, 0.0, NodeSection.NO_ADDRESS, NodeSection.NO_ADDRESS, node);
 				// }
 
 			}
@@ -218,32 +177,29 @@ public class NetSystem {
 	 * @throws jmt.common.exception.NetException
 	 */
 	public static void abort() throws jmt.common.exception.NetException {
-		ListIterator Nets = networkList.listIterator();
-		QueueNetwork Network;
-		while (Nets.hasNext()) {
-			Network = (QueueNetwork) Nets.next();
-			abort(Network);
+		ListIterator<QueueNetwork> nets = networkList.listIterator();
+		QueueNetwork network;
+		while (nets.hasNext()) {
+			network = nets.next();
+			abort(network);
 		}
 		SimSystem.abort();
 	}
 
 	/** Aborts the NetSystem Engine and terminates the simulation.
-	 * @param Network Reference to the netowrk to be stopped.
+	 * @param network Reference to the netowrk to be stopped.
 	 * @throws jmt.common.exception.NetException
 	 */
-	public static void abort(QueueNetwork Network) throws jmt.common.exception.NetException {
-		NetNode Node;
-		if (Network.getState() == QueueNetwork.STATE_RUNNING) {
-			ListIterator Nodes = Network.getReferenceNodes().listIterator();
-			//if (log.check(NetLog.LEVEL_RELEASE))
-			//	log.write(NetLog.LEVEL_RELEASE, "Aborting network \"" +
-			//	        Network.getName() + "\"...");
-			Nodes = Network.getReferenceNodes().listIterator();
-			while (Nodes.hasNext()) {
-				Node = (NetNode) Nodes.next();
-				Node.send(NetEvent.EVENT_ABORT, null, 0.0, NodeSection.NO_ADDRESS, NodeSection.NO_ADDRESS, Node);
+	public static void abort(QueueNetwork network) throws jmt.common.exception.NetException {
+		NetNode node;
+		if (network.getState() == QueueNetwork.STATE_RUNNING) {
+			ListIterator<NetNode> nodes = network.getReferenceNodes().listIterator();
+			nodes = network.getReferenceNodes().listIterator();
+			while (nodes.hasNext()) {
+				node = nodes.next();
+				node.send(NetEvent.EVENT_ABORT, null, 0.0, NodeSection.NO_ADDRESS, NodeSection.NO_ADDRESS, node);
 			}
-			Network.setState(QueueNetwork.STATE_ABORTED);
+			network.setState(QueueNetwork.STATE_ABORTED);
 
 		}
 	}
@@ -300,28 +256,21 @@ public class NetSystem {
 		return net.getMeasure(name, measureID);
 	}
 
-	/**
-	 * Gets the QueueMeasure object controlled by NetSystem
-	 */
-	public static QueueMeasure getQueueMeasure() {
-		return queueMeasure;
-	}
-
 	static void checkMeasures() throws jmt.common.exception.NetException {
-		ListIterator networks = networkList.listIterator();
+		ListIterator<QueueNetwork> networks = networkList.listIterator();
 		QueueNetwork network;
-		ListIterator measures;
+		ListIterator<Measure> measures;
 		int count, num;
 		Measure measure;
 		while (networks.hasNext()) {
-			network = (QueueNetwork) networks.next();
+			network = networks.next();
 			num = network.getMeasures().size();
 			if (num > 0) {
 				measures = network.getMeasures().listIterator();
 				count = 0;
 
 				while (measures.hasNext()) {
-					measure = (Measure) measures.next();
+					measure = measures.next();
 					if (measure.hasFinished()) {
 						count++;
 					}
@@ -335,7 +284,6 @@ public class NetSystem {
 						break;
 					case QueueNetwork.BEHAVIOUR_OBTAIN_ALL_MEASURES_THEN_ABORT:
 						if (count == num) {
-							queueMeasure.setEnd(true);
 							abort(network);
 						}
 						break;
@@ -364,12 +312,12 @@ public class NetSystem {
 			throw new NetException("Can't measure progress of a network which does not exist.");
 		}
 		// We extimate on the slowest not completed measure
-		ListIterator measures;
+		ListIterator<Measure> measures;
 		double slowest = 1;
 		Measure measure;
 		measures = network.getMeasures().listIterator();
 		while (measures.hasNext()) {
-			measure = (Measure) measures.next();
+			measure = measures.next();
 			if (!measure.hasFinished()) {
 				// find slowest measure
 				if (measure.getSamplesAnalyzedPercentage() < slowest) {
@@ -380,16 +328,13 @@ public class NetSystem {
 		return slowest;
 	}
 
-	//TODO: va cambiato....
-	//NEW
-	//@author Stefano Omini
 	public static double getTempMeasures(QueueNetwork network) throws jmt.common.exception.NetException {
 
 		if (network == null) {
 			throw new NetException("Can't get measures of a network which does not exist.");
 		}
 
-		ListIterator measures;
+		ListIterator<Measure> measures;
 		int count = 0;
 		Measure measure;
 		int num = network.getMeasures().size();
@@ -397,7 +342,7 @@ public class NetSystem {
 		if (num > 0) {
 			measures = network.getMeasures().listIterator();
 			while (measures.hasNext()) {
-				measure = (Measure) measures.next();
+				measure = measures.next();
 				//count finished measures
 				if (measure.hasFinished()) {
 					count++;
@@ -408,48 +353,26 @@ public class NetSystem {
 		return (double) count / (double) num;
 	}
 
-	//end NEW
-
-	//NEW
-	//@author Stefano Omini
-
 	static void stopNoSamplesMeasures() {
-		ListIterator networks = networkList.listIterator();
+		ListIterator<QueueNetwork> networks = networkList.listIterator();
 		QueueNetwork network;
-		ListIterator measures;
+		ListIterator<Measure> measures;
 		int num;
 		Measure measure;
 		while (networks.hasNext()) {
-			network = (QueueNetwork) networks.next();
+			network = networks.next();
 			num = network.getMeasures().size();
 			if (num > 0) {
 				measures = network.getMeasures().listIterator();
 
 				while (measures.hasNext()) {
-					measure = (Measure) measures.next();
+					measure = measures.next();
 
 					if (!measure.hasFinished()) {
 						measure.testDeadMeasure();
-
-						/*
-						int nsamples = measure.getAnalyzer().getSamples();
-
-						String name = measure.getName();
-						double perc = measure.getMaxPrecisionPercentage();
-						double mean = measure.getExtimatedMeanValue();
-						System.out.println(name + " --> " + nsamples + " - " + Double.toString(perc) +
-						    " - " + Double.toString(mean));
-
-						if (nsamples == 0) {
-						    measure.stop_NoSamples();
-						}
-						*/
-
 					}
 				}
 			}
 		}
 	}
-	//end NEW
-
 }

@@ -33,7 +33,7 @@ import java.util.Iterator;
  * @author Bertoli Marco
  * @version 1.0
  */
-public interface EventQueue {
+public interface EventQueue extends Iterable<SimEvent> {
 	/**
 	 * @return the number of events in this queue
 	 */
@@ -42,8 +42,9 @@ public interface EventQueue {
 	/**
 	 * Adds an event to the queue
 	 * @param event the event to add
+	 * @return true if element was added, false otherwise.
 	 */
-	public void add(SimEvent event);
+	public boolean add(SimEvent event);
 	
 	/**
 	 * @return the first event of the queue, removing it from the queue
@@ -71,5 +72,5 @@ public interface EventQueue {
 	 * Returns an iterator that iterates over this queue elements in no special order. Iterator must implement remove() method.
 	 * @return an iterator with no special order.
 	 */
-	public Iterator iterator();
+	public Iterator<SimEvent> iterator();
 }

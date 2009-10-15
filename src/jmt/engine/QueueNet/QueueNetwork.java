@@ -74,7 +74,7 @@ public class QueueNetwork {
 
 	private NodeList referenceNodes, nodes;
 
-	private LinkedList measures;
+	private LinkedList<Measure> measures;
 
 	private JobClassList jobClasses;
 
@@ -90,7 +90,7 @@ public class QueueNetwork {
 		referenceNodes = new NodeList();
 		jobClasses = new JobClassList();
 		this.name = name;
-		measures = new LinkedList();
+		measures = new LinkedList<Measure>();
 		behaviour = BEHAVIOUR_OBTAIN_ALL_MEASURES_THEN_STOP;
 		state = STATE_READY;
 	}
@@ -244,7 +244,7 @@ public class QueueNetwork {
 	/**
 	 * Gets the measures
 	 */
-	public LinkedList getMeasures() {
+	public LinkedList<Measure> getMeasures() {
 		return measures;
 	}
 
@@ -278,10 +278,10 @@ public class QueueNetwork {
 			return state;
 		}
 		boolean flag = false;
-		ListIterator nodeList = nodes.listIterator();
+		ListIterator<NetNode> nodeList = nodes.listIterator();
 		NetNode node;
 		while (nodeList.hasNext()) {
-			node = (NetNode) nodeList.next();
+			node = nodeList.next();
 			if (node.isRunning()) {
 				flag = true;
 			}

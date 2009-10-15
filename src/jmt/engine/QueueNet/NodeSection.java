@@ -488,6 +488,15 @@ public abstract class NodeSection {
 	protected RemoveToken sendMe(Job job, double delay) throws jmt.common.exception.NetException {
 		return ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, sectionID, ownerNode);
 	}
+	
+	/**
+	 * Removes a message previously sent
+	 * @param token the token to remove the message
+	 * @return true if message was removed, false otherwise
+	 */
+	protected boolean removeMessage(RemoveToken token) {
+		return ownerNode.removeMessage(token);
+	}
 
 	/** Sends a message to a section of all the NetNodes of the QueueNetwork.
 	 * @param event event tag.

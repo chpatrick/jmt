@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2009, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -23,62 +23,62 @@ import java.util.ListIterator;
 
 /** This class implements a network list. Note that only classes of QueueNet
  * package can add or remove objects to/from the list.
- * @author Francesco Radaelli
+ * @author Francesco Radaelli, Bertoli Marco
  */
 public class NetworkList {
 
-	private LinkedList Networks;
+	private LinkedList<QueueNetwork> networks;
 
 	/** Creates a new instance of NetworkList object
 	 */
 	NetworkList() {
-		Networks = new LinkedList();
+		networks = new LinkedList<QueueNetwork>();
 	}
 
 	/** Adds a new network to the list.
 	 * @param Network Reference to the NetWork to be added.
 	 */
-	void add(QueueNetwork Network) {
-		Networks.add(Network);
+	void add(QueueNetwork network) {
+		networks.add(network);
 	}
 
 	/** Removes a network from the list.
 	 * @param Network Reference to the Network to be removed.
 	 */
-	void remove(QueueNetwork Network) {
-		Networks.remove(Network);
+	void remove(QueueNetwork network) {
+		networks.remove(network);
 	}
 
 	/** Gets first network in the list.
 	 * @return First network in the list.
 	 */
 	public QueueNetwork getFirst() {
-		return (QueueNetwork) Networks.getFirst();
+		return networks.getFirst();
 	}
 
 	/** Gets last network in the list.
 	 * @return Last network in the list.
 	 */
 	public QueueNetwork getLast() {
-		return (QueueNetwork) Networks.getLast();
+		return networks.getLast();
 	}
 
 	/** Gets i-th network in the list.
 	 * @return Index-th network in the list.
 	 */
-	public QueueNetwork get(int Index) {
-		return (QueueNetwork) Networks.get(Index);
+	public QueueNetwork get(int index) {
+		return networks.get(index);
 	}
 
 	/** Gets the network in the list, if it exists, which has the specified Name.
 	 * @return The network called "Name". Returns Null if it doesn't exist.
 	 */
-	public QueueNetwork get(String Name) {
-		ListIterator iterator = Networks.listIterator();
+	public QueueNetwork get(String name) {
+		ListIterator<QueueNetwork> iterator = networks.listIterator();
 		QueueNetwork jc;
 		while (iterator.hasNext()) {
-			jc = (QueueNetwork) iterator.next();
-			if (jc.getName().compareTo(Name) == 0) {
+			jc = iterator.next();
+			if (jc.getName().compareTo(name) == 0) {
 				return jc;
 			}
 		}
@@ -89,15 +89,15 @@ public class NetworkList {
 	 * @return Number of networks in the list.
 	 */
 	public int size() {
-		return Networks.size();
+		return networks.size();
 	}
 
 	/**
 	 * Gets a list iterator
 	 *
 	 */
-	public ListIterator listIterator() {
-		return Networks.listIterator();
+	public ListIterator<QueueNetwork> listIterator() {
+		return networks.listIterator();
 	}
 
 	/**Returns the index in this list of the first
@@ -105,7 +105,7 @@ public class NetworkList {
 	 * if the List does not contain this element.
 	 */
 
-	int indexOf(QueueNetwork Network) {
-		return Networks.indexOf(Network);
+	int indexOf(QueueNetwork network) {
+		return networks.indexOf(network);
 	}
 }

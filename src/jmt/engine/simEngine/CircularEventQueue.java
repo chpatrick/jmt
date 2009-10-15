@@ -194,7 +194,7 @@ public class CircularEventQueue implements EventQueue {
 	 * events in the queue.
 	 * @param new_event	The event to be put on the queue.
 	 */
-	public final void add(SimEvent new_event) {
+	public final boolean add(SimEvent new_event) {
 		int i = 0;
 		if (size != 0) {
 			double evTime = new_event.eventTime();
@@ -214,6 +214,7 @@ public class CircularEventQueue implements EventQueue {
 				}
 			}
 		}
+		return true;
 	}
 
 	void push(SimEvent newEvent) {
@@ -336,15 +337,15 @@ public class CircularEventQueue implements EventQueue {
 	 * @see     Enumeration
 	 * @see     java.util.Iterator
 	 */
-	public Enumeration elements() {
-		return new Enumeration() {
+	public Enumeration<SimEvent> elements() {
+		return new Enumeration<SimEvent>() {
 			int count = start;
 
 			public boolean hasMoreElements() {
 				return count < size;
 			}
 
-			public Object nextElement() {
+			public SimEvent nextElement() {
 				synchronized (CircularEventQueue.this) {
 					if (count < size) {
 						return data[count++];
@@ -376,6 +377,7 @@ public class CircularEventQueue implements EventQueue {
 	 *
 	 * @return  a string representation of the object.
 	 */
+	@Override
 	public String toString() {
 		String str = new String();
 		str += "start = " + start;
@@ -415,7 +417,7 @@ public class CircularEventQueue implements EventQueue {
 
 	}
 
-	public Iterator iterator() {
+	public Iterator<SimEvent> iterator() {
 		return new Iter();
 	}
 
@@ -426,23 +428,24 @@ public class CircularEventQueue implements EventQueue {
 	public boolean remove(SimEvent ev) {
 		return removeElement(ev);
 	}
-	
-	private class Iter implements Iterator {
-		Enumeration en = elements();
+
+	private class Iter implements Iterator<SimEvent> {
+		Enumeration<SimEvent> en = elements();
 		SimEvent lastEvent;
+
 		public boolean hasNext() {
 			return en.hasMoreElements();
 		}
 
-		public Object next() {
-			lastEvent = (SimEvent) en.nextElement();
+		public SimEvent next() {
+			lastEvent = en.nextElement();
 			return lastEvent;
 		}
 
 		public void remove() {
 			CircularEventQueue.this.remove(lastEvent);
 		}
-		
+
 	}
 
 }

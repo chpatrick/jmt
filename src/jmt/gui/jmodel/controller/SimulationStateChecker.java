@@ -23,7 +23,7 @@ import java.util.TreeMap;
 import java.util.Vector;
 
 import jmt.common.exception.NetException;
-import jmt.engine.NodeSections.Queue;
+import jmt.engine.NodeSections.PSServer;
 import jmt.engine.NodeSections.Server;
 import jmt.engine.QueueNet.JobClass;
 import jmt.engine.QueueNet.JobClassList;
@@ -162,7 +162,7 @@ public class SimulationStateChecker {
 				serviceSection = temp.getSection(NodeSection.SERVICE);
 			} catch (NetException ne) {
 			}
-			if (serviceSection instanceof Server) {
+			if (serviceSection instanceof Server || serviceSection instanceof PSServer) {
 				serverMap.put(tm.get(temp.getName()), temp);
 			}
 		}
@@ -194,12 +194,12 @@ public class SimulationStateChecker {
 			Object thisServerKey = servers.get(i);
 			// get the mapped NetNode ...
 			NetNode thisNode = (NetNode) serverMap.get(thisServerKey);
-			Queue thisQueue = null;
-			Server thisServer = null;
+			NodeSection thisQueue = null;
+			NodeSection thisServer = null;
 			// get the input section and the service section ...
 			try {
-				thisQueue = (Queue) thisNode.getSection(NodeSection.INPUT);
-				thisServer = (Server) thisNode.getSection(NodeSection.SERVICE);
+				thisQueue = thisNode.getSection(NodeSection.INPUT);
+				thisServer = thisNode.getSection(NodeSection.SERVICE);
 			} catch (NetException ne) {
 			}
 			singleServerContentQueues.clear();

@@ -451,6 +451,7 @@ public class NetNode extends SimEntity {
 
 	/** This method implements the body of a NetNode.
 	 **/
+	@Override
 	public final void body() {
 		message = new NetMessage();
 
@@ -650,6 +651,15 @@ public class NetNode extends SimEntity {
 		return simSchedule(Destination.getId(), Delay, Tag, Data);
 	}
 
+	/**
+	 * Unschedules a message given a remove token
+	 * @param token the token to remove the message
+	 * @return true if unschedule was successful, false otherwise.
+	 */
+	boolean removeMessage(RemoveToken token) {
+		return simUnschedule(token);
+	}
+
 	//TODO: non usato
 	/** Sends a message to a section of all the NetNodes of the QueueNetwork.
 	 * @param Event Event tag.
@@ -663,7 +673,7 @@ public class NetNode extends SimEntity {
 	void sendBroadcast(int Event, Object Data, double Delay, byte SourceSection, byte DestinationSection, int NodeType)
 			throws jmt.common.exception.NetException {
 		int Tag;
-		ListIterator Iterator;
+		ListIterator<NetNode> iterator;
 		if ((Event == NetEvent.EVENT_JOB) || (Event == NetEvent.EVENT_ACK)) {
 			throw new jmt.common.exception.NetException(this, EXCEPTION_UNABLE_TO_BROADCAST, "message could not be broadcasted.");
 		}
@@ -673,18 +683,18 @@ public class NetNode extends SimEntity {
 
 		switch (NodeType) {
 			case QueueNetwork.REFERENCE_NODE:
-				Iterator = Network.getReferenceNodes().listIterator();
-				while (Iterator.hasNext()) {
+				iterator = Network.getReferenceNodes().listIterator();
+				while (iterator.hasNext()) {
 					//					Entity.sim_schedule(((NetNode) Iterator.next()).Entity.get_id(), Delay, Tag, Data);
-					simSchedule(((NetNode) Iterator.next()).getId(), Delay, Tag, Data);
+					simSchedule(iterator.next().getId(), Delay, Tag, Data);
 				}
 				break;
 			case QueueNetwork.NODE:
 				//@3G           Iterator=Network.getReferenceNodes().listIterator();
-				Iterator = Network.getNodes().listIterator();
-				while (Iterator.hasNext()) {
+				iterator = Network.getNodes().listIterator();
+				while (iterator.hasNext()) {
 					//					Entity.sim_schedule(((NetNode) Iterator.next()).Entity.get_id(), Delay, Tag, Data);
-					simSchedule(((NetNode) Iterator.next()).getId(), Delay, Tag, Data);
+					simSchedule(iterator.next().getId(), Delay, Tag, Data);
 				}
 				break;
 		}
@@ -699,6 +709,7 @@ public class NetNode extends SimEntity {
 		jobsList = new LinkedJobInfoList(getJobClasses().size(), true);
 	}
 
+	@Override
 	public void start() {
 		simSchedule(getId(), Double.MAX_VALUE, NetEvent.EVENT_KEEP_AWAKE, null);
 		simGetNext(SimSystem.SIM_ANY);
@@ -707,10 +718,12 @@ public class NetNode extends SimEntity {
 	/**
 	 * Restarts the entity after an hold period: implements the method restart() of SimEntity.
 	 */
+	@Override
 	public void restart() {
 		//TODO: � giusto che non faccia niente?
 	}
 
+	@Override
 	public void poison() {
 		state = SimEntity.FINISHED;
 	}
