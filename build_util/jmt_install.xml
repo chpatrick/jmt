@@ -31,7 +31,7 @@
 		</authors>
 		-->
 		<url>http://jmt.sourceforge.net/</url>
-		<javaversion>1.4</javaversion>
+		<javaversion>1.5</javaversion>
 	</info>
 	<!-- 
         The gui preferences indication.

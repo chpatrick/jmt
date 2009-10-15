@@ -62,8 +62,8 @@ parametrization. The tool includes also an interface to the similarity clusterin
 
 Compiling instructions
 ----------------------
-- To compile Java Modelling Tools you need Java J2SE SDK 1.4 (or later revision) that can be found at 
-   http://java.sun.com/j2se/ and Apache ANT that can be found at http://ant.apache.org/ .
+- To compile Java Modelling Tools you need Java J2SE SDK 1.5 (or later revision) that can be found at 
+   http://java.com/ and Apache ANT that can be found at http://ant.apache.org/ .
 
 - To create an installer you need IzPack that can be downloaded at  http://www.izforge.com/izpack/ and
    configure the appropriate path in "build.properties" file.
