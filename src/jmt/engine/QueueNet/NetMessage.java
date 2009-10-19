@@ -161,6 +161,7 @@ public class NetMessage implements Cloneable {
 		return ((sourceSection == section) && (Source == node));
 	}
 
+	@Override
 	public Object clone() {
 		try {
 			return super.clone();

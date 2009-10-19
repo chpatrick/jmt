@@ -37,7 +37,7 @@ public class LinkedJobInfoList implements JobInfoList {
 	public final int PROPERTY_NOT_AVAILABLE = 0x0001;
 
 	//contain JobInfo objects
-	private LinkedList list, listPerClass[];
+	private LinkedList<JobInfo> list, listPerClass[];
 
 	//arrivals and completions
 	private int jobsIn, jobsOut, jobsInPerClass[], jobsOutPerClass[];
@@ -56,13 +56,14 @@ public class LinkedJobInfoList implements JobInfoList {
 	* @param Save True to create and use a list to add/remove
 	* each job which arrives/departes, false otherwise.
 	*/
+	@SuppressWarnings("unchecked")
 	public LinkedJobInfoList(int NumberOfJobClasses, boolean Save) {
 		int i;
 		if (Save) {
-			list = new LinkedList();
+			list = new LinkedList<JobInfo>();
 			listPerClass = new LinkedList[NumberOfJobClasses];
 			for (i = 0; i < NumberOfJobClasses; i++) {
-				listPerClass[i] = new LinkedList();
+				listPerClass[i] = new LinkedList<JobInfo>();
 			}
 		}
 
@@ -268,12 +269,11 @@ public class LinkedJobInfoList implements JobInfoList {
 		if (listPerClass == null) {
 			throw new jmt.common.exception.NetException(this, PROPERTY_NOT_AVAILABLE, "property not available");
 		}
-		ListIterator Iterator;
 		//creates an iterator for the job class list of the job class of the specified job
-		Iterator = listPerClass[Job.getJobClass().getId()].listIterator();
+		ListIterator<JobInfo> it = listPerClass[Job.getJobClass().getId()].listIterator();
 		JobInfo jobInfo;
-		while (Iterator.hasNext()) {
-			jobInfo = (JobInfo) Iterator.next();
+		while (it.hasNext()) {
+			jobInfo = it.next();
 			if (jobInfo.getJob() == Job) {
 				return jobInfo;
 			}
@@ -284,7 +284,7 @@ public class LinkedJobInfoList implements JobInfoList {
 	/* (non-Javadoc)
 	 * @see jmt.engine.QueueNet.JobInfoList#getJobList()
 	 */
-	public List getJobList() {
+	public List<JobInfo> getJobList() {
 		return list;
 	}
 
@@ -430,7 +430,7 @@ public class LinkedJobInfoList implements JobInfoList {
 			//end NEW
 
 			updateResponseTime(jobInfo);
-			
+
 			finalRemove(jobInfo, listPerClass[c], perClassPosition);
 			finalRemove(jobInfo, list, position);
 			lastJobOutTimePerClass[c] = lastJobOutTime = NetSystem.getTime();
@@ -445,8 +445,8 @@ public class LinkedJobInfoList implements JobInfoList {
 			return false;
 		}
 	}
-	
-	private void finalRemove(JobInfo what, LinkedList list, int position) {
+
+	private void finalRemove(JobInfo what, LinkedList<JobInfo> list, int position) {
 		switch (position) {
 			case 1:
 				list.removeFirst();
@@ -472,7 +472,7 @@ public class LinkedJobInfoList implements JobInfoList {
 	 */
 	public JobInfo removeFirst() throws jmt.common.exception.NetException {
 		if (list != null) {
-			JobInfo jobInfo = ((JobInfo) list.getFirst());
+			JobInfo jobInfo = list.getFirst();
 			if (jobInfo != null) {
 				doRemove(jobInfo, 1, 1);
 				return jobInfo;
@@ -490,7 +490,7 @@ public class LinkedJobInfoList implements JobInfoList {
 	public JobInfo removeFirst(JobClass jobClass) throws jmt.common.exception.NetException {
 		if (list != null) {
 			int c = jobClass.getId();
-			JobInfo jobInfo = ((JobInfo) listPerClass[c].getFirst());
+			JobInfo jobInfo = listPerClass[c].getFirst();
 			if (jobInfo != null) {
 				doRemove(jobInfo, 0, 1);
 				return jobInfo;
@@ -507,7 +507,7 @@ public class LinkedJobInfoList implements JobInfoList {
 	 */
 	public JobInfo removeLast() throws jmt.common.exception.NetException {
 		if (list != null) {
-			JobInfo jobInfo = (JobInfo) list.getLast();
+			JobInfo jobInfo = list.getLast();
 			if (jobInfo != null) {
 				doRemove(jobInfo, 2, 2);
 				return jobInfo;
@@ -525,7 +525,7 @@ public class LinkedJobInfoList implements JobInfoList {
 	public JobInfo removeLast(JobClass jobClass) throws jmt.common.exception.NetException {
 		if (list != null) {
 			int c = jobClass.getId();
-			JobInfo jobInfo = (JobInfo) listPerClass[c].getLast();
+			JobInfo jobInfo = listPerClass[c].getLast();
 			if ((jobInfo != null)) {
 				doRemove(jobInfo, 0, 2);
 				return jobInfo;

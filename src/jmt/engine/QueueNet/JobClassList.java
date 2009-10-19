@@ -27,12 +27,12 @@ import java.util.ListIterator;
  */
 public class JobClassList {
 
-	private ArrayList jobClasses;
+	private ArrayList<JobClass> jobClasses;
 
 	/** Creates a new instance of JobClassList object
 	 */
 	JobClassList() {
-		jobClasses = new ArrayList();
+		jobClasses = new ArrayList<JobClass>();
 	}
 
 	/** Adds a new job class to the list.
@@ -53,7 +53,7 @@ public class JobClassList {
 	 * @return Index-th job class in the list.
 	 */
 	public JobClass get(int Index) {
-		return (JobClass) jobClasses.get(Index);
+		return jobClasses.get(Index);
 	}
 
 	/**Gets, if it exists, the job class with the specified name.
@@ -62,10 +62,10 @@ public class JobClassList {
 	 * @return the job class. Null if it doesn't exist.
 	 */
 	public JobClass get(String Name) {
-		ListIterator iterator = jobClasses.listIterator();
+		ListIterator<JobClass> iterator = jobClasses.listIterator();
 		JobClass jc;
 		while (iterator.hasNext()) {
-			jc = (JobClass) iterator.next();
+			jc = iterator.next();
 			if (jc.getName().compareTo(Name) == 0) {
 				return jc;
 			}
@@ -80,7 +80,7 @@ public class JobClassList {
 		return jobClasses.size();
 	}
 
-	public ListIterator listIterator() {
+	public ListIterator<JobClass> listIterator() {
 		return jobClasses.listIterator();
 	}
 

@@ -131,7 +131,7 @@ public interface JobInfoList {
 	/**
 	 * Gets the job info list
 	 */
-	public abstract List getJobList();
+	public abstract List<JobInfo> getJobList();
 
 	/** Adds a new job info to the list.
 	 * @param jobInfo Reference to the job info to be added.

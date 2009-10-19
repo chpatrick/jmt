@@ -44,12 +44,12 @@ public abstract class SimulationOutput {
 		this.sim = simulation;
 		network = sim.getNetwork();
 
-		LinkedList list = network.getMeasures();
+		LinkedList<Measure> list = network.getMeasures();
 
 		measureList = new Measure[list.size()];
 
 		for (int i = 0; i < measureList.length; i++) {
-			measureList[i] = (Measure) list.get(i);
+			measureList[i] = list.get(i);
 
 		}
 	}
