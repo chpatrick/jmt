@@ -44,8 +44,8 @@ public class DoubleArrayListOld extends java.util.ArrayList {
 	 */
 	public DoubleArrayListOld(double[] data) {
 		this.ensureCapacity(data.length);
-		for (int i = 0; i < data.length; i++) {
-			this.add(data[i]);
+		for (double element : data) {
+			this.add(element);
 		}
 	}
 
@@ -120,6 +120,7 @@ public class DoubleArrayListOld extends java.util.ArrayList {
 	 *  of the list, one for each line.
 	 *  @return the string
 	 */
+	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		for (int i = 0; i < size(); i++) {

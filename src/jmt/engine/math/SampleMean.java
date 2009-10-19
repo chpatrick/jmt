@@ -54,8 +54,8 @@ public class SampleMean {
 		n = 0;
 		max = 0;
 		min = 0;
-		for (int i = 0; i < data.length; i++) {
-			putNewSample(data[i]);
+		for (double element : data) {
+			putNewSample(element);
 		}
 	}
 
@@ -116,6 +116,7 @@ public class SampleMean {
 	 *  by SampleMean
 	 *  @return a string
 	 */
+	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append(getClass().getName());

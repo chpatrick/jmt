@@ -62,8 +62,8 @@ public class SampleMeanVar {
 		min = 0;
 		S = 0;
 		confInt = 0;
-		for (int i = 0; i < data.length; i++) {
-			putNewSample(data[i]);
+		for (double element : data) {
+			putNewSample(element);
 		}
 	}
 
@@ -168,6 +168,7 @@ public class SampleMeanVar {
 	 *  by SampleMeanVar
 	 *  @return a string
 	 */
+	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append(getClass().getName());

@@ -247,6 +247,7 @@ public class MersenneTwister extends RandomEngine {
 	 * Returns a 64 bit uniformly distributed random number in the open unit
 	 * interval [0.0,1.0) (including 0.0 and excluding 1.0).
 	 */
+	@Override
 	public double nextDouble() {
 		return genrand_res53();
 	}
@@ -256,6 +257,7 @@ public class MersenneTwister extends RandomEngine {
 	 * [Integer.MIN_VALUE,Integer.MAX_VALUE]
 	 * (including Integer.MIN_VALUE and  Integer.MAX_VALUE)
 	 */
+	@Override
 	public int nextInt() {
 		return genrand_int32();
 	}
@@ -279,6 +281,7 @@ public class MersenneTwister extends RandomEngine {
 	 * [Long.MIN_VALUE,Long.MAX_VALUE]
 	 * (including Long.MIN_VALUE and  Long.MAX_VALUE)
 	 */
+	@Override
 	public long nextLong64() {
 		int i = genrand_int32();
 		int j = genrand_int32();
@@ -306,6 +309,7 @@ public class MersenneTwister extends RandomEngine {
 	 * Returns a 32 bit uniformly distributed random number in the open unit
 	 * interval (0.0,1.0)  (excluding 0.0 and 1.0).
 	 */
+	@Override
 	public double raw() {
 		return genrand_real3();
 	}

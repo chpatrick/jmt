@@ -132,6 +132,7 @@ public class DirectCircularList {
 	 * Used for debugging purposes: provides a string rappresentation of every object in the data structure
 	 * @return a string rappresentation of every object in the data structure
 	 */
+	@Override
 	public String toString() {
 		String ret = "last: " + last + "     lastIndex: " + lastIndex + "\n";
 		for (int i = 0; i < data.length; i++) {

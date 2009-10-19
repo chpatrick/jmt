@@ -236,7 +236,7 @@ public class DoubleArrayList {
 	public static boolean test() {
 		DoubleArrayList dal = new DoubleArrayList();
 		boolean success = true;
-		Class c;
+		Class<?> c;
 		try {
 			c = Class.forName("java.lang.IndexOutOfBoundsException");
 			if (dal.getSize() != 0) {
