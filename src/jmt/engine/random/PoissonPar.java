@@ -64,6 +64,7 @@ public class PoissonPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
+	@Override
 	public boolean check() {
 		if (mean <= 0) {
 			return false;
@@ -95,6 +96,7 @@ public class PoissonPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
+	@Override
 	public void setMean(double mean) throws IncorrectDistributionParameterException {
 		if (mean <= 0) {
 			throw new IncorrectDistributionParameterException("mean must be gtz");

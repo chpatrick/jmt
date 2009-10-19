@@ -67,6 +67,7 @@ public class ConstantDistrPar extends AbstractParameter implements Parameter {
 	 * @return boolean, indicating wether the parameter is correct or not.
 	 *
 	 */
+	@Override
 	public boolean check() {
 		if (t < 0) {
 			return false;
@@ -109,6 +110,7 @@ public class ConstantDistrPar extends AbstractParameter implements Parameter {
 	 * Author: Bertoli Marco
 	 * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
 	 */
+	@Override
 	public void setMean(double meanValue) throws IncorrectDistributionParameterException {
 		if (meanValue < 0 || Double.isInfinite(meanValue)) {
 			throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");

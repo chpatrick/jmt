@@ -204,10 +204,6 @@ public class Poisson extends AbstractDistribution implements Distribution {
 			 *****************************************************************/
 			double my = ((PoissonPar) p).getMean();
 
-			double t, g, my_k;
-
-			double gx, gy, px, py, e, x, xx, delta, v;
-			int sign;
 			double u;
 			int k, i;
 

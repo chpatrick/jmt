@@ -64,6 +64,7 @@ public class StudentTPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
+	@Override
 	public boolean check() {
 		return (!(freedom <= 0 || Math.floor(freedom) != freedom));
 	}

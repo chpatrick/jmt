@@ -141,6 +141,7 @@ public class HyperExpPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
+	@Override
 	public boolean check() {
 		if (((mean <= 0) || (var <= 0)) || ((p <= 0 || p >= 1) || (lambda1 <= 0) || (lambda2 <= 0))) {
 			return false;
@@ -249,6 +250,7 @@ public class HyperExpPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
+	@Override
 	public void setMean(double mean) throws IncorrectDistributionParameterException {
 		this.mean = mean;
 		try {

@@ -71,6 +71,7 @@ public class NormalPar extends AbstractParameter implements Parameter {
 	 * @return boolean, indicating wether the parameter is correct or not.
 	 *
 	 */
+	@Override
 	public boolean check() {
 		if (standardDeviation <= 0) {
 			return false;
@@ -126,6 +127,7 @@ public class NormalPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
+	@Override
 	public void setMean(double mean) {
 		this.mean = mean;
 	}

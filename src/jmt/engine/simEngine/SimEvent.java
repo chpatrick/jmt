@@ -18,7 +18,7 @@ public class SimEvent implements Cloneable {
 	private Object data; // any data the event is carrying
 	/** This field should never be set explicitly. It's used by the EventQueue for ordering purposes. */
 	int internalOrdering;
-	
+
 	//
 	// Public library interface
 	//
@@ -120,6 +120,7 @@ public class SimEvent implements Cloneable {
 	/** Create an exact copy of this event.
 	 * @return A reference to the copy
 	 */
+	@Override
 	public Object clone() {
 		return new SimEvent(etype, time, entSrc, entDst, tag, data);
 	}
@@ -176,6 +177,7 @@ public class SimEvent implements Cloneable {
 	 *
 	 * @return  a string representation of the object.
 	 */
+	@Override
 	public String toString() {
 		return "type = " + etype + "; time = " + time + "; src = " + entSrc + "; dest = " + entDst + "; tag = " + tag + "; data = " + data + "\n";
 	}

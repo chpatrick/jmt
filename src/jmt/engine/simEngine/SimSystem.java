@@ -20,7 +20,7 @@ public class SimSystem {
 	private static boolean DEBUG = false;
 
 	// Private data members
-	static private List entities; // The current entity list
+	static private List<SimEntity> entities; // The current entity list
 
 	static private EventQueue future; // The future event queue
 
@@ -29,7 +29,6 @@ public class SimSystem {
 	static private double clock; // Holds the current global simulation time
 	static private boolean running; // Tells whether the run() member been called yet
 	static private NumberFormat nf;
-
 
 	//
 	// Public library interface
@@ -46,14 +45,13 @@ public class SimSystem {
 	 */
 	static public void initialize() {
 
-		entities = new ArrayList();
-
+		entities = new ArrayList<SimEntity>();
 
 		// future = new ListEventQueue();
 		// future = new CircularEventQueue();
 		// future = new SuperEventQueue();
 		future = new HybridEventQueue();
-		
+
 		deferred = new ListEventQueue();
 
 		clock = 0.0;
@@ -107,7 +105,7 @@ public class SimSystem {
 	 * @return A reference to the entity, or null if it could not be found
 	 */
 	static final public SimEntity getEntity(int id) {
-		return (SimEntity) entities.get(id);
+		return entities.get(id);
 	}
 
 	/** Finds an entity by its name.
@@ -117,8 +115,8 @@ public class SimSystem {
 	static public SimEntity getEntity(String name) {
 		SimEntity ent, found = null;
 
-		for (Iterator it = entities.iterator(); it.hasNext();) {
-			ent = (SimEntity) it.next();
+		for (Iterator<SimEntity> it = entities.iterator(); it.hasNext();) {
+			ent = it.next();
 			if (name.compareTo(ent.getName()) == 0) {
 				found = ent;
 			}
@@ -185,8 +183,8 @@ public class SimSystem {
 		if (DEBUG) {
 			System.out.println("SimSystem: Starting entities");
 		}
-		for (Iterator it = entities.iterator(); it.hasNext();) {
-			ent = (SimEntity) it.next();
+		for (Iterator<SimEntity> it = entities.iterator(); it.hasNext();) {
+			ent = it.next();
 			ent.start();
 		}
 	}
@@ -226,8 +224,8 @@ public class SimSystem {
 	static public void runStop() {
 		SimEntity ent;
 		// Attempt to kill all the entity threads
-		for (Iterator it = entities.iterator(); it.hasNext();) {
-			ent = (SimEntity) it.next();
+		for (Iterator<SimEntity> it = entities.iterator(); it.hasNext();) {
+			ent = it.next();
 			ent.poison();
 		}
 		if (DEBUG) {
@@ -261,7 +259,7 @@ public class SimSystem {
 		future.add(e);
 		return new RemoveToken(e);
 	}
-	
+
 	/**
 	 * Given a remove token, this method will remove a future or deferred simulation event
 	 * @param token the remove token
@@ -283,8 +281,8 @@ public class SimSystem {
 		int w = 0;
 		SimEvent event;
 		//DEK (Federico Granata) 25-11-2003
-		for (Iterator it = deferred.iterator(); it.hasNext();) {
-			event = (SimEvent) it.next();
+		for (Object element : deferred) {
+			event = (SimEvent) element;
 			if (event.getDest() == d) {
 				if (p.match(event)) {
 					w++;
@@ -323,10 +321,10 @@ public class SimSystem {
 			}
 		}
 		if (found) {
-			((SimEntity) entities.get(src)).setEvbuf((SimEvent) ev.clone());
+			entities.get(src).setEvbuf((SimEvent) ev.clone());
 
 		} else {
-			((SimEntity) entities.get(src)).setEvbuf(null);
+			entities.get(src).setEvbuf(null);
 
 		}
 	}
@@ -346,10 +344,10 @@ public class SimSystem {
 			}
 		}
 		if (found) {
-			((SimEntity) entities.get(src)).setEvbuf((SimEvent) ev.clone());
+			entities.get(src).setEvbuf((SimEvent) ev.clone());
 
 		} else {
-			((SimEntity) entities.get(src)).setEvbuf(null);
+			entities.get(src).setEvbuf(null);
 
 		}
 	}
@@ -384,7 +382,7 @@ public class SimSystem {
 				if (dest < 0) {
 					throw new jmt.common.exception.NetException("SimSystem: Error - attempt to send to a null entity");
 				} else {
-					destEnt = (SimEntity) entities.get(dest);
+					destEnt = entities.get(dest);
 					if (destEnt.getState() == SimEntity.WAITING) {
 						SimPredicate p = destEnt.getWaitingPred();
 
@@ -436,8 +434,8 @@ public class SimSystem {
 				if (src < 0) {
 					throw new jmt.common.exception.NetException("SimSystem: Error - NULL entity holding");
 				} else {
-					((SimEntity) entities.get(src)).setState(SimEntity.RUNNABLE);
-					((SimEntity) entities.get(src)).restart();
+					entities.get(src).setState(SimEntity.RUNNABLE);
+					entities.get(src).restart();
 				}
 				break;
 		}

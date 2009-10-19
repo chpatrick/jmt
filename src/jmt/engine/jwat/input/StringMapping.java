@@ -17,7 +17,7 @@
   */
 package jmt.engine.jwat.input;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 public class StringMapping extends VariableMapping {
 
@@ -28,7 +28,7 @@ public class StringMapping extends VariableMapping {
 	//Update 28/10/2006: + funzione utilizzata per sampling che data una stringa restituisce tutti indice stringhe che la 
 	//					   contengono come sottostringa
 	public int[] getMatchingStringList(String s) {
-		Vector v = new Vector(); //<Integer>
+		ArrayList v = new ArrayList(); //<Integer>
 		for (int i = 0; i < valMap.size(); i++) {
 			if (((String) ((Mapping) valMap.get(i)).getValue()).indexOf(s) != -1) {
 				v.add(new Integer(i));

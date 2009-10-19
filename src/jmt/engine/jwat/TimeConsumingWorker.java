@@ -4,7 +4,7 @@
 package jmt.engine.jwat;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
 
@@ -19,7 +19,7 @@ import jmt.gui.jwat.SwingWorker;
 public abstract class TimeConsumingWorker extends SwingWorker {
 
 	private ProgressShow viewer;
-	private Vector statusListener = null; //<ProgressStatusListener>
+	private ArrayList statusListener = null; //<ProgressStatusListener>
 
 	/**
 	 * 
@@ -27,7 +27,7 @@ public abstract class TimeConsumingWorker extends SwingWorker {
 	public TimeConsumingWorker(ProgressShow prg) {
 		super();
 		viewer = prg;
-		statusListener = new Vector();
+		statusListener = new ArrayList();
 	}
 
 	public int getStep() {

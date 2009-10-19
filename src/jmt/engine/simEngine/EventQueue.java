@@ -19,9 +19,6 @@ package jmt.engine.simEngine;
 
 import java.util.Iterator;
 
-
-
-
 /**
  * <p><b>Name:</b> EventQueue</p> 
  * <p><b>Description:</b> 
@@ -38,36 +35,36 @@ public interface EventQueue extends Iterable<SimEvent> {
 	 * @return the number of events in this queue
 	 */
 	public int size();
-	
+
 	/**
 	 * Adds an event to the queue
 	 * @param event the event to add
 	 * @return true if element was added, false otherwise.
 	 */
 	public boolean add(SimEvent event);
-	
+
 	/**
 	 * @return the first event of the queue, removing it from the queue
 	 */
 	public SimEvent pop();
-	
+
 	/**
 	 * @return the first event of the queue, without removing it
 	 */
 	public SimEvent peek();
-	
+
 	/**
 	 * Removes given event
 	 * @param ev the event to remove
 	 * @return true if event was found, false otherwise
 	 */
 	public boolean remove(SimEvent ev);
-	
+
 	/**
 	 * Clears this queue, removing all pointers
 	 */
 	public void clear();
-	
+
 	/**
 	 * Returns an iterator that iterates over this queue elements in no special order. Iterator must implement remove() method.
 	 * @return an iterator with no special order.

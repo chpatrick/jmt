@@ -185,6 +185,7 @@ public class EmpiricalPar extends AbstractParameter implements Parameter {
 	 * @return boolean, indicating whether the parameter is correct or not.
 	 *
 	 */
+	@Override
 	public boolean check() {
 		/*
 		The gtz condition and the sum to 1 condition are actually controlled

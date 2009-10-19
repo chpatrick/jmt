@@ -31,7 +31,7 @@ package jmt.engine.simEngine;
 public class RemoveToken {
 	private SimEvent event;
 	private boolean deferred;
-	
+
 	/**
 	 * Builds a new future remove token for given event.
 	 * @param event the event to remove
@@ -40,7 +40,7 @@ public class RemoveToken {
 	RemoveToken(SimEvent event) {
 		this(event, false);
 	}
-	
+
 	/**
 	 *  Builds a new remove token for given event.
 	 * @param event the event
@@ -51,7 +51,7 @@ public class RemoveToken {
 		this.event = event;
 		this.deferred = deferred;
 	}
-	
+
 	/**
 	 * @return the event to remove from future events
 	 */
@@ -59,7 +59,7 @@ public class RemoveToken {
 	SimEvent getEvent() {
 		return event;
 	}
-	
+
 	/**
 	 * @return if the event was deferred
 	 */

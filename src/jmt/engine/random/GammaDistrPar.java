@@ -68,6 +68,7 @@ public class GammaDistrPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
+	@Override
 	public boolean check() {
 		if ((alpha <= 0.0) || (lambda <= 0.0)) {
 			return false;
@@ -140,6 +141,7 @@ public class GammaDistrPar extends AbstractParameter implements Parameter {
 	 * Author: Bertoli Marco
 	 * @throws IncorrectDistributionParameterException if mean value is invalid for this distribution
 	 */
+	@Override
 	public void setMean(double meanValue) throws IncorrectDistributionParameterException {
 		if (meanValue <= 0 || Double.isInfinite(meanValue)) {
 			throw new IncorrectDistributionParameterException("Mean value must be finite and greater than zero");

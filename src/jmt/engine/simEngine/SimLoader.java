@@ -27,10 +27,9 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.TimeZone;
-import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -94,7 +93,6 @@ public class SimLoader {
 
 	//path of the xml file containing the sim model
 	private String simModelPath;
-	
 
 	/**
 	 * Creates a Simulation object, loading all the model definition from the
@@ -174,7 +172,7 @@ public class SimLoader {
 			//@author Stefano Omini
 
 			//default values
-			boolean debug = false;
+
 			long seed = -1;
 			String simName = "";
 
@@ -183,9 +181,6 @@ public class SimLoader {
 			}
 
 			//vraiable debug is no longer USED
-			if (root.hasAttribute("debug")) {
-				debug = (root.getAttribute("debug")).equalsIgnoreCase("true");
-			}
 
 			if (root.getAttribute("seed") != "") {
 				seed = Long.parseLong(root.getAttribute("seed"));
@@ -248,7 +243,7 @@ public class SimLoader {
 			//gets the default value of maxsamples
 			//(max number of samples for each measure)
 			int maxSamples = simParam.getMaxSamples();
-			
+
 			// Gets the timestamp value
 			simParam.setTimestampValue(Long.toString(System.currentTimeMillis()));
 
@@ -276,12 +271,12 @@ public class SimLoader {
 			if (root.hasAttribute("logDelimiter")) {
 				String temp_ld = root.getAttribute("logDelimiter");
 				simParam.setLogDelimiter(temp_ld);
-				
+
 			}
 			if (root.hasAttribute("logDecimalSeparator")) {
 				String temp_ld = root.getAttribute("logDecimalSeparator");
 				simParam.setLogDecimalSeparator(temp_ld);
-				
+
 			}
 			if (root.hasAttribute("logReplaceMode")) {
 				String temp_lr = root.getAttribute("logReplaceMode");
@@ -292,7 +287,7 @@ public class SimLoader {
 				simParam.setTimestampValue(temp_ltv);
 			}
 			//END MF08
-			
+
 			//Returns a NodeList of all the Elements with a given tag name in the order in which they
 			//are encountered in a preorder traversal of the Document tree.
 			NodeList nodeList = root.getElementsByTagName("node");
@@ -410,7 +405,7 @@ public class SimLoader {
 				//new Number of Customers (orig. Queue Length) and old Number of Customers (presently System Number of Customers)
 				//because we know that Queue Length is a node level perf index where other one is system and hence has blank node.
 				String referenceNode = e.getAttribute("referenceNode");
-				int measureType = obtainMeasureType(type,referenceNode);
+				int measureType = obtainMeasureType(type, referenceNode);
 				String nodeType = e.getAttribute("nodeType"); // Node is a station or a region
 				//throughput measure requires an InverseMeasure object!!
 				if (measureType == SimConstants.THROUGHPUT || measureType == SimConstants.SYSTEM_THROUGHPUT || measureType == SimConstants.DROP_RATE
@@ -418,8 +413,8 @@ public class SimLoader {
 						//Added by ASHANKA START
 						//Added System power as an Inverse Measure.
 						|| measureType == SimConstants.SYSTEM_POWER
-						//Added by ASHANKA STOP
-						) {
+				//Added by ASHANKA STOP
+				) {
 					//throughput measure
 					InverseMeasure invMeasure = new InverseMeasure(e.getAttribute("name"), Double.parseDouble(e.getAttribute("alpha")), Double
 							.parseDouble(e.getAttribute("precision")), maxSamples, e.getAttribute("verbose").equalsIgnoreCase("true"));
@@ -568,7 +563,7 @@ public class SimLoader {
 		NodeList parameterList = section.getElementsByTagName("parameter");
 		try {
 			//gets appropriate Class Object
-			Class c = Class.forName("jmt.engine.NodeSections." + section.getAttribute("className"));
+			Class<?> c = Class.forName("jmt.engine.NodeSections." + section.getAttribute("className"));
 			if (DEBUG) {
 				System.out.println("    class found");
 			}
@@ -582,7 +577,7 @@ public class SimLoader {
 			} else {
 				//creates the array with all parameters & the array with all their classes
 				Object[] initargs = new Object[parameterList.getLength()];
-				Class[] parameterTypes = new Class[parameterList.getLength()];
+				Class<?>[] parameterTypes = new Class[parameterList.getLength()];
 				for (int i = 0; i < parameterList.getLength(); i++) {
 					//creates the parameter
 					initargs[i] = createParameter((Element) parameterList.item(i));
@@ -604,7 +599,7 @@ public class SimLoader {
 					}
 				}
 				//gets the right constructor
-				Constructor constr = getConstructor(c, parameterTypes);
+				Constructor<?> constr = getConstructor(c, parameterTypes);
 				if (DEBUG) {
 					System.out.println("    constructor found");
 				}
@@ -647,7 +642,7 @@ public class SimLoader {
 				}
 				return null;
 			}
-			Class c = Class.forName(classPath);
+			Class<?> c = Class.forName(classPath);
 			if (DEBUG) {
 				System.out.println("        parameter  class found = " + classPath);
 			}
@@ -701,7 +696,7 @@ public class SimLoader {
 					//subParametes for each class.
 					arrayElements = new Object[jobClasses.length];
 					NodeList chiList = param.getChildNodes();
-					Vector classVect = new Vector();
+					ArrayList<String> classVect = new ArrayList<String>();
 					//iterates over the childList, it's like this, it has a list (optional)of classRef
 					//followed by a subParameter
 					for (int i = 0; i < chiList.getLength(); i++) {
@@ -717,7 +712,7 @@ public class SimLoader {
 								//gets the position of classes
 								int[] positions = new int[classVect.size()];
 								for (int j = 0; j < positions.length; j++) {
-									positions[j] = findClassPosition((String) classVect.get(j));
+									positions[j] = findClassPosition(classVect.get(j));
 								}
 								//gets the subparameter
 								for (int j = 0; j < positions.length; j++) {
@@ -759,8 +754,8 @@ public class SimLoader {
 				}
 				//needs to get the String constructor
 				Object[] initargs = { value };
-				Class[] paramterTypes = { initargs[0].getClass() };
-				Constructor constr = getConstructor(c, paramterTypes);
+				Class<?>[] paramterTypes = { initargs[0].getClass() };
+				Constructor<?> constr = getConstructor(c, paramterTypes);
 				if (DEBUG) {
 					System.out.println("        created parameter");
 				}
@@ -772,7 +767,7 @@ public class SimLoader {
 				if (DEBUG) {
 					System.out.println("        parameter is a leaf node with subparameter ");
 				}
-				Class[] paramClasses = new Class[childList.getLength()];
+				Class<?>[] paramClasses = new Class[childList.getLength()];
 				//creates iteratevely all the subparamters
 				for (int i = 0; i < childList.getLength(); i++) {
 					Element e = (Element) childList.item(i);
@@ -782,7 +777,7 @@ public class SimLoader {
 					initargs[i] = createSubParameter(e);
 					paramClasses[i] = initargs[i].getClass();
 				}
-				Constructor constr = getConstructor(c, paramClasses);
+				Constructor<?> constr = getConstructor(c, paramClasses);
 				return constr.newInstance(initargs);
 			}
 
@@ -816,7 +811,7 @@ public class SimLoader {
 				}
 				return null;
 			}
-			Class c = Class.forName(subp.getAttribute("classPath"));
+			Class<?> c = Class.forName(subp.getAttribute("classPath"));
 			if (DEBUG) {
 				System.out.println("            found subparameter class = " + c.getName());
 			}
@@ -872,8 +867,8 @@ public class SimLoader {
 				}
 				//needs to get the String constructor
 				Object[] initargs = { value };
-				Class[] paramterTypes = { initargs[0].getClass() };
-				Constructor constr = getConstructor(c, paramterTypes);
+				Class<?>[] paramterTypes = { initargs[0].getClass() };
+				Constructor<?> constr = getConstructor(c, paramterTypes);
 				if (DEBUG) {
 					System.out.println("            created subParameter");
 				}
@@ -886,7 +881,7 @@ public class SimLoader {
 				if (DEBUG) {
 					System.out.println("            subParameter is a leaf node with subparamter ");
 				}
-				Class[] paramClasses = new Class[childList.getLength()];
+				Class<?>[] paramClasses = new Class[childList.getLength()];
 				//creates iteratevely all the subparamters
 				for (int i = 0; i < childList.getLength(); i++) {
 					Element e = (Element) childList.item(i);
@@ -897,7 +892,7 @@ public class SimLoader {
 					paramClasses[i] = initargs[i].getClass();
 				}
 				//gets the right constructor
-				Constructor constr = getConstructor(c, paramClasses);
+				Constructor<?> constr = getConstructor(c, paramClasses);
 				Object o = constr.newInstance(initargs);
 				if (o instanceof NetNode && o instanceof Distribution) {
 					sim.addDistrNetNode((NetNode) o);
@@ -945,7 +940,7 @@ public class SimLoader {
 	 * @param paramClasses
 	 * @return found constructor
 	 */
-	public Constructor getConstructor(Class c, Class[] paramClasses) throws NoSuchMethodException {
+	public Constructor<?> getConstructor(Class<?> c, Class<?>[] paramClasses) throws NoSuchMethodException {
 		try {
 			return c.getConstructor(paramClasses);
 		} catch (NoSuchMethodException e) {
@@ -955,15 +950,14 @@ public class SimLoader {
 			e.printStackTrace();
 		}
 		//gets all constructors
-		Constructor[] constrs = c.getConstructors();
-		for (int i = 0; i < constrs.length; i++) {
-			Constructor constr = constrs[i];
-			Class[] params = constr.getParameterTypes();
+		Constructor<?>[] constrs = c.getConstructors();
+		for (Constructor<?> constr : constrs) {
+			Class<?>[] params = constr.getParameterTypes();
 			if (params.length == paramClasses.length) {
 				//right number of parameters
 				boolean ok = true;
 				for (int j = 0; j < params.length && ok; j++) {
-					Class param = params[j];
+					Class<?> param = params[j];
 					if (!param.isAssignableFrom(paramClasses[j])) {
 						ok = false;
 					}
@@ -974,8 +968,7 @@ public class SimLoader {
 			}
 		}
 		String errorMessage = c.getName() + "." + "<init>(";
-		for (int i = 0; i < paramClasses.length; i++) {
-			Class paramClass = paramClasses[i];
+		for (Class<?> paramClass : paramClasses) {
 			errorMessage += paramClass.getName() + ", ";
 		}
 		errorMessage += ")";
@@ -991,10 +984,10 @@ public class SimLoader {
 	 */
 	private int obtainMeasureType(String measure, String referenceNode) {
 		if (measure.equalsIgnoreCase("Queue length")//This is for backward compatibility as previously this index was known as Queue Length
-				||measure.equalsIgnoreCase("Customer Number")//This is also for backward compatibility as Queue Length it was known as Customer Number
-					||(measure.equalsIgnoreCase("Number of Customers")&& !"".equalsIgnoreCase(referenceNode))){
-					// The above is the present name of the performance index, the AND is used to differentiate it from the old label of System Number of Customers
-					// This Perf Index is not system level so it will always refer to some Node. eg Fork, Queueing Station etc.
+				|| measure.equalsIgnoreCase("Customer Number")//This is also for backward compatibility as Queue Length it was known as Customer Number
+				|| (measure.equalsIgnoreCase("Number of Customers") && !"".equalsIgnoreCase(referenceNode))) {
+			// The above is the present name of the performance index, the AND is used to differentiate it from the old label of System Number of Customers
+			// This Perf Index is not system level so it will always refer to some Node. eg Fork, Queueing Station etc.
 			return SimConstants.QUEUE_LENGTH;
 		} else if (measure.equalsIgnoreCase("Utilization")) {
 			return SimConstants.UTILIZATION;
@@ -1013,16 +1006,16 @@ public class SimLoader {
 		} else if (measure.equalsIgnoreCase("System Throughput")) {
 			return SimConstants.SYSTEM_THROUGHPUT;
 		} else if (measure.equalsIgnoreCase("System Number of Customers")//Present name of this perf Index
-					|| measure.equalsIgnoreCase("System Customer Number")//Previous Name of the Perf Index
-						|| (measure.equalsIgnoreCase("Number of Customers")&& "".equalsIgnoreCase(referenceNode))) {//Initial Name of the perf index
-						//Above OR conditions are for the backward compatibility
+				|| measure.equalsIgnoreCase("System Customer Number")//Previous Name of the Perf Index
+				|| (measure.equalsIgnoreCase("Number of Customers") && "".equalsIgnoreCase(referenceNode))) {//Initial Name of the perf index
+			//Above OR conditions are for the backward compatibility
 			return SimConstants.SYSTEM_JOB_NUMBER;
 		} else if (measure.equalsIgnoreCase("System Drop Rate")) {
 			return SimConstants.SYSTEM_DROP_RATE;
 		}
 		//Added by ASHANKA START
 		//This loads the System Power into the JSIM
-		else if(measure.equalsIgnoreCase("System Power")){
+		else if (measure.equalsIgnoreCase("System Power")) {
 			return SimConstants.SYSTEM_POWER;
 		}
 		//Added by ASHANKA STOP
@@ -1310,10 +1303,10 @@ public class SimLoader {
 
 		 */
 		public static class JmtNodeList implements NodeList {
-			Vector data;
+			ArrayList<Node> data;
 
 			public JmtNodeList() {
-				data = new Vector();
+				data = new ArrayList<Node>();
 			}
 
 			public void add(Node child) {
@@ -1321,7 +1314,7 @@ public class SimLoader {
 			}
 
 			public Node item(int index) {
-				return (Node) data.get(index);
+				return data.get(index);
 			}
 
 			public int getLength() {

@@ -142,7 +142,7 @@ public abstract class SimEntity {
 	public final RemoveToken simSchedule(int dest, double delay, int tag) {
 		return SimSystem.send(me, dest, delay, tag, null);
 	}
-	
+
 	/**
 	 * Removes a scheduled event from future or deferred queue
 	 * @param token the token to remove the element

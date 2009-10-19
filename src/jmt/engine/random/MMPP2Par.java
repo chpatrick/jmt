@@ -15,11 +15,10 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
- 
+
 package jmt.engine.random;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
-
 
 /**
 *
@@ -32,7 +31,6 @@ import jmt.common.exception.IncorrectDistributionParameterException;
 *
 */
 
-
 public class MMPP2Par extends AbstractParameter implements Parameter {
 
 	private double mean;
@@ -44,18 +42,17 @@ public class MMPP2Par extends AbstractParameter implements Parameter {
 	protected ExponentialPar expParam1;
 	protected ExponentialPar expParam0;
 
-	public MMPP2Par(Double lambda0, Double lambda1, Double sigma0, Double sigma1)
-	        throws IncorrectDistributionParameterException {
+	public MMPP2Par(Double lambda0, Double lambda1, Double sigma0, Double sigma1) throws IncorrectDistributionParameterException {
 		this.sigma0 = sigma0.doubleValue();
 		this.sigma1 = sigma1.doubleValue();
 		this.lambda1 = lambda0.doubleValue();
 		this.lambda0 = lambda1.doubleValue();
 		testParameters();
-		this.mean = (this.sigma0+this.sigma1)/(this.sigma1*this.lambda0+this.sigma0*this.lambda1);
+		this.mean = (this.sigma0 + this.sigma1) / (this.sigma1 * this.lambda0 + this.sigma0 * this.lambda1);
 		this.var = 0;
 		// creates 2 ExponentialPar objects
-		expParam1 = new ExponentialPar(this.lambda1+this.sigma1);
-		expParam0 = new ExponentialPar(this.lambda0+this.sigma0);
+		expParam1 = new ExponentialPar(this.lambda1 + this.sigma1);
+		expParam0 = new ExponentialPar(this.lambda0 + this.sigma0);
 	}
 
 	/**
@@ -64,16 +61,19 @@ public class MMPP2Par extends AbstractParameter implements Parameter {
 	 * @throws IncorrectDistributionParameterException if p is not betwen zero and one or if lambda1 and labda2 are not both greater than zero.
 	 *
 	 */
-	private void testParameters()
-	        throws IncorrectDistributionParameterException {
-		if (sigma1 <= 0 )
+	private void testParameters() throws IncorrectDistributionParameterException {
+		if (sigma1 <= 0) {
 			throw new IncorrectDistributionParameterException("Error: sigma1 must be >= 0 ");
-		if (sigma0 <= 0 )
+		}
+		if (sigma0 <= 0) {
 			throw new IncorrectDistributionParameterException("Error: sigma0 must be >= 0 ");
-		if (lambda1 < 0)
+		}
+		if (lambda1 < 0) {
 			throw new IncorrectDistributionParameterException("Error: lambda1 must be >= 0");
-		if (lambda0 < 0)
+		}
+		if (lambda0 < 0) {
 			throw new IncorrectDistributionParameterException("Error: lambda0 must be >= 0");
+		}
 	}
 
 	/**
@@ -85,8 +85,9 @@ public class MMPP2Par extends AbstractParameter implements Parameter {
 	 *
 	 */
 
+	@Override
 	public boolean check() {
-		if ((sigma0 <= 0 ) || (sigma1 <= 0 ) || (lambda1 < 0) || (lambda0 < 0)) {
+		if ((sigma0 <= 0) || (sigma1 <= 0) || (lambda1 < 0) || (lambda0 < 0)) {
 			return false;
 		} else {
 			return true;

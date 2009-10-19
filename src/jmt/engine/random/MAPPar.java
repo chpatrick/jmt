@@ -18,7 +18,7 @@
 
 package jmt.engine.random;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import jmt.common.exception.IncorrectDistributionParameterException;
 
@@ -39,9 +39,9 @@ public class MAPPar extends AbstractParameter implements Parameter {
 	private double var;
 
 	private int numStates;
-	private Vector trProbs;
-	private Vector hlTimes;
-	protected Vector expParam;
+	private ArrayList<?> trProbs;
+	private ArrayList<?> hlTimes;
+	protected ArrayList<ExponentialPar> expParam;
 
 	public MAPPar(String D0, String D1) throws IncorrectDistributionParameterException {
 
@@ -51,9 +51,9 @@ public class MAPPar extends AbstractParameter implements Parameter {
 		// creates 2 ExponentialPar objects
 		numStates = 2;
 
-		expParam = new Vector(numStates);
+		expParam = new ArrayList<ExponentialPar>(numStates);
 		for (int i = 0; i < numStates; i++) {
-			expParam.addElement(new ExponentialPar(1.0));
+			expParam.add(new ExponentialPar(1.0));
 		}
 	}
 
@@ -64,9 +64,6 @@ public class MAPPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 	private void testParameters() throws IncorrectDistributionParameterException {
-		if (0 > 1) {
-			throw new IncorrectDistributionParameterException("Error: must be 0 < r1 < 1");
-		}
 	}
 
 	/**
@@ -78,16 +75,17 @@ public class MAPPar extends AbstractParameter implements Parameter {
 	 *
 	 */
 
+	@Override
 	public boolean check() {
 		return true;
 	}
 
 	public double getHoldingTime(int curState) {
-		return ((Double) hlTimes.elementAt(curState)).doubleValue();
+		return ((Double) hlTimes.get(curState)).doubleValue();
 	}
 
 	public double getTransitionProb(int curState, int destState) {
-		return ((Double) trProbs.elementAt((curState - 1) * numStates + destState)).doubleValue();
+		return ((Double) trProbs.get((curState - 1) * numStates + destState)).doubleValue();
 	}
 
 	/**
@@ -100,7 +98,7 @@ public class MAPPar extends AbstractParameter implements Parameter {
 	 */
 
 	public ExponentialPar getExpParam(int curState) {
-		return (ExponentialPar) expParam.elementAt(curState);
+		return expParam.get(curState);
 	}
 
 	/**
@@ -201,10 +199,10 @@ int BMAP::get_input(FILE* input, int& index)
 
 
 *//*************************************************************************
- * PURPOSE:     Generate interarrival time for BMAP
- * RETURN:      the number which follows BMAP distribution
-                bulk -- number of arrivals
- ************************************************************************/
+* PURPOSE:     Generate interarrival time for BMAP
+* RETURN:      the number which follows BMAP distribution
+            bulk -- number of arrivals
+************************************************************************/
 /*
 double BMAP::gen_interval(int & bulk)
 {

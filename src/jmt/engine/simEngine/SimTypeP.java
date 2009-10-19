@@ -48,6 +48,7 @@ public class SimTypeP extends SimPredicate {
 	/** The match function called by SimSystem.simSelect(),
 	 * not used directly by the user
 	 */
+	@Override
 	public boolean match(SimEvent ev) {
 		switch (ntags) {
 			case 1:
