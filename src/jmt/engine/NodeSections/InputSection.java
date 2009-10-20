@@ -41,10 +41,18 @@ public abstract class InputSection extends PipeSection {
 	}
 
 	/** Creates a new instance of inputSection
-	 *  @param Auto  Auto refresh of the jobsList attribute.
+	 *  @param auto  Auto refresh of the jobsList attribute.
 	 */
-	public InputSection(boolean Auto) {
-		super(NodeSection.INPUT, Auto);
+	public InputSection(boolean auto) {
+		super(NodeSection.INPUT, auto, true);
+	}
+
+	/** Creates a new instance of inputSection
+	 *  @param auto  Auto refresh of the jobsList attribute.
+	 *  @param nodeAuto auto refresh the jobsList attribute at node level
+	 */
+	public InputSection(boolean auto, boolean nodeAuto) {
+		super(NodeSection.INPUT, auto, nodeAuto);
 	}
 
 	/** Sends a job to the service section.

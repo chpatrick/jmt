@@ -36,8 +36,9 @@ public abstract class PipeSection extends NodeSection {
 	/** Creates a new instance of PipeSection
 	 *  @param id    NodeSection identifier.
 	 *  @param auto  auto refresh of the jobsList attribute.
+	 *  @param nodeAuto auto refresh the jobsList attribute at node level
 	 */
-	public PipeSection(byte id, boolean auto) {
-		super(id, auto);
+	public PipeSection(byte id, boolean auto, boolean nodeAuto) {
+		super(id, auto, nodeAuto);
 	}
 }

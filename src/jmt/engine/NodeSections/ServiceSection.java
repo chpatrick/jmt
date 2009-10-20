@@ -38,7 +38,15 @@ public abstract class ServiceSection extends PipeSection {
 	 *  @param auto  auto refresh of the jobsList attribute.
 	 */
 	public ServiceSection(boolean auto) {
-		super(NodeSection.SERVICE, auto);
+		super(NodeSection.SERVICE, auto, true);
+	}
+
+	/** Creates a new instance of serviceSection
+	 *  @param auto  auto refresh of the jobsList attribute.
+	 *  @param nodeAuto auto refresh the jobsList attribute at node level
+	 */
+	public ServiceSection(boolean auto, boolean nodeAuto) {
+		super(NodeSection.SERVICE, auto, nodeAuto);
 	}
 
 	/** Sends a job to the output section.

@@ -92,6 +92,7 @@ public abstract class NodeSection {
 	protected JSimLogger logger = JSimLogger.getLogger(this.getClass());
 
 	private boolean auto; //auto refresh of the jobsList attribute.
+	private boolean nodeAuto; // auto refresh the joblist attribute at node level.
 
 	/** Creates a new instance of this NodeSection.
 	 * Note that, while building a
@@ -103,6 +104,7 @@ public abstract class NodeSection {
 	public NodeSection(byte id) {
 		this.sectionID = id;
 		auto = true;
+		nodeAuto = true;
 	}
 
 	/** Creates a new instance of this NodeSection.
@@ -116,8 +118,23 @@ public abstract class NodeSection {
 	public NodeSection(byte id, boolean auto) {
 		this.sectionID = id;
 		this.auto = auto;
+		nodeAuto = true;
 	}
 
+	/** Creates a new instance of this NodeSection.
+	 * Note that, while building a
+	 * new node section, node owner informations are not available. To
+	 * set node section properties depending on the owner node ones, the
+	 * "nodeLiked(...)" protected method should be used.
+	 *  @param id    NodeSection identifier.
+	 *  @param auto  auto refresh of the jobsList attribute.
+	 *  @param nodeAuto auto refresh the jobsList attribute at node level
+	 */
+	public NodeSection(byte id, boolean auto, boolean nodeAuto) {
+		this.sectionID = id;
+		this.auto = auto;
+		this.nodeAuto = nodeAuto;
+	}
 	/** This method should be overriden to implement a specific beahviour of the
 	 * node section when the node section itself is linked to the owner node.
 	 * This method should be used to set node section properties depending on
@@ -648,5 +665,12 @@ public abstract class NodeSection {
 		return ownerNode.sendAckAfterDrop(NetEvent.EVENT_ACK, data, delay, sectionID, destinationSection, destination);
 	}
 	//end NEW
-
+	
+	/**
+	 * Tells if jobinfolist at node section should be updated automatically
+	 * @return true if it should be handled automatically, false otherwise
+	 */
+	boolean automaticUpdateNodeJobinfolist() {
+		return nodeAuto;
+	}
 }

@@ -436,15 +436,17 @@ public class NetNode extends SimEntity {
 		//Look if message is a job message and if job is arriving at this node (from the node
 		//itself or from another node)
 		if (message.getEvent() == NetEvent.EVENT_JOB) {
-			//event job
-			if (message.getSource() != this) {
-				//external source
-				Job job = message.getJob();
-				jobsList.add(new JobInfo(job));
-			} else if ((message.getSourceSection() == NodeSection.OUTPUT) && (message.getDestinationSection() == NodeSection.INPUT)) {
-				//internal source
-				Job job = message.getJob();
-				jobsList.add(new JobInfo(job));
+			if (inputSection == null || inputSection.automaticUpdateNodeJobinfolist()) {
+				//event job
+				if (message.getSource() != this) {
+					//external source
+					Job job = message.getJob();
+					jobsList.add(new JobInfo(job));
+				} else if ((message.getSourceSection() == NodeSection.OUTPUT) && (message.getDestinationSection() == NodeSection.INPUT)) {
+					//internal source
+					Job job = message.getJob();
+					jobsList.add(new JobInfo(job));
+				}
 			}
 		}
 	}
@@ -612,8 +614,9 @@ public class NetNode extends SimEntity {
 		//TODO: vedi analogo problema per receive
 		//Look if message is a job message and if job is leaving this node
 
-		if ((Event == NetEvent.EVENT_JOB)
-				&& ((Destination != this) || ((Destination == this) && (SourceSection == NodeSection.OUTPUT) && (DestinationSection == NodeSection.INPUT)))) {
+		if (outputSection != null && outputSection.automaticUpdateNodeJobinfolist() &&
+				(Event == NetEvent.EVENT_JOB) && ((Destination != this) || ((Destination == this) 
+				&& (SourceSection == NodeSection.OUTPUT) && (DestinationSection == NodeSection.INPUT)))) {
 			Job job = (Job) Data;
 			JobInfo JobInfo = jobsList.lookFor(job);
 			if (JobInfo != null) {
@@ -747,7 +750,8 @@ public class NetNode extends SimEntity {
 		int Tag;
 
 		//Look if message is a job message and if job is leaving this node
-		if ((Event == NetEvent.EVENT_JOB)
+		if (outputSection != null && outputSection.automaticUpdateNodeJobinfolist() &&
+				(Event == NetEvent.EVENT_JOB)
 				&& ((Destination != this) || ((Destination == this) && (SourceSection == NodeSection.OUTPUT) && (DestinationSection == NodeSection.INPUT)))) {
 			Job job = (Job) Data;
 			JobInfo JobInfo = jobsList.lookFor(job);
