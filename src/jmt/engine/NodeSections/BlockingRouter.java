@@ -57,7 +57,9 @@ public class BlockingRouter extends OutputSection {
 	 * @param blockingReg The blocking Region whose access is controlled by this blocking router
 	 */
 	public BlockingRouter(BlockingRegion blockingReg) {
-		super();
+		//FCR bug fix: Constructor modified from super() to spuer(true,false) which will enable
+		//Jobs in Joblist at NodeSection to be automatically dropped where as for Node to be manually handled.
+		super(true,false);
 		//TODO: non aggiorna joblist
 		//super(false);
 		busy = false;

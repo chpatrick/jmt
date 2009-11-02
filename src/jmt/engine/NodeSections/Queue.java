@@ -63,6 +63,8 @@ import jmt.engine.random.engine.RandomEngine;
  * <tt>redirectionTurnOFF()</tt> methods.
  *
  * @author Francesco Radaelli, Stefano Omini, Bertoli Marco
+ * 
+ * Modified by Ashanka (Oct 2009) for FCR Bug fix: Events are created with job instead of null for EVENT_JOB_OUT_OF_REGION
  */
 public class Queue extends InputSection {
 
@@ -725,7 +727,10 @@ public class Queue extends InputSection {
 									//decrease the number of jobs
 									myRegion.decreaseOccupation(job.getJobClass());
 									//sends an event to the input station (which may be blocked)
-									send(NetEvent.EVENT_JOB_OUT_OF_REGION, null, 0.0, NodeSection.INPUT, regionInputStation);
+									//send(NetEvent.EVENT_JOB_OUT_OF_REGION, null, 0.0, NodeSection.INPUT, regionInputStation);
+									send(NetEvent.EVENT_JOB_OUT_OF_REGION, job, 0.0, NodeSection.INPUT, regionInputStation);
+									//Since now for blocking regions the job dropping is handles manually at node 
+									//level hence need to create events with Jobs ..Modified for FCR Bug Fix
 								}
 							}
 						}

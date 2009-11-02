@@ -38,7 +38,18 @@ import jmt.engine.QueueNet.NetNode;
  *
  * @author Stefano Omini
  *
- * Modifief by Bertoli Marco 31-03-2006 (my birthday!!!)
+ * Modifief by Bertoli Marco 31-03-2006 (my birthday!!!) 
+ * 
+ * Modified by Ashanka (Oct 2009):
+ * Desc: FCR(Finite Capacity Region) is a blocking region and it was measuring wrong 
+ * 		 values for the Performance Indices. This was because the Jobs in FCR were not
+ * 		 considering the time spent in the Queuing Stations in the FCR and simply reporting
+ *       time spent in Queuing in FCR. This behavior is incorrect as Performance Indices for 
+ *       FCR should also contain the time spent in the FCR and not only the time spent queuing.
+ *       
+ *       Approach taken presently to rectify is to delay the capture of the performance indices 
+ *       untill the job is out of the FCR. So the job dropping are manually handled for Blocking region
+ *       at Node level.
  */
 public class BlockingQueue extends InputSection {
 
@@ -199,6 +210,21 @@ public class BlockingQueue extends InputSection {
 				//EVENT_JOB_OUT_OF_REGION and EVENT_ACK
 
 			case NetEvent.EVENT_JOB_OUT_OF_REGION:
+				
+				//FCR Bug fix:
+				//The dropping of the job was post poned as the time 
+				//spent in the Queuing station was not taken in consideration.
+				//Secondly point to be noted is that I am 
+				//only dropping Jobs at Node level as the node section jobs 
+				//are automatically dropped but the node level jobs are
+				//dropped manually.
+				Job localJob = (Job) message.getData();
+				JobInfo jobInfo = jobsList_node.lookFor(localJob);
+				//remove only when you find a job in the list.
+				if(jobInfo != null){
+					jobsList_node.remove(jobInfo);
+				}
+							
 
 				//checks whether there are jobs in queue
 				if (jobsList.size() == 0) {

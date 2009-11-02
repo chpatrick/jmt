@@ -46,6 +46,8 @@ import jmt.engine.QueueNet.NodeSection;
  * @author Francesco Radaelli, Stefano Omini
  * @author Bertoli Marco - Fixed lockup issues with closed class and sinks 13/11/2005
  * @author Bertoli Marco - Fixed bug with multiserver stations
+ * 
+ * Modified by Ashanka (Oct 2009) for FCR Bug fix: Events are created with job instead of null for EVENT_JOB_OUT_OF_REGION
  */
 public class Router extends OutputSection {
 
@@ -226,7 +228,10 @@ public class Router extends OutputSection {
 
 						myBlockingRegion.decreaseOccupation(jobClass);
 
-						send(NetEvent.EVENT_JOB_OUT_OF_REGION, null, 0.0, NodeSection.INPUT, regionInputStation);
+						//send(NetEvent.EVENT_JOB_OUT_OF_REGION, null, 0.0, NodeSection.INPUT, regionInputStation);
+						send(NetEvent.EVENT_JOB_OUT_OF_REGION, job, 0.0, NodeSection.INPUT, regionInputStation);
+						//Since now for blocking regions the job dropping is handles manually at node level 
+						//hence need to create events with Jobs ..Modified for FCR Bug Fix
 					}
 				}
 				return MSG_PROCESSED;
