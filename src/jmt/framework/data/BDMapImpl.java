@@ -54,8 +54,8 @@ public class BDMapImpl implements BDMap {
 	//returns a set containing elements of an array
 	private Set getSetFromArray(Object[] array) {
 		Set s = new TreeSet();
-		for (int i = 0; i < array.length; i++) {
-			s.add(array[i]);
+		for (Object element : array) {
+			s.add(element);
 		}
 		return s;
 	}

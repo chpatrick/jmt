@@ -30,18 +30,20 @@ import java.util.HashMap;
  * for speed-up of data search operations, in particular the most recently requested
  * element is stored to assure a faster search.
  */
-public class CachedHashMap extends HashMap {
+public class CachedHashMap<E,F> extends HashMap<E,F> {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	//Most recently used key and relative value.
-	private Object mruValue, mruKey;
+	private F mruValue;
+	private Object mruKey;
 
 	/**Returns requested object. If this object was requested before, search
 	 * operation is faster.*/
-	public Object get(Object key) {
+	@Override
+	public F get(Object key) {
 		if (key != null) {
 			if (key.equals(mruKey)) {
 				return mruValue;
@@ -54,7 +56,8 @@ public class CachedHashMap extends HashMap {
 
 	/**Method overridden to avoid aliasing between currently stored value and
 	 * superclass matching.*/
-	public Object put(Object key, Object value) {
+	@Override
+	public F put(E key, F value) {
 		if (key != null) {
 			if (key.equals(mruKey)) {
 				mruValue = value;

@@ -27,6 +27,7 @@ import javax.swing.KeyStroke;
 import jmt.framework.gui.image.ImageLoader;
 
 public abstract class AbstractJMTAction extends AbstractAction {
+	private static final long serialVersionUID = 1L;
 	/** Name of the icon to be shown in the button */
 	public static final String IMAGE_NAME = "AbstractJMTAction.image.name";
 	/** Tells if this action is selectable */
@@ -131,7 +132,7 @@ public abstract class AbstractJMTAction extends AbstractAction {
 	 * A null value is used as separator. 
 	 * @param actions a Collection of AbstractJMTAction
 	 */
-	protected void setMenuActions(Collection actions) {
+	protected void setMenuActions(Collection<AbstractJMTAction> actions) {
 		putValue(MENUACTIONS, actions);
 	}
 
@@ -148,8 +149,9 @@ public abstract class AbstractJMTAction extends AbstractAction {
 	 * Returns a collection of AbstractJMTAction menu actions if this action is a menu.
 	 * @return a Collection of AbstractJMTAction. Null if this action is not a menu.
 	 */
-	public Collection getMenuActions() {
-		return (Collection) getValue(MENUACTIONS);
+	@SuppressWarnings("unchecked")
+	public Collection<AbstractJMTAction> getMenuActions() {
+		return (Collection<AbstractJMTAction>) getValue(MENUACTIONS);
 	}
 
 	/**

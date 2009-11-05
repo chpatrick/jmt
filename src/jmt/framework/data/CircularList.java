@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.RandomAccess;
 
 /**
- * <p><b>Name:</b> CircularQueue</p> 
+ * <p><b>Name:</b> CircularList</p> 
  * <p><b>Description:</b> 
  * A random access circular list based on an array, optimized for speed in append and remove 
  * operations in the head or tail of the list.

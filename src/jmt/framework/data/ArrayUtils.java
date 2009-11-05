@@ -572,11 +572,11 @@ public class ArrayUtils {
 
 	public static String toString(Object[] array) {
 		StringBuffer s = new StringBuffer("[ ");
-		for (int i = 0; i < array.length; i++) {
-			if (array[i] == null) {
+		for (Object element : array) {
+			if (element == null) {
 				s.append("null");
 			} else {
-				s.append(array[i].toString());
+				s.append(element.toString());
 			}
 			s.append(" ");
 		}
@@ -587,8 +587,8 @@ public class ArrayUtils {
 
 	public static String toString(int[] array) {
 		StringBuffer s = new StringBuffer("[ ");
-		for (int i = 0; i < array.length; i++) {
-			s.append(array[i]).append(" ");
+		for (int element : array) {
+			s.append(element).append(" ");
 		}
 		s.append("]");
 
@@ -597,8 +597,8 @@ public class ArrayUtils {
 
 	public static String toString(double[] array) {
 		StringBuffer s = new StringBuffer("[ ");
-		for (int i = 0; i < array.length; i++) {
-			s.append(array[i]).append(" ");
+		for (double element : array) {
+			s.append(element).append(" ");
 		}
 		s.append("]");
 
@@ -607,8 +607,8 @@ public class ArrayUtils {
 
 	public static String toString2(double[][] array) {
 		StringBuffer s = new StringBuffer("[ ");
-		for (int i = 0; i < array.length; i++) {
-			s.append(toString(array[i])).append(" ");
+		for (double[] element : array) {
+			s.append(toString(element)).append(" ");
 		}
 		s.append("]");
 
@@ -617,8 +617,8 @@ public class ArrayUtils {
 
 	public static String toString3(double[][][] array) {
 		StringBuffer s = new StringBuffer("[ ");
-		for (int i = 0; i < array.length; i++) {
-			s.append(toString2(array[i])).append(" ");
+		for (double[][] element : array) {
+			s.append(toString2(element)).append(" ");
 		}
 		s.append("]");
 

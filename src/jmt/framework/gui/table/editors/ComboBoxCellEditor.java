@@ -48,7 +48,7 @@ public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellE
 	// Limit maximum cache... This is not really needed but it's good programming to avoid memory leakage
 	protected static final int MAX_CACHESIZE = 128;
 	// Uses to cache equivalent editors
-	protected static HashMap editorCache;
+	protected static HashMap<Object[], ComboBoxCellEditor> editorCache;
 	// Component used as editor
 	protected JComboBox comboBox;
 	// component used as a renderer
@@ -62,7 +62,7 @@ public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellE
 	public static ComboBoxCellEditor getEditorInstance(Object[] items) {
 		ComboBoxCellEditor instance;
 		if (editorCache == null) {
-			editorCache = new HashMap();
+			editorCache = new HashMap<Object[], ComboBoxCellEditor>();
 		}
 		// If items[] is new, creates a new comboBox, otherwise reuse old one
 		if (!editorCache.containsKey(items)) {
@@ -73,7 +73,7 @@ public class ComboBoxCellEditor extends AbstractCellEditor implements TableCellE
 			}
 			editorCache.put(items, instance);
 		} else {
-			instance = (ComboBoxCellEditor) editorCache.get(items);
+			instance = editorCache.get(items);
 		}
 		return instance;
 	}

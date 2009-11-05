@@ -18,7 +18,7 @@
 package jmt.framework.gui.controller;
 
 import java.awt.Window;
-import java.util.Vector;
+import java.util.ArrayList;
 
 /**
  * <p>Title: Manager</p>
@@ -31,7 +31,7 @@ import java.util.Vector;
  *         Time: 14.46.35
  */
 public class Manager {
-	protected static Vector windows = new Vector();
+	protected static ArrayList<Window> windows = new ArrayList<Window>();
 
 	/**
 	 * Adds a new Window to be checked for termination before terminating JVM
@@ -39,7 +39,11 @@ public class Manager {
 	 */
 	public static void addWindow(Window application) {
 		if (!windows.contains(application)) {
-			windows.add(application);
+			synchronized (windows) {
+				if (!windows.contains(application)) {
+					windows.add(application);
+				}
+			}
 		}
 	}
 
@@ -50,13 +54,15 @@ public class Manager {
 	 * this method will do 'dispose()' too.
 	 */
 	public static void exit(Window application) {
-		// Disposes application window if user didn't do it.
-		if (application.isDisplayable()) {
-			application.dispose();
-		}
-		windows.remove(application);
-		if (windows.isEmpty()) {
-			System.exit(0); // Closes current JVM with no error code.
+		synchronized(windows) {
+			// Disposes application window if user didn't do it.
+			if (application.isDisplayable()) {
+				application.dispose();
+			}
+			windows.remove(application);
+			if (windows.isEmpty()) {
+				System.exit(0); // Closes current JVM with no error code.
+			}
 		}
 	}
 }

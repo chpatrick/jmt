@@ -55,7 +55,7 @@ public class MenuAction extends AbstractJMTAction {
 	 * @param mnemonicKey mnemonic key for the menu
 	 * @param actions a collection of AbstractJMTAction of menu items to be added
 	 */
-	public MenuAction(String name, int mnemonicKey, Collection actions) {
+	public MenuAction(String name, int mnemonicKey, Collection<AbstractJMTAction> actions) {
 		this.setName(name);
 		this.setMnemonicKey(mnemonicKey);
 		this.setMenuActions(actions);
@@ -77,7 +77,7 @@ public class MenuAction extends AbstractJMTAction {
 	 * @param name name of the menu
 	 * @param actions a collection of AbstractJMTAction of menu items to be added
 	 */
-	public MenuAction(String name, Collection actions) {
+	public MenuAction(String name, Collection<AbstractJMTAction> actions) {
 		this.setName(name);
 		this.setMnemonicKey(name.charAt(0));
 		this.setMenuActions(actions);

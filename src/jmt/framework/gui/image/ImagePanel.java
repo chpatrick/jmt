@@ -49,7 +49,7 @@ public class ImagePanel extends JLabel {
 	protected int currentWidth;
 	/** Maximum number of cached elements */
 	protected int maxCache = 256;
-	protected HashMap cache = new HashMap();
+	protected HashMap<ImageIcon, ImageIcon> cache = new HashMap<ImageIcon, ImageIcon>();
 
 	/**
 	 * Construct a new ImagePanel
@@ -58,6 +58,7 @@ public class ImagePanel extends JLabel {
 		super();
 		this.setHorizontalAlignment(SwingConstants.CENTER);
 		this.addComponentListener(new ComponentAdapter() {
+			@Override
 			public void componentResized(ComponentEvent e) {
 				if (image != null) {
 					ImagePanel.this.resizeImage();
@@ -107,7 +108,7 @@ public class ImagePanel extends JLabel {
 
 		// If cache contains image of the correct size, returns it.
 		if (cache.containsKey(image)) {
-			this.setIcon((ImageIcon) cache.get(image));
+			this.setIcon(cache.get(image));
 			return;
 		}
 

@@ -18,7 +18,6 @@
 package jmt.framework.gui.components;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenu;
@@ -80,8 +79,7 @@ public class JMTMenuBar extends JMenuBar {
 	 * @param actions an array of AbstractJMTAction with all actions to be added
 	 */
 	public void populateMenu(AbstractJMTAction[] actions) {
-		for (int i = 0; i < actions.length; i++) {
-			AbstractJMTAction action = actions[i];
+		for (AbstractJMTAction action : actions) {
 			addMenu(action);
 		}
 	}
@@ -90,9 +88,8 @@ public class JMTMenuBar extends JMenuBar {
 	 * Populates this menu bar
 	 * @param actions a collection of AbstractJMTAction with all actions to be added
 	 */
-	public void populateMenu(Collection actions) {
-		for (Iterator it = actions.iterator(); it.hasNext();) {
-			AbstractJMTAction action = (AbstractJMTAction) it.next();
+	public void populateMenu(Collection<AbstractJMTAction> actions) {
+		for (AbstractJMTAction action : actions) {
 			addMenu(action);
 		}
 	}
@@ -104,13 +101,12 @@ public class JMTMenuBar extends JMenuBar {
 	 */
 	protected JMenuItem generateItem(AbstractJMTAction action) {
 		JMenuItem item;
-		Collection items = action.getMenuActions();
+		Collection<AbstractJMTAction> items = action.getMenuActions();
 		if (items != null) {
 			// If this is a menu
 			JMenu menu = new JMenu(action);
 			item = menu;
-			for (Iterator it = items.iterator(); it.hasNext();) {
-				AbstractJMTAction current = (AbstractJMTAction) it.next();
+			for (AbstractJMTAction current : items) {
 				if (current == null) {
 					// Add a separator
 					menu.addSeparator();

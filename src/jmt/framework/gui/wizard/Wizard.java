@@ -133,11 +133,11 @@ public class Wizard extends JMTFrame {
 	protected int currentIndex;
 	protected int panelCount;
 
-	protected List panels;
+	protected List<WizardPanel> panels;
 
 	public Wizard() {
 		super(true);
-		panels = new ArrayList();
+		panels = new ArrayList<WizardPanel>();
 		currentIndex = -1;
 		panelCount = 0;
 
@@ -189,6 +189,7 @@ public class Wizard extends JMTFrame {
 
 			/* we hook into the tabbedpane's tab switching method and make the change
 			only if the current panel agrees */
+			@Override
 			public void setSelectedIndex(int index) {
 				int oldIndex = model.getSelectedIndex();
 				if (index != oldIndex) { //ignore useless requests
@@ -225,7 +226,7 @@ public class Wizard extends JMTFrame {
 			currentPanel.lostFocus();
 		}
 		for (int i = 0; i < panelCount; i++) {
-			if (!((WizardPanel) panels.get(i)).canFinish()) {
+			if (!panels.get(i).canFinish()) {
 				return false;
 			}
 		}
@@ -252,6 +253,7 @@ public class Wizard extends JMTFrame {
 	/* (non-Javadoc)
 	 * @see jmt.framework.gui.components.JMTFrame#canBeClosed()
 	 */
+	@Override
 	public boolean canBeClosed() {
 		return cancel();
 	}

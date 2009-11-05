@@ -43,16 +43,16 @@ public class HoverHelp extends JLabel implements MouseListener {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	protected Map map;
-	protected Stack s;
+	protected Map<Component, String> map;
+	protected Stack<String> s;
 
 	/**
 	 * Builds a new instance of HoverHelp
 	 */
 	public HoverHelp() {
 		super("");
-		map = new HashMap();
-		s = new Stack();
+		map = new HashMap<Component, String>();
+		s = new Stack<String>();
 		addHelp(this, "This area displays a short help about the objects you move the cursor on");
 	}
 
@@ -87,7 +87,7 @@ public class HoverHelp extends JLabel implements MouseListener {
 	 */
 	public void mouseEntered(MouseEvent e) {
 		s.push(this.getText());
-		this.setText((String) map.get(e.getSource()));
+		this.setText(map.get(e.getSource()));
 	}
 
 	/* (non-Javadoc)
@@ -95,7 +95,7 @@ public class HoverHelp extends JLabel implements MouseListener {
 	 */
 	public void mouseExited(MouseEvent e) {
 		if (!s.empty()) {
-			this.setText((String) s.pop());
+			this.setText(s.pop());
 		}
 	}
 

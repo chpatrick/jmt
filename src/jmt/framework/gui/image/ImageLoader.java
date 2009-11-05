@@ -56,7 +56,7 @@ public abstract class ImageLoader {
 	/** Maximum number of cached elements */
 	protected int maxCache = 256;
 	/** Internal caching data structure */
-	protected HashMap iconCache = new HashMap();
+	protected HashMap<String, ImageIcon> iconCache = new HashMap<String, ImageIcon>();
 
 	/**
 	 * Returns the url of a given resource
@@ -91,7 +91,7 @@ public abstract class ImageLoader {
 		}
 
 		if (iconCache.containsKey(derivedName)) {
-			return (ImageIcon) iconCache.get(derivedName);
+			return iconCache.get(derivedName);
 		}
 
 		URL url = getImageURL(derivedName);

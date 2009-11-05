@@ -5,7 +5,8 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A custom BorderLayout manager that supports multiple items on the same position
@@ -19,11 +20,11 @@ public class MultiBorderLayout extends BorderLayout {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	Vector north = new Vector();
-	Vector south = new Vector();
-	Vector west = new Vector();
-	Vector east = new Vector();
-	Vector center = new Vector();
+	List<Component> north = new ArrayList<Component>();
+	List<Component> south = new ArrayList<Component>();
+	List<Component> west = new ArrayList<Component>();
+	List<Component> east = new ArrayList<Component>();
+	List<Component> center = new ArrayList<Component>();
 
 	public MultiBorderLayout() {
 		super();
@@ -33,6 +34,7 @@ public class MultiBorderLayout extends BorderLayout {
 		super(hgap, vgap);
 	}
 
+	@Override
 	public void addLayoutComponent(String name, Component comp) {
 		synchronized (comp.getTreeLock()) {
 			if (name == null) {
@@ -57,6 +59,7 @@ public class MultiBorderLayout extends BorderLayout {
 		}
 	}
 
+	@Override
 	public void removeLayoutComponent(Component comp) {
 		synchronized (comp.getTreeLock()) {
 			south.remove(comp);
@@ -67,6 +70,7 @@ public class MultiBorderLayout extends BorderLayout {
 		}
 	}
 
+	@Override
 	public Dimension minimumLayoutSize(Container target) {
 		synchronized (target.getTreeLock()) {
 			Dimension dim = new Dimension(0, 0);
@@ -75,7 +79,7 @@ public class MultiBorderLayout extends BorderLayout {
 
 			if (east.size() > 0) {
 				for (int i = 0; i < east.size(); i++) {
-					c = (Component) east.get(i);
+					c = east.get(i);
 					Dimension d = c.getMinimumSize();
 					dim.width += d.width + this.getHgap();
 					dim.height = Math.max(d.height, dim.height);
@@ -83,7 +87,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (west.size() > 0) {
 				for (int i = 0; i < west.size(); i++) {
-					c = (Component) west.get(i);
+					c = west.get(i);
 					Dimension d = c.getMinimumSize();
 					dim.width += d.width + this.getHgap();
 					dim.height = Math.max(d.height, dim.height);
@@ -91,7 +95,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (center.size() > 0) {
 				for (int i = 0; i < center.size(); i++) {
-					c = (Component) center.get(i);
+					c = center.get(i);
 					Dimension d = c.getMinimumSize();
 					dim.width += d.width;
 					dim.height = Math.max(d.height, dim.height);
@@ -99,7 +103,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (north.size() > 0) {
 				for (int i = 0; i < north.size(); i++) {
-					c = (Component) north.get(i);
+					c = north.get(i);
 					Dimension d = c.getMinimumSize();
 					dim.width = Math.max(d.width, dim.width);
 					dim.height += d.height + this.getVgap();
@@ -107,7 +111,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (south.size() > 0) {
 				for (int i = 0; i < south.size(); i++) {
-					c = (Component) south.get(i);
+					c = south.get(i);
 					Dimension d = c.getMinimumSize();
 					dim.width = Math.max(d.width, dim.width);
 					dim.height += d.height + this.getVgap();
@@ -130,7 +134,7 @@ public class MultiBorderLayout extends BorderLayout {
 
 			if (east.size() > 0) {
 				for (int i = 0; i < east.size(); i++) {
-					c = (Component) east.get(i);
+					c = east.get(i);
 					Dimension d = c.getPreferredSize();
 					dim.width += d.width + this.getHgap();
 					dim.height = Math.max(d.height, dim.height);
@@ -138,7 +142,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (west.size() > 0) {
 				for (int i = 0; i < west.size(); i++) {
-					c = (Component) west.get(i);
+					c = west.get(i);
 					Dimension d = c.getPreferredSize();
 					dim.width += d.width + this.getHgap();
 					dim.height = Math.max(d.height, dim.height);
@@ -146,7 +150,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (center.size() > 0) {
 				for (int i = 0; i < center.size(); i++) {
-					c = (Component) center.get(i);
+					c = center.get(i);
 					Dimension d = c.getPreferredSize();
 					dim.width += d.width;
 					dim.height = Math.max(d.height, dim.height);
@@ -154,7 +158,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (north.size() > 0) {
 				for (int i = 0; i < north.size(); i++) {
-					c = (Component) north.get(i);
+					c = north.get(i);
 					Dimension d = c.getPreferredSize();
 					dim.width = Math.max(d.width, dim.width);
 					dim.height += d.height + this.getVgap();
@@ -162,7 +166,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (south.size() > 0) {
 				for (int i = 0; i < south.size(); i++) {
-					c = (Component) south.get(i);
+					c = south.get(i);
 					Dimension d = c.getPreferredSize();
 					dim.width = Math.max(d.width, dim.width);
 					dim.height += d.height + this.getVgap();
@@ -177,6 +181,7 @@ public class MultiBorderLayout extends BorderLayout {
 		}
 	}
 
+	@Override
 	public void layoutContainer(Container target) {
 		synchronized (target.getTreeLock()) {
 			Insets insets = target.getInsets();
@@ -189,7 +194,7 @@ public class MultiBorderLayout extends BorderLayout {
 
 			if (north.size() > 0) {
 				for (int i = 0; i < north.size(); i++) {
-					c = (Component) north.get(i);
+					c = north.get(i);
 					Dimension d = c.getPreferredSize();
 					c.setSize(right - left, d.height);
 					c.setBounds(left, top, right - left, c.getHeight());
@@ -198,7 +203,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (south.size() > 0) {
 				for (int i = 0; i < south.size(); i++) {
-					c = (Component) south.get(i);
+					c = south.get(i);
 					Dimension d = c.getPreferredSize();
 					c.setSize(right - left, d.height);
 					c.setBounds(left, bottom - d.height, right - left, c.getHeight());
@@ -207,7 +212,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (east.size() > 0) {
 				for (int i = 0; i < east.size(); i++) {
-					c = (Component) east.get(i);
+					c = east.get(i);
 					Dimension d = c.getPreferredSize();
 					c.setSize(d.width, bottom - top);
 					c.setBounds(right - d.width, top, c.getWidth(), bottom - top);
@@ -216,7 +221,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (west.size() > 0) {
 				for (int i = 0; i < west.size(); i++) {
-					c = (Component) west.get(i);
+					c = west.get(i);
 					Dimension d = c.getPreferredSize();
 					c.setSize(d.width, bottom - top);
 					c.setBounds(left, top, c.getWidth(), bottom - top);
@@ -225,7 +230,7 @@ public class MultiBorderLayout extends BorderLayout {
 			}
 			if (center.size() > 0) {
 				for (int i = 0; i < center.size(); i++) {
-					c = (Component) center.get(i);
+					c = center.get(i);
 					c.setBounds(left, top, right - left, bottom - top);
 				}
 			}

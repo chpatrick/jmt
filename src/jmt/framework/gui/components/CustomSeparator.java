@@ -58,6 +58,7 @@ public class CustomSeparator extends JComponent {
 	 * Override default paint method to draw separating line
 	 * @param g Graphics object to be painted
 	 */
+	@Override
 	public void paint(Graphics g) {
 		try {
 			JToolBar parent = (JToolBar) this.getParent();

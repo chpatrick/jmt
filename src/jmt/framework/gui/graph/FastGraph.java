@@ -85,6 +85,7 @@ public class FastGraph extends JPanel {
 	 * Overrides default paint method to draw the graph
 	 * @param g graphic component
 	 */
+	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 		int height = this.getHeight();

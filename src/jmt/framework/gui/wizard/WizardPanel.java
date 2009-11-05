@@ -34,6 +34,10 @@ import javax.swing.JPanel;
 public abstract class WizardPanel extends JPanel {
 
 	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	/**
 	 * a link to the Wizard this WizardPanel is part of
 	 */
 	protected Wizard parentWizard;
@@ -41,6 +45,7 @@ public abstract class WizardPanel extends JPanel {
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public abstract String getName();
 
 	/**

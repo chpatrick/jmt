@@ -21,12 +21,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 
@@ -56,9 +56,9 @@ public class JMTToolBar extends JToolBar {
 	protected ImageLoader imageLoader;
 
 	/** A map with all buttons with associated component and groups */
-	protected HashMap buttons = new HashMap();
+	protected HashMap<Action, ButtonWithGroup> buttons = new HashMap<Action, ButtonWithGroup>();
 	/** A map with all button groups with associated group */
-	protected HashMap buttonGroups = new HashMap();
+	protected HashMap<Integer, JMTButtonGroup> buttonGroups = new HashMap<Integer, JMTButtonGroup>();
 
 	/**
 	 * Builds a new toolbar
@@ -86,7 +86,7 @@ public class JMTToolBar extends JToolBar {
 	 */
 	public JButton addButton(Action action, String iconName) {
 		if (buttons.containsKey(action)) {
-			return (JButton) ((ButtonWithGroup) buttons.get(action)).button;
+			return (JButton) (buttons.get(action)).button;
 		}
 		JButton button = new JButton();
 		button.setAction(action);
@@ -133,7 +133,7 @@ public class JMTToolBar extends JToolBar {
 	 */
 	public JToggleButton addToggleButton(AbstractJMTAction action, String iconName, int group) {
 		if (buttons.containsKey(action)) {
-			return (JToggleButton) ((ButtonWithGroup) buttons.get(action)).button;
+			return (JToggleButton) (buttons.get(action)).button;
 		}
 		JToggleButton button = new JToggleButton();
 		button.setAction(action);
@@ -228,7 +228,7 @@ public class JMTToolBar extends JToolBar {
 	 * @return removed button
 	 */
 	public AbstractButton removeButton(AbstractJMTAction action) {
-		ButtonWithGroup data = (ButtonWithGroup) buttons.remove(action);
+		ButtonWithGroup data = buttons.remove(action);
 		if (data != null) {
 			remove(data.button);
 			// Removes from group
@@ -252,6 +252,7 @@ public class JMTToolBar extends JToolBar {
 	/* (non-Javadoc)
 	 * @see javax.swing.JToolBar#addSeparator()
 	 */
+	@Override
 	public void addSeparator() {
 		add(new CustomSeparator());
 	}
@@ -262,7 +263,7 @@ public class JMTToolBar extends JToolBar {
 	 * @return the button group or null if it doesn't exists
 	 */
 	public JMTButtonGroup getButtonGroup(int group) {
-		return (JMTButtonGroup) buttonGroups.get(new Integer(group));
+		return buttonGroups.get(new Integer(group));
 	}
 
 	/**
@@ -271,7 +272,7 @@ public class JMTToolBar extends JToolBar {
 	 * @return found button
 	 */
 	public AbstractButton getButton(AbstractJMTAction action) {
-		ButtonWithGroup data = (ButtonWithGroup) buttons.get(action);
+		ButtonWithGroup data = buttons.get(action);
 		if (data != null) {
 			return data.button;
 		} else {
@@ -317,10 +318,10 @@ public class JMTToolBar extends JToolBar {
 	 * Returns all buttons inside this toolbar
 	 * @return a set with all buttons
 	 */
-	public HashSet getAllButtons() {
-		HashSet set = new HashSet();
-		for (Iterator it = buttons.values().iterator(); it.hasNext();) {
-			ButtonWithGroup bwg = (ButtonWithGroup) it.next();
+	public HashSet<AbstractButton> getAllButtons() {
+		HashSet<AbstractButton> set = new HashSet<AbstractButton>();
+		for (Object element : buttons.values()) {
+			ButtonWithGroup bwg = (ButtonWithGroup) element;
 			set.add(bwg.button);
 		}
 		return set;
@@ -331,8 +332,8 @@ public class JMTToolBar extends JToolBar {
 	 * @param enable true to enable every button, false to disable them
 	 */
 	public void enableButtons(boolean enable) {
-		for (Iterator it = buttons.keySet().iterator(); it.hasNext();) {
-			AbstractJMTAction action = (AbstractJMTAction) it.next();
+		for (Object element : buttons.keySet()) {
+			AbstractJMTAction action = (AbstractJMTAction) element;
 			action.setEnabled(enable);
 		}
 	}
@@ -344,10 +345,10 @@ public class JMTToolBar extends JToolBar {
 	 * @return an ArrayList with all added objects (each element is instanceof AbstractButton)
 	 * @see AbstractJMTAction
 	 */
-	public ArrayList populateToolbar(Collection abstractJMTactions) {
-		ArrayList ret = new ArrayList();
-		for (Iterator it = abstractJMTactions.iterator(); it.hasNext();) {
-			AbstractJMTAction action = (AbstractJMTAction) it.next();
+	public ArrayList<JComponent> populateToolbar(Collection<AbstractJMTAction> abstractJMTactions) {
+		ArrayList<JComponent> ret = new ArrayList<JComponent>();
+		for (AbstractJMTAction abstractJMTAction : abstractJMTactions) {
+			AbstractJMTAction action = abstractJMTAction;
 			if (action == null) {
 				addSeparator();
 			} else {
@@ -364,10 +365,9 @@ public class JMTToolBar extends JToolBar {
 	 * @return an ArrayList with all added objects (each element is instanceof AbstractButton)
 	 * @see AbstractJMTAction
 	 */
-	public ArrayList populateToolbar(AbstractJMTAction[] abstractJMTactions) {
-		ArrayList ret = new ArrayList();
-		for (int i = 0; i < abstractJMTactions.length; i++) {
-			AbstractJMTAction action = abstractJMTactions[i];
+	public ArrayList<AbstractButton> populateToolbar(AbstractJMTAction[] abstractJMTactions) {
+		ArrayList<AbstractButton> ret = new ArrayList<AbstractButton>();
+		for (AbstractJMTAction action : abstractJMTactions) {
 			if (action == null) {
 				addSeparator();
 			} else {

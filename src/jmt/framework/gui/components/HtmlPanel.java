@@ -126,6 +126,7 @@ public class HtmlPanel extends JEditorPane {
 	/* (non-Javadoc)
 	 * @see javax.swing.JComponent#printComponent(java.awt.Graphics)
 	 */
+	@Override
 	protected void paintComponent(Graphics g) {
 		if (antiAliasing) {
 			Graphics2D g2d = (Graphics2D) g;

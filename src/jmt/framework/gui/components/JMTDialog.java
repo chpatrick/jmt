@@ -89,6 +89,7 @@ public class JMTDialog extends JDialog {
 			/* (non-Javadoc)
 			 * @see java.awt.event.WindowAdapter#windowClosing(java.awt.event.WindowEvent)
 			 */
+			@Override
 			public void windowClosing(WindowEvent e) {
 				close();
 			}
@@ -185,6 +186,7 @@ public class JMTDialog extends JDialog {
 	 * @see JFrame#EXIT_ON_CLOSE
 	 * @see JMTFrame#AUTO_MANAGE_ON_CLOSE
 	 */
+	@Override
 	public void setDefaultCloseOperation(int operation) {
 		if (operation == JMTFrame.AUTO_MANAGE_ON_CLOSE) {
 			super.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

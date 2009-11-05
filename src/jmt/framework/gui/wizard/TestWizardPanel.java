@@ -60,6 +60,7 @@ public final class TestWizardPanel extends WizardPanel {
 		add(jl, BorderLayout.CENTER);
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -68,25 +69,30 @@ public final class TestWizardPanel extends WizardPanel {
 		System.out.println(name + ".commit()");
 	}
 
+	@Override
 	public void gotFocus() {
 		System.out.println(name + ".gotFocus()");
 	}
 
+	@Override
 	public boolean canGoForward() {
 		System.out.println(name + ".canGoForward()");
 		return JOptionPane.showConfirmDialog(this, "Can " + name + " go forward?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
 	}
 
+	@Override
 	public boolean canGoBack() {
 		System.out.println(name + ".canGoBack()");
 		return JOptionPane.showConfirmDialog(this, "Can " + name + " go back?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
 	}
 
+	@Override
 	public boolean canFinish() {
 		System.out.println(name + ".canFinish()");
 		return JOptionPane.showConfirmDialog(this, "Can " + name + " finish?", "", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.YES_OPTION;
 	}
 
+	@Override
 	public void help() {
 		JOptionPane.showMessageDialog(this, "This is the help for " + name, "help", JOptionPane.INFORMATION_MESSAGE);
 	}

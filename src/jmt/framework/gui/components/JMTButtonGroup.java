@@ -74,9 +74,9 @@ public class JMTButtonGroup extends ButtonGroup {
 			clearSelection();
 		}
 
-		Enumeration buttons = getElements();
+		Enumeration<AbstractButton> buttons = getElements();
 		while (buttons.hasMoreElements()) {
-			AbstractButton button = (AbstractButton) buttons.nextElement();
+			AbstractButton button = buttons.nextElement();
 			if (button != dummy) {
 				button.getAction().setEnabled(value);
 			}
@@ -86,6 +86,7 @@ public class JMTButtonGroup extends ButtonGroup {
 	/* (non-Javadoc)
 	 * @see javax.swing.ButtonGroup#getButtonCount()
 	 */
+	@Override
 	public int getButtonCount() {
 		// Removes dummy button from count.
 		return super.getButtonCount() - 1;
