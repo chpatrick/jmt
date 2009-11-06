@@ -6,6 +6,7 @@
 
 	<property file="global.properties" />
 	<property file="${globalsettings.path}" />
+	<property file="build.custom.properties" />
 	<property file="build.properties" />
 	
 	<filter filtersfile="${globalsettings.path}"/>
