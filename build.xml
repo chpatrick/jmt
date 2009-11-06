@@ -7,6 +7,8 @@
 	<property file="global.properties" />
 	<property file="${globalsettings.path}" />
 	<property file="build.properties" />
+	
+	<filter filtersfile="${globalsettings.path}"/>
 
     <target name="init" description="initialize build process" >
 		<echo>Initialize build process for JMT v.${jmt.version}</echo>
@@ -227,10 +229,13 @@
         <taskdef name="iz_pack" classpath="${izpack}/lib/compiler.jar"
              classname="com.izforge.izpack.ant.IzPackTask"/>
 
-        <!-- copy resources used by installer  -->
+        <!-- copy resources used by installer. Filters shortcut specs  -->
         <copy todir="${out}" >
-            <fileset dir="${util}/" includes="*.*" />
+            <fileset dir="${util}/" includes="*.*" excludes="*shortcutSpec.xml" />
         </copy>
+    	<copy todir="${out}" filtering="true">
+    	     <fileset dir="${util}/" includes="*shortcutSpec.xml" />
+    	</copy>
 
         <!-- Create license directory -->
 

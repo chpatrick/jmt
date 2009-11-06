@@ -86,30 +86,13 @@
         We specify here our packs.
     -->
 	<packs>
-		<pack name="jmt" required="yes" os="windows">
+		<pack name="jmt" required="yes">
 			<description>The Java Modelling Tools core files.</description>
 			<fileset dir="" targetdir="$INSTALL_PATH">
 				<include name="License.txt"/>
 				<include name="PolitecnicoLogo.jpg"/>
 				<include name="ReadMe.html"/>
 				<include name="*.ico"/>
-				<include name="lib/**/*"/> 
-				<include name="examples/**/*"/>
-				<include name="manuals/**/*"/>
-<!--				<include name="xml/**/*"/> -->
-				<include name="license/**/*"/>
-				<include name="jwatFormats/**/*"/>
-				<include name="JMT.jar"/>
-				<include name="*.vbs"/>								
-			</fileset>
-		</pack>
-
-		<pack name="jmt" required="yes" os="unix">
-			<description>The Java Modelling Tools core files.</description>
-			<fileset dir="" targetdir="$INSTALL_PATH">
-				<include name="License.txt"/>
-				<include name="PolitecnicoLogo.jpg"/>
-				<include name="ReadMe.html"/>
 				<include name="*.png"/>
 				<include name="lib/**/*"/> 
 				<include name="examples/**/*"/>
@@ -118,6 +101,7 @@
 				<include name="license/**/*"/>
 				<include name="jwatFormats/**/*"/>
 				<include name="JMT.jar"/>
+				<include name="*.vbs"/>								
 			</fileset>
 		</pack>
 	</packs>
