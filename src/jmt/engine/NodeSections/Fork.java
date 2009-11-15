@@ -99,6 +99,7 @@ public class Fork extends OutputSection {
 	 * @throws NetException if something goes wrong
 	 * @return message processing result.
 	 */
+	@Override
 	protected int process(NetMessage message) throws NetException {
 		Job job;
 		job = message.getJob();
@@ -122,9 +123,9 @@ public class Fork extends OutputSection {
 				GlobalJobInfoList global = getOwnerNode().getQueueNet().getJobInfoList();
 
 				// Sends "jobsPerLink" jobs on each output link
-				Iterator i = output.listIterator();
+				Iterator<NetNode> i = output.listIterator();
 				while (i.hasNext()) {
-					NetNode outNode = (NetNode) i.next();
+					NetNode outNode = i.next();
 					for (int n = 0; n < jobsPerLink; n++) {
 						ForkJob newJob = new ForkJob(numOut, job, this);
 						// Sends new job to all following stations

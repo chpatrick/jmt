@@ -26,7 +26,7 @@ import jmt.engine.QueueNet.JobInfoList;
  *	This class implements a LCFS strategy (Last Come First Served).
  * 	@author Francesco Radaelli
  */
-public class LCFSstrategy extends QueueGetStrategy {
+public class LCFSstrategy implements QueueGetStrategy {
 
 	/** Implements the LCFS strategy.
 	 * @param Queue Jobs queue.
@@ -34,5 +34,12 @@ public class LCFSstrategy extends QueueGetStrategy {
 	 */
 	public Job get(JobInfoList Queue) throws jmt.common.exception.NetException {
 		return Queue.removeLast().getJob();
+	}
+	
+	/* (non-Javadoc)
+	 * @see jmt.common.AutoCheck#check()
+	 */
+	public boolean check() {
+		return true;
 	}
 }

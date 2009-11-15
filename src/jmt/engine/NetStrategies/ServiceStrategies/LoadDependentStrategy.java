@@ -65,6 +65,7 @@ public class LoadDependentStrategy extends ServiceStrategy {
 	 * @param CallingSection reference to calling service section
 	 * @return time to wait into this service section
 	 */
+	@Override
 	public double wait(NodeSection CallingSection) throws jmt.common.exception.NetException {
 		// Gets number of jobs in the station as the sum of job in queue and job under service
 		try {

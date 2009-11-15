@@ -102,6 +102,7 @@ public class BlockingQueue extends InputSection {
 
 	}
 
+	@Override
 	protected void nodeLinked(NetNode node) {
 		// Sets netnode dependent properties
 
@@ -126,6 +127,7 @@ public class BlockingQueue extends InputSection {
 		return;
 	}
 
+	@Override
 	public int getIntSectionProperty(int id) throws NetException {
 		switch (id) {
 			case PROPERTY_ID_SIZE:
@@ -145,21 +147,21 @@ public class BlockingQueue extends InputSection {
 			return null;
 		}
 
-		List jobList = jobsList.getJobList();
+		List<JobInfo> jobList = jobsList.getJobList();
 
-		ListIterator iterator = jobList.listIterator();
-		
+		ListIterator<JobInfo> iterator = jobList.listIterator();
+
 		Job nextJob = null;
 		int nextJobPriority = 0;
 		while (iterator.hasNext()) {
-			JobInfo info = (JobInfo) iterator.next();
+			JobInfo info = iterator.next();
 			JobClass jobClass = info.getJob().getJobClass();
 			if (nextJob == null || nextJobPriority < jobClass.getPriority()) {
 				if (!blockingRegion.isBlocked(jobClass)) {
 					nextJob = info.getJob();
 					nextJobPriority = jobClass.getPriority();
 				}
-			} 
+			}
 		}
 		return nextJob;
 	}
@@ -168,6 +170,7 @@ public class BlockingQueue extends InputSection {
 	 * @param message message to be processed.
 	 * @throws NetException
 	 */
+	@Override
 	protected int process(NetMessage message) throws NetException {
 		Job job;
 		Job notBlockedJob;
@@ -210,7 +213,7 @@ public class BlockingQueue extends InputSection {
 				//EVENT_JOB_OUT_OF_REGION and EVENT_ACK
 
 			case NetEvent.EVENT_JOB_OUT_OF_REGION:
-				
+
 				//FCR Bug fix:
 				//The dropping of the job was post poned as the time 
 				//spent in the Queuing station was not taken in consideration.
@@ -221,10 +224,9 @@ public class BlockingQueue extends InputSection {
 				Job localJob = (Job) message.getData();
 				JobInfo jobInfo = jobsList_node.lookFor(localJob);
 				//remove only when you find a job in the list.
-				if(jobInfo != null){
+				if (jobInfo != null) {
 					jobsList_node.remove(jobInfo);
 				}
-							
 
 				//checks whether there are jobs in queue
 				if (jobsList.size() == 0) {

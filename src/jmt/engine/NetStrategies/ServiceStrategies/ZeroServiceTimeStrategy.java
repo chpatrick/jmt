@@ -38,6 +38,7 @@ public class ZeroServiceTimeStrategy extends ServiceStrategy {
 	 * @param CallingSection The node section which is calling this method.
 	 * @return the value of service time, which is always 0.0.
 	 */
+	@Override
 	public double wait(NodeSection CallingSection) {
 		return 0;
 	}

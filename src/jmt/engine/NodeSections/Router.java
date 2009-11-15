@@ -138,6 +138,7 @@ public class Router extends OutputSection {
 		return;
 	}
 
+	@Override
 	public Object getObject(int id, JobClass jobClass) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_ROUTING_STRATEGY:
@@ -147,6 +148,7 @@ public class Router extends OutputSection {
 		}
 	}
 
+	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 
 		switch (message.getEvent()) {

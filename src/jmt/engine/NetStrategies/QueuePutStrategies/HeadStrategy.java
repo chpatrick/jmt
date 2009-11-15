@@ -30,7 +30,7 @@ import jmt.engine.QueueNet.NodeSection;
  * are put at the beginning of the queue.
  * @author Francesco Radaelli
  */
-public class HeadStrategy extends QueuePutStrategy {
+public class HeadStrategy implements QueuePutStrategy {
 
 	/**
 	 * all arriving jobs are put at the beginning of the queue.
@@ -42,5 +42,12 @@ public class HeadStrategy extends QueuePutStrategy {
 	 */
 	public void put(Job job, JobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) {
 		queue.addFirst(new JobInfo(job));
+	}
+
+	/* (non-Javadoc)
+	 * @see jmt.common.AutoCheck#check()
+	 */
+	public boolean check() {
+		return true;
 	}
 }

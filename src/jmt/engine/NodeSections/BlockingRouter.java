@@ -59,7 +59,7 @@ public class BlockingRouter extends OutputSection {
 	public BlockingRouter(BlockingRegion blockingReg) {
 		//FCR bug fix: Constructor modified from super() to spuer(true,false) which will enable
 		//Jobs in Joblist at NodeSection to be automatically dropped where as for Node to be manually handled.
-		super(true,false);
+		super(true, false);
 		//TODO: non aggiorna joblist
 		//super(false);
 		busy = false;
@@ -72,11 +72,13 @@ public class BlockingRouter extends OutputSection {
 
 	}
 
+	@Override
 	protected void nodeLinked(NetNode node) {
 		blockingRegion.setInputStation(node);
 		return;
 	}
 
+	@Override
 	public boolean isEnabled(int id) throws NetException {
 		switch (id) {
 			case PROPERTY_ID_BUSY:
@@ -86,6 +88,7 @@ public class BlockingRouter extends OutputSection {
 		}
 	}
 
+	@Override
 	protected int process(NetMessage message) throws NetException {
 		switch (message.getEvent()) {
 

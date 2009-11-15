@@ -75,6 +75,7 @@ public class ServiceTimeStrategy extends ServiceStrategy {
 	 * @param CallingSection The node section which is calling this method.
 	 * @return the value of service time.
 	 */
+	@Override
 	public double wait(NodeSection CallingSection) {
 		try {
 			return Distribution.nextRand(Parameter);

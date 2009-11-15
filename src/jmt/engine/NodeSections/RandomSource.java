@@ -46,7 +46,7 @@ public class RandomSource extends InputSection {
 
 	private boolean coolStart;//when is true the waitingjobs queue is void
 
-	private LinkedList waitingJobs; //TODO: se riusciamo a convertire in job info list è meglio
+	private LinkedList<Job> waitingJobs; //TODO: se riusciamo a convertire in job info list è meglio
 
 	private ServiceStrategy[] strategy;
 
@@ -57,7 +57,7 @@ public class RandomSource extends InputSection {
 	public RandomSource(ServiceStrategy[] strategy) {
 		super();
 		this.strategy = strategy;
-		waitingJobs = new LinkedList();
+		waitingJobs = new LinkedList<Job>();
 		coolStart = true;
 
 		//NEW
@@ -66,6 +66,7 @@ public class RandomSource extends InputSection {
 		//end NEW
 	}
 
+	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 		Job job;
 		double delay;
@@ -81,11 +82,11 @@ public class RandomSource extends InputSection {
 
 				//log.write(NetLog.LEVEL_RELEASE, null, this, NetLog.EVENT_START);
 
-				ListIterator jobClasses = getJobClasses().listIterator();
+				ListIterator<JobClass> jobClasses = getJobClasses().listIterator();
 				JobClass jobClass;
 
 				while (jobClasses.hasNext()) {
-					jobClass = (JobClass) jobClasses.next();
+					jobClass = jobClasses.next();
 
 					//NEW
 					//@author Stefano Omini
@@ -118,7 +119,7 @@ public class RandomSource extends InputSection {
 				//otherwise, if there are no waiting jobs, sets coolstart=true
 
 				if (waitingJobs.size() != 0) {
-					job = (Job) waitingJobs.removeFirst();
+					job = waitingJobs.removeFirst();
 					c = job.getJobClass().getId();
 					job.born();
 

@@ -48,6 +48,7 @@ public class JobSink extends InputSection {
 
 	//NEW
 	//@author Stefano Omini
+	@Override
 	protected void nodeLinked(NetNode node) {
 		jobsList_node = this.getOwnerNode().getJobInfoList();
 
@@ -60,6 +61,7 @@ public class JobSink extends InputSection {
 	 * @param message message to be processed.
 	 * @throws jmt.common.exception.NetException
 	 */
+	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 		switch (message.getEvent()) {
 

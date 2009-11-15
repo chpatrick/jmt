@@ -45,7 +45,6 @@ public class ServiceTunnel extends ServiceSection {
 	public void NodeLinked(NetNode node) {
 	}
 
-
 	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 

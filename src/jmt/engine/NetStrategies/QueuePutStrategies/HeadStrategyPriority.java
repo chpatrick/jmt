@@ -18,7 +18,7 @@
 
 package jmt.engine.NetStrategies.QueuePutStrategies;
 
-import java.util.LinkedList;
+import java.util.List;
 import java.util.ListIterator;
 
 import jmt.engine.NetStrategies.QueuePutStrategy;
@@ -34,7 +34,7 @@ import jmt.engine.QueueNet.NodeSection;
  * priority level, the last come is put at the beginning.
  * @author Stefano Omini
  */
-public class HeadStrategyPriority extends QueuePutStrategy {
+public class HeadStrategyPriority implements QueuePutStrategy {
 
 	/** This method should be overridden to implement a specific job strategy.
 	 * @param job Job to be added to the queue.
@@ -49,7 +49,7 @@ public class HeadStrategyPriority extends QueuePutStrategy {
 		int priority = job.getJobClass().getPriority();
 
 		//list of jobs in queue
-		LinkedList list = (LinkedList) queue.getJobList();
+		List<JobInfo> list = queue.getJobList();
 
 		if (list.size() == 0) {
 			//empty list: add first in general and class lists
@@ -60,7 +60,7 @@ public class HeadStrategyPriority extends QueuePutStrategy {
 		//else creates an iterator and find the correct position
 		//according to the job priority
 
-		ListIterator iterator = list.listIterator();
+		ListIterator<JobInfo> iterator = list.listIterator();
 		JobInfo current = null;
 		int currentJobPriority = 0;
 		int index = -1;
@@ -68,7 +68,7 @@ public class HeadStrategyPriority extends QueuePutStrategy {
 		//iterator starts from the first (i.e. the job with highest priority)
 		while (iterator.hasNext()) {
 			index++;
-			current = (JobInfo) iterator.next();
+			current = iterator.next();
 			currentJobPriority = current.getJob().getJobClass().getPriority();
 
 			if (priority >= currentJobPriority) {
@@ -89,5 +89,12 @@ public class HeadStrategyPriority extends QueuePutStrategy {
 		//add last
 		queue.addLast(new JobInfo(job), false);
 		return;
+	}
+
+	/* (non-Javadoc)
+	 * @see jmt.common.AutoCheck#check()
+	 */
+	public boolean check() {
+		return true;
 	}
 }

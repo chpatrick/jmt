@@ -18,7 +18,6 @@
 
 package jmt.engine.NodeSections;
 
-import java.util.LinkedList;
 import java.util.ListIterator;
 
 import jmt.common.exception.NetException;
@@ -43,14 +42,9 @@ public class Terminal extends InputSection {
 
 	private boolean coolStart;//when is true the waitingjobs queue is void
 
-	//TODO: se riusciamo a convertire in job info list è meglio
-	private LinkedList waitingJobs; //job waiting to be sent to service section
-
 	private JobInfoList waitingRequests;
 
 	private int jobsPerClass[]; //number of jobs per class
-
-	private final static boolean DEBUG = false;
 
 	/**
 	 * Creates a terminal
@@ -58,7 +52,6 @@ public class Terminal extends InputSection {
 	 */
 	public Terminal(int[] jobsPerClass) {
 		super();
-		waitingJobs = new LinkedList();
 		coolStart = true;
 		this.jobsPerClass = new int[jobsPerClass.length];
 		for (int c = 0; c < this.jobsPerClass.length; c++) {
@@ -77,7 +70,6 @@ public class Terminal extends InputSection {
 	 */
 	public Terminal(Integer[] jobsPerClass) {
 		super();
-		waitingJobs = new LinkedList();
 		coolStart = true;
 		this.jobsPerClass = new int[jobsPerClass.length];
 		for (int c = 0; c < this.jobsPerClass.length; c++) {
@@ -90,6 +82,7 @@ public class Terminal extends InputSection {
 		//end NEW
 	}
 
+	@Override
 	protected void nodeLinked(NetNode node) {
 		// Sets netnode dependent properties
 		waitingRequests = new LinkedJobInfoList(getJobClasses().size(), true);
@@ -98,6 +91,7 @@ public class Terminal extends InputSection {
 		//	jobsList = new JobInfoList(getJobClasses().size(), true);
 	}
 
+	@Override
 	protected int process(NetMessage message) throws NetException {
 		Job job;
 		int c;
@@ -110,7 +104,7 @@ public class Terminal extends InputSection {
 				//for each job created, it sends to itself a message with delay 0
 
 				//log.write(NetLog.LEVEL_RELEASE, null, this, NetLog.EVENT_START);
-				ListIterator jobClasses = getJobClasses().listIterator();
+				ListIterator<JobClass> jobClasses = getJobClasses().listIterator();
 				JobClass jobClass;
 
 				//generator of random numbers (uses the same engine of
@@ -123,7 +117,7 @@ public class Terminal extends InputSection {
 				double mixRandomDelay = 0.0;
 
 				while (jobClasses.hasNext()) {
-					jobClass = (JobClass) jobClasses.next();
+					jobClass = jobClasses.next();
 
 					//NEW
 					//@author Stefano Omini

@@ -50,8 +50,8 @@ public class DelayedShortestQLength extends RoutingStrategy {
 	 * @param jobClass class ofcurrent job to be routed
 	 * @return Selected node .
 	 */
+	@Override
 	public NetNode getOutNode(NodeList Nodes, JobClass jobClass) {
-		int shortestQueue;
 		if (qlen == null) {
 			qlen = new int[Nodes.size()];
 			newQlen = new int[Nodes.size()];
@@ -76,7 +76,6 @@ public class DelayedShortestQLength extends RoutingStrategy {
 			// Finds shortest queue in stored array
 			int cur = 1;
 			next[0] = 0;
-			shortestQueue = qlen[0];
 			for (int i = 1; i < qlen.length; i++) {
 				if (qlen[i] < next[0]) {
 					next[0] = qlen[i];

@@ -120,7 +120,6 @@ public class PSServer extends ServiceSection {
 					// I sent the message, so it ended servicing
 					updateServiceTimes(lastMessageSentTime);
 					lastMessageSent = null;
-
 					// forwards the completed jobs to the output section
 					sendForward(jobs.poll().getJob(), 0.0);
 					waitingAcks++;
@@ -265,6 +264,13 @@ public class PSServer extends ServiceSection {
 			residualServiceTime = residualServiceTime - time;
 		}
 
+		/* (non-Javadoc)
+		 * @see java.lang.Object#toString()
+		 */
+		@Override
+		public String toString() {
+			return "Job id: " + job.getId() + " class: " + job.getJobClass().getName() + " residual time: " + residualServiceTime;
+		}
 	}
 
 }

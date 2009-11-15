@@ -46,6 +46,7 @@ public class RandomStrategy extends RoutingStrategy {
 	 * @param jobClass class ofcurrent job to be routed
 	 * @return The selected node.
 	 */
+	@Override
 	public NetNode getOutNode(NodeList Nodes, JobClass jobClass) {
 		int outNodes = Nodes.size();
 		// Find output node

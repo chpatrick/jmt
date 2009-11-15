@@ -32,7 +32,7 @@ import jmt.engine.random.Parameter;
  *         Date: 10-ott-2005
  *         Time: 14.58.33
  */
-public class LDParameter implements Comparable {
+public class LDParameter implements Comparable<Object> {
 	private int from;
 	private Distribution distribution;
 	private Parameter parameter;

@@ -40,7 +40,7 @@ import jmt.engine.QueueNet.NetMessage;
  */
 public class Join extends InputSection {
 	/** Data structure used to store received fragments for each job */
-	private HashMap jobs;
+	private HashMap<Job, Integer> jobs;
 
 	// --- Constructors -----------------------------------------------------------------------------
 	/**
@@ -49,7 +49,7 @@ public class Join extends InputSection {
 	public Join() {
 		// Disables automatic handling of jobinfolists
 		super(false);
-		jobs = new HashMap();
+		jobs = new HashMap<Job, Integer>();
 	}
 
 	// ----------------------------------------------------------------------------------------------
@@ -61,6 +61,7 @@ public class Join extends InputSection {
 	 * @throws NetException if something goes wrong
 	 * @return message processing result.
 	 */
+	@Override
 	protected int process(NetMessage message) throws NetException {
 		switch (message.getEvent()) {
 			case NetEvent.EVENT_JOB:
@@ -85,7 +86,7 @@ public class Join extends InputSection {
 					// Needed pieces
 					int needed;
 					if (jobs.containsKey(fJob.getForkedJob())) {
-						needed = ((Integer) jobs.get(fJob.getForkedJob())).intValue();
+						needed = jobs.get(fJob.getForkedJob()).intValue();
 					} else {
 						needed = fJob.getForkedNumber();
 						// As we are waiting for other fragments, adds merged job to global and local info list

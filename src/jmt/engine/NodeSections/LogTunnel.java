@@ -56,7 +56,7 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 	private final JSimLogger debugLog = JSimLogger.getLogger(JSimLogger.STD_LOGGER);
 	private DecimalFormat numberFormat;
 
-	HashMap classesIndexerFast; /* Holds {name of class},{array index for classTimeAccounting} */
+	HashMap<String, Integer> classesIndexerFast; /* Holds {name of class},{array index for classTimeAccounting} */
 	short classesTimeAccountingSize;
 	double classesTimeAccounting[]; /* Holds [previously-accessed time] of all classes */
 	double classesTimePreviousAny; /* Holds [previous   arrival time]  of any of the classes, so as not to have to search */
@@ -76,7 +76,7 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 		didInitialCheck = false;
 
 		/* Initialize objects for statistics accounting, like, the time between two messages. (mf'08) */
-		classesIndexerFast = new HashMap(numClasses.intValue() + 2, 1);
+		classesIndexerFast = new HashMap<String, Integer>(numClasses.intValue() + 2, 1);
 		classesTimeAccounting = new double[numClasses.intValue() + 1];
 		classesTimePreviousAny = 0.0F;
 		classesTimeAccountingSize = 0;
@@ -114,7 +114,7 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 		numberFormat = new DecimalFormat("#.#", dfs);
 		numberFormat.setMaximumFractionDigits(340);
 		numberFormat.setMaximumIntegerDigits(340);
-		
+
 		strTimestampValue = getOwnerNode().getSimParameters().getTimestampValue();
 
 		// Add an initial file-separator if none exists
@@ -257,19 +257,16 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 	private final String composeHeaderLine() {
 		/* compose header to write to the logfile */
 		LogLineWriter s = new LogLineWriter(chDelimiter);
-		s.append("LOGGERNAME")
-			.append("TIMESTAMP")
-			.append("JOB_ID")
-			.append("CLASS_ID")
-			.append("INTERARRIVAL_SAMECLASS")
-			.append("INTERARRIVAL_ANYCLASS")
-			.append("SIMUL_START_TIME");
+		s.append("LOGGERNAME").append("TIMESTAMP").append("JOB_ID").append("CLASS_ID").append("INTERARRIVAL_SAMECLASS").append(
+				"INTERARRIVAL_ANYCLASS").append("SIMUL_START_TIME");
 		return s.toString();
 	}
 
+	@Override
 	public void NodeLinked(NetNode node) {
 	}
 
+	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 		if (isMyOwnerNode(message.getSource())) {
 
@@ -312,14 +309,15 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 						/* compose one line to write to the logfile */
 						s.append(message.getSource().getName(), lp.boolLoggername.booleanValue());
 
-						s.append(Double.toString(message.getTime()).replace('.', decimalSeparator).replace(',', decimalSeparator), lp.boolTimeStamp.booleanValue());
+						s.append(Double.toString(message.getTime()).replace('.', decimalSeparator).replace(',', decimalSeparator), lp.boolTimeStamp
+								.booleanValue());
 
 						s.append(message.getJob().getId(), lp.boolJobID.booleanValue());
 
 						s.append(message.getJob().getJobClass().getName(), lp.boolJobClass.booleanValue());
 
 						if (lp.boolTimeSameClass.booleanValue() == true) {
-							Integer idx = (Integer) classesIndexerFast.get(message.getJob().getJobClass().getName());
+							Integer idx = classesIndexerFast.get(message.getJob().getJobClass().getName());
 
 							if (idx != null) {
 								s.append(numberFormat.format((message.getTime() - classesTimeAccounting[idx.intValue()])));
@@ -362,11 +360,12 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 		}
 	}
 
+	@Override
 	protected void finalize() throws Throwable {
 		debugLog.debug("[LT].finalize() runs.");
 		super.finalize();
 	}
-	
+
 	/**
 	 * <p><b>Name:</b> LogLineWriter</p> 
 	 * <p><b>Description:</b> 
@@ -380,7 +379,7 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 		private StringBuffer buffer = new StringBuffer(50);
 		private char separator;
 		private boolean init = false;
-		
+
 		/**
 		 * Builds a log line writer with the given delimiter
 		 * @param delimiter the delimiter
@@ -388,7 +387,7 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 		public LogLineWriter(char delimiter) {
 			this.separator = delimiter;
 		}
-		
+
 		/**
 		 * Appends an object to the line if the condition is true
 		 * @param obj the object
@@ -400,10 +399,10 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 			if (condition) {
 				buffer.append(obj);
 			}
-			
+
 			return this;
 		}
-		
+
 		/**
 		 * Appends an object to the line
 		 * @param obj the object
@@ -424,13 +423,14 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 			if (condition) {
 				buffer.append(num);
 			}
-			
+
 			return this;
 		}
-		
+
 		/* (non-Javadoc)
 		 * @see java.lang.Object#toString()
 		 */
+		@Override
 		public String toString() {
 			return buffer.toString();
 		}
@@ -442,7 +442,6 @@ public class LogTunnel extends ServiceTunnel /*ServiceSection*/{
 				buffer.append(separator);
 			}
 		}
-		
-		
+
 	}
 }

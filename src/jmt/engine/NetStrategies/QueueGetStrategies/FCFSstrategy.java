@@ -26,7 +26,7 @@ import jmt.engine.QueueNet.JobInfoList;
  *	This class implements a FCFS strategy (First Come First Served).
  * 	@author Francesco Radaelli
  */
-public class FCFSstrategy extends QueueGetStrategy {
+public class FCFSstrategy implements QueueGetStrategy {
 
 	/** Implements the FCFS strategy.
 	 @param Queue Jobs queue.
@@ -34,6 +34,13 @@ public class FCFSstrategy extends QueueGetStrategy {
 	 */
 	public Job get(JobInfoList Queue) throws jmt.common.exception.NetException {
 		return Queue.removeFirst().getJob();
+	}
+
+	/* (non-Javadoc)
+	 * @see jmt.common.AutoCheck#check()
+	 */
+	public boolean check() {
+		return true;
 	}
 
 }

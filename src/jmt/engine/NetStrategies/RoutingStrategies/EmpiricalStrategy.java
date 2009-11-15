@@ -143,6 +143,7 @@ public class EmpiricalStrategy extends RoutingStrategy {
 	 * For the empirical distribution, the parameter is correct if the sum of the
 	 * routing probabilities are greater than zero and they sum to 1.0.
 	 */
+	@Override
 	public boolean check() {
 		return param.check();
 	}
@@ -154,6 +155,7 @@ public class EmpiricalStrategy extends RoutingStrategy {
 	 * @param jobClass class ofcurrent job to be routed
 	 * @return The selected node.
 	 */
+	@Override
 	public NetNode getOutNode(NodeList nodeList, JobClass jobClass) {
 		try {
 

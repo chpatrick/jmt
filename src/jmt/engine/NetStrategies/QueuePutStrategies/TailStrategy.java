@@ -31,7 +31,7 @@ import jmt.engine.QueueNet.NodeSection;
  * are put at the end of the queue.
  * @author Francesco Radaelli
  */
-public class TailStrategy extends QueuePutStrategy {
+public class TailStrategy implements QueuePutStrategy {
 
 	/**
 	 * The arriving job are inserted in last position
@@ -44,5 +44,12 @@ public class TailStrategy extends QueuePutStrategy {
 	public void put(Job job, JobInfoList queue, byte sourceSection, NetNode sourceNode, NodeSection callingSection) throws NetException {
 		queue.addLast(new JobInfo(job));
 		return;
+	}
+
+	/* (non-Javadoc)
+	 * @see jmt.common.AutoCheck#check()
+	 */
+	public boolean check() {
+		return true;
 	}
 }

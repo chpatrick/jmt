@@ -45,6 +45,7 @@ public class RoundRobinStrategy extends RoutingStrategy {
 	 * @param jobClass class ofcurrent job to be routed
 	 * @return The selected node.
 	 */
+	@Override
 	public NetNode getOutNode(NodeList Nodes, JobClass jobClass) {
 		NetNode out;
 		if (Nodes.size() == 0) {

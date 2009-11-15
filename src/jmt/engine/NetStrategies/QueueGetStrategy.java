@@ -29,7 +29,7 @@ import jmt.engine.QueueNet.JobInfoList;
  * job from the list.
  * @author Francesco Radaelli
  */
-public abstract class QueueGetStrategy implements AutoCheck {
+public interface QueueGetStrategy extends AutoCheck {
 
 	/** This method should be overridden to implement a specific job strategy.
 	 * @param Queue Jobs queue.
@@ -37,8 +37,4 @@ public abstract class QueueGetStrategy implements AutoCheck {
 	 * @throws jmt.common.exception.NetException
 	 */
 	public abstract Job get(JobInfoList Queue) throws jmt.common.exception.NetException;
-
-	public boolean check() {
-		return true;
-	}
 }
