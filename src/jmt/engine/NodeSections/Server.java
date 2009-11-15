@@ -187,27 +187,6 @@ public class Server extends ServiceSection {
 				// Gets the job from the message
 				job = message.getJob();
 
-				//----ZERO SERVICE TIME: properties setup-----//
-				//first of all check if this job must be tunnelled (because the
-				//corresponding jobClass has a zero service time distribution)
-				if (job.TunnelThisJob()) {
-					//the job must be immediately forwarded to output section
-
-					job.setTunnelThisJob(false);
-					sendForward(job, 0.0);
-
-					return MSG_PROCESSED;
-
-					//the job forwarded is not a "normal" job, but a job whose class has a
-					//zero service time strategy
-					//in this case do not send any ack backward, otherwise other jobs
-					//would be sent by the queue (even if the server is already busy!!)
-
-					//WARNING: the service section won't receive from
-					//the output section any ack for the tunnelled job
-				}
-				//----end ZERO SERVICE TIME properties setup-----//
-
 				if (isMine(message)) {
 					// this job has been just served (the message has been sent by the server itself)
 					// forwards the job to the output section

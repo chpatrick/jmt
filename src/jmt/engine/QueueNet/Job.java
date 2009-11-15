@@ -54,18 +54,6 @@ public class Job implements Cloneable {
 
 	//end NEW
 
-	//NEW
-	//@author Stefano Omini
-
-	//this feature is not very clean
-	//it has been introduced to solve the problem of classes with zero service
-	//time. it should be replaced or deleted
-
-	//true if this job must be tunnelled in the service section
-	private boolean tunnelThisJob = false;
-
-	//end NEW
-
 	/** Creates a new instance of Job.
 	 *  @param JobClass Reference to the class of the job.
 	 */
@@ -163,18 +151,6 @@ public class Job implements Cloneable {
 		redirected = true;
 	}
 
-	//end NEW
-
-	//NEW
-	//@author Stefano Omini
-
-	public void setTunnelThisJob(boolean tunnelThisJob) {
-		this.tunnelThisJob = tunnelThisJob;
-	}
-
-	public boolean TunnelThisJob() {
-		return tunnelThisJob;
-	}
 	//end NEW
 
 }

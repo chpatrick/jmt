@@ -34,15 +34,8 @@ public class ServiceTunnel extends ServiceSection {
 	 */
 	public ServiceTunnel() {
 		super();
-
-		//NEW
-		//@author Stefano Omini
-		//log = NetSystem.getLog();
-		//end NEW
 	}
 
-	//NEW
-	//@author Stefano Omini
 	/** Creates a new instance of ServiceTunnel.
 	 */
 	public ServiceTunnel(boolean auto) {
@@ -50,25 +43,18 @@ public class ServiceTunnel extends ServiceSection {
 	}
 
 	public void NodeLinked(NetNode node) {
-		//if (jobsList == null)
-		//	jobsList = new JobInfoList(getJobClasses().size(), true);
-
 	}
 
-	//end NEW
 
+	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 
 		if (isMyOwnerNode(message.getSource())) {
 			if (message.getSourceSection() == NodeSection.INPUT) {
 				sendForward(message.getEvent(), message.getData(), 0.0);
-
-				//log.write(NetLog.LEVEL_DEBUG, message.getJob(), this, NetLog.JOB_OUT);
 			}
 			if (message.getSourceSection() == NodeSection.OUTPUT) {
 				sendBackward(message.getEvent(), message.getData(), 0.0);
-
-				//log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
 			}
 			return MSG_PROCESSED;
 		} else {

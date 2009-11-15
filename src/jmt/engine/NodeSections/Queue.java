@@ -20,13 +20,10 @@ package jmt.engine.NodeSections;
 
 import java.util.Arrays;
 
-import jmt.common.exception.NetException;
 import jmt.engine.NetStrategies.QueueGetStrategy;
 import jmt.engine.NetStrategies.QueuePutStrategy;
-import jmt.engine.NetStrategies.ServiceStrategy;
 import jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy;
 import jmt.engine.NetStrategies.QueuePutStrategies.TailStrategy;
-import jmt.engine.NetStrategies.ServiceStrategies.ZeroServiceTimeStrategy;
 import jmt.engine.QueueNet.BlockingRegion;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
@@ -120,15 +117,6 @@ public class Queue extends InputSection {
 	private NetNode regionInputStation;
 
 	//-------------------end BLOCKING REGION PROPERTIES----------------------------//
-
-	//-------------------ZERO SERVICE TIME PROPERTIES------------------------------//
-	//@author Stefano Omini
-
-	//for each class, true if that class has a service time equal to zero and therefore
-	//must be "tunnelled"
-	private boolean hasZeroServiceTime[] = null;
-
-	//-------------------end ZERO SERVICE TIME PROPERTIES--------------------------//
 
 	/**
 	 * Creates a new instance of finite Queue.
@@ -411,6 +399,7 @@ public class Queue extends InputSection {
 
 	//end NEW
 
+	@Override
 	public boolean isEnabled(int id) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_INFINITE:
@@ -420,6 +409,7 @@ public class Queue extends InputSection {
 		}
 	}
 
+	@Override
 	public int getIntSectionProperty(int id) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_SIZE:
@@ -436,6 +426,7 @@ public class Queue extends InputSection {
 		}
 	}
 
+	@Override
 	public int getIntSectionProperty(int id, JobClass jobClass) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_WAITING_REQUESTS:
@@ -450,6 +441,7 @@ public class Queue extends InputSection {
 		}
 	}
 
+	@Override
 	public Object getObject(int id) throws jmt.common.exception.NetException {
 		switch (id) {
 			case PROPERTY_ID_GET_STRATEGY:
@@ -465,6 +457,7 @@ public class Queue extends InputSection {
 		return infinite;
 	}
 
+	@Override
 	protected void nodeLinked(NetNode node) {
 		// Sets netnode dependent properties
 		waitingRequests = new LinkedJobInfoList(getJobClasses().size(), true);
@@ -495,6 +488,7 @@ public class Queue extends InputSection {
 	 * @param message message to be processed.
 	 * @throws jmt.common.exception.NetException
 	 */
+	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 		Job job;
 		switch (message.getEvent()) {
@@ -606,44 +600,6 @@ public class Queue extends InputSection {
 					}
 				}
 				//----END REDIRECTION BEHAVIOUR-------//
-
-				//----ZERO SERVICE TIME BEHAVIOUR-----//
-
-				//at the first execution checks which classes have service time always equal to zero
-				if (hasZeroServiceTime == null) {
-					detectZeroServiceTimeStrategy();
-				}
-
-				//at this point we know which classes have service time always equal to zero
-				if (hasZeroServiceTime[job.getJobClass().getId()]) {
-					//this job class has service time equal to zero
-					//job must be first added, then immediately removed from the queue and forwarded,
-					//without waiting in queue
-
-					//adds the job
-					jobsList.add(new JobInfo(job));
-
-					//marks this job, so that the server can forward it, even if it's already busy
-					job.setTunnelThisJob(true);
-					//forwards the job
-					forward(job);
-					//sends an ack backward
-					send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
-
-					return MSG_PROCESSED;
-
-					//WARNING: the "TunnelThisJob" property of the job will be resetted to false
-					//by the service section of this station
-					//(otherwise the following stations would continue tunnelling it)
-
-				}
-				//else the job must be managed in the usual way
-
-				//WARNING: note that the zero service time behaviour is managed before checking
-				//if the queue has a finite size. The assumption is that these jobs don't
-				//consume system resources.
-
-				//----end ZERO SERVICE TIME BEHAVIOUR-----//
 
 				//
 				//two possible cases:
@@ -791,44 +747,6 @@ public class Queue extends InputSection {
 			return -1;
 		}
 
-	}
-
-	/**
-	 * This method detects, for each class, if the corresponding service strategy is
-	 * a ZeroServiceTimeStrategy. If it's so, the job of this class will be tunnelled.
-	 */
-	private void detectZeroServiceTimeStrategy() {
-		int numberOfClasses = this.getJobClasses().size();
-		hasZeroServiceTime = new boolean[numberOfClasses];
-		try {
-			NodeSection serviceSect = this.getOwnerNode().getSection(NodeSection.SERVICE);
-			if (serviceSect instanceof ServiceTunnel) {
-				//case #1: service tunnel
-				//nothing to control, every job has already service time zero
-				//it's useless to force the tunnel behaviour
-				for (int c = 0; c < numberOfClasses; c++) {
-					hasZeroServiceTime[c] = false;
-				}
-			} else {
-				//case #2: server
-				//check if there are classes with zero service time distribution
-				if (serviceSect instanceof Server) {
-					for (int c = 0; c < this.getJobClasses().size(); c++) {
-						ServiceStrategy[] servStrat = (ServiceStrategy[]) ((Server) serviceSect).getObject(Server.PROPERTY_ID_SERVICE_STRATEGY);
-
-						hasZeroServiceTime[c] = servStrat[c] instanceof ZeroServiceTimeStrategy;
-					}
-				} else {
-					//case #3: serviceSect is nor a service tunnel neither a server
-					//use default behaviour
-					for (int c = 0; c < this.getJobClasses().size(); c++) {
-						hasZeroServiceTime[c] = false;
-					}
-				}
-			}
-		} catch (NetException ne) {
-			System.out.println("Error in detecting ZeroServiceTimeStrategy...");
-		}
 	}
 
 	/**
