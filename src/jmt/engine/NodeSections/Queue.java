@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2009, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -62,6 +62,16 @@ import jmt.engine.random.engine.RandomEngine;
  * @author Francesco Radaelli, Stefano Omini, Bertoli Marco
  * 
  * Modified by Ashanka (Oct 2009) for FCR Bug fix: Events are created with job instead of null for EVENT_JOB_OUT_OF_REGION
+ */
+/**
+ * <p><b>Name:</b> Queue</p> 
+ * <p><b>Description:</b> 
+ * 
+ * </p>
+ * <p><b>Date:</b> 15/nov/2009
+ * <b>Time:</b> 23.08.16</p>
+ * @author Bertoli Marco [marco.bertoli@neptuny.com]
+ * @version 3.0
  */
 public class Queue extends InputSection {
 
@@ -467,6 +477,7 @@ public class Queue extends InputSection {
 				putStrategy[i] = new TailStrategy();
 			}
 		}
+
 		if (jobsList == null) {
 			jobsList = new LinkedJobInfoList(getJobClasses().size(), true);
 		}
@@ -611,93 +622,74 @@ public class Queue extends InputSection {
 				//therefore in both cases the behaviour is the same
 				//
 
-				// If coolStart is true, this is the first job received or the
-				// queue was empty: this job is sent immediately to the next
-				// section and coolStart set to false.
-				if (coolStart) {
+				// Check if there is still capacity.
+				// <= size because the arrived job hasn't been inserted in Queue
+				// job list but has been inserted in NetNode job list !!
+				if (infinite || nodeJobsList.size() <= size) {
+					// Queue is not full. Okay.
 
-					// No jobs in queue: Refresh jobsList and sends job
-					// (don't use put strategy, because queue is empty)
-					jobsList.add(new JobInfo(job));
-					//forward without any delay
-					forward(jobsList.removeFirst().getJob());
+					// If coolStart is true, this is the first job received or the
+					// queue was empty: this job is sent immediately to the next
+					// section and coolStart set to false.
+					if (coolStart) {
+						// No jobs in queue: Refresh jobsList and sends job (don't use put strategy, because queue is empty)
+						jobsList.add(new JobInfo(job));
+						//forward without any delay
+						forward(jobsList.removeFirst().getJob());
 
-					//sends an ack backward
-					send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
-
-					coolStart = false;
-				} else {
-					if (!infinite) {
-						// ... if the queue is finite checks the size
-
-						// If the queue is not full adds the job and send ack
-
-						// <= size because the arrived job hasn't been inserted in Queue
-						// job list but has been inserted in NetNode job list !!
-						if (nodeJobsList.size() <= size) {
-							putStrategy[job.getJobClass().getId()].put(job, jobsList, message.getSourceSection(), message.getSource(), this);
-							send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
-
-						}
-						// queue is full
-						else {
-							// if the job has been sent by the owner node of this queue section
-							if (isMyOwnerNode(message.getSource())) {
-								send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
-
-								waitingRequests.add(new WaitingRequest(message.getSource(), message.getSourceSection(), job));
-							}
-							// otherwise if job has been sent by another node
-							else
-							// if drop is true reject the job, else add
-							// the job to waitingRequests
-							if (!drop[job.getJobClass().getId()]) {
-								waitingRequests.add(new WaitingRequest(message.getSource(), message.getSourceSection(), job));
-								//if blocking is disabled, sends ack otherwise router of the previous node remains busy
-								if (!block[job.getJobClass().getId()]) {
-									send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
-								}
-							} else {
-								// if drop, send ack event to source
-								droppedJobs++;
-								droppedJobsPerClass[job.getJobClass().getId()]++;
-
-								// Removes job from global jobInfoList - Bertoli Marco
-								getOwnerNode().getQueueNet().getJobInfoList().dropJob(job);
-
-								//after arriving to this section, the job has been inserted in the job
-								//lists of both node section and node.
-								//If drop = true, the job must be removed if the queue is full.
-								//Using the "general" send method, however, the dropped job wasn't removed
-								//from the job info list of node section and of node, then it was
-								//sent later, after receiving one or more ack.
-
-								//send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(),
-								//        message.getSource());
-
-								sendAckAfterDrop(job, 0.0, message.getSourceSection(), message.getSource());
-
-								//if the queue is inside a blocking region, the jobs
-								//counter must be decreased
-								if (isRedirectionON()) {
-									//decrease the number of jobs
-									myRegion.decreaseOccupation(job.getJobClass());
-									//sends an event to the input station (which may be blocked)
-									//send(NetEvent.EVENT_JOB_OUT_OF_REGION, null, 0.0, NodeSection.INPUT, regionInputStation);
-									send(NetEvent.EVENT_JOB_OUT_OF_REGION, job, 0.0, NodeSection.INPUT, regionInputStation);
-									//Since now for blocking regions the job dropping is handles manually at node 
-									//level hence need to create events with Jobs ..Modified for FCR Bug Fix
-								}
-							}
-						}
+						coolStart = false;
 					} else {
-						// else if the queue is infinite adds the job and sends ack
 						putStrategy[job.getJobClass().getId()].put(job, jobsList, message.getSourceSection(), message.getSource(), this);
+					}
+					//sends an ACK backward
+					send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
+				} else {
+					// Queue is full. Now we use an additional queue or drop.
 
+					// if the job has been sent by the owner node of this queue section
+					if (isMyOwnerNode(message.getSource())) {
 						send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
 
+						waitingRequests.add(new WaitingRequest(message.getSource(), message.getSourceSection(), job));
+					}
+					// otherwise if job has been sent by another node
+					else if (!drop[job.getJobClass().getId()]) {
+						// if drop is true reject the job, else add the job to waitingRequests
+						waitingRequests.add(new WaitingRequest(message.getSource(), message.getSourceSection(), job));
+						//if blocking is disabled, sends ack otherwise router of the previous node remains busy
+						if (!block[job.getJobClass().getId()]) {
+							send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
+						}
+					} else {
+						// if drop, send ack event to source
+						droppedJobs++;
+						droppedJobsPerClass[job.getJobClass().getId()]++;
+
+						// Removes job from global jobInfoList - Bertoli Marco
+						getOwnerNode().getQueueNet().getJobInfoList().dropJob(job);
+
+						//after arriving to this section, the job has been inserted in the job
+						//lists of both node section and node.
+						//If drop = true, the job must be removed if the queue is full.
+						//Using the "general" send method, however, the dropped job wasn't removed
+						//from the job info list of node section and of node, then it was
+						//sent later, after receiving one or more ack.
+
+						sendAckAfterDrop(job, 0.0, message.getSourceSection(), message.getSource());
+
+						//if the queue is inside a blocking region, the jobs
+						//counter must be decreased
+						if (isRedirectionON()) {
+							//decrease the number of jobs
+							myRegion.decreaseOccupation(job.getJobClass());
+							//sends an event to the input station (which may be blocked)
+							send(NetEvent.EVENT_JOB_OUT_OF_REGION, job, 0.0, NodeSection.INPUT, regionInputStation);
+							//Since now for blocking regions the job dropping is handles manually at node 
+							//level hence need to create events with Jobs ..Modified for FCR Bug Fix
+						}
 					}
 				}
+
 				break;
 
 			default:
@@ -707,7 +699,6 @@ public class Queue extends InputSection {
 	}
 
 	private void forward(Job job) throws jmt.common.exception.NetException {
-
 		sendForward(job, 0.0);
 	}
 
@@ -736,8 +727,7 @@ public class Queue extends InputSection {
 
 	}
 
-	/**
-	 * Gets the number of dropped jobs for the specified class
+	/**	 * Gets the number of dropped jobs for the specified class
 	 * @return the number of dropped jobs for the specified class, -1 otherwise
 	 */
 	public int getDroppedJobPerClass(int jobClass) {
