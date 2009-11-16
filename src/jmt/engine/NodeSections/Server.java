@@ -143,6 +143,7 @@ public class Server extends ServiceSection {
 	protected void nodeLinked(NetNode node) {
 		//if (numberOfVisitsPerClass != null)
 		//	tempJobsList = new JobInfoList(getJobClasses().size(), true);
+		jobsList.setServerNumber(numberOfServers);
 	}
 
 	@Override
@@ -220,5 +221,5 @@ public class Server extends ServiceSection {
 		}
 		return MSG_PROCESSED;
 	}
-
+	
 }

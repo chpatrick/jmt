@@ -494,10 +494,6 @@ public class Measure {
 			scaleMeasureWithVisitRatio();
 		}
 		
-		if (measureType == SimConstants.UTILIZATION) {
-			scaleMeasureWithServerNumber();
-		}
-		
 		//end NEW
 		if (counter == fireEventSize) {
 			counter = 0;
@@ -766,29 +762,6 @@ public class Measure {
 		scaled = true;
 		scaleFactor = visitRatio;
 
-	}
-
-	/**
-	 * This method will apply a scale factor proportional to the number of servers to give, as output,
-	 * utilization measure for each server and not the sum of them (so utilization for queue stations
-	 * will always be between 0 and 1)
-	 */
-	private void scaleMeasureWithServerNumber() {
-		// Avoid multiple scaling (not needed as server number is costant)
-		if (!scaled) {
-			int serverNum;
-			try {
-				//current measure node
-				NetNode thisNode = network.getNode(nodeName);
-				NodeSection serviceSection = thisNode.getSection(NodeSection.SERVICE);
-				serverNum = serviceSection.getIntSectionProperty(Server.PROPERTY_ID_MAX_JOBS);
-			} catch (NetException ex) {
-				// Number of servers is not available. Assumes it as 1.
-				serverNum = 1;
-			}
-			scaled = true;
-			scaleFactor = 1.0 / serverNum;
-		}
 	}
 
 	//******************ABORT**********************//

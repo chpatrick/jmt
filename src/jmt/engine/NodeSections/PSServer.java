@@ -26,6 +26,7 @@ import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
 import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
+import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NetSystem;
 import jmt.engine.QueueNet.NodeSection;
 import jmt.engine.simEngine.RemoveToken;
@@ -271,6 +272,15 @@ public class PSServer extends ServiceSection {
 		public String toString() {
 			return "Job id: " + job.getId() + " class: " + job.getJobClass().getName() + " residual time: " + residualServiceTime;
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.NodeSection#nodeLinked(jmt.engine.QueueNet.NetNode)
+	 */
+	@Override
+	protected void nodeLinked(NetNode node) {
+		jobsList.setProcessorSharing(true);
+		jobsList.setServerNumber(numberOfServers);
 	}
 
 }

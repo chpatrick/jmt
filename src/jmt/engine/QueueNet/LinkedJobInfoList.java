@@ -50,6 +50,12 @@ public class LinkedJobInfoList implements JobInfoList {
 			queueLengthPerClass[], dropRate, dropRatePerClass[];
 
 	private InverseMeasure Throughput, ThroughputPerClass[];
+	
+	/** The number of servers to estimate Utilization measure on multiserver environments. */
+	private int serverNumber = 1;
+	
+	/** Tells if the station is processor sharing, so utilization measure should be limited. */
+	private boolean processorSharing = false;
 
 	/** Creates a new JobInfoList instance.
 	* @param NumberOfJobClasses number of job classes.
@@ -632,16 +638,20 @@ public class LinkedJobInfoList implements JobInfoList {
 	}
 
 	private void updateUtilization(JobClass JobClass) {
+		double divisor = serverNumber;
+		if (processorSharing && list.size() > serverNumber) {
+			divisor = list.size();
+		}
+		
 		if (utilizationPerClass != null) {
 			int c = JobClass.getId();
 			Measure m = utilizationPerClass[c];
 			if (m != null) {
-
-				m.update(listPerClass[c].size(), NetSystem.getTime() - getLastModifyTimePerClass(JobClass));
+				m.update(listPerClass[c].size() / divisor, NetSystem.getTime() - getLastModifyTimePerClass(JobClass));
 			}
 		}
 		if (utilization != null) {
-			utilization.update(list.size(), NetSystem.getTime() - getLastModifyTime());
+			utilization.update(list.size() / divisor, NetSystem.getTime() - getLastModifyTime());
 		}
 	}
 
@@ -807,6 +817,21 @@ public class LinkedJobInfoList implements JobInfoList {
 		} else {
 			return false;
 		}
+	}
+	
+
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#setServerNumber(int)
+	 */
+	public void setServerNumber(int serverNumber) {
+		this.serverNumber = serverNumber;
+	}
+	
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.JobInfoList#setProcessorSharing(boolean)
+	 */
+	public void setProcessorSharing(boolean processorSharing) {
+		this.processorSharing = processorSharing;
 	}
 
 }

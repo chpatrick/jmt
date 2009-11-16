@@ -305,5 +305,17 @@ public interface JobInfoList {
 	* otherwise no list was created by the constructor)
 	 */
 	public abstract boolean dropJob(Job job) throws jmt.common.exception.NetException;
+	
+	/**
+	 * Sets the number of servers. This parameter is used to scale utilization
+	 * @param serverNumber the number of servers.
+	 */
+	public void setServerNumber(int serverNumber);
+	
+	/**
+	 * Sets if the station is processor sharing. This parameter is used to scale utilization
+	 * @param processorSharing true if station is processor sharing.
+	 */
+	public void setProcessorSharing(boolean processorSharing);
 
 }
