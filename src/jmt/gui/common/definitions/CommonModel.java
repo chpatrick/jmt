@@ -34,6 +34,7 @@ import jmt.gui.common.CommonConstants;
 import jmt.gui.common.Defaults;
 import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
+import jmt.jmarkov.Queues.QueueStack;
 
 /**
  * Created by IntelliJ IDEA.
@@ -798,7 +799,11 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		queueCapacity = Defaults.getAsInteger("stationCapacity");
 		Integer numberOfServers;
 		numberOfServers = Defaults.getAsInteger("stationServers");
-
+		sd.queueStrategy = Defaults.get("stationStationQueueStrategy");
+		if (sd.queueStrategy.equals(QUEUE_STRATEGY_STATION_PS) && !sd.type.equals(STATION_TYPE_SERVER)) {
+			sd.queueStrategy = QUEUE_STRATEGY_STATION_QUEUE;
+		}
+		
 		sd.numOfServers = numberOfServers;
 		sd.queueCapacity = queueCapacity;
 
@@ -935,6 +940,25 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 				save = true;
 			}
 			current.dropRule = rule;
+		}
+	}
+	
+	public void setStationQueueStrategy(Object stationKey, String strategy) {
+		StationData station = (StationData) stationDataHM.get(stationKey);
+		if (station != null) {
+			if (!station.queueStrategy.equals(strategy)) {
+				save = true;
+			}
+			station.queueStrategy = strategy;
+		}
+	}
+	
+	public String getStationQueueStrategy(Object stationKey) {
+		StationData station = (StationData) stationDataHM.get(stationKey);
+		if (station != null) {
+			return station.queueStrategy;
+		} else {
+			return null;
 		}
 	}
 
@@ -2232,6 +2256,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 * such as connections) need to be stored in other type of data structure and shouldn't
 	 * be stored inside this class*/
 	protected class StationData {
+		public String queueStrategy;
 		public String name;
 		public String type;
 		public Integer numOfServers;

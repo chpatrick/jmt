@@ -73,8 +73,9 @@ public interface CommonConstants {
 	/**Constants for selection of queueing strategy*/
 	public final static String QUEUE_STRATEGY_LCFS = "LCFS";
 	public final static String QUEUE_STRATEGY_FCFS = "FCFS";
-	public final static String QUEUE_STRATEGY_LCFS_PRIORITY = "LCFS (Priority)";
-	public final static String QUEUE_STRATEGY_FCFS_PRIORITY = "FCFS (Priority)";
+	public final static String QUEUE_STRATEGY_STATION_PS = "Processor Sharing";
+	public final static String QUEUE_STRATEGY_STATION_QUEUE = "Queue";
+	public final static String QUEUE_STRATEGY_STATION_QUEUE_PRIORITY = "Queue (Priority)";
 
 	/**Constants used for service time distributions*/
 	public static final String SERVICE_LOAD_INDEPENDENT = "Load Independent";

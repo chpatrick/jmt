@@ -654,17 +654,8 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 		// Creates a Map with Queue Strategies Names, then delegates addInputCombo to create
 		// graphical components
 		Map distributions = new TreeMap();
-		Field[] fields = jmt.gui.jmodel.JMODELConstants.class.getFields();
-		try {
-			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].getName().startsWith("QUEUE_STRATEGY_")) {
-					distributions.put(fields[i].get(null).toString(), fields[i].get(null).toString());
-				}
-			}
-		} catch (IllegalAccessException ex) {
-			System.err.println("A security manager has blocked reflection");
-			ex.printStackTrace();
-		}
+		distributions.put(CommonConstants.QUEUE_STRATEGY_FCFS, CommonConstants.QUEUE_STRATEGY_FCFS);
+		distributions.put(CommonConstants.QUEUE_STRATEGY_LCFS, CommonConstants.QUEUE_STRATEGY_LCFS);
 		addInputCombo(text, property, cont, distributions);
 	}
 

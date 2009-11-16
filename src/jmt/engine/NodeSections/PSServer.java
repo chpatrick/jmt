@@ -111,6 +111,33 @@ public class PSServer extends ServiceSection {
 		}
 	}
 
+	
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.NodeSection#getDoubleSectionProperty(int, jmt.engine.QueueNet.JobClass)
+	 */
+	@Override
+	public double getDoubleSectionProperty(int id, JobClass jobClass) throws NetException {
+		if (id == PROPERTY_ID_UTILIZATION) {
+			double divisor = numberOfServers;
+			return jobsList.getBusyTimePerClass(jobClass) / NetSystem.getTime() / divisor;
+		} else {
+			return super.getDoubleSectionProperty(id, jobClass);
+		}
+	}
+
+	/* (non-Javadoc)
+	 * @see jmt.engine.QueueNet.NodeSection#getDoubleSectionProperty(int)
+	 */
+	@Override
+	public double getDoubleSectionProperty(int id) throws NetException {
+		if (id == PROPERTY_ID_UTILIZATION) {
+			double divisor = numberOfServers;
+			return jobsList.getBusyTime() / NetSystem.getTime() / divisor;
+		} else {
+			return super.getDoubleSectionProperty(id);
+		}
+	}
+
 	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
 		switch (message.getEvent()) {

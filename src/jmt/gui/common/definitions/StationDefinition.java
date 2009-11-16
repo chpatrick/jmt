@@ -20,6 +20,8 @@ package jmt.gui.common.definitions;
 
 import java.util.Vector;
 
+import jmt.gui.common.definitions.CommonModel.StationData;
+
 /**
  * Created by IntelliJ IDEA.
  * User: OrsotronIII
@@ -288,4 +290,9 @@ public interface StationDefinition {
 	 * @return the key of the station
 	 */
 	public Object getStationByName(String stationName);
+	
+	public void setStationQueueStrategy(Object stationKey, String strategy);
+	
+	public String getStationQueueStrategy(Object stationKey);
+
 }

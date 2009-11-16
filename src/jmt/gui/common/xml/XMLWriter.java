@@ -71,8 +71,18 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 		{
 			put(QUEUE_STRATEGY_FCFS, "TailStrategy");
 			put(QUEUE_STRATEGY_LCFS, "HeadStrategy");
-			put(QUEUE_STRATEGY_FCFS_PRIORITY, "TailStrategyPriority");
-			put(QUEUE_STRATEGY_LCFS_PRIORITY, "HeadStrategyPriority");
+		}
+	};
+
+	protected static final HashMap priorityQueuePutStrategyNamesMatchings = new HashMap() {
+		/**
+		 *
+		 */
+		private static final long serialVersionUID = 1L;
+
+		{
+			put(QUEUE_STRATEGY_FCFS, "TailStrategyPriority");
+			put(QUEUE_STRATEGY_LCFS, "HeadStrategyPriority");
 		}
 	};
 
@@ -376,7 +386,14 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 
 		/*queue get strategy, which is fixed to FCFS, as difference between strategies can
 		be resolved by queueput strategies*/
-		XMLParameter queueGetStrategy = new XMLParameter("FCFSstrategy", strategiesClasspathBase + queuegetStrategiesSuffix + "FCFSstrategy", null,
+		String strategy = "FCFSstrategy";
+		boolean priority = false;
+		if (QUEUE_STRATEGY_STATION_PS.equals(model.getStationQueueStrategy(stationKey))) {
+			strategy = "PSStrategy";
+		} else if (QUEUE_STRATEGY_STATION_QUEUE_PRIORITY.equals(model.getStationQueueStrategy(stationKey))) {
+			priority = true;
+		}
+		XMLParameter queueGetStrategy = new XMLParameter(strategy, strategiesClasspathBase + queuegetStrategiesSuffix + "FCFSstrategy", null,
 				(String) null, false);
 		queueGetStrategy.appendParameterElement(doc, queue);
 		/*At last, queue put parameter, which can be defined differently for each
@@ -385,7 +402,8 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 		XMLParameter queuePutStrategy = new XMLParameter("NetStrategy", strategiesClasspathBase + "QueuePutStrategy", null, queuePutStrategies, false);
 		for (int i = 0; i < queuePutStrategies.length; i++) {
 			String queueStrategy = model.getQueueStrategy(stationKey, classes.get(i));
-			String queueputStrategyName = (String) queuePutStrategyNamesMatchings.get(queueStrategy);
+			HashMap map = priority ? priorityQueuePutStrategyNamesMatchings : queuePutStrategyNamesMatchings;
+			String queueputStrategyName = (String) map.get(queueStrategy);
 			queuePutStrategies[i] = new XMLParameter(queueputStrategyName, strategiesClasspathBase + queueputStrategiesSuffix + queueputStrategyName,
 					model.getClassName(classes.get(i)), (String) null, true);
 		}
@@ -419,7 +437,12 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 
 	static protected void writeServerSection(Document doc, Node nodeNode, CommonModel model, Object stationKey) {
 		Element elem = doc.createElement(XML_E_STATION_SECTION);
-		elem.setAttribute(XML_A_STATION_SECTION_CLASSNAME, CLASSNAME_SERVER);
+		if (QUEUE_STRATEGY_STATION_PS.equals(model.getStationQueueStrategy(stationKey))) {
+			elem.setAttribute(XML_A_STATION_SECTION_CLASSNAME, CLASSNAME_PSSERVER);
+		} else {
+			elem.setAttribute(XML_A_STATION_SECTION_CLASSNAME, CLASSNAME_SERVER);
+		}
+
 		nodeNode.appendChild(elem);
 		Vector classes = model.getClassKeys();
 		//creating number of servers node element

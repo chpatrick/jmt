@@ -43,6 +43,7 @@ import jmt.gui.common.routingStrategies.ProbabilityRouting;
 import jmt.gui.common.routingStrategies.RoutingStrategy;
 import jmt.gui.common.serviceStrategies.LDStrategy;
 import jmt.gui.common.serviceStrategies.ZeroStrategy;
+import jmt.engine.NodeSections.PSServer;
 import jmt.engine.log.JSimLogger;
 import jmt.engine.log.LoggerParameters;
 
@@ -103,6 +104,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 
 	protected static final String queueGetFCFS = "jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy";
 	protected static final String queueGetLCFS = "jmt.engine.NetStrategies.QueueGetStrategies.LCFSstrategy";
+	protected static final String queueGetPS = "jmt.engine.NetStrategies.QueueGetStrategies.PSSstrategy";
 	protected static final String queuePut = "jmt.engine.NetStrategies.QueuePutStrategy";
 	protected static final String serviceStrategy = "jmt.engine.NetStrategies.ServiceStrategy";
 	protected static final String distributionContainer = "jmt.engine.random.DistributionContainer";
@@ -361,7 +363,6 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 				parseQueue((Element) sections.item(0), model, key);
 				parseFork((Element) sections.item(2), model, key);
             }else if (type.equals(STATION_TYPE_LOGGER)) {
-            	parseQueue((Element)sections.item(0), model, key);
             	parseLogger((Element)sections.item(1), model, key);
             	parseRouter((Element)sections.item(2), model, key);
             }
@@ -411,6 +412,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		Element curr;
 		String name, classpath;
 		boolean fcfs = true;
+		boolean ps = false;
 		Map putStrategy = null;
 		Map dropRules = null;
 		for (int i = 0; i < parameters.getLength(); i++) {
@@ -421,6 +423,9 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 				fcfs = true;
 			} else if (classpath.equals(queueGetLCFS)) {
 				fcfs = false;
+			} else if (classpath.equals(queueGetPS)) {
+				fcfs = false;
+				ps = true;
 			} else if (classpath.equals(queuePut)) {
 				putStrategy = parseParameterRefclassArray(curr);
 			} else if (name.equals("size")) {
@@ -438,29 +443,36 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 				// Takes away classpath from put strategy name
 				strategy = strategy.substring(strategy.lastIndexOf(".") + 1, strategy.length());
 				// Now sets correct queue strategy, given combination of queueget and queueput policies
-				if (strategy.equals("HeadStrategy")) {
+				if (ps) {
+					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_PS);
+					model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS);
+				} else if (strategy.equals("HeadStrategy")) {
+					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_QUEUE);
 					if (fcfs) {
 						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_LCFS);
 					} else {
 						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS);
 					}
 				} else if (strategy.equals("HeadStrategyPriority")) {
+					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_QUEUE_PRIORITY);
 					if (fcfs) {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_LCFS_PRIORITY);
+						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_LCFS);
 					} else {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS_PRIORITY);
+						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS);
 					}
 				} else if (strategy.equals("TailStrategy")) {
+					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_QUEUE);
 					if (fcfs) {
 						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS);
 					} else {
 						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_LCFS);
 					}
 				} else if (strategy.equals("TailStrategyPriority")) {
+					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_QUEUE_PRIORITY);
 					if (fcfs) {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS_PRIORITY);
+						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS);
 					} else {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_LCFS_PRIORITY);
+						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_LCFS);
 					}
 				}
 			}
@@ -500,6 +512,10 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	 * @param key key of search for this source station into data structure
 	 */
 	protected static void parseServer(Element section, CommonModel model, Object key) {
+		String className = section.getAttribute(XML_A_STATION_SECTION_CLASSNAME);
+		if (CLASSNAME_PSSERVER.equals(className)) {
+			model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_PS);
+		} 
 		NodeList parameters = section.getElementsByTagName(XML_E_PARAMETER);
 		Element curr;
 		String name, classpath;
@@ -862,7 +878,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			return STATION_TYPE_TERMINAL;
 		} else if (sectionNames[1].equals(CLASSNAME_DELAY)) {
 			return STATION_TYPE_DELAY;
-		} else if (sectionNames[1].equals(CLASSNAME_SERVER)) {
+		} else if (sectionNames[1].equals(CLASSNAME_SERVER) || sectionNames[1].equals(CLASSNAME_PSSERVER)) {
 			return STATION_TYPE_SERVER;
 		} else if (sectionNames[2].equals(CLASSNAME_FORK)) {
 			return STATION_TYPE_FORK;

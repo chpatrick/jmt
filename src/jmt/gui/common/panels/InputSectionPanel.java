@@ -21,9 +21,14 @@ package jmt.gui.common.panels;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -61,12 +66,16 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * Used to define queuing policy
 	 */
-	protected Object[] queuePolicy = new Object[] { QUEUE_STRATEGY_FCFS, QUEUE_STRATEGY_FCFS_PRIORITY, QUEUE_STRATEGY_LCFS,
-			QUEUE_STRATEGY_LCFS_PRIORITY };
+	protected Object[] queuePolicy = { QUEUE_STRATEGY_FCFS, QUEUE_STRATEGY_LCFS };
 	/**
 	 * Used to define drop rules
 	 */
-	protected Object[] dropRules = new Object[] { CommonConstants.FINITE_WAITING, CommonConstants.FINITE_BLOCK, CommonConstants.FINITE_DROP };
+	protected Object[] dropRules = { CommonConstants.FINITE_WAITING, CommonConstants.FINITE_BLOCK, CommonConstants.FINITE_DROP };
+	
+	protected Object[] serverQueuePolicy = { QUEUE_STRATEGY_STATION_PS, QUEUE_STRATEGY_STATION_QUEUE, QUEUE_STRATEGY_STATION_QUEUE_PRIORITY };
+
+	protected Object[] stationQueuePolicy = { QUEUE_STRATEGY_STATION_QUEUE, QUEUE_STRATEGY_STATION_QUEUE_PRIORITY };
+
 	private ButtonGroup queueLengthGroup;
 	private JRadioButton infiniteQueueSelector, finiteQueueSelector;
 	private JSpinner queueLengthSpinner;
@@ -77,6 +86,8 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 	protected StationDefinition data;
 	protected ClassDefinition classData;
 	protected Object stationKey;
+	
+	protected JComboBox queuePolicyCombo;
 
 	public InputSectionPanel(StationDefinition sd, ClassDefinition cd, Object stationKey) {
 		classEditor = new ImagedComboBoxCellEditorFactory(cd);
@@ -100,12 +111,20 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 		queueTable = new QueueTable();
 
 		//queue details panel
-		JPanel queuePolicyPanel = new JPanel(new GridLayout(1, 1));
+		JPanel queuePolicyPanel = new JPanel(new BorderLayout());
 		queuePolicyPanel.setBorder(new TitledBorder(new EtchedBorder(), "Queue Policy"));
-		queuePolicyPanel.add(new WarningScrollTable(queueTable, WARNING_CLASS));
+		queuePolicyPanel.add(new WarningScrollTable(queueTable, WARNING_CLASS), BorderLayout.CENTER);
 		JPanel queueLengthPanel = new JPanel(new GridLayout(3, 1, 3, 3));
 		queueLengthPanel.setBorder(new TitledBorder(new EtchedBorder(), "Capacity"));
 
+		// Queue strategy selector
+		JPanel queueStrategy = new JPanel(new BorderLayout());
+		queueStrategy.add(new JLabel("Station queue policy: "), BorderLayout.WEST);
+		queuePolicyCombo = new JComboBox();
+		queueStrategy.add(queuePolicyCombo, BorderLayout.CENTER);
+		queuePolicyPanel.add(queueStrategy, BorderLayout.NORTH);
+		queueStrategy.setBorder(BorderFactory.createEmptyBorder(2, 5, 10, 5));
+		
 		queueLengthPanel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		queueLengthPanel.add(infiniteQueueSelector);
 		queueLengthPanel.add(finiteQueueSelector);
@@ -141,6 +160,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 						queueLengthSpinner.setValue(queueLength);
 					}
 					data.setStationQueueCapacity(queueLength, stationKey);
+					queueTable.repaint();
 				}
 			}
 		});
@@ -153,6 +173,13 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 
 		infiniteQueueSelector.addChangeListener(buttonListener);
 		finiteQueueSelector.addChangeListener(buttonListener);
+		
+		queuePolicyCombo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				data.setStationQueueStrategy(stationKey, (String)queuePolicyCombo.getSelectedItem());
+				queueTable.repaint();
+			}
+		});
 	}
 
 	private void getQueueLength() {
@@ -191,6 +218,12 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 	 */
 	public void gotFocus() {
 		classEditor.clearCache();
+		if (data.getStationType(stationKey).equals(STATION_TYPE_SERVER)) {
+			queuePolicyCombo.setModel(new DefaultComboBoxModel(serverQueuePolicy));
+		} else {
+			queuePolicyCombo.setModel(new DefaultComboBoxModel(stationQueuePolicy));
+		}
+		queuePolicyCombo.setSelectedItem(data.getStationQueueStrategy(stationKey));
 	}
 
 	/**
@@ -210,6 +243,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 		 */
 		private static final long serialVersionUID = 1L;
 		private DisabledColumnRenderer disRend = new DisabledColumnRenderer(CommonConstants.INFINITE_CAPACITY);
+		private DisabledColumnRenderer procShar = new DisabledColumnRenderer(QUEUE_STRATEGY_STATION_PS);
 
 		public QueueTable() {
 			super();
@@ -238,7 +272,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 			if (column == 0) {
 				return classEditor.getRenderer();
 			} else if (column == 1) {
-				return ComboBoxCellEditor.getRendererInstance();
+				return procShar;
 			} else if (column == 2) {
 				return disRend;
 			} else {
@@ -274,7 +308,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 		}
 
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			return columnIndex == 1 || (columnIndex == 2 && data.getStationQueueCapacity(stationKey).intValue() >= 0);
+			return (columnIndex == 1 && !data.getStationQueueStrategy(stationKey).equals(QUEUE_STRATEGY_STATION_PS)) || (columnIndex == 2 && data.getStationQueueCapacity(stationKey).intValue() >= 0);
 		}
 
 		public Object getValueAt(int rowIndex, int columnIndex) {
@@ -330,16 +364,26 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 		 * @see jmt.gui.common.editors.ComboBoxCellEditor#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
 		 */
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-			if (data.getStationQueueCapacity(stationKey).intValue() < 0) {
-				if (isSelected) {
-					label.setBackground(table.getSelectionBackground());
-				} else {
-					label.setBackground(table.getBackground());
+			if (column == 1) {
+				if (data.getStationQueueStrategy(stationKey).equals(QUEUE_STRATEGY_STATION_PS)) {
+					if (isSelected) {
+						label.setBackground(table.getSelectionBackground());
+					} else {
+						label.setBackground(table.getBackground());
+					}
+					return label;
 				}
-				return label;
-			} else {
-				return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+			} else if (column == 2) {
+				if (data.getStationQueueCapacity(stationKey).intValue() < 0) {
+					if (isSelected) {
+						label.setBackground(table.getSelectionBackground());
+					} else {
+						label.setBackground(table.getBackground());
+					}
+					return label;
+				}
 			}
+			return super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 		}
 
 	}
