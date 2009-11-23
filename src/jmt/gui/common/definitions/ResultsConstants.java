@@ -36,6 +36,10 @@ package jmt.gui.common.definitions;
  * Desc: The code to include the changes for label changes from 
  *       1. Customer Number to Number of Customers
  *       2. System Customer Number to System Number of Customers.
+ *       
+ * 
+ * Modified by Ashanka (Nov 09):
+ * Desc: Added the description of the Drop Rate
  */
 public interface ResultsConstants {
 	public static final int BORDERSIZE = 20;
@@ -88,6 +92,9 @@ public interface ResultsConstants {
 	+ "System Power for each chosen class." + HTML_FONT_NOR_END + HTML_END;
 
 	//Added by ASHANKA STOP
+	
+	public static final String DESCRIPTION_DROPRATE = HTML_START + HTML_FONT_TITLE + "Drop Rate" + HTML_FONT_TIT_END + HTML_FONT_NORM
+	+ "Rate of the customers dropped before entering the station" + HTML_FONT_NOR_END + HTML_END;
 
 	// Temp measure mean label
 	public static final String TEMP_MEAN = HTML_START + HTML_FONT_NORM + "<b>Average value: </b>" + HTML_FONT_NOR_END + HTML_END;

@@ -109,6 +109,12 @@ import jmt.gui.exact.table.ExactTableModel;
  * Desc: The code to include the changes for label changes from 
  *       1. Customer Number to Number of Customers
  *       2. System Customer Number to System Number of Customers.
+ *       
+ * Modified by Ashanka (Nov 09):
+ * Desc: Added the description of the Drop Rate
+ * 
+ * Modified by Ashanka (Nov 09):
+ * Desc: Appended the values of various measures to the tool tip.
  */
 public class PAResultsWindow extends JMTFrame implements ResultsConstants, ParametricAnalysis {
 	/**
@@ -153,10 +159,10 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		addTabPane(mainPanel, "Response Time", DESCRIPTION_RESPONSETIMES, results.getResponseTimeMeasures());
 		addTabPane(mainPanel, "Utilization", DESCRIPTION_UTILIZATIONS, results.getUtilizationMeasures());
 		addTabPane(mainPanel, "Throughput", DESCRIPTION_THROUGHPUTS, results.getThroughputMeasures());
-		addTabPane(mainPanel, "Drop Rate", "todo", results.getDropRateMeasures());
+		addTabPane(mainPanel, "Drop Rate", DESCRIPTION_DROPRATE, results.getDropRateMeasures());
 		addTabPane(mainPanel, "System Throughput", DESCRIPTION_SYSTEMTHROUGHPUTS, results.getSystemThroughputMeasures());
 		addTabPane(mainPanel, "System Response Time", DESCRIPTION_SYSTEMRESPONSETIMES, results.getSystemResponseTimeMeasures());
-		addTabPane(mainPanel, "System Drop Rate", "todo", results.getSystemDropRateMeasures());
+		addTabPane(mainPanel, "System Drop Rate", DESCRIPTION_DROPRATE, results.getSystemDropRateMeasures());
 		addTabPane(mainPanel, "System Number of Customers", DESCRIPTION_CUSTOMERNUMBERS, results.getCustomerNumberMeasures());
 		//Added by ASHANKA START
 		//Adds the System Power panel in the results window.
@@ -364,7 +370,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			field.setMaximumSize(new Dimension(field.getMaximumSize().width, field.getMinimumSize().height));
 			label.setLabelFor(field);
 			field.setText(rm.getStationName(measureIndex));
-			field.setToolTipText("Name of the station");
+			field.setToolTipText("Name of the station: "+field.getText());
 			mainPanel.add(label);
 			mainPanel.add(field);
 			// Class name
@@ -374,7 +380,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			field.setMaximumSize(new Dimension(field.getMaximumSize().width, field.getMinimumSize().height));
 			label.setLabelFor(field);
 			field.setText(rm.getClassName(measureIndex));
-			field.setToolTipText("Name of the class");
+			field.setToolTipText("Name of the class: "+field.getText());
 			mainPanel.add(label);
 			mainPanel.add(field);
 			// Alpha/Precision
@@ -384,7 +390,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			field.setMaximumSize(new Dimension(field.getMaximumSize().width, field.getMinimumSize().height));
 			label.setLabelFor(field);
 			field.setText(rm.getAlpha(measureIndex) + " / " + rm.getPrecision(measureIndex)); // AnalyzedSamples
-			field.setToolTipText("Confidence Interval and Maximum Relative Error requested for this measure");
+			field.setToolTipText("Confidence Interval and Maximum Relative Error requested for this measure: "+field.getText());
 			mainPanel.add(label);
 			mainPanel.add(field);
 			//Samples
@@ -394,7 +400,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			samples.setMaximumSize(new Dimension(samples.getMaximumSize().width, samples.getMinimumSize().height));
 			label.setLabelFor(samples);
 			samples.setText("" + values.size());
-			samples.setToolTipText("Number of samples");
+			samples.setToolTipText("Number of samples: "+samples.getText());
 			mainPanel.add(label);
 			mainPanel.add(samples);
 			//xMin

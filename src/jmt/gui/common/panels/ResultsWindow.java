@@ -74,6 +74,12 @@ import jmt.gui.common.xml.XMLConstantNames;
  * Desc: The code to include the changes for label changes from 
  *       1. Customer Number to Number of Customers
  *       2. System Customer Number to System Number of Customers.
+ *       
+ * Modified by Ashanka (Nov 09):
+ * Desc: Added the description of the Drop Rate
+ * 
+ * Modified by Ashanka (Nov 09):
+ * Desc: Appended the values of various measures to the tool tip.
  */
 public class ResultsWindow extends JMTFrame implements ResultsConstants {
 	/**
@@ -129,10 +135,10 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		addTabPane(mainPanel, "Response Time", DESCRIPTION_RESPONSETIMES, results.getResponseTimeMeasures());
 		addTabPane(mainPanel, "Utilization", DESCRIPTION_UTILIZATIONS, results.getUtilizationMeasures());
 		addTabPane(mainPanel, "Throughput", DESCRIPTION_THROUGHPUTS, results.getThroughputMeasures());
-		addTabPane(mainPanel, "Drop Rate", "todo", results.getDropRateMeasures());
+		addTabPane(mainPanel, "Drop Rate", DESCRIPTION_DROPRATE, results.getDropRateMeasures());
 		addTabPane(mainPanel, "System Response Time", DESCRIPTION_SYSTEMRESPONSETIMES, results.getSystemResponseTimeMeasures());
 		addTabPane(mainPanel, "System Throughput", DESCRIPTION_SYSTEMTHROUGHPUTS, results.getSystemThroughputMeasures());
-		addTabPane(mainPanel, "System Drop Rate", "todo", results.getSystemDropRateMeasures());
+		addTabPane(mainPanel, "System Drop Rate", DESCRIPTION_DROPRATE, results.getSystemDropRateMeasures());
 		addTabPane(mainPanel, "System Number of Customers", DESCRIPTION_CUSTOMERNUMBERS, results.getCustomerNumberMeasures());
 		//Added by ASHANKA START
 		//Adds the System Power panel in the results window
@@ -349,7 +355,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			String stationName = md.getStationName(measureIndex);
 			if (stationName != null && !stationName.equals("")) {
 				field.setText(stationName);
-				field.setToolTipText("Name of the station");
+				field.setToolTipText("Name of the station: "+field.getText());
 			} else {
 				field.setText(ALL_STATIONS);
 				field.setToolTipText("This measure is referred to the entire network");
@@ -366,7 +372,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			String className = md.getClassName(measureIndex);
 			if (className != null && !className.equals("")) {
 				field.setText(className);
-				field.setToolTipText("Name of the class");
+				field.setToolTipText("Name of the class: "+field.getText());
 			} else {
 				field.setText(ResultsConstants.ALL_CLASSES);
 				field.setToolTipText("This measure is an aggregate of every class");
@@ -380,7 +386,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			field.setMaximumSize(new Dimension(field.getMaximumSize().width, field.getMinimumSize().height));
 			label.setLabelFor(field);
 			field.setText(md.getAlpha(measureIndex) + " / " + md.getPrecision(measureIndex)); // AnalyzedSamples
-			field.setToolTipText("Confidence Interval and Maximum Relative Error requested for this measure");
+			field.setToolTipText("Confidence Interval and Maximum Relative Error requested for this measure: "+field.getText());
 			mainPanel.add(label);
 			mainPanel.add(field);
 			// Analyzed samples
@@ -390,7 +396,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			samples.setMaximumSize(new Dimension(samples.getMaximumSize().width, samples.getMinimumSize().height));
 			label.setLabelFor(samples);
 			samples.setText("" + md.getAnalizedSamples(measureIndex));
-			samples.setToolTipText("Number of samples currently analized");
+			samples.setToolTipText("Number of samples currently analized: "+samples.getText());
 			mainPanel.add(label);
 			mainPanel.add(samples);
 
@@ -405,7 +411,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			if (lastValue.getLowerBound() > 0 && !Double.isInfinite(lastValue.getLowerBound())) {
 				lower.setText(doubleToString(lastValue.getLowerBound()));
 			}
-			lower.setToolTipText("Minimum value of current confidence interval");
+			lower.setToolTipText("Minimum value of current confidence interval: "+lower.getText());
 			mainPanel.add(label);
 			mainPanel.add(lower);
 
@@ -418,7 +424,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			if (lastValue.getUpperBound() > 0 && !Double.isInfinite(lastValue.getUpperBound())) {
 				upper.setText(doubleToString(lastValue.getUpperBound()));
 			}
-			upper.setToolTipText("Maximum value of current confidence interval");
+			upper.setToolTipText("Maximum value of current confidence interval: "+upper.getText());
 			mainPanel.add(label);
 			mainPanel.add(upper);
 
@@ -430,7 +436,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			label = new JLabel(TEMP_MEAN);
 			mean = new JTextField();
 			mean.setEditable(false);
-			mean.setToolTipText("Current mean value of this measure");
+			mean.setToolTipText("Current mean value of this measure: "+mean.getText());
 			label.setLabelFor(mean);
 			mean.setText(doubleToString(((MeasureValue) values.lastElement()).getMeanValue()));
 			bottomPanel.add(label, BorderLayout.WEST);
@@ -490,14 +496,18 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 						// Updates mean, lower, upper and samples
 						if (lastValue.getLowerBound() > 0 && !Double.isInfinite(lastValue.getUpperBound())) {
 							lower.setText(doubleToString(lastValue.getLowerBound()));
+							lower.setToolTipText("Minimum value of current confidence interval: "+lower.getText());
 							upper.setText(doubleToString(lastValue.getUpperBound()));
+							upper.setToolTipText("Maximum value of current confidence interval: "+upper.getText());
 						} else {
 							lower.setText("-");
 							upper.setText("-");
 						}
 
 						mean.setText(doubleToString(lastValue.getMeanValue()));
+						mean.setToolTipText("Current mean value of this measure: "+mean.getText());
 						samples.setText("" + md.getAnalizedSamples(measureIndex));
+						samples.setToolTipText("Number of samples currently analized: "+samples.getText());
 						// If finished is true, state was changed
 						if (finished) {
 							setCorrectState();
