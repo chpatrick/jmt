@@ -1,20 +1,20 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+ * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation; either version 2 of the License, or
-  * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
 
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
 
-  * You should have received a copy of the GNU General Public License
-  * along with this program; if not, write to the Free Software
-  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  */
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 /*
  * Created on 16-mar-2004 by Ernesto
@@ -22,68 +22,44 @@
  */
 package jmt.jmarkov.Graphics;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.GradientPaint;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Stroke;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.geom.Area;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.geom.RoundRectangle2D;
-import java.util.Vector;
-
-import javax.swing.JComponent;
-
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
-import jmt.jmarkov.Queues.MM1Data;
+import jmt.jmarkov.Queues.Exceptions.NonErgodicException; // import
+															// jmt.jmarkov.Queues.MM1Data;
 import jmt.jmarkov.Queues.QueueLogic;
-import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 
-/**
- * MMQueues
- * --------------------------------------
- * 16-mar-2004 - Graphics/QueueDrawNotifier.java
- * 
- * @author Ernesto
- */
-public class QueueDrawer extends JComponent implements Notifier, Runnable {
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.geom.*;
+import java.util.Vector;
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
-	//NEW
-	//@author Stefano Omini
-	// introduced DEBUG var to skip System.out.println() calls in final release
-	private static final boolean DEBUG = false;
-	//end NEW
+public class QueueDrawer extends JComponent implements Notifier {
+
 
 	private QueueLogic ql;
-	private Vector jobsv;
-	private MM1Data mm1;
-	private double Ui;
 
-	//timings
-	private long remainingTime, totTime, runTime, FPMS = 100;
+	private long[] remainingTime, totTime;
+	private int nCpu = 1;
 
-	//queue data
-	private int jobs = 0, donejobs = 0, totjobs = 0, queueMax = 0, queueLen = 0, queueMedia = 0, lostJobs = 0, view = 0, VIEWS = 2;
+	// queue data
+	private int jobs = 0, 
+				donejobs = 0,
+		 		totjobs = 0,
+				queueMax = 0,
+				// queueLen = 0,
+				queueMedia = 0, 
+				lostJobs = 0, 
+				view = 0;
+	
+	private static final int VIEWS = 2;
 
-	//panel settings
+	// panel settings
 	private double panelH = 250, panelW = 400, minH = 100, minW = 400;
 
-	//draw settings
+	// draw settings
 	private DrawConstrains dCst;
 	private static double START_GAP, END_GAP, ELEM_HEIGHT, ELEM_WIDTH, ELEMS_GAP, PROC_RAD, STAT_RAD, MORE_JOBS_MAX = 100, LOST_JOBS_MAX = 100;
 	private Rectangle2D[] queue;
@@ -101,16 +77,16 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 	private Color emptyC = Color.WHITE, queueC = Color.BLUE, busyC = queueC.brighter().brighter(), animC = Color.RED;
 	private boolean procUseGradient = true, queueUseGradient = true, gradientF, viewButtonClicked = false;
 
-	/**
-	 * Costruisce il grafico della coda in un pannello di 
-	 * altezza = 250, larghezza = 400
-	 *
-	 */
+	private boolean[] processorRunning;
+	private int executingJobId;
+
+
 	public QueueDrawer(QueueLogic ql) {
 		super();
 		this.ql = ql;
 		panelW = this.getWidth();
 		panelH = this.getHeight();
+		setCpuNumber(1);
 		init();
 	}
 
@@ -119,7 +95,12 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		this.ql = ql;
 		panelW = panelSize.width;
 		panelH = panelSize.height;
+		setCpuNumber(1);
 		init();
+	}
+	
+	public void updateLogic(QueueLogic ql) {
+		this.ql = ql;
 	}
 
 	void init() {
@@ -129,19 +110,17 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		legendaC = new Color[3];
 		legendaS[0] = "current queue";
 		legendaC[0] = queueC;
-		legendaS[1] = "lost jobs";
+		legendaS[1] = "dropped customer";
 		legendaC[1] = Color.BLACK;
 		legendaS[2] = "avg.utilization";
 		legendaC[2] = busyC;
 		this.reset();
-		jobsv = new Vector();
 		viewB = new RoundRectangle2D.Double();
 		this.addMouseListener(new MouseListener() {
 			public void mouseClicked(MouseEvent e) {
 			}
 
 			public void mouseEntered(MouseEvent e) {
-
 			}
 
 			public void mouseExited(MouseEvent e) {
@@ -162,15 +141,12 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 				}
 			}
 		});
-
 	}
 
 	public void changeDrawSettings(DrawConstrains dCst) {
 		this.dCst = dCst;
-
 		resize();
-
-		//assegno le costanti di disegno
+		// assigning the constant of panel
 		f = dCst.getFont();
 		stroke = dCst.getDrawStroke();
 		START_GAP = dCst.getStartingGap();
@@ -180,87 +156,36 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		ELEMS_GAP = dCst.getElementsGap();
 		PROC_RAD = dCst.getProcessorRadius();
 
-		//inizializzo la coda
-		queueLen = queueLenght();
+		// initilazing the queue
 		queue = new Rectangle2D.Double[queueLenght()];
 		processor = new Ellipse2D.Double();
-		//repaint();
-	}
-
-	/* (non-Javadoc)
-	 * @see Graphics.Notifier#runningIn(double)
-	 */
-	public void runningIn(double t) {
-		runTime = (long) t + System.currentTimeMillis();
-		remainingTime = totTime = (long) t;
-		mm1 = (MM1Data) jobsv.elementAt(0);
-		jobsv.remove(0);
-		mm1.si = t;
-		Ui = mm1.getUi();
-		this.repaint();
+		// repaint();
 	}
 
 	/**
-	 * Imposta il numero medio di stati occupati
-	 * @param s numero medio di stati occupati
+	 * setting the number of jobs in the queue
+	 * 
+	 * @param s
+	 *            number of jobs in the queue
 	 */
-	public void setMediaJobs(int s) {
-		queueMedia = s;
+	public void setMediaJobs(double s) {
+		double queueMediaDouble = s;
+		queueMedia = (int)queueMediaDouble;
+		if(queueMediaDouble - queueMedia > .5)
+			queueMedia ++;
 		this.repaint();
 	}
 
 	public void setMaxJobs(int j) {
-		queueMax = j;
-		if (queueMax > 0) {
+		queueMax = j - 1;// q max = maxjob -1
+		if (queueMax > 0)
 			MORE_JOBS_MAX = j;
-		} else {
+		else {
 			reset();
 			MORE_JOBS_MAX = 100;
 		}
-		if (DEBUG) {
-			System.out.println("max jobs=" + queueMax);
-		}
+
 		this.repaint();
-	}
-
-	/* (non-Javadoc)
-	 * @see Graphics.Notifier#addingToQ()
-	 */
-	public void addingToQ(double t) {
-		//System.out.println("jobs:" + jobs);
-		jobs++;
-		if ((jobs > queueMax) && (queueMax > 0)) {
-			lostJobs++;
-		}
-		this.repaint();
-		mm1 = new MM1Data();
-		mm1.lambdai = t;
-		jobsv.add(mm1);
-	}
-
-	/* (non-Javadoc)
-	 * @see Graphics.Notifier#removingFromQ()
-	 */
-	public void removingFromQ() {
-		//System.out.println("jobs:" + jobs);
-		donejobs++;
-		jobs--;
-
-	}
-
-	/* (non-Javadoc)
-	 * @see Graphics.Notifier#reset()
-	 */
-	public void reset() {
-		jobs = 0;
-		donejobs = 0;
-		totjobs = 0;
-		runTime = 0;
-		totTime = 0;
-		remainingTime = 0;
-		donejobs = 0;
-		lostJobs = 0;
-		Ui = 0.0;
 	}
 
 	public void paint(Graphics g) {
@@ -284,15 +209,18 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		}
 
 		drawProcessorView(view, g2d);
-		if ((jobs > queueLenght()) && ((queueLenght() < queueMax) || (queueMax == 0))) {
+		if ((jobs > queueLenght()) && ((queueLenght() < queueMax) || (queueMax == -1)))
 			drawMoreStatus(queueC, emptyC, Color.black, gradientF, g2d);
-		}
 		drawJobs(g2d);
-		if (lostJobs > 0) {
+		if (lostJobs > 0)
 			drawLostJobs(Color.BLACK, Color.WHITE, Color.BLACK, true, g2d);
-		}
-		txtBounds = drawCenteredText("jobs in the system:" + jobs, queueC, Color.white, panelW / 2.0, panelH - ELEM_HEIGHT, g2d, false, false);
-		drawCenteredText("jobs in the system:" + jobs, queueC, Color.white, panelW / 2.0, panelH - txtBounds.getHeight() / 2.0, g2d, false, true);
+		int jobsInTheSystem;
+		jobsInTheSystem = jobs;
+		for(int i = 0;i < remainingTime.length;i++ )
+			if(remainingTime[i]>0)
+				jobsInTheSystem++;
+		txtBounds = drawCenteredText("cust. in the system:" + jobsInTheSystem , queueC, Color.white, panelW / 2.0, panelH - ELEM_HEIGHT, g2d, false, false);
+		drawCenteredText("cust. in the station:" + jobsInTheSystem, queueC, Color.white, panelW / 2.0, panelH - txtBounds.getHeight() / 2.0, g2d, false, true);
 		drawLegend(legendaC, legendaS, dCst.getFont(), dCst.getStartingGap(), dCst.getStartingGap(), g2d, true);
 	}
 
@@ -300,7 +228,20 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 	 * @param view
 	 */
 	private void drawProcessorView(int view, Graphics2D g2d) {
-		drawProcessor(Color.white, Color.black, gradientF, g2d);
+
+		
+		if (nCpu == 1)
+			drawProcessor(Color.white, Color.black, gradientF, g2d);
+		else if (nCpu == 2) {
+			drawProcessor2(Color.white, Color.black, gradientF, g2d, 0);
+			drawProcessor2(Color.white, Color.black, gradientF, g2d, 1);
+		} else if (nCpu > 2) {
+			drawProcessorMulti(Color.white, Color.black, gradientF, g2d, 0);
+			drawProcessorMulti(Color.white, Color.black, gradientF, g2d, 1);
+
+			drawPoint(Color.white, Color.black, gradientF, g2d, 0);
+			drawPoint(Color.white, Color.black, gradientF, g2d, 1);
+		}
 		double U = 1.0;
 		try {
 			U = ql.utilization();
@@ -308,23 +249,34 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		}
 		legendaS[0] = "current queue";
 		legendaC[0] = queueC;
+		if(nCpu > 2)
+			view = 0;
 		switch (view) {
-			case 1:
+		case 1:
+			if (nCpu == 1)
 				drawOccupiedPercentage(animC, Color.black, gradientF, g2d);
-				legendaS[2] = "busy time";
-				legendaC[2] = animC;
-				break;
-			case 2:
-				drawUtilization(U, busyC, Color.black, gradientF, g2d);
-				legendaS[2] = "avg.utilization";
-				legendaC[2] = busyC.brighter();
-				break;
+			else if (nCpu == 2) {
+				drawOccupiedPercentage2(animC, Color.black, gradientF, g2d, 0);
+				drawOccupiedPercentage2(animC, Color.black, gradientF, g2d, 1);
+			}
+			legendaS[2] = "residual time";
+			legendaC[2] = animC;
+			break;
 
-			default:
+
+		default:
+			if (nCpu == 1)
 				drawUtilization(U, busyC, Color.black, gradientF, g2d);
-				legendaS[2] = "avg.utilization";
-				legendaC[2] = busyC.brighter();
-				break;
+			else if (nCpu == 2) {
+				drawUtilization2(U, busyC, Color.black, gradientF, g2d, 0);
+				drawUtilization2(U, busyC, Color.black, gradientF, g2d, 1);
+			} else if (nCpu > 2) {
+				 drawUtilizationMulti(U, busyC, Color.black, gradientF, g2d,0);
+				 drawUtilizationMulti(U, busyC, Color.black, gradientF, g2d,1);
+			}
+			legendaS[2] = "avg.utilization";
+			legendaC[2] = busyC.brighter();
+			break;
 		}
 	}
 
@@ -338,8 +290,7 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 
 		queue[i] = new Rectangle2D.Double(x, y, ELEM_WIDTH, ELEM_HEIGHT);
 		if (gradientFill) {
-			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + ELEM_HEIGHT), startC.darker(),
-					false);
+			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + ELEM_HEIGHT), startC.darker(), false);
 			g2d.setPaint(gp);
 		} else {
 			g2d.setPaint(startC);
@@ -348,9 +299,9 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		g2d.setPaint(border);
 		g2d.draw(queue[i]);
 
-		//		Controllo se questo stato corrisponde alla media dei jobs
+		// Controllo se questo stato corrisponde alla media dei jobs
 		if (i == queueLenght() - queueMedia) {
-			//disegno un triangolo sopra lo stato che rappresenta la media
+			// disegno un triangolo sopra lo stato che rappresenta la media
 			GeneralPath gp = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
 			gp.moveTo((float) x, (float) (y - ELEM_HEIGHT / 2));
 			gp.lineTo((float) (x + ELEM_WIDTH), (float) (y - ELEM_HEIGHT / 2));
@@ -366,30 +317,50 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		drawCenteredText("" + (queueLenght() - i), readColor(startC), null, x, y, g2d, false, true);
 	}
 
-	private void drawLostJobs2(Color txtColor, boolean gradientFill, Graphics2D g2d) {
-		double x = getProcessorXY().x + PROC_RAD, y = getElementXY(0).y + ELEMS_GAP + ELEM_HEIGHT;
-		Color tmp = g2d.getColor();
-		int lj;
-		if (lostJobs > LOST_JOBS_MAX) {
-			lj = (int) LOST_JOBS_MAX;
-			lostJobsStr = ">" + (int) LOST_JOBS_MAX;
-		} else {
-			lj = lostJobs;
-			lostJobsStr = "" + lj;
-
-		}
-		g2d.setColor(txtColor);
-		g2d.drawString("lost jobs:" + lostJobsStr, (float) (START_GAP), (float) (panelH));
-		g2d.setColor(tmp);
-	}
+	// private void drawLostJobs2(Color txtColor, boolean gradientFill,
+	// Graphics2D g2d) {
+	// double x = getProcessorXY().x + PROC_RAD, y = getElementXY(0).y +
+	// ELEMS_GAP + ELEM_HEIGHT;
+	// Color tmp = g2d.getColor();
+	// int lj;
+	// if (lostJobs > LOST_JOBS_MAX) {
+	// lj = (int) LOST_JOBS_MAX;
+	// lostJobsStr = ">" + (int) LOST_JOBS_MAX;
+	// } else {
+	// lj = lostJobs;
+	// lostJobsStr = "" + (int) lj;
+	//
+	// }
+	// g2d.setColor(txtColor);
+	// g2d.drawString("lost jobs:" + lostJobsStr, (float) (START_GAP), (float)
+	// (panelH));
+	// g2d.setColor(tmp);
+	// }
 
 	private void drawJobs(Graphics2D g2d) {
-		double x = getProcessorXY().x + 2 * PROC_RAD, y = getProcessorXY().y + PROC_RAD * 2 + 4 * ELEMS_GAP;
+		double  x = getProcessorXY().x + 2 * PROC_RAD, 
+				y = getProcessorXY().y + PROC_RAD * 2 + 4 * ELEMS_GAP;
 		Color tmp = g2d.getColor();
-		txtBounds = drawCenteredText("executing job:" + donejobs + ", busy time:" + remainingTime, Color.BLACK, Color.WHITE, x, y, g2d, true, false);
-		drawCenteredText("executing job:" + donejobs + ", busy time:" + remainingTime + "ms", Color.BLACK, Color.WHITE, x - txtBounds.getWidth()
-				/ 2.0, y, g2d, true, true);
-		//draw box around text
+//		System.out.println(nCpu);
+		if(nCpu==1){
+			txtBounds = drawCenteredText("executing cust.:" + 
+					donejobs + ", residual time:" + remainingTime[0] + "ms", Color.BLACK, Color.WHITE, x, y, g2d, true, false);
+			drawCenteredText("executing cust.:" + 
+					donejobs + ", residual time:" + remainingTime[0] + "ms", Color.BLACK, Color.WHITE, x - txtBounds.getWidth() / 2.0, y, g2d, true, true);
+		}
+//		else if(nCpu==2){
+//			txtBounds = drawCenteredText("executing cust.:" + 
+//					donejobs + ", residual time(1):" + remainingTime[0] + "ms"+ ", residual time(2):" + remainingTime[1] + "ms", Color.BLACK, Color.WHITE, x, y, g2d, true, false);
+//			drawCenteredText("executing cust.:" + 
+//					donejobs + ", residual time(1):" + remainingTime[0] + "ms"+ ", residual time(2):" + remainingTime[1] + "ms", Color.BLACK, Color.WHITE, x - txtBounds.getWidth() / 2.0, y, g2d, true, true);
+//
+//		}
+//		else
+//		{
+//			txtBounds = drawCenteredText("executing cust.:" + donejobs , Color.BLACK, Color.WHITE, x, y, g2d, true, false);
+//			drawCenteredText("executing cust.:" + donejobs , Color.BLACK, Color.WHITE, x - txtBounds.getWidth() / 2.0, y, g2d, true, true);
+//		}
+		// draw box around text
 		g2d.setColor(tmp);
 	}
 
@@ -398,12 +369,11 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		moreStatiRect = new Rectangle2D.Double(x, y, ELEM_WIDTH * 2.0, ELEM_HEIGHT);
 		Area moreStatiA = new Area(moreStatiRect);
 		int occ = jobs;
-		if ((queueMax > 0) && (jobs > queueMax)) {
+		if ((queueMax > 0) && (jobs > queueMax))
 			occ = queueMax;
-		}
 		int mult = 1;
 		while (occ > (MORE_JOBS_MAX)) {
-			occ = (occ / 10);
+			occ = (int) (occ / 10);
 			mult = mult * 10;
 		}
 		moreStatiA.subtract(new Area(new Rectangle2D.Double(x, y, ELEM_WIDTH * 2 - ELEM_WIDTH * occ * 2 / MORE_JOBS_MAX, ELEM_HEIGHT)));
@@ -427,7 +397,8 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		g2d.draw(moreStatiA);
 		g2d.draw(moreStatiRect);
 		drawCenteredText("" + occ, readColor(filledc), null, x + ELEM_WIDTH, y + ELEM_HEIGHT / 2.0, g2d, false, true);
-		drawCenteredText("X" + mult, filledc, null, x + ELEM_WIDTH, y - ELEM_HEIGHT / 2.0, g2d, false, true);
+		drawCenteredText("x" + mult, filledc, null, x + ELEM_WIDTH, y - ELEM_HEIGHT / 2.0, g2d, false, true);
+		//System.out.println(mult);
 	}
 
 	private void drawLostJobs(Color filledc, Color emptyc, Color border, boolean gradientFill, Graphics2D g2d) {
@@ -437,7 +408,7 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		int occ = lostJobs;
 		int mult = 1;
 		while (occ > LOST_JOBS_MAX) {
-			occ = (occ / 10);
+			occ = (int) (occ / 10);
 			mult = mult * 10;
 		}
 		moreStatiA.subtract(new Area(new Rectangle2D.Double(x, y, ELEM_WIDTH * 2 - ELEM_WIDTH * occ * 2 / LOST_JOBS_MAX, ELEM_HEIGHT)));
@@ -461,15 +432,60 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		g2d.draw(moreStatiA);
 		g2d.draw(moreStatiRect);
 		drawCenteredText("" + occ, readColor(filledc), null, x + ELEM_WIDTH, y + ELEM_HEIGHT / 2.0, g2d, false, true);
-		drawCenteredText("X" + mult, filledc, null, x + ELEM_WIDTH, y - ELEM_HEIGHT / 2.0, g2d, false, true);
+		drawCenteredText("x" + mult, filledc, null, x + ELEM_WIDTH, y - ELEM_HEIGHT / 2.0, g2d, false, true);
+		drawCenteredText("Dropped", filledc, null, x + ELEM_WIDTH, y + 2.5 * ELEM_HEIGHT / 2.0, g2d, false, true);
+
 	}
 
 	private void drawProcessor(Color startC, Color border, boolean gradientFill, Graphics2D g2d) {
 		double x = getProcessorXY().x, y = getProcessorXY().y;
-		processor.setFrame(x, y, 2 * PROC_RAD, 2 * PROC_RAD);
+		processor.setFrame(x , y, 2 * PROC_RAD , 2 * PROC_RAD );
 		if (gradientFill) {
-			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + PROC_RAD * 2), startC.darker(),
-					false);
+			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + PROC_RAD * 2), startC.darker(), false);
+			g2d.setPaint(gp);
+		} else {
+			g2d.setPaint(startC);
+		}
+		g2d.fill(processor);
+		g2d.setPaint(border);
+		g2d.draw(processor);
+	}
+
+	
+	private void drawProcessor2(Color startC, Color border, boolean gradientFill, Graphics2D g2d,int cpu) {
+		double x = getProcessorXY().x, y = getProcessorXY().y;
+		processor.setFrame(x+PROC_RAD/2  , y + cpu*PROC_RAD + ELEMS_GAP * cpu -  ELEMS_GAP /2  ,  PROC_RAD , PROC_RAD );
+		if (gradientFill) {
+			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + PROC_RAD * 2), startC.darker(), false);
+			g2d.setPaint(gp);
+		} else {
+			g2d.setPaint(startC);
+		}
+		g2d.fill(processor);
+		g2d.setPaint(border);
+		g2d.draw(processor);
+	}
+	
+	private void drawProcessorMulti(Color startC, Color border, boolean gradientFill, Graphics2D g2d,int cpu) {
+		double x = getProcessorXY().x, y = getProcessorXY().y;
+		processor.setFrame(x+PROC_RAD/2 + ELEMS_GAP/2  , y + cpu*(PROC_RAD - ELEMS_GAP) + ELEMS_GAP * cpu * 3 -  ELEMS_GAP/2  ,  PROC_RAD - ELEMS_GAP , PROC_RAD - ELEMS_GAP );
+		if (gradientFill) {
+			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + PROC_RAD * 2), startC.darker(), false);
+			g2d.setPaint(gp);
+		} else {
+			g2d.setPaint(startC);
+		}
+		g2d.fill(processor);
+		g2d.setPaint(border);
+		g2d.draw(processor);
+	}
+	
+
+	private void drawPoint(Color startC, Color border, boolean gradientFill, Graphics2D g2d,int point) {
+		double x = getProcessorXY().x, y = getProcessorXY().y;
+		processor.setFrame(x +PROC_RAD  , y +PROC_RAD - ELEMS_GAP /2  + ELEMS_GAP * point   , 0.5, 0.5);
+		if (gradientFill) {
+			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + PROC_RAD * 2), startC.darker(), false);
 			g2d.setPaint(gp);
 		} else {
 			g2d.setPaint(startC);
@@ -489,8 +505,7 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		}
 		occupiedEll = new Ellipse2D.Double(x, y, 2 * PROC_RAD, 2 * PROC_RAD);
 		if (gradientFill) {
-			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + 2 * PROC_RAD), startC.darker(),
-					false);
+			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + 2 * PROC_RAD), startC.darker(), false);
 			g2d.setPaint(gp);
 		} else {
 			g2d.setPaint(startC);
@@ -501,29 +516,88 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		g2d.setPaint(Color.BLACK);
 		g2d.draw(occupiedArea);
 
-		//			//draw informations about processes
-		//			txtBounds = drawCenteredText("job n.:" + donejobs, Color.BLACK, x + PROC_RAD,y + PROC_RAD * 2 + 4 * ELEMS_GAP,g2d, false);
-		//			//draw orizontal line parallel to occupation
+		// //draw informations about processes
+		// txtBounds = drawCenteredText("job n.:" + donejobs, Color.BLACK, x +
+		// PROC_RAD,y + PROC_RAD * 2 + 4 * ELEMS_GAP,g2d, false);
+		// //draw orizontal line parallel to occupation
 		//			
-		//			//draw box around text
-		//			txtBounds.setFrame(
-		//					x + PROC_RAD - txtBounds.getWidth() / 2,
-		//					y + 2 * PROC_RAD + 4 * ELEMS_GAP - txtBounds.getHeight() / 2,
-		//					txtBounds.getWidth(),
-		//					txtBounds.getHeight());
+		// //draw box around text
+		// txtBounds.setFrame(
+		// x + PROC_RAD - txtBounds.getWidth() / 2,
+		// y + 2 * PROC_RAD + 4 * ELEMS_GAP - txtBounds.getHeight() / 2,
+		// txtBounds.getWidth(),
+		// txtBounds.getHeight());
 		//			
-		//			g2d.draw(txtBounds);
+		// g2d.draw(txtBounds);
+	}
+	
+	private void drawUtilization2(double U, Color startC, Color border, boolean gradientFill, Graphics2D g2d,int cpu) {
+		
+		double x = getProcessorXY().x, y = getProcessorXY().y;
+		try {
+			occupiedRect = new Rectangle2D.Double(x+PROC_RAD/2, y+ cpu*PROC_RAD + ELEMS_GAP * cpu -  ELEMS_GAP /2, 2 * PROC_RAD/2,  PROC_RAD * (1 - U/nCpu) );
+		} catch (Exception e) {
+			occupiedRect = new Rectangle2D.Double(x+PROC_RAD/2, y+ cpu*PROC_RAD+ ELEMS_GAP * cpu -  ELEMS_GAP /2, 2 * PROC_RAD/2, 0.0);
+		}
+		occupiedEll = new Ellipse2D.Double(x+PROC_RAD/2, y+ cpu*PROC_RAD+ ELEMS_GAP * cpu -  ELEMS_GAP /2, 2 * PROC_RAD/2, 2 * PROC_RAD/2);
+		if (gradientFill) {
+			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + 2 * PROC_RAD), startC.darker(), false);
+			g2d.setPaint(gp);
+		} else {
+			g2d.setPaint(startC);
+		}
+		occupiedArea = new Area(occupiedEll);
+		occupiedArea.subtract(new Area(occupiedRect));
+		g2d.fill(occupiedArea);
+		g2d.setPaint(Color.BLACK);
+		g2d.draw(occupiedArea);
+
+		// //draw informations about processes
+		// txtBounds = drawCenteredText("job n.:" + donejobs, Color.BLACK, x +
+		// PROC_RAD,y + PROC_RAD * 2 + 4 * ELEMS_GAP,g2d, false);
+		// //draw orizontal line parallel to occupation
+		//			
+		// //draw box around text
+		// txtBounds.setFrame(
+		// x + PROC_RAD - txtBounds.getWidth() / 2,
+		// y + 2 * PROC_RAD + 4 * ELEMS_GAP - txtBounds.getHeight() / 2,
+		// txtBounds.getWidth(),
+		// txtBounds.getHeight());
+		//			
+		// g2d.draw(txtBounds);
 	}
 
+	private void drawUtilizationMulti(double U, Color startC, Color border, boolean gradientFill, Graphics2D g2d,int cpu) {
+		
+		double x = getProcessorXY().x, y = getProcessorXY().y;
+		try {
+			occupiedRect = new Rectangle2D.Double(x+PROC_RAD/2 + ELEMS_GAP/2  , y + cpu*(PROC_RAD - ELEMS_GAP) + ELEMS_GAP * cpu * 3 -  ELEMS_GAP/2  ,  PROC_RAD - ELEMS_GAP , (PROC_RAD - ELEMS_GAP )* (1 - U/nCpu) );
+		} catch (Exception e) {
+			occupiedRect = new Rectangle2D.Double(x+PROC_RAD/2 + ELEMS_GAP/2  , y + cpu*(PROC_RAD - ELEMS_GAP) + ELEMS_GAP * cpu * 3 -  ELEMS_GAP/2  ,  PROC_RAD - ELEMS_GAP , 0 );
+		}
+		occupiedEll = new Ellipse2D.Double(x+PROC_RAD/2 + ELEMS_GAP/2  , y + cpu*(PROC_RAD - ELEMS_GAP) + ELEMS_GAP * cpu * 3 -  ELEMS_GAP/2  ,  PROC_RAD - ELEMS_GAP , PROC_RAD - ELEMS_GAP );
+		if (gradientFill) {
+			GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + 2 * PROC_RAD), startC.darker(), false);
+			g2d.setPaint(gp);
+		} else {
+			g2d.setPaint(startC);
+		}
+		occupiedArea = new Area(occupiedEll);
+		occupiedArea.subtract(new Area(occupiedRect));
+		g2d.fill(occupiedArea);
+		g2d.setPaint(Color.BLACK);
+		g2d.draw(occupiedArea);
+
+	}
+	
 	private void drawOccupiedPercentage(Color startC, Color border, boolean gradientFill, Graphics2D g2d) {
 
-		if (remainingTime != 0) {
+		if (remainingTime[0] != 0) {
 			double x = getProcessorXY().x, y = getProcessorXY().y;
-			occupiedRect = new Rectangle2D.Double(x, y, 2 * PROC_RAD, 2 * PROC_RAD * (1 - (double) remainingTime / (double) totTime));
+			occupiedRect = new Rectangle2D.Double(x, y, 2 * PROC_RAD, 2 * PROC_RAD * (1 - (double) remainingTime[0] / (double) totTime[0]));
 			occupiedEll = new Ellipse2D.Double(x, y, 2 * PROC_RAD, 2 * PROC_RAD);
 			if (gradientFill) {
-				GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + 2 * PROC_RAD), startC.darker(),
-						false);
+				GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + 2 * PROC_RAD), startC.darker(), false);
 				g2d.setPaint(gp);
 			} else {
 				g2d.setPaint(startC);
@@ -534,22 +608,52 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 			g2d.setPaint(Color.BLACK);
 			g2d.draw(occupiedArea);
 
-			//draw orizontal line parallel to occupation
-			Line2D.Double l = new Line2D.Double(x + PROC_RAD * 2 + ELEMS_GAP, y + PROC_RAD * 2 * (1 - (double) remainingTime / (double) totTime), x
-					+ PROC_RAD * 2 + 2 * ELEMS_GAP, y + PROC_RAD * 2 * (1 - (double) remainingTime / (double) totTime));
+			// draw orizontal line parallel to occupation
+			Line2D.Double l = new Line2D.Double(x + PROC_RAD * 2 + ELEMS_GAP, y + PROC_RAD * 2 * (1 - (double) remainingTime[0] / (double) totTime[0]), x + PROC_RAD * 2 + 2 * ELEMS_GAP, y + PROC_RAD * 2
+					* (1 - (double) remainingTime[0] / (double) totTime[0]));
 			g2d.draw(l);
 
-			//draw vertical line
-			l = new Line2D.Double(x + PROC_RAD * 2 + 2 * ELEMS_GAP, y + PROC_RAD * 2 * (1 - (double) remainingTime / (double) totTime), x + PROC_RAD
-					* 2 + 2 * ELEMS_GAP, y + 2 * PROC_RAD + 4 * ELEMS_GAP - txtBounds.getHeight() / 2);
+			// draw vertical line
+			l = new Line2D.Double(x + PROC_RAD * 2 + 2 * ELEMS_GAP, y + PROC_RAD * 2 * (1 - (double) remainingTime[0] / (double) totTime[0]), x + PROC_RAD * 2 + 2 * ELEMS_GAP, y + 2 * PROC_RAD + 4
+					* ELEMS_GAP - txtBounds.getHeight() / 2);
 			g2d.draw(l);
 
-			//draw horizontal line under text
-			txtBounds.setFrame(x + PROC_RAD - txtBounds.getWidth() / 2, y + 2 * PROC_RAD + 4 * ELEMS_GAP - txtBounds.getHeight() / 2, txtBounds
-					.getWidth(), txtBounds.getHeight());
+			// draw horizontal line under text
+			txtBounds.setFrame(x + PROC_RAD - txtBounds.getWidth() / 2, y + 2 * PROC_RAD + 4 * ELEMS_GAP - txtBounds.getHeight() / 2, txtBounds.getWidth(), txtBounds.getHeight());
 
 			g2d.draw(txtBounds);
 		}
+	}
+	private void drawOccupiedPercentage2(Color startC, Color border, boolean gradientFill, Graphics2D g2d,int cpu) {
+		//processor.setFrame(x+PROC_RAD/2 , y + cpu*PROC_RAD, 2 * PROC_RAD /2, 2 * PROC_RAD /2);
+
+//		if (remainingTime[cpu] != 0) {
+			double x = getProcessorXY().x, y = getProcessorXY().y;
+			occupiedRect = new Rectangle2D.Double(x+PROC_RAD/2, y+ cpu*PROC_RAD+ ELEMS_GAP * cpu -  ELEMS_GAP /2, 2 * PROC_RAD /2, 2 * PROC_RAD * (1 - (double) remainingTime[cpu] / (double) totTime[cpu]) /2);
+			occupiedEll = new Ellipse2D.Double(x+PROC_RAD/2, y+ cpu*PROC_RAD+ ELEMS_GAP * cpu -  ELEMS_GAP /2, 2 * PROC_RAD/2, 2 * PROC_RAD/2);
+			if (gradientFill) {
+				GradientPaint gp = new GradientPaint((float) x, (float) y, startC.brighter(), (float) x, (float) (y + 2 * PROC_RAD), startC.darker(), false);
+				g2d.setPaint(gp);
+			} else {
+				g2d.setPaint(startC);
+			}
+			occupiedArea = new Area(occupiedEll);
+			occupiedArea.subtract(new Area(occupiedRect));
+			g2d.fill(occupiedArea);
+			g2d.setPaint(Color.BLACK);
+			g2d.draw(occupiedArea);
+
+			// draw orizontal line parallel to occupation
+			Line2D.Double l = new Line2D.Double(x + PROC_RAD * 2 + ELEMS_GAP, 	  y+ cpu*PROC_RAD+ ELEMS_GAP * cpu -  ELEMS_GAP /2 + 2 * PROC_RAD * (1 - (double) remainingTime[cpu] / (double) totTime[cpu]) /2,//y + PROC_RAD * 2 * (1 - (double) remainingTime / (double) totTime) /2 + ELEMS_GAP * cpu -  ELEMS_GAP /2  , 
+												x + PROC_RAD * 2 + 2 * ELEMS_GAP, y+ cpu*PROC_RAD+ ELEMS_GAP * cpu -  ELEMS_GAP /2 + 2 * PROC_RAD * (1 - (double) remainingTime[cpu] / (double) totTime[cpu]) /2);//y + PROC_RAD * 2 * (1 - (double) remainingTime / (double) totTime) /2 + ELEMS_GAP * cpu -  ELEMS_GAP /2 );
+			g2d.draw(l);
+
+			// draw vertical line
+			l = new Line2D.Double(	x + PROC_RAD * 2 + 2 * ELEMS_GAP, y+ cpu*PROC_RAD+ ELEMS_GAP * cpu -  ELEMS_GAP /2 + 2 * PROC_RAD * (1 - (double) remainingTime[cpu] / (double) totTime[cpu]) /2, 
+									x + PROC_RAD * 2 + 2 * ELEMS_GAP, y + PROC_RAD * 2       		 /2	+ cpu*PROC_RAD	+ ELEMS_GAP * cpu -  ELEMS_GAP /2  );
+			g2d.draw(l);
+
+//		}
 	}
 
 	/**
@@ -559,8 +663,7 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 	 * @param centerX
 	 * @param centerY
 	 */
-	private Rectangle2D drawCenteredText(String s, Color fg, Color bg, double centerX, double centerY, Graphics2D g2d, boolean drawBorder,
-			boolean draw) {
+	private Rectangle2D drawCenteredText(String s, Color fg, Color bg, double centerX, double centerY, Graphics2D g2d, boolean drawBorder, boolean draw) {
 		double x, y;
 		Color ctmp = g2d.getColor();
 		Rectangle2D bordersR = new Rectangle2D.Float();
@@ -568,13 +671,11 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		txtBounds = f.getStringBounds(s, g2d.getFontRenderContext());
 		x = centerX - txtBounds.getWidth() / 2.0;
 		y = centerY - txtBounds.getY() - txtBounds.getHeight() / 2;
-		txtBounds.setRect(x - ELEMS_GAP, y - txtBounds.getHeight() / 2.0 - ELEMS_GAP, txtBounds.getWidth() + 2 * ELEMS_GAP, txtBounds.getHeight() + 2
-				* ELEMS_GAP);
+		txtBounds.setRect(x - ELEMS_GAP, y - txtBounds.getHeight() / 2.0 - ELEMS_GAP, txtBounds.getWidth() + 2 * ELEMS_GAP, txtBounds.getHeight() + 2 * ELEMS_GAP);
 
 		if (draw) {
 			if (drawBorder) {
-				bordersR.setFrame(centerX - txtBounds.getWidth() / 2.0, centerY - txtBounds.getHeight() / 2.0, txtBounds.getWidth(), txtBounds
-						.getHeight());
+				bordersR.setFrame(centerX - txtBounds.getWidth() / 2.0, centerY - txtBounds.getHeight() / 2.0, txtBounds.getWidth(), txtBounds.getHeight());
 				g2d.setColor(bg);
 				g2d.fill(bordersR);
 				g2d.setColor(fg);
@@ -606,28 +707,26 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		if (c.getRed() < 128) {
 			r = 255;
 		}
+
 		rc = new Color(r, g, b);
+
+		if (c == Color.BLUE)
+			rc = Color.cyan;
 		return rc;
 	}
 
 	private int queueLenght() {
 		int a = (int) ((panelW - (PROC_RAD * 2 + ELEMS_GAP) - 4 * ELEM_WIDTH - 4 * ELEMS_GAP - START_GAP - END_GAP) / (ELEM_WIDTH + ELEMS_GAP));
-		if ((queueMax > 0) && (queueMax < a)) {
-			return queueMax;
-		}
+		if ((queueMax > 0) && (queueMax < a))
+			return (int) queueMax;
 		return a;
 
 	}
 
-	/**
-	 * Restituisce l'ascissa dell'angolo superiore sinistro dell'elemento 'elem'
-	 * @param elem
-	 * @return
-	 */
+
 	private Point2D.Double getElementXY(int elem) {
-		return new Point2D.Double(START_GAP + ELEMS_GAP + (ELEMS_GAP + ELEM_WIDTH * 2) * 2 + (ELEMS_GAP + ELEM_WIDTH) * elem, panelH * 0.4
-				- ELEM_HEIGHT / 2.0);
-		//(panelH - ELEM_HEIGHT) / 2.0);
+		return new Point2D.Double(START_GAP + ELEMS_GAP + (ELEMS_GAP + ELEM_WIDTH * 2) * 2 + (ELEMS_GAP + ELEM_WIDTH) * elem, panelH * 0.4 - ELEM_HEIGHT / 2.0);
+		// (panelH - ELEM_HEIGHT) / 2.0);
 	}
 
 	private Point2D.Double getProcessorXY() {
@@ -636,42 +735,17 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 
 	private void resize() {
 		int x = this.getWidth(), y = this.getHeight();
-		if (y < minH) {
+		if (y < minH)
 			panelH = minH;
-		} else {
+		else
 			panelH = y;
-		}
-		if (x < minW) {
+		if (x < minW)
 			panelW = minW;
-		} else {
+		else
 			panelW = x;
-		}
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
-	public void run() {
-		long currentTime = System.currentTimeMillis();
-		this.setVisible(true);
-		while (true) {
-			try {
-				Thread.sleep(200);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			currentTime = System.currentTimeMillis();
-			if ((currentTime < runTime)) {
-				remainingTime = runTime - currentTime;
-			} else {
-				remainingTime = 0;
-				runTime = 0;
-			}
-			this.repaint();
-		}
-
-	}
-
+	
 	public void setColors(Color emptyC, Color queueC, Color animC, boolean gradient) {
 		this.emptyC = emptyC;
 		this.busyC = queueC.darker().darker();
@@ -680,67 +754,44 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		this.gradientF = gradient;
 		this.repaint();
 	}
-
-	private void drawRemainingJobs(int donejobs, int totjobs, float x1, float y, Graphics2D g2d) {
-		if (totjobs != 0) {
-			float w = (float) ((ELEM_WIDTH + ELEMS_GAP) * 8.0f);
-			float x = x1 - w / 2.0f;
-			float h = (float) ELEM_HEIGHT;
-			float percent = (float) donejobs / (float) totjobs;
-			Color col1 = Color.RED;
-			Color col2 = Color.GREEN;//( 0.9f, 0.0f, 0.0f);
-			Line2D jline, tjline;
-			Rectangle2D jR = new Rectangle2D.Float((x + percent * w), y, w, h);
-			GeneralPath tjpath = new GeneralPath();
-
-			//disegno triangolo jobs totali
-			tjpath.moveTo(x, y);
-			tjpath.lineTo(x + w, y + h);
-			tjpath.lineTo(x, y + h);
-			tjpath.closePath();
-			GradientPaint gp = new GradientPaint(x, y, Color.GRAY, x + w, y, Color.LIGHT_GRAY, false);
-			g2d.setPaint(gp);
-			g2d.fill(tjpath);
-
-			//area dei job rimanenti
-			Area a = new Area(tjpath);
-			a.intersect(new Area(jR));
-			gp = new GradientPaint(x, y, col1, x + w, y, col2, false);
-			g2d.setPaint(gp);
-			g2d.fill(a);
-			g2d.setPaint(Color.BLACK);
-			g2d.draw(tjpath);
-
-			//legenda:
-			for (int i = 0; i < 3; i++) {
-				tjline = new Line2D.Float(x + w * i / 2, y + h, x + w * i / 2, y + h + h / 5);
-				//g2d.draw(tjline);
-				drawCenteredText("" + (int) (totjobs * (i / 2.0)), Color.BLACK, null, x + w * i / 2, y + 1.2 * h, g2d, false, true);
-
-			}
-		}
+	
+	public void setCpuNumber(int nCpu)
+	{
+		if(nCpu <1)
+			nCpu = 1;
+		this.nCpu = nCpu;
+		remainingTime = new long[nCpu];
+		totTime = new long[nCpu];
+		
 	}
+
 
 	public void setTotalJobs(int totjobs) {
 		this.totjobs = totjobs;
 	}
 
 	/**
-	 * Disegna una legenda
-	 * @param ca Colori della legenda
-	 * @param sa Rispettivi commenti
-	 * @param f font
-	 * @param x ascissa iniziale
-	 * @param y oridnata iniziale
+	 * drawing the legend
+	 * 
+	 * @param ca
+	 *            color of the legend
+	 * @param sa
+	 *            Comments
+	 * @param f
+	 *            font
+	 * @param x
+	 *            initial abscissa
+	 * @param y
+	 *            initial ordinate
 	 * @param g2d
-	 * @return larghezza pannello
+	 * @return panel lenght 
 	 */
 	private double drawLegend(Color[] ca, String[] sa, Font f, double x, double y, Graphics2D g2d, boolean draw) {
 		Rectangle2D[] ra = new Rectangle2D[ca.length];
 		Rectangle2D[] tba = new Rectangle2D[ca.length];
 		double maxw = 0.0, gap = 5.0;
 		String ts = "Legenda";
-		//backup
+		// backup
 		Color ctmp = g2d.getColor();
 		Font ftmp = g2d.getFont();
 
@@ -755,12 +806,10 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 				g2d.fill(ra[i]);
 				g2d.setColor(Color.BLACK);
 				g2d.draw(ra[i]);
-				g2d.drawString(sa[i], (float) (x + gap * 2 + tr.getHeight()), (float) (y + gap + (tr.getHeight() + gap) * (i + 1) + tr.getHeight()
-						/ 2.0 - tr.getY() / 2.0));
+				g2d.drawString(sa[i], (float) (x + gap * 2 + tr.getHeight()), (float) (y + gap + (tr.getHeight() + gap) * (i + 1) + tr.getHeight() / 2.0 - tr.getY() / 2.0));
 			}
-			if (maxw < tba[i].getWidth()) {
+			if (maxw < tba[i].getWidth())
 				maxw = tba[i].getWidth();
-			}
 		}
 		if (draw) {
 			g2d.drawRect((int) x, (int) y, (int) (maxw + 3.0 * gap + tr.getHeight()), (int) (y + (tr.getHeight() + gap) * (ca.length + 1) + gap));
@@ -770,7 +819,7 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 			g2d.drawString(ts, (float) (x + gap + (maxw - tr.getWidth() + tr.getHeight()) / 2.0), (float) (y + tr.getY() / 2.0 + tr.getHeight()));
 		}
 
-		//restore
+		// restore
 		g2d.setFont(ftmp);
 		g2d.setColor(ctmp);
 		return (maxw + 3.0 * gap + tr.getHeight());
@@ -785,14 +834,20 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 		Rectangle2D dvR;
 		RoundRectangle2D dvRR;
 		Color tmp;
-		Color fg = Color.LIGHT_GRAY;
-		Color bg = Color.BLACK;
-
-		if (!clicked) {
+		Color fg = Color.BLACK;
+		Color bg = Color.LIGHT_GRAY;
+		
+		if (clicked) {
 			tmp = fg;
 			fg = bg;
 			bg = tmp;
 		}
+		
+		if(nCpu > 2){
+			fg = Color.darkGray.brighter().brighter();
+			bg = Color.LIGHT_GRAY;
+		}
+		
 		dvR = drawCenteredText("change view", fg, bg, x, y, g2d, false, false);
 		dvRR = new RoundRectangle2D.Double(x, y, dvR.getWidth(), dvR.getHeight(), 5.0, 5.0);
 		if (draw) {
@@ -805,5 +860,69 @@ public class QueueDrawer extends JComponent implements Notifier, Runnable {
 			g2d.setColor(tmp);
 		}
 		return dvRR;
+	}
+
+	public void enterProcessor(int jobId, int processorId, double time,double executionTime) {
+		executingJobId = jobId;
+		totTime[processorId] = (long)executionTime;
+		updateProcessor(executingJobId, processorId, executionTime,time);//
+	}
+
+	public void enterQueue(int jobId, double time) {
+		jobs++;
+		this.repaint();
+
+	}
+
+	public void exitProcessor(int jobId, int processorId, double time) {
+		// TODO Auto-generated method stub
+		executingJobId = 0;
+		updateProcessor(executingJobId, processorId, 0,time);//
+
+	}
+
+	public void exitQueue(int jobId, double time) {
+		jobs--;
+		this.repaint();	
+	}
+
+	public void exitSystem(int jobId, int processorId, double enterQueueTime, double enterCpuTime, double exitSystemTime) {
+		// TODO Auto-generated method stub
+
+	}
+
+	public void jobLost(int jobId, double time) {
+		// TODO Auto-generated method stub
+		lostJobs++;
+		this.repaint(); 
+	}
+
+	public void reset() {
+		jobs = 0;
+		donejobs = 0;
+		totjobs =0;
+		
+		for(int i=0;i<nCpu;i++)
+		{
+			totTime[i] = 1000;
+			remainingTime[i] = 0;
+		}
+			
+		
+		donejobs = 0;
+		lostJobs = 0;
+//		Ui = 0.0;
+		this.repaint();
+	}
+
+	public void updateProcessor(int jobId, int processorId, double remainingTime, double time) {
+		this.remainingTime[processorId] = (long)remainingTime;
+		donejobs = jobId;
+		this.repaint();	
+	}
+
+	public void updateQueue(int jobId, double time) {
+		// TODO Auto-generated method stub
+
 	}
 }

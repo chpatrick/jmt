@@ -60,7 +60,7 @@ public class AboutDialogFactory {
 
 	protected static String[] JABA = { "Bertoli Marco", "Zanzottera Andrea", "Gimondi Carlo" };
 
-	protected static String[] JMCH = { "Di Mauro Ernesto" };
+	protected static String[] JMCH = { "Canakoglu Arif", "Di Mauro Ernesto" };
 
 	protected static String[] JWAT = { "Brambilla Davide", "Fumagalli Claudio" };
 

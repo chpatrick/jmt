@@ -15,47 +15,54 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-
+  
 /*
- * Created on 5-apr-2004 by Ernesto
+ * Created on 11-mar-2004
  *
+ * To change the template for this generated file go to
+ * Window&gt;Preferences&gt;Java&gt;Code Generation&gt;Code and Comments
  */
 package jmt.jmarkov.Queues;
 
-/**
- * MMQueues
- * --------------------------------------
- * 5-apr-2004 - Queues/MM1Data.java
- * 
- * Rappresenta i dati di una coda M/M/1 e M/M/1/k
- * 
- * @author Ernesto
- */
-public class MM1Data {
+import java.util.LinkedList;
+import jmt.jmarkov.Job;
 
-	public double lambdai;
-	public double si;
-	public double buffer;
+/**
+ * Represent the queue (the queue of the system) and this queue contains 
+ * the jobs waiting for processing
+ *
+ */
+public class JobQueue extends LinkedList {
+
+
+		
+	/**
+	 * Initializer of JobQueue class 
+	 *  
+	 *  
+	 */
+	public JobQueue() {
+		super();		
+	}
 
 	/**
-	 * 
+	 * add job in to system
 	 */
-	public MM1Data() {
-		lambdai = 0.0;
-		si = 0.0;
+	public synchronized void addToQueueVoid(Job newJob) {
+		super.add(newJob);	
 	}
 
-	public double getNi() {
-		return MM1Logic.getNi(getUi(), buffer);
+	/**
+	 * Remove a job from the system
+	 * 
+	 * @return returns the first element in the queue
+	 */
+	public  Job removeFromQueue() {						
+		return (Job)super.remove();
 	}
-
-	public double getUi() {
-		return MM1Logic.getUi(lambdai, si);
-
-	}
-
-	public double getRi() {
-		return MM1Logic.getRi(getUi(), si);
+	
+	public void clearQueue(){
+		super.clear();
 	}
 
 }

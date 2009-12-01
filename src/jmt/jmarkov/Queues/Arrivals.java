@@ -1,20 +1,20 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+ * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation; either version 2 of the License, or
-  * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
 
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
 
-  * You should have received a copy of the GNU General Public License
-  * along with this program; if not, write to the Free Software
-  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  */
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 /*
  * Created on 11-mar-2004
@@ -24,135 +24,144 @@
  */
 package jmt.jmarkov.Queues;
 
+import jmt.jmarkov.Job;
+import jmt.jmarkov.Simulator;
 import jmt.jmarkov.Graphics.Notifier;
+import jmt.jmarkov.Queues.Exceptions.InfiniteBufferException;
 import jmt.jmarkov.Queues.Exceptions.NoJobsException;
 
 /**
- * Rappresenta i processi che arrivando si aggiungono alla
- * coda
  * 
- * @author Ernesto
+ * Representing the arrival of the job. 
+ * it generates the job and enqueue to the queue
+ * 
  */
-public final class Arrivals implements Runnable {
+public final class Arrivals {
 
-	//NEW
-	//@author Stefano Omini
-	// introduced DEBUG var to skip System.out.println() calls in final release
-	private static final boolean DEBUG = false;
-	//end NEW
 
-	private boolean limited;
-
-	private boolean noJobs = true;
-
+	//if the arrival is limited then jobsToDo must be greater than zero
+	private boolean limited=false;	
 	private int jobsToDo = 0;
+	
+	private QueueLogic ql;
+
+	public Simulator sim;
+
+//	private boolean noJobs = true;	
 
 	private Notifier n[];
 
-	private QueueStack q;
+	private JobQueue q;
 
-	private long at;
+//	private double at;	
 
-	private QueueLogic ql;
+	private int jobIdCounter;
 
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
-	public void run() {
-		//System.out.println("Arrivals started!");
-		try {
-			while (true) {
-				if ((jobsToDo > 0) || (!limited)) {
-					getInterarrivalTime();
-					while (noJobs) {
-						Thread.sleep(1000);
-						getInterarrivalTime();
-					}
-					Thread.sleep(at);
-					if (q.size() < ql.getMaxStates() || ql.getMaxStates() == 0) {
-						notifyGraphics("");
-						addToQueue();
-					}
-				} else {
-					break;
-				}
+	
+	public void createJob(double currentTime) {
+		double interarrivalTime;
+		if ((jobsToDo > 0) || (!limited)) {
+			try{
+				interarrivalTime = getInterarrivalTime();
+			} catch (NoJobsException e) {
+				// lambda is zero
+				sim.setLambdaZero(true);
+				return;
 			}
-		} catch (Exception e) {
+			jobIdCounter++;
+			Job job = new Job(jobIdCounter, currentTime);
+			job.setEnteringQueueTime( interarrivalTime + currentTime);
+			sim.enqueueJob(job);
 		}
+	}
+
+	public void addQ(Job job,double time) {
+		try {
+			if (limited)
+				jobsToDo--;
+			if (ql.getMaxStates() == 0 || q.size() < ql.getMaxStates() ) {
+				q.addToQueueVoid(job);
+				
+				job.setStateEnterQueue();
+				notifyGraphics("addQ", job.getJobId(),time);
+			} else
+				notifyGraphics("lostJob", job.getJobId(),time);
+		} catch (InfiniteBufferException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void animate(Job job,double time) {
+		notifyGraphics("animate", job.getJobId(),time);
 
 	}
 
-	public Arrivals(QueueLogic ql, QueueStack q) {
+	
+
+	public Arrivals(QueueLogic ql, JobQueue q) {
+		setParameters(ql, q);
+	}
+
+	public Arrivals(QueueLogic ql, JobQueue q, Notifier n[], int jobsToDo) {
+		setParameters(ql, q, n, jobsToDo);
+	}
+	
+	private void setParameters(QueueLogic ql, JobQueue q) {
 		this.ql = ql;
 		this.q = q;
 		this.jobsToDo = 0;
 		this.limited = false;
+		jobIdCounter = 0;
 	}
-
-	public Arrivals(QueueLogic ql, QueueStack q, Notifier n[], int jobsToDo) {
-		this.ql = ql;
-		this.q = q;
-		this.n = n;
-		this.jobsToDo = jobsToDo;
-		if (jobsToDo == 0) {
-			this.limited = false;
-		} else {
+	
+	private void setParameters(QueueLogic ql, JobQueue q, Notifier n[], int jobsToDo) {
+		setParameters(ql,q) ;
+		this.n = n;		
+		if (jobsToDo > 0){
 			this.limited = true;
+			this.jobsToDo = jobsToDo;
 		}
 	}
 
-	/**
-	 * Utilizzata per mettere la simulazione in "pausa"
-	 * @param p true se si vuole mettere in pausa la simulazione,
-	 * false se si vuole riprendere la simulazione
-	 * @return true se la chiamata ha avuto effetto
-	 */
-	public boolean pause(boolean p) {
-		return false;
-	}
 
-	/**
-	 * Serve per aggiungere un processo alla coda
-	 *
-	 */
-	private void addToQueue() {
-		q.addToQueue();
-		if (jobsToDo > 0) {
-			jobsToDo--;
-		}
-	}
 
+	
 	/**
-	 * Notifica un cambiamento alla parte grafica della simulazione
-	 * @param gi
+	 * Notify the changes to the user interface
+	 * 
 	 */
-	private void notifyGraphics(String gi) {
-		for (int i = 0; i < n.length; i++) {
-			//			System.out.println("Calling Graphics " + i);
-			n[i].addingToQ(at / 1000.0);
-
-			if (DEBUG) {
-				System.out.print("A: arrival time: " + at + "\n");
+	private void notifyGraphics(String gi, int jobId, double time) {
+		if (gi == "addQ") {
+			for (int i = 0; i < n.length; i++) {
+				n[i].enterQueue(jobId, time);
+			}
+		} else if (gi == "lostJob") {
+			for (int i = 0; i < n.length; i++) {
+				n[i].jobLost(jobId, time);
+			}
+		} else if (gi == "animate") {
+			for (int i = 0; i < n.length; i++) {
+				n[i].updateQueue(jobId, time);
 			}
 		}
 	}
 
 	/**
-	 * Preleva da QueueLogic il prossimo tempo di interarrivo
-	 *
+	 * Get the interarrival time from queue logic
+	 * 
 	 */
-	private void getInterarrivalTime() {
-		try {
-			at = (long) ql.getArrivalTime();
-			//			System.out.println("a new job arrived");
-			noJobs = false;
-		} catch (NoJobsException e) {
-			noJobs = true;
+	private double getInterarrivalTime() throws NoJobsException{
+			return ql.getArrivalTime();
 
-			if (DEBUG) {
-				System.out.println("No arrivals!");
-			}
-		}
+	}
+
+	/**
+	 * returns if there are more jobs to create
+	 * 
+	 */
+	public boolean moreJobToDo() {
+		return ((jobsToDo > 0) || (!limited));
 	}
 
 }

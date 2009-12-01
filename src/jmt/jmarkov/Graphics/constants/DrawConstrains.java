@@ -15,90 +15,83 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-
+  
 /*
  * Created on 23-mar-2004 by Ernesto
  *
  */
 package jmt.jmarkov.Graphics.constants;
 
-import java.awt.Font;
-import java.awt.Stroke;
+import java.awt.*;
 
-/**
- * MMQueues
- * --------------------------------------
- * 23-mar-2004 - Graphics.constants/drawConstrains.java
- * 
- * Questa interfaccia racchiude tutte le costanti necessarie al disegno delle
- * code
- * 
- * @author Ernesto
- */
+
 public interface DrawConstrains {
-	//generiche
-
+	
 	/**
-	 * Restituisce il gap che separa i bordi dell'area di disegno
-	 * dal disegno stesso
+	 * 
+	 * 	
+	 * Returns the gap between the edges of the drawing from drawing itself
 	 */
 	double getStartingGap();
-
+	
 	/**
-	 * Restituisce il gap tra due elementi della coda e tra il primo
-	 * elemento della coda e il processore
+	 * 
+	 * Returns the gap between two elements of the tail and between 
+	 * the first element of the queue and the processor
 	 */
 	double getElementsGap();
-
+	
 	/**
-	 * Restituisce il tipo di bordo degli elementi
+	 * Returns the type of items
 	 */
 	Stroke getDrawStroke();
-
+	
 	Stroke getBoldStroke();
-
+	
 	//font
 	/**
-	 * Restituisce il font con cui si scriverà nell'area di disegno
+	 * returns the font for the area of panel
+	 * 
 	 */
 	Font getFont();
 
 	/**
-	 * Restituisce il font normale con cui si scriverà nella GUI
+	 * returns the font for the GUI
 	 */
 	Font getNormalGUIFont();
-
+	
 	/**
-	 * Restituisce il font piccolo con cui si scriverà nella GUI
+	 * returns the small font for the GUI
 	 */
 	Font getSmallGUIFont();
-
+	
 	/**
-	 * Restituisce il font grande con cui si scriverà nella GUI
+	 * returns the big font for the GUI
 	 */
 	Font getBigGUIFont();
-
-	//coda
+	
+	//queue 
 	/**
-	 * Restituisce la larghezza di un elemento della coda
+	 * Returns the width of an element of the queue
 	 */
 	double getElementWidth();
-
+	
 	/**
-	 * Restituisce l'altezza di un elemento della coda
+	 * Returns the height of an element of the queue
 	 * @return
 	 */
 	double getElementHeight();
-
-	//processore
+	
+	//processor
 	/**
-	 * Restituisce il raggio del processore
+	 * Returns the radius of the processor
 	 */
 	double getProcessorRadius();
-
-	//stati
+	
+	
+	//status
 	/**
-	 * Restituisce il raggio degli stati
+	 * * Returns the radius of the status
 	 */
 	double getStatusRadius();
 }

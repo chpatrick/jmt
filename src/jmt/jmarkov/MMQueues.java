@@ -1,24 +1,25 @@
 /**    
-  * Copyright (C) 2007, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+ * Copyright (C) 2007, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation; either version 2 of the License, or
-  * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
 
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
 
-  * You should have received a copy of the GNU General Public License
-  * along with this program; if not, write to the Free Software
-  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  */
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 package jmt.jmarkov;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -28,17 +29,23 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.net.URL;
 import java.util.Dictionary;
 
 import javax.help.HelpSet;
 import javax.help.JHelp;
+import javax.management.loading.PrivateClassLoader;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JColorChooser;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -49,18 +56,21 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.plaf.basic.BasicBorders.RadioButtonBorder;
 
 import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.controller.Manager;
 import jmt.gui.common.panels.AboutDialogFactory;
 import jmt.jmarkov.Graphics.JobsDrawer;
+import jmt.jmarkov.Graphics.LogFile;
 import jmt.jmarkov.Graphics.Notifier;
 import jmt.jmarkov.Graphics.QueueDrawer;
 import jmt.jmarkov.Graphics.StatiDrawer;
@@ -72,104 +82,125 @@ import jmt.jmarkov.Graphics.constants.DrawSmall;
 import jmt.jmarkov.Queues.Arrivals;
 import jmt.jmarkov.Queues.MM1Logic;
 import jmt.jmarkov.Queues.MM1dLogic;
+import jmt.jmarkov.Queues.MMNLogic;
+import jmt.jmarkov.Queues.MMNdLogic;
 import jmt.jmarkov.Queues.Processor;
-import jmt.jmarkov.Queues.QueueStack;
+import jmt.jmarkov.Queues.JobQueue;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.utils.Formatter;
 
 import com.jgoodies.looks.Options;
 
-public class MMQueues extends JMTFrame implements Runnable {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+public class MMQueues extends JMTFrame  {
 
 	private static final boolean DEBUG = false;
 
-	private JLabel accelerationL;
-	private boolean nonErgodic;
+	private boolean nonErgodic;// if the utilization is less than 1
+	private double U; // Utilization [%]
+	private double Q; // Average customer in station
+	private double sMultiplier = 1; //service time slide bar multiplier
+	private double lambdaMultiplier = 1; //lambda slide bar multiplier
+	private int lambdaMultiplierChange = 0; // for the lambda slide bar
+	private int sMultiplierChange = 1;      // for the service slide bar
+
+	private int buffer; //number of place for the waiting queue
+	private int cpuNum; //number of server in the system
+	private boolean paused = false; //if the system is paused 
+
 	private Dimension initSize = new Dimension(800, 600);
-	private double U; //Utilizzo [%]
-	private double Q; //Numero medio di jobs
-	private int buffer;
-	private JPanel sPanel;
+
+	private JPanel sPanel;  
 	private JPanel lambdaPanel;
 	private JSlider sS;
 	private JSlider lambdaS;
-	private double sMultiplier = 1;
-	private boolean paused = false;
+	private JSlider buffS;
+
+	private JButton playB;
+	private JButton stopB;
 	private JButton pauseB;
+
+
 	private QueueDrawer queueDrawer;
 	private StatiDrawer statiDrawer;
 	private JobsDrawer jobsDrawer;
 	private JTabbedPane outputTabP;
 	private JScrollPane txtScroll;
 	private TANotifier outputTA;
-	private Notifier[] tan = new Notifier[4];
-	public JButton stopB;
+	private LogFile logFile;
+	private Notifier[] tan = new Notifier[5];
+
 	private JPanel buttonsP;
-	private JButton playB;
+
 	private JPanel resultsP;
 	public JFrame mf;
 	private JPanel outputP;
 	private JPanel parametersP;
 	private JPanel simulationP;
-	private JSlider buffS = new JSlider();
-	private JPanel buffPanel = new JPanel();
-	private JPanel accelerationP = new JPanel();
-	private JPanel jobsP = new JPanel();
-	private JSlider accelerationS = new JSlider();
+
+	private JPanel buffPanel;
+	private JPanel accelerationP;
+	private JPanel jobsP;
+	private JSlider accelerationS;
 	private MMQueues mmqueue;
 
-	//Label  & Label strings
-	private JLabel sL, lambdaL, mediaJobsL, utilizationL, buffL, thrL, responseL;
+	// Label & Label strings
+	private JLabel sL, lambdaL, mediaJobsL, utilizationL, buffL, thrL, responseL, accelerationL;
 
-	private String sStrS = "Avg. Service Time (S): ", sStrE = " s", lambdaStrS = "Avg. Arrival Rate (l): ", lambdaStrE = " job/s",
-			nStrS = "Avg. Queue Lenght (Q): ", nStrE = " jobs", uStrS = "Avg. Utilization (U): ", uStrE = "", bufStrS = "Buffer Size: ",
-			bufStrE = " jobs", thrStrS = "Avg. Throughput: ", thrStrE = " job/s", respStrS = "Avg. Response Time (R): ", respStrE = " s";
+	private String sStrS = "Avg. Service Time S = ", sStrE = " s", lambdaStrS = "Avg. Arrival Rate (lambda) = ", lambdaStrE = " cust./s", nStrS = "Avg. Cust. in Station (Queue + Service) N = ", nStrE = " cust.",
+			uStrS = "Avg. Utilization (Sum of All Servers) U = ", uStrE = "", bufStrS = "Max Station Capacity k = ", bufStrE = " cust.", thrStrS = "Avg. Throughput X =", thrStrE = " cust./s", respStrS = "Avg. Response Time R = ",
+			respStrE = " s";
 
-	//Settings
+	// Settings
 	private Color emptyC = Color.WHITE, probC = Color.GREEN, queueC = Color.BLUE, animC = Color.RED;
 	private boolean gradientF = false;
 	private DrawConstrains dCst = new DrawNormal();
-	private int BUFF_I = 16, LAMBDA_I = 20, S_I = 190;
+	private int BUFF_I = 15, LAMBDA_I = 50, S_I = 95;
 
-	//menu
+	// menu
 	private JMenuBar menuB;
 
-	//help
+	// help
 	private JMenu helpMenu;
 
-	//queue
+	// queue
 	private JMenu queueMenu;
-	private JRadioButtonMenuItem MM1Item, MM1dItem, gradientItem;
-	//settings
+	private Action selectQueueRB;
+	private JRadioButtonMenuItem gradientItem;
+	// settings
 	private JMenu settingsMenu;
-	//colors
+	// colors
 	private JMenu colorsMenu;
 
-	//size
+	// size
 	private JMenu sizeMenu;
-	//Queues data:
+	// Queues data:
 	MM1Logic ql = new MM1Logic(0.0, 0.0);
-	QueueStack qs;
-	Thread at, pt, qD, sD, jD, logT, mft;
+	JobQueue jq;
+
 	Arrivals arrival;
-	Processor cpu;
+	Processor[] processors;
+
+	private Simulator sim=null;
+	private boolean lambdaSChange = true;
+	private boolean sSChange = true;
+
 
 	public MMQueues() {
 		mf = this;
 		mmqueue = this;
 		initGUI();
-
+		
+		this.setVisible(true);
+		selectMethod();
+		
 	}
 
 	protected void initGUI() {
+		// for setting the place of the screen
 		Toolkit kit = Toolkit.getDefaultToolkit();
 		Dimension screenSize = kit.getScreenSize();
 		this.setLocation((screenSize.width - initSize.width) / 2, (screenSize.height - initSize.height) / 2);
+		// for setting the place of the screen
 		try {
 
 			// Simulation data panel
@@ -178,6 +209,7 @@ public class MMQueues extends JMTFrame implements Runnable {
 			lambdaPanel = new JPanel();
 			lambdaL = new JLabel();
 			lambdaS = new JSlider();
+			buffS = new JSlider();
 			sPanel = new JPanel();
 			sS = new JSlider();
 			resultsP = new JPanel();
@@ -192,10 +224,16 @@ public class MMQueues extends JMTFrame implements Runnable {
 			outputTabP = new JTabbedPane();
 			txtScroll = new JScrollPane();
 			outputTA = new TANotifier();
-			//logD = new LogDrawer();
+			logFile = new LogFile();
+			// logD = new LogDrawer();
 			statiDrawer = new StatiDrawer(ql);
 			queueDrawer = new QueueDrawer(ql);
 			jobsDrawer = new JobsDrawer();
+
+			buffPanel = new JPanel();
+			accelerationP = new JPanel();
+			jobsP = new JPanel();
+			accelerationS = new JSlider();
 
 			// acceleration
 			accelerationP.setLayout(new GridBagLayout());
@@ -207,7 +245,7 @@ public class MMQueues extends JMTFrame implements Runnable {
 			accelerationP.setBorder(addTitle("Simulation time", dCst.getSmallGUIFont()));
 			accelerationL = new JLabel("Time x0.0");
 			accelerationL.setFont(dCst.getNormalGUIFont());
-			accelerationL.setHorizontalAlignment(SwingConstants.CENTER);
+			accelerationL.setHorizontalAlignment(JLabel.CENTER);
 			accelerationP.add(accelerationL, gbc);
 			accelerationS.setValue(50);
 			accelerationS.setMaximum(100);
@@ -226,27 +264,36 @@ public class MMQueues extends JMTFrame implements Runnable {
 			gbc.gridy = 1;
 			gbc.weightx = 1;
 			accelerationP.add(accelerationS, gbc);
+			accelerationS.setValue(50);
 			accelerationS.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent evt) {
-					ql.setTimeMultiplier(accelerationS.getValue());
-					accelerationL.setText("Time x" + Formatter.formatNumber(ql.getTimeMultiplier(), 2));
-				}
-			});
-			ql.setTimeMultiplier(accelerationS.getValue());
-			accelerationL.setText("Time x" + Formatter.formatNumber(ql.getTimeMultiplier(), 2));
+					int value = accelerationS.getValue();
+					if(sim!=null)
+					{
+						sim.setTimeMultiplier(value);
+						accelerationL.setText("Time x" + Formatter.formatNumber(sim.getTimeMultiplier(), 2));
+					}
+					else{
+						accelerationL.setText("Time x" + Formatter.formatNumber(value, 2));
+					}					
 
-			//			jobs panel
-			jobsP.setBorder(addTitle("Jobs", dCst.getSmallGUIFont()));
+				}
+
+			});		
+			accelerationL.setText("Time x" + Formatter.formatNumber(accelerationS.getValue(), 2));
+
+			// jobs panel
+			jobsP.setBorder(addTitle("Customers", dCst.getSmallGUIFont()));
 			jobsP.setLayout(new GridLayout(1, 1));
 			jobsP.add(jobsDrawer);
 
-			//		   buttons
+			// buttons
 			buttonsP = new JPanel();
 			playB = new JButton();
 			stopB = new JButton();
 			pauseB = new JButton();
 
-			//Adding to main frame
+			// Adding to main frame
 			GridBagConstraints c = new GridBagConstraints();
 			c.fill = GridBagConstraints.BOTH;
 			this.getContentPane().setLayout(new BorderLayout());
@@ -259,14 +306,10 @@ public class MMQueues extends JMTFrame implements Runnable {
 					Manager.exit(MMQueues.this);
 				}
 			});
-			//OLD
-			//this.setTitle("MMQueues");
-			//NEW
-			//@author Stefano Omini
-			this.setTitle("jMCH - Markov Chain");
+
+			this.setTitle("jMCH - Markov Chain M/M/1 Station ");
 
 			this.setIconImage(jmt.gui.common.resources.JMTImageLoader.loadImage("JMCHIcon").getImage());
-			//end NEW
 
 			this.setSize(new java.awt.Dimension(initSize.width, initSize.height));
 			simulationP.setLayout(new GridBagLayout());
@@ -281,13 +324,25 @@ public class MMQueues extends JMTFrame implements Runnable {
 
 			// lambda
 			lambdaPanel.setLayout(new GridLayout(2, 1));
-			c.weightx = 0.5;
+			c.weightx = 0.5;		
+			
+			
 			parametersP.add(lambdaPanel, c);
-			lambdaL.setAlignmentX(SwingConstants.CENTER);
+					
+			
+
+			c.gridx = 1;
+			c.weightx = 0;
+			parametersP.add(getSplitter(10,1), c);
+			c.weightx = 0.5;
+			
+			lambdaL.setAlignmentX(JLabel.CENTER);
 			lambdaPanel.add(lambdaL);
-			lambdaS.setMaximum(300);
+			lambdaMultiplier = 0.01;
+			lambdaMultiplierChange = 0;
+			lambdaS.setMaximum(100);
 			lambdaS.setMinimum(0);
-			lambdaS.setMajorTickSpacing(50);
+			lambdaS.setMajorTickSpacing(25);
 			lambdaS.setMinorTickSpacing(1);
 			lambdaS.setPaintLabels(true);
 			lambdaS.setSnapToTicks(true);
@@ -298,55 +353,103 @@ public class MMQueues extends JMTFrame implements Runnable {
 			lambdaS.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent evt) {
 					lambdaSStateChanged(evt);
+					if (lambdaSChange)
+						setLambdaMultiplier();
+
 				}
+			});
+			lambdaS.addMouseListener(new MouseListener() {
+				public void mouseClicked(MouseEvent e) {
+				}
+
+				public void mouseEntered(MouseEvent e) {
+				}
+
+				public void mouseExited(MouseEvent e) {
+				}
+
+				public void mousePressed(MouseEvent e) {
+					lambdaSChange = false;
+				}
+
+				public void mouseReleased(MouseEvent e) {
+					setLambdaMultiplier();
+					lambdaSChange = true;
+				}
+
 			});
 			lambdaS.repaint();
 
 			// S slider
 			sPanel.setLayout(new GridLayout(2, 1));
-			c.gridx = 1;
+			c.gridx = 2;
 			parametersP.add(sPanel, c);
+			
+			c.gridx = 3;
+			c.weightx = 0;
+			parametersP.add(getSplitter(10,1), c);
+			c.weightx = 0.5;
+			
 			sL = new JLabel();
-			sL.setAlignmentX(SwingConstants.CENTER);
+			sL.setAlignmentX(JLabel.CENTER);
 			sPanel.add(sL);
-			sS.setMaximum(200);
+			sS.setMaximum(100);
 			sS.setMinimum(0);
-			sS.setMajorTickSpacing(50);
+			sS.setMajorTickSpacing(25);
 			sS.setMinorTickSpacing(1);
 			sS.setPaintLabels(true);
 			sL.setFont(dCst.getNormalGUIFont());
-			/*Dictionary d = sS.getLabelTable();
-			   for(int i = 0; i < 6; i++){
-			       d.put(new Integer(i * 50), new JLabel("" + i * 0.5));
-			   }
-			   sS.setLabelTable(d);
-			   sL.setFont(dCst.getNormalGUIFont());
-			   sL.setText(sStrS + Formatter.formatNumber(sS.getValue() * 0.005 * sMultiplier,2) + sStrE);*/
+
 			sPanel.add(sS);
+			
+			sMultiplier = 0.02;
+			sMultiplierChange = 1;
 			sS.setValue(S_I);
+
 			setSSlider();
 			sS.addChangeListener(new ChangeListener() {
 				public void stateChanged(ChangeEvent evt) {
 					sSStateChanged(evt);
+					if (sSChange)
+						setSMultiplier();
 				}
+			});
+			sS.addMouseListener(new MouseListener() {
+				public void mouseClicked(MouseEvent e) {
+				}
+
+				public void mouseEntered(MouseEvent e) {
+				}
+
+				public void mouseExited(MouseEvent e) {
+				}
+
+				public void mousePressed(MouseEvent e) {
+					sSChange = false;
+				}
+
+				public void mouseReleased(MouseEvent e) {
+					setSMultiplier();
+					sSChange = true;
+				}
+
 			});
 
 			// queueBuffer slider
 			buffPanel.setLayout(new GridLayout(2, 1));
-			c.gridx = 2;
+			c.gridx = 4;
 			buffPanel.setVisible(false);
 			parametersP.add(buffPanel, c);
 			buffL = new JLabel();
-			buffL.setAlignmentX(SwingConstants.CENTER);
+			buffL.setAlignmentX(JLabel.CENTER);
 			buffL.setFont(dCst.getNormalGUIFont());
 			buffPanel.add(buffL);
 			buffS.setValue(BUFF_I);
-			buffS.setMaximum(30);
+			buffS.setMaximum(31);
 			buffS.setMinimum(1);
 			buffS.setMajorTickSpacing(5);
 			buffS.setMinorTickSpacing(1);
 			buffS.setPaintLabels(true);
-			buffS.setPaintTicks(true);
 			buffPanel.add(buffS);
 			buffL.setText(bufStrS + buffS.getValue() + bufStrE);
 			buffS.addChangeListener(new ChangeListener() {
@@ -362,22 +465,22 @@ public class MMQueues extends JMTFrame implements Runnable {
 			c.gridy = 1;
 			simulationP.add(resultsP, c);
 
-			//media
+			// media
 			mediaJobsL.setText(nStrS + "0" + nStrE);
 			mediaJobsL.setFont(dCst.getNormalGUIFont());
 			resultsP.add(mediaJobsL);
 
-			//utilizzo
+			// utilization
 			utilizationL.setText(uStrS + "0" + uStrE);
 			utilizationL.setFont(dCst.getNormalGUIFont());
 			resultsP.add(utilizationL);
 
-			//throughput
+			// throughput
 			thrL.setText(thrStrS + "0" + thrStrE);
 			thrL.setFont(dCst.getNormalGUIFont());
 			resultsP.add(thrL);
 
-			//response time
+			// response time
 			responseL.setText(respStrS + "0" + respStrE);
 			responseL.setFont(dCst.getNormalGUIFont());
 			resultsP.add(responseL);
@@ -396,12 +499,12 @@ public class MMQueues extends JMTFrame implements Runnable {
 			outputTabP.setTitleAt(0, "States");
 			outputTabP.add(txtScroll);
 			outputTabP.setTitleAt(1, "Log");
-			outputTA.setEditable(false);
+			//outputTA.setEditable(false);
 			outputTA.setAutoscrolls(true);
 			txtScroll.add(outputTA);
 			txtScroll.setViewportView(outputTA);
-			//outputTabP.add(logD);
-			//outputTabP.setTitleAt(2, "Results");
+			// outputTabP.add(logD);
+			// outputTabP.setTitleAt(2, "Results");
 			outputP.add(queueDrawer);
 			JPanel p = new JPanel(new GridLayout(1, 2));
 			p.add(accelerationP);
@@ -440,40 +543,26 @@ public class MMQueues extends JMTFrame implements Runnable {
 				}
 			});
 
-			//menu
+			// menu
 			menuB = new JMenuBar();
 			setJMenuBar(menuB);
-			//queue
+			// queue
 			queueMenu = new JMenu("Queue");
-			MM1Item = new JRadioButtonMenuItem("M/M/1", true);
-			MM1Item.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					MM1Item.setSelected(true);
-					MM1dItem.setSelected(false);
-					showQueue(0);
-				}
-			});
-			queueMenu.add(MM1Item);
-			MM1dItem = new JRadioButtonMenuItem("M/M/1/k", false);
-			MM1dItem.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					MM1dItem.setSelected(true);
-					MM1Item.setSelected(false);
-					showQueue(1);
-				}
-			});
-
-			queueMenu.add(MM1dItem);
-			queueMenu.addSeparator();
-			//exitMenuItem = new JMenuItem();
-			Action exitAction = new AbstractAction("Exit") {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
+			
+			selectQueueRB = new AbstractAction("Select Station Type") {
 				public void actionPerformed(ActionEvent event) {
-					//action code goes here
+					// action code goes here
+					selectMethod();
+				}
+			}; 
+						
+			queueMenu.add(selectQueueRB);
+			
+			queueMenu.addSeparator();
+			// exitMenuItem = new JMenuItem();
+			Action exitAction = new AbstractAction("Exit") {
+				public void actionPerformed(ActionEvent event) {
+					// action code goes here
 					dispose();
 					Manager.exit(MMQueues.this);
 				}
@@ -481,17 +570,12 @@ public class MMQueues extends JMTFrame implements Runnable {
 			queueMenu.add(exitAction);
 			menuB.add(queueMenu);
 
-			//settings
+			// settings
 			settingsMenu = new JMenu("Settings");
 			colorsMenu = new JMenu("Colors");
 			Action queueCAction = new AbstractAction("Probability...") {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
 				public void actionPerformed(ActionEvent event) {
-					//action code goes here
+					// action code goes here
 					Color tmpC;
 					tmpC = JColorChooser.showDialog(null, "Probability color", probC);
 					if (tmpC != null) {
@@ -505,13 +589,8 @@ public class MMQueues extends JMTFrame implements Runnable {
 			};
 			colorsMenu.add(queueCAction);
 			Action queueFCAction = new AbstractAction("Queue...") {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
 				public void actionPerformed(ActionEvent event) {
-					//action code goes here
+					// action code goes here
 					Color tmpC;
 					tmpC = JColorChooser.showDialog(null, "Queue color", queueC);
 					if (tmpC != null) {
@@ -526,13 +605,8 @@ public class MMQueues extends JMTFrame implements Runnable {
 			colorsMenu.add(queueFCAction);
 			colorsMenu.addSeparator();
 			Action statusCAction = new AbstractAction("Empty state...") {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
 				public void actionPerformed(ActionEvent event) {
-					//action code goes here
+					// action code goes here
 					Color tmpC;
 					tmpC = JColorChooser.showDialog(null, "Empty state color", emptyC);
 					if (tmpC != null) {
@@ -546,13 +620,8 @@ public class MMQueues extends JMTFrame implements Runnable {
 			};
 			colorsMenu.add(statusCAction);
 			Action animCAction = new AbstractAction("Animation...") {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
 				public void actionPerformed(ActionEvent event) {
-					//action code goes here
+					// action code goes here
 					Color tmpC;
 					tmpC = JColorChooser.showDialog(null, "Animation color", animC);
 					if (tmpC != null) {
@@ -567,7 +636,7 @@ public class MMQueues extends JMTFrame implements Runnable {
 			colorsMenu.add(animCAction);
 			colorsMenu.addSeparator();
 
-			//gradientItem = new JRadioButtonMenuItem("usa gradiente", false);
+			// gradientItem = new JRadioButtonMenuItem("usa gradiente", false);
 			gradientItem = new JRadioButtonMenuItem("Use gradient", false);
 			gradientItem.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -578,47 +647,33 @@ public class MMQueues extends JMTFrame implements Runnable {
 			colorsMenu.add(gradientItem);
 			settingsMenu.add(colorsMenu);
 
-			//sizeMenu = new JMenu("Dimensioni");
+			// sizeMenu = new JMenu("Dimensioni");
 			sizeMenu = new JMenu("Icon size");
 
-			//Action drawSmallAction = new AbstractAction("Piccole"){
+			// Action drawSmallAction = new AbstractAction("Piccole"){
 			Action drawSmallAction = new AbstractAction("Small") {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
 				public void actionPerformed(ActionEvent event) {
-					//action code goes here
+					// action code goes here
 					dCst = new DrawSmall();
 					changeSize();
 				}
+				
 			};
 			sizeMenu.add(drawSmallAction);
 
-			//Action drawNormalAction = new AbstractAction("Normali"){
+			// Action drawNormalAction = new AbstractAction("Normali"){
 			Action drawNormalAction = new AbstractAction("Normal") {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
 				public void actionPerformed(ActionEvent event) {
-					//action code goes here
+					// action code goes here
 					dCst = new DrawNormal();
 					changeSize();
 				}
 			};
 			sizeMenu.add(drawNormalAction);
-			//Action drawBigAction = new AbstractAction("Grandi"){
+			// Action drawBigAction = new AbstractAction("Grandi"){
 			Action drawBigAction = new AbstractAction("Large") {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
 				public void actionPerformed(ActionEvent event) {
-					//action code goes here
+					// action code goes here
 					dCst = new DrawBig();
 					changeSize();
 				}
@@ -628,29 +683,24 @@ public class MMQueues extends JMTFrame implements Runnable {
 
 			menuB.add(settingsMenu);
 
-			//help
+			// help
 			helpMenu = new JMenu("Help");
 
-			//OLD
+			// OLD
 			// helpMenuItem = helpMenu.add("Help");
-			//NEW
-			//@author Stefano Omini
+			// NEW
+			// @author Stefano Omini
 			Action helpAction = new AbstractAction("Help") {
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 1L;
-
 				public void actionPerformed(ActionEvent event) {
-					//action code goes here
+					// action code goes here
 					showHelp(event);
 				}
 			};
 
 			helpMenu.add(helpAction);
-			//end NEW
+			// end NEW
 
-			//NEW Bertoli Marco
+			// NEW Bertoli Marco
 			helpMenu.addSeparator();
 			JMenuItem about = new JMenuItem();
 			about.setText("About...");
@@ -665,9 +715,11 @@ public class MMQueues extends JMTFrame implements Runnable {
 			});
 
 			helpMenu.add(about);
-			//END new
+			// END new
 
 			menuB.add(helpMenu);
+			
+			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -683,13 +735,13 @@ public class MMQueues extends JMTFrame implements Runnable {
 		statiDrawer.changeDrawSettings(dCst);
 		statiDrawer.repaint();
 		outputTA.changeDrawSettings(dCst);
-		//logD.changeDrawSettings(dCst);
+		// logD.changeDrawSettings(dCst);
 		validate();
 
 	}
 
 	/**
-	 *
+	 * 
 	 */
 	protected void changeColors() {
 		queueDrawer.setColors(emptyC, queueC, animC, gradientF);
@@ -702,42 +754,89 @@ public class MMQueues extends JMTFrame implements Runnable {
 	 * @param evt
 	 */
 	protected void buffSStateChanged(ChangeEvent evt) {
-		buffer = buffS.getValue();
+		buffer = buffS.getValue()-cpuNum;
 		if (buffer < 1) {
 			buffS.setValue(1);
 			buffer = 1;
 		}
-		ql.setMaxStates(buffer);
-		queueDrawer.setMaxJobs(buffer);
-		statiDrawer.setMaxJobs(buffer);
+		ql.setMaxStates(buffer );
+		queueDrawer.setMaxJobs(buffer + 1);
+		statiDrawer.setMaxJobs(buffer + cpuNum);
 		buffL.setText(bufStrS + buffS.getValue() + bufStrE);
 		updateFields();
 	}
 
-	protected void showQueue(int queueType) {
+	protected void showQueue(int queueType,int cpuNumber) {
+		buffer = BUFF_I;
+		cpuNum = cpuNumber; 
+		buffS.setMaximum(30+cpuNumber+1);
+		buffS.setMinimum(cpuNumber+1);
+		buffS.setValue(buffer + cpuNumber);
 		switch (queueType) {
-			case 0:
-				buffer = 0;
-				ql = new MM1Logic(0.01 * lambdaS.getValue(), 0.005 * sS.getValue() * sMultiplier);
-				buffPanel.setVisible(false);
-				break;
+		case 0:
+			buffer = 0;
+			ql = new MM1Logic(lambdaMultiplier * lambdaS.getValue(), sS.getValue() * sMultiplier);
+			buffPanel.setVisible(false);
+			sS.setValue(S_I);
+			lambdaS.setValue(LAMBDA_I);
+			statiDrawer.updateLogic(ql);
+			queueDrawer.updateLogic(ql);
+			queueDrawer.setMaxJobs(0);
+			statiDrawer.setMaxJobs(0);
+			queueDrawer.setCpuNumber(1);
+			updateFields();
+			this.setTitle("jMCH - Markov Chain M/M/1  Station");
+			break;
 
-			case 1:
-				buffer = BUFF_I;
-				ql = new MM1dLogic(0.01 * lambdaS.getValue(), 0.005 * sS.getValue() * sMultiplier, buffer);
-				buffS.setValue(buffer);
-				buffPanel.setVisible(true);
-				break;
-
-			default:
-				break;
+		case 1:
+			//buffer = BUFF_I;
+			ql = new MM1dLogic(lambdaMultiplier * lambdaS.getValue(),  sS.getValue() * sMultiplier, buffer);
+			buffPanel.setVisible(true);
+			sS.setValue(S_I);
+			lambdaS.setValue(LAMBDA_I);
+			statiDrawer.updateLogic(ql);
+			queueDrawer.updateLogic(ql);
+			queueDrawer.setMaxJobs(buffer + 1);
+			statiDrawer.setMaxJobs(buffer + 1);
+			queueDrawer.setCpuNumber(1);
+			updateFields();
+			this.setTitle("jMCH - Markov Chain M/M/1/k Finite Capacity Station");
+			break;
+			
+		case 2:
+			buffer = 0;
+			ql = new MMNLogic(lambdaMultiplier * lambdaS.getValue(),  sS.getValue() * sMultiplier,cpuNumber);
+			buffPanel.setVisible(false);
+			sS.setValue(S_I);
+			lambdaS.setValue(LAMBDA_I);
+			statiDrawer.updateLogic(ql);
+			queueDrawer.updateLogic(ql);
+			queueDrawer.setMaxJobs(0);
+			statiDrawer.setMaxJobs(0);
+			queueDrawer.setCpuNumber(cpuNumber);
+			updateFields();
+			this.setTitle("jMCH - Markov Chain M/M/"+cpuNumber+" Station");
+			break;
+		case 3:
+			
+			//buffer = BUFF_I;
+			ql = new MMNdLogic(lambdaMultiplier * lambdaS.getValue(),  sS.getValue() * sMultiplier, cpuNumber, buffer);
+			buffPanel.setVisible(true);
+			sS.setValue(S_I);
+			lambdaS.setValue(LAMBDA_I);
+			statiDrawer.updateLogic(ql);
+			queueDrawer.updateLogic(ql);
+			queueDrawer.setMaxJobs(buffer + 1);
+			statiDrawer.setMaxJobs(buffer + cpuNumber);
+			queueDrawer.setCpuNumber(cpuNumber);
+			updateFields();
+			this.setTitle("jMCH - Markov Chain M/M/"+cpuNumber+"/k Finite Capacity Station");
+			break;
+			
+		default:
+			break;
 		}
-		sS.setValue(S_I);
-		lambdaS.setValue(LAMBDA_I);
-		statiDrawer.updateLogic(ql);
-		queueDrawer.setMaxJobs(buffer);
-		statiDrawer.setMaxJobs(buffer);
-		updateFields();
+		
 	}
 
 	public static void main(String[] args) {
@@ -753,92 +852,119 @@ public class MMQueues extends JMTFrame implements Runnable {
 			e.printStackTrace();
 		}
 	}
+	
+	private void setLogAnalyticalResults()
+	{
+		
+		try {
+			if(ql.getMaxStates() == 0)
+				outputTA.setAnalyticalResult(ql.mediaJobs(), ql.utilization(), ql.throughput(),
+						ql.responseTime(), ql.getLambda(), ql.getS(), 0);
+			else 
+				outputTA.setAnalyticalResult(ql.mediaJobs(), ql.utilization(), ql.throughput(),
+						ql.responseTime(), ql.getLambda(), ql.getS(), ql.getStatusProbability(ql.getMaxStates() + ql.getNumberServer()));
+		} catch (NonErgodicException e) {
+			outputTA.setAnalyticalResult();
+		}
+	}
 
 	protected void playBActionPerformed(ActionEvent evt) {
 		boolean goOn = true;
-		if (nonErgodic) {
-			if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, "Il processo è NON ergodico.\nSi vuole continuare comunque?",
-					"Attenzione", JOptionPane.YES_NO_OPTION)) {
+
+		if (nonErgodic)
+			if (JOptionPane.NO_OPTION == JOptionPane.showConfirmDialog(this, "The process is not ergodico.\nDo you want to continue?", "Warning", JOptionPane.YES_NO_OPTION))
 				goOn = false;
-			}
-		}
 		if (goOn) {
-			//Creo i threads che aggiungono e tolgono i processi dalla coda
 			CustomDialog jobsDialog = new CustomDialog(mf);
 			jobsDialog.pack();
 			jobsDialog.setLocationRelativeTo(mf);
 			jobsDialog.setVisible(true);
-			qs = new QueueStack(ql.getMaxStates());
-			queueDrawer.setMediaJobs((int) Q);
+			logFile.setLogging(false);
+			if (jobsDialog.isLogging()) {
+				if (jobsDialog.getLogFile() == null)
+					JOptionPane.showMessageDialog(mf,
+							"Logging check box is selected \n"
+									+ "but file is not selected.", "Warning",
+							JOptionPane.WARNING_MESSAGE);
+				else {
+					logFile.setLogFile(jobsDialog.getLogFile(),
+							jobsDialog.getDelimiterType(),mf);					
+					logFile.setLogging(true);
+				}
+			}		
+
+			jq = new JobQueue();
+			queueDrawer.setMediaJobs(Q-U);
 			queueDrawer.setTotalJobs(jobsDialog.getValidatedValue());
 			jobsDrawer.setTotalJobs(jobsDialog.getValidatedValue());
 			tan[0] = outputTA;
 			tan[1] = queueDrawer;
 			tan[2] = statiDrawer;
 			tan[3] = jobsDrawer;
-			//tan[4] = logD;
-			qD = new Thread(queueDrawer);
-			sD = new Thread(statiDrawer);
-			jD = new Thread(jobsDrawer);
-			//logT = new Thread(logD);
-			qD.setDaemon(true);
-			sD.setDaemon(true);
-			qD.start();
-			sD.start();
-			jD.start();
-			//logT.start();
-			arrival = new Arrivals(ql, qs, tan, jobsDialog.getValidatedValue());
-			cpu = new Processor(ql, qs, tan, jobsDialog.getValidatedValue());
-			at = new Thread(arrival);
-			pt = new Thread(cpu);
-			at.setDaemon(true);
-			pt.setDaemon(true);
-			at.start();
-			pt.start();
+			tan[4] = logFile;
+			
+
+			arrival = new Arrivals(ql, jq, tan, (int) jobsDialog.getValidatedValue());
+			
+			int numServer;
+			numServer = ql.getNumberServer();
+			processors = new Processor[numServer];
+			for(int i= 0;i<numServer;i++)
+				processors[i] = new Processor(ql, jq, tan,i/*, jobsDialog.getValidatedValue()*/);
+
+			sim = new Simulator(arrival, processors,accelerationS.getValue(),tan);
+			
+
+			arrival.sim = sim;
+			for(int i= 0;i<numServer;i++)
+				processors[i].sim = sim;
+
+			sim.start();
+
 			playB.setEnabled(false);
 			stopB.setEnabled(true);
 			pauseB.setEnabled(true);
-			MM1Item.setEnabled(false);
-			MM1dItem.setEnabled(false);
-			Thread mmt = new Thread(mmqueue);
-			mmt.start();
+			selectQueueRB.setEnabled(false);
+
+			setLogAnalyticalResults();
+
 		}
 	}
 
 	protected void stopBActionPerformed(ActionEvent evt) {
-		stopProcessing();
+		stopProcessing(true);
 	}
 
 	/** Auto-generated event handler method */
 	protected void pauseBActionPerformed(ActionEvent evt) {
 		if (paused) {
-			qD.resume();
-			sD.resume();
-			jD.resume();
-			//logT.resume();
-			at.resume();
-			pt.resume();
+
 			paused = false;
+			sim.pause();
 		} else {
-			at.suspend();
-			pt.suspend();
-			qD.suspend();
-			sD.suspend();
-			jD.suspend();
-			//logT.suspend();
+
 			paused = true;
+			sim.pause();
+			outputTA.refresh();
+			logFile.refresh();
 		}
 	}
 
+
+	
+	
 	/** Auto-generated event handler method */
 	protected void lambdaSStateChanged(ChangeEvent evt) {
-		if (lambdaS.getValue() == 0) {
+		if (lambdaS.getValue() == 0){
+			lambdaMultiplier = 0.01;
+			lambdaMultiplierChange = 0;
 			lambdaS.setValue(1);
 		}
-		ql.setLambda(0.01 * lambdaS.getValue());
-		lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * 0.01, 2) + lambdaStrE);
+		ql.setLambda(lambdaMultiplier * lambdaS.getValue());
+		lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
 		setSSlider();
 		updateFields();
+
 	}
 
 	protected void sSStateChanged(ChangeEvent evt) {
@@ -854,26 +980,38 @@ public class MMQueues extends JMTFrame implements Runnable {
 			utilizationL.setForeground(Color.BLACK);
 			utilizationL.setText(uStrS + Formatter.formatNumber(U, 2) + uStrE);
 			mediaJobsL.setText(nStrS + Formatter.formatNumber(Q, 2) + nStrE);
+			
 			thrL.setText(thrStrS + Formatter.formatNumber(ql.throughput(), 2) + thrStrE);
 			responseL.setText(respStrS + Formatter.formatNumber(ql.responseTime(), 2) + respStrE);
 			nonErgodic = false;
+
+			if (sim != null && ql.getLambda() > 0)
+				sim.setLambdaZero(false);
+
 		} catch (NonErgodicException e) {
 			Q = 0.0;
 			U = 0.0;
-			mediaJobsL.setText(nStrS + " -" + nStrE);
+			mediaJobsL.setText(nStrS + "Saturation" );
+			
 			utilizationL.setForeground(Color.RED);
-			utilizationL.setText(uStrS + "non ergodic (>1)" + uStrE);
-			thrL.setText(thrStrS + "-" + thrStrE);
-			responseL.setText(respStrS + "-" + respStrE);
+			utilizationL.setText(uStrS + "Saturation" );
+			thrL.setText(thrStrS + "Saturation" );
+			responseL.setText(respStrS + "Saturation" );
 			nonErgodic = true;
 		}
-		queueDrawer.setMediaJobs((int) Q);
+		queueDrawer.setMediaJobs(Q-U);
 		statiDrawer.repaint();
+
+		if(sim==null || !sim.isStarted())
+			setLogAnalyticalResults();
+		else
+			outputTA.setAnalyticalResult();
+
 	}
 
 	private static void configureUI(String plafURI) {
 		UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
-		//Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
+		// Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
 		Options.setDefaultIconSize(new Dimension(18, 18));
 		try {
 
@@ -887,78 +1025,154 @@ public class MMQueues extends JMTFrame implements Runnable {
 		return new TitledBorder(null, title, TitledBorder.LEADING, TitledBorder.TOP, f, new java.awt.Color(0, 0, 0));
 	}
 
-	public void stopProcessing() {
-		at.stop();
-		pt.stop();
-		qs.clearQueue();
+	public void stopProcessing(boolean isSaveFileOption) {
+		sim.stop();
+		while(sim.isRunning());//waiting to stop
+		try {
+			Thread.sleep(100);//in order to sure every panel is updated
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		jq.clearQueue();		
 		outputTA.reset();
+		logFile.reset();
 		queueDrawer.reset();
 		statiDrawer.reset();
-		//logD.reset();
-		qD.stop();
-		sD.stop();
-		jD.stop();
-		//logT.stop();
+		jobsDrawer.reset();
+		
 		playB.setEnabled(true);
 		stopB.setEnabled(false);
 		pauseB.setEnabled(false);
-		MM1Item.setEnabled(true);
-		MM1dItem.setEnabled(true);
+		selectQueueRB.setEnabled(true);
+		updateFields();
 	}
 
-	/* (non-Javadoc)
-	  * @see java.lang.Runnable#run()
-	  */
-	public void run() {
-		while (true) {
-			try {
-				Thread.sleep(3000);
-				if (!cpu.haveMoreWorkToDo()) {
-					stopProcessing();
-				}
-			} catch (Exception e) {
-			}
-		}
 
-	}
+
 
 	public void setSSlider() {
-		sMultiplier = ql.getMaxErgodicS();
+		//sMultiplier = ql.getMaxErgodicS();
 		Dictionary d = sS.getLabelTable();
-		for (int i = 0; i < 6; i++) {
-			d.put(new Integer(i * 50), new JLabel("" + Formatter.formatNumber(i * (sMultiplier / 4.0)), 2));
+//		for (int i = 0; i < 6; i++) {
+//			d.put(new Integer(i * 25), new JLabel("" + Formatter.formatNumber(i * sMultiplier ), 2));
+//		}
+		for (int i = sS.getMinimum(); i <= sS.getMaximum(); i += sS.getMajorTickSpacing()) {
+			d.put(new Integer(i), new JLabel("" + Formatter.formatNumber(i * sMultiplier, 2)));
 		}
 		sS.setLabelTable(d);
-		sL.setText(sStrS + Formatter.formatNumber(sS.getValue() * 0.005 * sMultiplier, 2) + sStrE);
+		sL.setText(sStrS + Formatter.formatNumber(sS.getValue()  * sMultiplier, 2) + sStrE);
 		sS.repaint();
-		ql.setS(0.005 * sS.getValue() * sMultiplier);
+		ql.setS( sS.getValue() * sMultiplier);
 	}
 
 	public void setLambdaSlider() {
 		Dictionary ld = lambdaS.getLabelTable();
-		for (int i = 0; i < 8; i++) {
-			ld.put(new Integer(i * 50), new JLabel("" + i * 0.5));
+
+		for (int i = lambdaS.getMinimum(); i <= lambdaS.getMaximum(); i += lambdaS.getMajorTickSpacing()) {
+			ld.put(new Integer(i), new JLabel("" + Formatter.formatNumber(i * lambdaMultiplier, 2)));
 		}
+
+		// for(int i = 0; i <= 4; i++){
+		// ld.put(new Integer(i * 25), new JLabel("" + Formatter.formatNumber(i
+		// * 0.25, 2) ));
+		// }
 		lambdaS.setLabelTable(ld);
-		ql.setLambda(0.01 * lambdaS.getValue());
-		lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * 0.01, 2) + lambdaStrE);
+		ql.setLambda(lambdaMultiplier * lambdaS.getValue());
+		lambdaL.setText(lambdaStrS + Formatter.formatNumber(lambdaS.getValue() * lambdaMultiplier, 2) + lambdaStrE);
 	}
 
-	//NEW
-	//@author Stefano Omini
+	public void setLambdaMultiplier() {
+		while (true) {
+			if (lambdaS.getValue() > lambdaS.getMaximum() * 0.95) {
+				if (lambdaMultiplierChange <= 4) {
+					if (lambdaMultiplierChange % 2 == 0) {
+						lambdaMultiplier *= 2;
+						setLambdaSlider();
+						lambdaS.setValue((lambdaS.getValue() + 1) / 2);
+					} else {
+						lambdaMultiplier *= 5;
+						setLambdaSlider();
+						lambdaS.setValue((lambdaS.getValue() + 1) / 5);
+					}
+
+					lambdaMultiplierChange++;
+//					System.out.println("LambdaMultiplier:" + lambdaMultiplier);
+				} else
+					break;
+			} else if (lambdaS.getValue() < lambdaS.getMaximum() * 0.05) {
+				if (lambdaMultiplierChange > 0) {
+					if (lambdaMultiplierChange % 2 == 1) {
+						lambdaMultiplier /= 2;
+						setLambdaSlider();
+						lambdaS.setValue(lambdaS.getValue() * 2);
+					} else {
+						lambdaMultiplier /= 5;
+						setLambdaSlider();
+						lambdaS.setValue(lambdaS.getValue() * 5);
+					}
+					lambdaMultiplierChange--;
+//					System.out.println("LambdaMultiplier:" + lambdaMultiplier);
+				} else
+					break;
+			} else
+				break;
+		}
+	}
+	
+	public void setSMultiplier() {
+		while (true) {
+			if (sS.getValue() > sS.getMaximum() * 0.95) {
+				if (sMultiplierChange <= 4) {
+					if (sMultiplierChange % 2 == 0) {
+						sMultiplier *= 2;
+						setSSlider();
+						sS.setValue((sS.getValue() + 1) / 2);
+					} else {
+						sMultiplier *= 5;
+						setSSlider();
+						sS.setValue((sS.getValue() + 1) / 5);
+					}
+
+					sMultiplierChange++;
+//					System.out.println("SMultiplier:" + sMultiplier);
+				} else
+					break;
+			} else if (sS.getValue() < sS.getMaximum() * 0.05) {
+				if (sMultiplierChange > 0) {
+					if (sMultiplierChange % 2 == 1) {
+						sMultiplier /= 2;
+						setSSlider();
+						sS.setValue(sS.getValue() * 2);
+					} else {
+						sMultiplier /= 5;
+						setSSlider();
+						sS.setValue(sS.getValue() * 5);
+					}
+					sMultiplierChange--;
+//					System.out.println("SMultiplier:" + sMultiplier);
+				} else
+					break;
+			} else
+				break;
+		}
+	}
+
+	// NEW
+	// @author Stefano Omini
 	private void showHelp(ActionEvent event) {
 
 		JHelp helpViewer = null;
 		try {
 			// Get the classloader of this class.
 			ClassLoader cl = this.getClass().getClassLoader();
-			// Use the findHelpSet method of HelpSet to create a URL referencing the helpset file.
+			// Use the findHelpSet method of HelpSet to create a URL referencing
+			// the helpset file.
 			URL url = HelpSet.findHelpSet(cl, "help/jMCH_it/MMQHelp.hs");
 			// Create a new JHelp object with a new HelpSet.
 			helpViewer = new JHelp(new HelpSet(cl, url));
 
 			// Set the initial entry point in the table of contents.
-			//helpViewer.setCurrentID("");
+			// helpViewer.setCurrentID("");
 		} catch (Exception e) {
 			e.printStackTrace();
 			JOptionPane.showMessageDialog(this, "Sorry, help is not available", "Help not found", JOptionPane.ERROR_MESSAGE);
@@ -972,10 +1186,41 @@ public class MMQueues extends JMTFrame implements Runnable {
 		// Add the created helpViewer to it.
 		frame.getContentPane().add(helpViewer);
 		// Set a default close operation.
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		// Make the frame visible.
 		frame.setVisible(true);
 
 	}
-	//end NEW
+	// end NEW
+	
+	private JPanel getSplitter(int widht,int height)
+	{
+		JPanel splitPane = new JPanel();
+		Dimension dim = new Dimension(widht,height);
+		splitPane.setEnabled(false);
+		splitPane.setPreferredSize(dim);
+		splitPane.setMaximumSize(dim);
+		splitPane.setMinimumSize(dim);
+		return splitPane;
+	}
+	
+	private void selectMethod()
+	{
+		CustomDialogMethod methodDialog =	new CustomDialogMethod(this);
+		methodDialog.pack();
+		methodDialog.setLocationRelativeTo(mf);
+		methodDialog.setVisible(true);
+		
+		String selectedMethod =  methodDialog.getSelectedMethod();
+//		System.out.println(selectedMethod);
+		if(selectedMethod == "mm1")
+			showQueue(0,1);		
+		else if(selectedMethod == "mm1k")
+			showQueue(1,1);
+		else if(selectedMethod == "mmn")
+			showQueue(2,methodDialog.getValidatedValue());
+		else if(selectedMethod == "mmnk")
+			showQueue(3,methodDialog.getValidatedValue());
+		
+	}
 }

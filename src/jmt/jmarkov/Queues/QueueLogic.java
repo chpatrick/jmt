@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-
+  
 /*
  * Created on 11-mar-2004
  *
@@ -29,64 +29,72 @@ import jmt.jmarkov.Queues.Exceptions.NoJobsException;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 
 /**
- * Rappresenta la logica che regola gli arrivi e l'esecuzione dei
- * processi/jobs, ovvero con che modalità sono generati gli arrivi
- * e come sono gestite le esecuzioni dei job
+ * This interface represent the logic of the queue types: the arrival 
+ * and the execution of the process/job. This changed with respect to 
+ * inputs arrival rate(lambda), service time, number of station capacity
+ * or number of servers. 
+ * Each queue type could have different inputs. 
  * 
- * @author Ernesto
- *
  */
 public interface QueueLogic {
-
+	
 	//methods:
-
+	
 	/**
-	 * Calcola la probabilità che lo stato sia occupato
-	 * @return probabilità che sia occupato
-	 * @param status lo stato in questione
+	 * Calculates the probability of each status. 
+	 * @return the probability of the status
+	 * @param number of elements in the status
 	 */
 	public double getStatusProbability(int status) throws NonErgodicException;
-
+	
 	/**
-	 * Calcola il tempo che il job rimarrà in esecuzione in [ms]
-	 * @return tempo di esecuzione
+	 * Calculates the service time of the job.(ms) 
+	 * @return service time
 	 */
 	public double getRunTime();
-
+	
 	/**
-	 * Calcola il tempo di interarrivo del prossimo job in [ms]
-	 * @return tempo di interarrivo
+	 * Calculates the arrival of the next job.(ms)
+	 * @return interarrival time
 	 */
 	public double getArrivalTime() throws NoJobsException;
-
+	
 	/**
-	 * Restituisce il numero massimo di job ammessi in coda (buffer)
-	 * dopo i quali ogni nuovo job viene scartato
-	 * @return 0 se il buffer è ideale (infinito), un valore > 0, altrimenti
+	 * 
+	 * Returns the maximum number of the jobs in the queue(only buffer)
+	 * @return 0 if the buffer is ideal(infinite), a positive number,  otherwise
 	 */
 	public int getMaxStates() throws InfiniteBufferException;
-
+	
+	
 	/**
-	 * Calcola il numero medio di jobs in coda (N)
+	 * Calculates the average number of the jobs in the queue(Q)
 	 * 
-	 * @return
 	 */
 	public double mediaJobs() throws NonErgodicException;
-
+	
 	/**
-	 * Calcola l'Utilizzo medio della coda (U)
+	 * Calculates the average utilization of the queue(U)
 	 */
 	public double utilization() throws NonErgodicException;
-
+	
 	/**
-	 * Calcola il Throughput (X) medio
-	 * 
+	 * Calculates the average  throughput(X) 
+	 *  
 	 */
 	public double throughput() throws NonErgodicException;
 
 	/**
-	 * Calcola il Tempo di Risposta medio (R)
+	 * Calculates the average response time(R) 
 	 * 
 	 */
 	public double responseTime() throws NonErgodicException;
+	
+	
+	/**
+	 * Returns the number of the servers.  
+	 * 
+	 */	
+	public int getNumberServer();
+	
 }

@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-
+  
 /*
  * Created on 20-mar-2004 by Ernesto
  *
@@ -30,11 +30,6 @@ package jmt.jmarkov.Queues.Exceptions;
  * @author Ernesto
  */
 public class NoJobsException extends Exception {
-
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
 
 	/**
 	 * 

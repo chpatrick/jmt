@@ -34,7 +34,6 @@ import jmt.gui.common.CommonConstants;
 import jmt.gui.common.Defaults;
 import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
-import jmt.jmarkov.Queues.QueueStack;
 
 /**
  * Created by IntelliJ IDEA.
