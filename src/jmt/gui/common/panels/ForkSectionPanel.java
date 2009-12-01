@@ -45,6 +45,9 @@ import jmt.gui.common.definitions.StationDefinition;
  * @author Bertoli Marco
  *         Date: 15-mar-2006
  *         Time: 14.25.36
+ *         
+ *  Modified by Ashanka (Dec 09)
+ *  Desc: Minor Cosmetic changes in the label. Changed some Label regarding the Definitions for better understanding of Users.
  */
 public class ForkSectionPanel extends WizardPanel implements CommonConstants {
 	/**
@@ -94,23 +97,23 @@ public class ForkSectionPanel extends WizardPanel implements CommonConstants {
 		JPanel fragnum = new JPanel();
 		fragnum.setBorder(new TitledBorder(new EtchedBorder(), "Fork degree"));
 		this.add(fragnum);
-		JLabel text = new JLabel("Number of tasks to be generated on each output link for each input job:");
+		JLabel text = new JLabel("Number of Forked-Jobs to be generated on each output link for each input job (customer) to the Fork:");
 		text.setLabelFor(numForkSpinner);
 		fragnum.add(text);
 		fragnum.add(numForkSpinner);
 
 		//layout of block panel
 		JPanel block = new JPanel(new BorderLayout(10, 10));
-		block.setBorder(new TitledBorder(new EtchedBorder(), "Fork-join section capacity"));
+		block.setBorder(new TitledBorder(new EtchedBorder(), "Fork-Join Section Capacity"));
 		this.add(block);
 
 		// Adds a checkbox to block panel to select block function
 		final JCheckBox check = new JCheckBox();
-		check.setText("Enable Finite Capacity: limit maximum number of jobs inside a fork-join section");
+		check.setText("Enable Finite Capacity: limit maximum number of jobs (customers) inside a fork-join section. ");
 		check.setToolTipText("Limit the maximum allowed number of jobs inside a fork-join section. Following jobs will be queued.");
 
 		// Adds a spinner to block panel to select block number
-		JLabel label = new JLabel("Capacity (max number of jobs - NOT tasks): ");
+		JLabel label = new JLabel("Capacity (max number of jobs, NOT Forked-Jobs): ");
 		label.setLabelFor(blockSpinner);
 
 		// Initial values
