@@ -18,7 +18,6 @@
 
 package jmt.engine.QueueNet;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
@@ -49,63 +48,34 @@ public class LinkedJobInfoList implements JobInfoList {
 	private Measure utilization, utilizationPerClass[], responseTime, responseTimePerClass[], residenceTime, residenceTimePerClass[], queueLength,
 			queueLengthPerClass[], dropRate, dropRatePerClass[];
 
-	private InverseMeasure Throughput, ThroughputPerClass[];
+	private InverseMeasure throughput, throughputPerClass[];
 	
 	/** The number of servers to estimate Utilization measure on multiserver environments. */
 	private int serverNumber = 1;
 	
-	/** Tells if the station is processor sharing, so utilization measure should be limited. */
-	private boolean processorSharing = false;
-
 	/** Creates a new JobInfoList instance.
-	* @param NumberOfJobClasses number of job classes.
-	* @param Save True to create and use a list to add/remove
+	* @param numberOfJobClasses number of job classes.
+	* @param save True to create and use a list to add/remove
 	* each job which arrives/departes, false otherwise.
 	*/
 	@SuppressWarnings("unchecked")
-	public LinkedJobInfoList(int NumberOfJobClasses, boolean Save) {
+	public LinkedJobInfoList(int numberOfJobClasses, boolean save) {
 		int i;
-		if (Save) {
+		if (save) {
 			list = new LinkedList<JobInfo>();
-			listPerClass = new LinkedList[NumberOfJobClasses];
-			for (i = 0; i < NumberOfJobClasses; i++) {
+			listPerClass = new LinkedList[numberOfJobClasses];
+			for (i = 0; i < numberOfJobClasses; i++) {
 				listPerClass[i] = new LinkedList<JobInfo>();
 			}
 		}
 
-		jobsIn = 0;
-		jobsInPerClass = new int[NumberOfJobClasses];
-		for (i = 0; i < NumberOfJobClasses; i++) {
-			jobsInPerClass[i] = 0;
-		}
-
-		jobsOut = 0;
-		jobsOutPerClass = new int[NumberOfJobClasses];
-		for (i = 0; i < NumberOfJobClasses; i++) {
-			jobsOutPerClass[i] = 0;
-		}
-
-		busyTimePerClass = new double[NumberOfJobClasses];
-		for (i = 0; i < NumberOfJobClasses; i++) {
-			busyTimePerClass[i] = 0;
-		}
-
-		lastJobOutTime = lastJobInTime = lastJobDropTime = 0.0;
-		lastJobInTimePerClass = new double[NumberOfJobClasses];
-		for (i = 0; i < NumberOfJobClasses; i++) {
-			lastJobInTimePerClass[i] = 0;
-		}
-
-		lastJobOutTimePerClass = new double[NumberOfJobClasses];
-		for (i = 0; i < NumberOfJobClasses; i++) {
-			lastJobOutTimePerClass[i] = 0;
-		}
-
-		ThroughputPerClass = new InverseMeasure[NumberOfJobClasses];
-
-		lastJobDropTimePerClass = new double[NumberOfJobClasses];
-		Arrays.fill(lastJobDropTimePerClass, 0.0);
-
+		jobsInPerClass = new int[numberOfJobClasses];
+		jobsOutPerClass = new int[numberOfJobClasses];
+		busyTimePerClass = new double[numberOfJobClasses];
+		lastJobInTimePerClass = new double[numberOfJobClasses];
+		lastJobOutTimePerClass = new double[numberOfJobClasses];
+		throughputPerClass = new InverseMeasure[numberOfJobClasses];
+		lastJobDropTimePerClass = new double[numberOfJobClasses];
 	}
 
 	/**---------------------------------------------------------------------
@@ -592,15 +562,14 @@ public class LinkedJobInfoList implements JobInfoList {
 	/* (non-Javadoc)
 	 * @see jmt.engine.QueueNet.JobInfoList#analyzeThroughput(jmt.engine.QueueNet.JobClass, jmt.engine.dataAnalysis.InverseMeasure)
 	 */
-
 	public void analyzeThroughput(JobClass JobClass, InverseMeasure Measurement) {
 		if (JobClass != null) {
-			if (ThroughputPerClass == null) {
-				ThroughputPerClass = new InverseMeasure[listPerClass.length];
+			if (throughputPerClass == null) {
+				throughputPerClass = new InverseMeasure[listPerClass.length];
 			}
-			ThroughputPerClass[JobClass.getId()] = Measurement;
+			throughputPerClass[JobClass.getId()] = Measurement;
 		} else {
-			Throughput = Measurement;
+			throughput = Measurement;
 		}
 	}
 
@@ -639,9 +608,6 @@ public class LinkedJobInfoList implements JobInfoList {
 
 	private void updateUtilization(JobClass JobClass) {
 		double divisor = serverNumber;
-		if (processorSharing && list.size() > serverNumber) {
-			divisor = list.size();
-		}
 		
 		if (utilizationPerClass != null) {
 			int c = JobClass.getId();
@@ -685,8 +651,8 @@ public class LinkedJobInfoList implements JobInfoList {
 
 	private void updateThroughput(Job Job) {
 		int c = Job.getJobClass().getId();
-		if (ThroughputPerClass != null) {
-			Measure m = ThroughputPerClass[c];
+		if (throughputPerClass != null) {
+			Measure m = throughputPerClass[c];
 			if (m != null) {
 				// new sample is the inter-departures time (1/throughput)
 				// Inverse measure must be used to compute throughput
@@ -696,8 +662,8 @@ public class LinkedJobInfoList implements JobInfoList {
 				System.out.println(NetSystem.getTime() - getLastJobOutTimePerClass(Job.getJobClass()));
 			}
 		}
-		if (Throughput != null) {
-			Throughput.update(NetSystem.getTime() - getLastJobOutTime(), 1.0);
+		if (throughput != null) {
+			throughput.update(NetSystem.getTime() - getLastJobOutTime(), 1.0);
 		}
 	}
 
@@ -826,12 +792,4 @@ public class LinkedJobInfoList implements JobInfoList {
 	public void setServerNumber(int serverNumber) {
 		this.serverNumber = serverNumber;
 	}
-	
-	/* (non-Javadoc)
-	 * @see jmt.engine.QueueNet.JobInfoList#setProcessorSharing(boolean)
-	 */
-	public void setProcessorSharing(boolean processorSharing) {
-		this.processorSharing = processorSharing;
-	}
-
 }

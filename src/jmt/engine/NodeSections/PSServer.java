@@ -29,6 +29,7 @@ import jmt.engine.QueueNet.NetMessage;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NetSystem;
 import jmt.engine.QueueNet.NodeSection;
+import jmt.engine.QueueNet.PSJobInfoList;
 import jmt.engine.simEngine.RemoveToken;
 
 /**
@@ -50,12 +51,18 @@ public class PSServer extends ServiceSection {
 	public static final int PROPERTY_ID_SERVICE_STRATEGY = 0x0104;
 
 	private int numberOfServers,
-	/** This valiable is used to implement blocking.*/
+	/** This variable is used to implement blocking.*/
 	waitingAcks;
 
 	private ServiceStrategy serviceStrategy[];
+	
+	/** Tells which inner event we are processing */
+	private enum PSEvent {JOB_IN, JOB_OUT}
 
+	/** The data structure holdings all the jobs */
 	private PriorityQueue<JobData> jobs;
+	
+	private PSJobInfoList queueList, serviceList;
 
 	// A token to preempt the last message sent when a new job arrives
 	private RemoveToken lastMessageSent;
@@ -67,13 +74,13 @@ public class PSServer extends ServiceSection {
 	 * @throws jmt.common.exception.NetException
 	 */
 	public PSServer(Integer serverNumber, ServiceStrategy serviceStrategy[]) throws jmt.common.exception.NetException {
+		// Disable automatic section jobinfolist usage. We will update it manually.
+		super(false, true);
 		this.serviceStrategy = serviceStrategy;
 		this.numberOfServers = serverNumber.intValue();
 		jobs = new PriorityQueue<JobData>();
 	}
 
-	//FIXME remove this when development is finished
-	@Deprecated
 	public PSServer(Integer serverNumber, Integer numberOfVisitsPerClass[], ServiceStrategy serviceStrategy[])
 			throws jmt.common.exception.NetException {
 		this(serverNumber, serviceStrategy);
@@ -149,7 +156,10 @@ public class PSServer extends ServiceSection {
 					updateServiceTimes(lastMessageSentTime);
 					lastMessageSent = null;
 					// forwards the completed jobs to the output section
-					sendForward(jobs.poll().getJob(), 0.0);
+					JobData data = jobs.peek();
+					handleJobInfoLists(data, PSEvent.JOB_OUT);
+					jobs.poll();
+					sendForward(data.getJob(), 0.0);
 					waitingAcks++;
 				} else {
 					// Check if a job is running
@@ -162,14 +172,14 @@ public class PSServer extends ServiceSection {
 					// Estimate the job service time, puts it in the queue and sends a message to itself
 					// with the minimum service time of all the jobs to perform processing
 					double serviceTime = serviceStrategy[job.getJobClass().getId()].wait(this);
-					jobs.add(new JobData(job, serviceTime));
+					JobData data = new JobData(job, serviceTime); 
+					handleJobInfoLists(data, PSEvent.JOB_IN);
+					jobs.add(data);
 
 					// Sends an ACK to the input section as we will always accept new jobs.
 					sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
 				}
-
 				serviceJobs();
-
 				break;
 
 			case NetEvent.EVENT_ACK:
@@ -213,7 +223,56 @@ public class PSServer extends ServiceSection {
 			lastMessageSent = sendMe(jobs.peek().getJob(), waitTime);
 			lastMessageSentTime = NetSystem.getTime();
 		}
-
+	}
+	
+	/**
+	 * Handles the manual update of measures for queue and service sections
+	 * @param jobData the jobData
+	 * @param event the type of event
+	 * @throws NetException
+	 */
+	private void handleJobInfoLists(JobData jobData, PSEvent event) throws NetException {
+		// Retrive queue PSJobInfoList
+		if (queueList == null) {
+			queueList = (PSJobInfoList) getOwnerNode().getSection(NodeSection.INPUT).getObject(PROPERTY_ID_JOBINFOLIST);
+		}
+		
+		// Computes the percentage of jobs in service and in queue
+		double serviceWeigth, queueWeight;
+		if (jobs.size() < numberOfServers) {
+			serviceWeigth = 1.0;
+			queueWeight = 0.0;
+		} else {
+			serviceWeigth = (double)numberOfServers / jobs.size();
+			queueWeight = jobs.size() - serviceWeigth;
+		}
+		
+		// Updates utilization measures
+		JobClass jobClass = jobData.getJob().getJobClass();
+		queueList.psUpdateUtilization(jobClass, queueWeight, NetSystem.getTime());
+		serviceList.psUpdateUtilization(jobClass, serviceWeigth, NetSystem.getTime());
+		
+		// Update busy time measures and throughputs
+		if (event == PSEvent.JOB_OUT) {
+			double queueTime = NetSystem.getTime() - jobData.getEnteringTime() - jobData.getServiceTime();
+			// This can happen only because of machine epsilon problems
+			if (queueTime < 0.0) {
+				queueTime = 0.0;
+			}
+			queueList.psUpdateBusyTimes(jobClass, queueTime);
+			serviceList.psUpdateBusyTimes(jobClass, jobData.getServiceTime());
+			queueList.psUpdateThroughput(jobClass);
+			serviceList.psUpdateThroughput(jobClass);
+		}
+		
+		// Finally updates jobIn / jobOut counters
+		if (event == PSEvent.JOB_IN) {
+			queueList.psJobIn(jobClass, NetSystem.getTime());
+			serviceList.psJobIn(jobClass, NetSystem.getTime());
+		} else if (event == PSEvent.JOB_OUT) {
+			queueList.psJobOut(jobClass, NetSystem.getTime());
+			serviceList.psJobOut(jobClass, NetSystem.getTime());
+		}
 	}
 
 	/**
@@ -245,16 +304,20 @@ public class PSServer extends ServiceSection {
 	 */
 	private static class JobData implements Comparable<JobData> {
 		private Job job;
+		private double serviceTime;
 		private double residualServiceTime;
+		private double enteringTime;
 
 		/**
 		 * Builds a new JobData data structure
 		 * @param job the job
-		 * @param residualServiceTime the residual service time
+		 * @param serviceTime the residual service time
 		 */
-		public JobData(Job job, double residualServiceTime) {
+		public JobData(Job job, double serviceTime) {
 			this.job = job;
-			this.residualServiceTime = residualServiceTime;
+			this.residualServiceTime = serviceTime;
+			this.serviceTime = serviceTime;
+			this.enteringTime = NetSystem.getTime();
 		}
 
 		/* (non-Javadoc)
@@ -283,6 +346,20 @@ public class PSServer extends ServiceSection {
 		public double getResidualServiceTime() {
 			return residualServiceTime;
 		}
+		
+		/**
+		 * @return the total service time that the job must receive.
+		 */
+		public double getServiceTime() {
+			return serviceTime;
+		}
+		
+		/**
+		 * @return the time in which the job entered the service section.
+		 */
+		public double getEnteringTime() {
+			return enteringTime;
+		}
 
 		/**
 		 * Performs service, scaling the residual service time
@@ -306,7 +383,7 @@ public class PSServer extends ServiceSection {
 	 */
 	@Override
 	protected void nodeLinked(NetNode node) {
-		jobsList.setProcessorSharing(true);
+		jobsList = serviceList = new PSJobInfoList(getJobClasses().size(), true);
 		jobsList.setServerNumber(numberOfServers);
 	}
 

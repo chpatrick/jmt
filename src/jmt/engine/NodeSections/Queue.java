@@ -20,6 +20,7 @@ package jmt.engine.NodeSections;
 
 import java.util.Arrays;
 
+import jmt.common.exception.NetException;
 import jmt.engine.NetStrategies.QueueGetStrategy;
 import jmt.engine.NetStrategies.QueuePutStrategy;
 import jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy;
@@ -35,6 +36,7 @@ import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeSection;
+import jmt.engine.QueueNet.PSJobInfoList;
 import jmt.engine.QueueNet.WaitingRequest;
 import jmt.engine.random.engine.RandomEngine;
 
@@ -104,6 +106,9 @@ public class Queue extends InputSection {
 	//the JobInfoList of the owner NetNode (use to control the number of jobs in
 	//case of finite queue)
 	private JobInfoList nodeJobsList;
+	
+	/** This jobinfolist should be used instead of jobsList to support Processor Sharing */
+	private JobInfoList queueJobInfoList;
 
 	//number of dropped jobs
 	private int droppedJobs;
@@ -191,87 +196,8 @@ public class Queue extends InputSection {
 		this(size.intValue(), drop.booleanValue(), getStrategy, putStrategy);
 	}
 
-	/**
-	 * Creates a new instance of a infinite Queue.
-	 * @param preLoad Queue preload: if null no preload is done.
-	 * @param getStrategy Queue get strategy: if null FCFS strategy is used.
-	 * @param putStrategy Queue put strategy: if null Tail strategy is used.
-	 */
-	public Queue(JobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[]) {
 
-		//OLD
-		//super();
 
-		//NEW
-
-		//auto = false, otherwise when a JOB message is received,
-		//the corresponding Job object is automatically added to
-		//JobInfoList
-
-		super(false);
-		//end NEW
-
-		infinite = true;
-		if (getStrategy == null) {
-			this.getStrategy = new FCFSstrategy();
-		} else {
-			this.getStrategy = getStrategy;
-		}
-		if (preLoad != null) {
-			jobsList = preLoad;
-		}
-		this.putStrategy = putStrategy;
-		coolStart = true;
-
-		//this node doesn't belong to any blocking region
-		redirectionON = false;
-		myRegion = null;
-		regionInputStation = null;
-
-		//NEW
-		//@author Stefano Omini
-		//log = NetSystem.getLog();
-		//end NEW
-	}
-
-	/** Creates a new instance of finite Queue.
-	 * @param preLoad Queue preload: if null no preload id done.
-	 * @param size Queue size.
-	 * @param getStrategy Queue get strategy: if null FCFS strategy is used.
-	 * @param putStrategy Queue put strategy: if null Tail strategy is used.
-	 * @param drop True if the queue should rejects new jobs when it's full,
-	 * false otherwise.
-	 */
-	public Queue(int size, boolean drop, JobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[]) {
-		super(false);
-		this.size = size;
-		infinite = false;
-		if (getStrategy == null) {
-			this.getStrategy = new FCFSstrategy();
-		} else {
-			this.getStrategy = getStrategy;
-		}
-		if (preLoad != null) {
-			jobsList = preLoad;
-		}
-		this.putStrategy = putStrategy;
-		// Uses putstrategy.length to extimate number of classes. It's a bit unclean but we are forced for compatibility.
-		this.drop = new boolean[putStrategy.length];
-		this.block = new boolean[putStrategy.length];
-		Arrays.fill(this.drop, drop);
-		Arrays.fill(this.block, false);
-		coolStart = true;
-
-		//this node doesn't belong to any blocking region
-		redirectionON = false;
-		myRegion = null;
-		regionInputStation = null;
-
-		//NEW
-		//@author Stefano Omini
-		//log = NetSystem.getLog();
-		//end NEW
-	}
 
 	/** Creates a new instance of finite redirecting Queue.
 	 * @param size Queue size (-1 = infinite queue).
@@ -303,54 +229,6 @@ public class Queue extends InputSection {
 		this(size.intValue(), drop.booleanValue(), getStrategy, putStrategy, myReg);
 	}
 
-	/** Creates a new instance of a infinite redirecting Queue.
-	 * @param preLoad Queue preload: if null no preload is done.
-	 * @param getStrategy Queue get strategy: if null FCFS strategy is used.
-	 * @param putStrategy Queue put strategy: if null Tail strategy is used.
-	 * @param myReg the blocking region to which the owner node of this queue belongs
-	 */
-	public Queue(JobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[], BlockingRegion myReg) {
-		//uses constructor for generic queue
-		this(preLoad, getStrategy, putStrategy);
-
-		//sets blocking region properties
-		redirectionON = true;
-		myRegion = myReg;
-		regionInputStation = myRegion.getInputStation();
-	}
-
-	/** Creates a new instance of finite redirecting Queue.
-	 * @param preLoad Queue preload: if null no preload id done.
-	 * @param size Queue size.
-	 * @param getStrategy Queue get strategy: if null FCFS strategy is used.
-	 * @param putStrategy Queue put strategy: if null Tail strategy is used.
-	 * @param drop True if the queue should rejects new jobs when it's full,
-	 * false otherwise.
-	 * @param myReg the blocking region to which the owner node of this queue belongs
-	 */
-	public Queue(int size, boolean drop, JobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[], BlockingRegion myReg) {
-
-		//uses constructor for generic queue
-		this(size, drop, preLoad, getStrategy, putStrategy);
-
-		//sets blocking region properties
-		redirectionON = true;
-		myRegion = myReg;
-		regionInputStation = myRegion.getInputStation();
-	}
-
-	/** Creates a new instance of finite redirecting Queue.
-	 * @param preLoad Queue preload: if null no preload id done.
-	 * @param size Queue size.
-	 * @param getStrategy Queue get strategy: if null FCFS strategy is used.
-	 * @param putStrategy Queue put strategy: if null Tail strategy is used.
-	 * @param drop True if the queue should rejects new jobs when it's full,
-	 * false otherwise.
-	 * @param myReg the blocking region to which the owner node of this queue belongs
-	 */
-	public Queue(Integer size, Boolean drop, JobInfoList preLoad, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[], BlockingRegion myReg) {
-		this(size.intValue(), drop.booleanValue(), preLoad, getStrategy, putStrategy, myReg);
-	}
 
 	/**
 	 * Creates a new instance of finite Queue. This is the newwst constructor that supports
@@ -478,8 +356,20 @@ public class Queue extends InputSection {
 			}
 		}
 
+		// TODO the following line its not clean. The correct behavior should be implemented without this hack.
+		try {
+			if (getOwnerNode().getSection(SERVICE) instanceof PSServer) {
+				jobsList = new PSJobInfoList(getJobClasses().size(), true);
+				queueJobInfoList = ((PSJobInfoList)jobsList).getInternalList();
+			} 
+		} catch (NetException ex) {
+			logger.error(ex);
+		}
 		if (jobsList == null) {
 			jobsList = new LinkedJobInfoList(getJobClasses().size(), true);
+		}
+		if (queueJobInfoList == null) {
+			queueJobInfoList = jobsList;
 		}
 
 		if (!infinite) {
@@ -510,9 +400,9 @@ public class Queue extends InputSection {
 				//If there are jobs in queue, the first (chosen using the specified
 				//get strategy) is forwarded and coolStart becomes false.
 
-				if (jobsList.size() > 0) {
+				if (queueJobInfoList.size() > 0) {
 					//the first job is forwarded to service section
-					forward(getStrategy.get(jobsList));
+					forward(getStrategy.get(queueJobInfoList));
 					coolStart = false;
 				}
 
@@ -544,13 +434,13 @@ public class Queue extends InputSection {
 					//the class ID of this job
 					int c = wr.getJob().getJobClass().getId();
 					//the job is put into the queue according to its own class put strategy
-					putStrategy[c].put(wr.getJob(), jobsList, message.getSourceSection(), message.getSource(), this);
+					putStrategy[c].put(wr.getJob(), queueJobInfoList, message.getSourceSection(), message.getSource(), this);
 				}
 
 				// if there is at least one job, sends it
-				if (jobsList.size() > 0) {
+				if (queueJobInfoList.size() > 0) {
 					// Gets job using a specific strategy and sends job
-					Job jobSent = getStrategy.get(jobsList);
+					Job jobSent = getStrategy.get(queueJobInfoList);
 					forward(jobSent);
 				} else {
 					// else set coolStart to true
@@ -633,13 +523,13 @@ public class Queue extends InputSection {
 					// section and coolStart set to false.
 					if (coolStart) {
 						// No jobs in queue: Refresh jobsList and sends job (don't use put strategy, because queue is empty)
-						jobsList.add(new JobInfo(job));
+						queueJobInfoList.add(new JobInfo(job));
 						//forward without any delay
-						forward(jobsList.removeFirst().getJob());
+						forward(queueJobInfoList.removeFirst().getJob());
 
 						coolStart = false;
 					} else {
-						putStrategy[job.getJobClass().getId()].put(job, jobsList, message.getSourceSection(), message.getSource(), this);
+						putStrategy[job.getJobClass().getId()].put(job, queueJobInfoList, message.getSourceSection(), message.getSource(), this);
 					}
 					//sends an ACK backward
 					send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
@@ -773,7 +663,7 @@ public class Queue extends InputSection {
 			if (residualClassJobs[randomClassIndex] > 0) {
 				//other jobs to be added
 				Job newJob = new Job(jobClasses.get(randomClassIndex));
-				jobsList.add(new JobInfo(newJob));
+				queueJobInfoList.add(new JobInfo(newJob));
 
 				//job has been added: decrease class e total counters
 				residualClassJobs[randomClassIndex]--;

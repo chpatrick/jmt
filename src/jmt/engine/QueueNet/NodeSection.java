@@ -79,6 +79,9 @@ public abstract class NodeSection {
 	public static final int PROPERTY_ID_THROUGHPUT = 0x0005;
 	/** Property ID: utilization  */
 	public static final int PROPERTY_ID_UTILIZATION = 0x0006;
+	/** Property Identifier: JobInfoList.*/
+	public static final int PROPERTY_ID_JOBINFOLIST = 0x0007;
+
 
 	//TODO: rendere più efficiente il meccanismo di rilevamneto dell'owner node? (per evitare troppi getNode)
 	/** Owner of this NodeSection. */
@@ -335,6 +338,8 @@ public abstract class NodeSection {
 	 */
 	public Object getObject(int id) throws jmt.common.exception.NetException {
 		switch (id) {
+			case PROPERTY_ID_JOBINFOLIST:
+				return jobsList;
 			default:
 				throw new jmt.common.exception.NetException(this, EXCEPTION_PROPERTY_NOT_AVAILABLE, "required property is not available.");
 		}

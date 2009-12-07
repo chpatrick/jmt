@@ -311,11 +311,4 @@ public interface JobInfoList {
 	 * @param serverNumber the number of servers.
 	 */
 	public void setServerNumber(int serverNumber);
-	
-	/**
-	 * Sets if the station is processor sharing. This parameter is used to scale utilization
-	 * @param processorSharing true if station is processor sharing.
-	 */
-	public void setProcessorSharing(boolean processorSharing);
-
 }

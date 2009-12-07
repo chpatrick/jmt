@@ -392,6 +392,7 @@ public class Simulation {
 				if (n.getOutput() != null) {
 					n.getNode().addSection(n.getOutput());
 				}
+				n.getNode().initializeSections();
 			}
 
 			//NEW

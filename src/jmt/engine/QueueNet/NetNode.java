@@ -123,14 +123,14 @@ public class NetNode extends SimEntity {
 	}
 
 	/** Adds a section to the node.
-	 * @param  Section Reference to the section to be added.
+	 * @param  section Reference to the section to be added.
 	 * @throws jmt.common.exception.NetException if trying to add a section which has already been defined
 	 */
-	public void addSection(NodeSection Section) throws jmt.common.exception.NetException {
-		switch (Section.getSectionID()) {
+	public void addSection(NodeSection section) throws jmt.common.exception.NetException {
+		switch (section.getSectionID()) {
 			case NodeSection.INPUT:
 				if (inputSection == null) {
-					this.inputSection = Section;
+					this.inputSection = section;
 				} else {
 					throw new jmt.common.exception.NetException(this, EXCEPTION_INPUT_SECTION_ALREADY_DEFINED,
 							"input section has been already defined");
@@ -138,7 +138,7 @@ public class NetNode extends SimEntity {
 				break;
 			case NodeSection.SERVICE:
 				if (serviceSection == null) {
-					this.serviceSection = Section;
+					this.serviceSection = section;
 				} else {
 					throw new jmt.common.exception.NetException(this, EXCEPTION_SERVICE_SECTION_ALREADY_DEFINED,
 							"service section has been already defined");
@@ -146,14 +146,13 @@ public class NetNode extends SimEntity {
 				break;
 			case NodeSection.OUTPUT:
 				if (outputSection == null) {
-					this.outputSection = Section;
+					this.outputSection = section;
 				} else {
 					throw new jmt.common.exception.NetException(this, EXCEPTION_OUTPUT_SECTION_ALREADY_DEFINED,
 							"output section has been already defined");
 				}
 				break;
 		}
-		Section.setOwnerNode(this);
 	}
 
 	/** Connects the output of this netNode to the input of an another
@@ -859,6 +858,21 @@ public class NetNode extends SimEntity {
 	 */
 	public void setSimParameters(SimParameters simParameters) {
 		this.simParameters = simParameters;
+	}
+	
+	/**
+	 * This method is called after all the sections are added
+	 */
+	public void initializeSections() {
+		if (inputSection != null) {
+			inputSection.setOwnerNode(this);
+		}
+		if (serviceSection != null) {
+			serviceSection.setOwnerNode(this);
+		}
+		if (outputSection != null) {
+			outputSection.setOwnerNode(this);
+		}
 	}
 
 }
