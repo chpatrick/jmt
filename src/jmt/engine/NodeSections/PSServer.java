@@ -240,14 +240,13 @@ public class PSServer extends ServiceSection {
 
 		// Computes the percentage of jobs in service and in queue
 		double serviceWeigth, queueWeight;
-		if (jobs.size() < numberOfServers) {
+		if (jobs.size() <= numberOfServers) {
 			// Everything is in service
 			serviceWeigth = 1.0;
-			queueWeight = 0.0;
 		} else {
 			serviceWeigth = (double) numberOfServers / jobs.size();
-			queueWeight = jobs.size() - serviceWeigth;
 		}
+		queueWeight = 1.0 - serviceWeigth;
 
 		// Updates utilization measures
 		JobClass jobClass = jobData.getJob().getJobClass();
