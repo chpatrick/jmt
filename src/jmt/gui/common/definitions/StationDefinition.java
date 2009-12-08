@@ -20,8 +20,6 @@ package jmt.gui.common.definitions;
 
 import java.util.Vector;
 
-import jmt.gui.common.definitions.CommonModel.StationData;
-
 /**
  * Created by IntelliJ IDEA.
  * User: OrsotronIII
@@ -49,7 +47,7 @@ public interface StationDefinition {
 	 *
 	 * Author: Francesco D'Aquino
 	 */
-	public Vector getStationKeysSource();
+	public Vector<Object> getStationKeysSource();
 
 	/**
 	 * This method returns the key set of servers
@@ -58,7 +56,7 @@ public interface StationDefinition {
 	 *
 	 * Author: Francesco D'Aquino
 	 */
-	public Vector getStationKeysServer();
+	public Vector<Object> getStationKeysServer();
 
 	/**
 	 * This method returns the key set of delays
@@ -67,22 +65,22 @@ public interface StationDefinition {
 	 *
 	 * Author: Francesco D'Aquino
 	 */
-	public Vector getStationKeysDelay();
+	public Vector<Object> getStationKeysDelay();
 
 	/**
 	 * This method returns the entire set of station keys.
 	 */
-	public Vector getStationKeys();
+	public Vector<Object> getStationKeys();
 
 	/**
 	 * This method returns all station keys except source and sink ones.
 	 */
-	public Vector getStationKeysNoSourceSink();
+	public Vector<Object> getStationKeysNoSourceSink();
 
 	/**
 	 * This method returns all station (without sources and sinks) and blocking region keys.
 	 */
-	public Vector getStationRegionKeysNoSourceSink();
+	public Vector<Object> getStationRegionKeysNoSourceSink();
 
 	/** Returns name of the station in <code>String</code> representation, given the search key.*/
 	public String getStationName(Object key);
@@ -199,27 +197,27 @@ public interface StationDefinition {
 	 */
 	public Object getRoutingStrategy(Object stationKey, Object classKey);
 
-    /** Sets (Returns) logging parameters for the logger.
-     * @param stationKey: search key for station.
-     * @param loggerParameters: local LoggerParameters.
-     */
-    public void setLoggingParameters(Object stationKey, Object loggerParameters);
-    
-    /** Returns logging parameters for the logger. <I>MF'08 0.7.4</I>
-     * @param stationKey: search key for station.
-     */
-    public Object getLoggingParameters(Object stationKey);
-    
-    /** Returns logging parameters for the Global logfile. <I>MF'08 0.7.4</I>
-     * @param selector: either "path", "delim", or "autoAppend" 
-     */
-    public String getLoggingGlbParameter(String selector);
+	/** Sets (Returns) logging parameters for the logger.
+	 * @param stationKey: search key for station.
+	 * @param loggerParameters: local LoggerParameters.
+	 */
+	public void setLoggingParameters(Object stationKey, Object loggerParameters);
 
-    /** Sets a global logging parameter as a CommonModel variable. <I>MF'08 0.7.4</I>
-     * @param selector: either "path", "delim", "decimalSeparator", or "autoAppend" 
-     * @param value: String to assign to variable named by Selector.
-     */
-    public void setLoggingGlbParameter(String selector, String value);
+	/** Returns logging parameters for the logger. <I>MF'08 0.7.4</I>
+	 * @param stationKey: search key for station.
+	 */
+	public Object getLoggingParameters(Object stationKey);
+
+	/** Returns logging parameters for the Global logfile. <I>MF'08 0.7.4</I>
+	 * @param selector: either "path", "delim", or "autoAppend" 
+	 */
+	public String getLoggingGlbParameter(String selector);
+
+	/** Sets a global logging parameter as a CommonModel variable. <I>MF'08 0.7.4</I>
+	 * @param selector: either "path", "delim", "decimalSeparator", or "autoAppend" 
+	 * @param value: String to assign to variable named by Selector.
+	 */
+	public void setLoggingGlbParameter(String selector, String value);
 
 	/**
 	 * Normalizes the routing probabilities
@@ -274,14 +272,14 @@ public interface StationDefinition {
 	 * returned.
 	 * @return Vector containing keys for connected stations.
 	 */
-	public Vector getForwardConnections(Object stationKey);
+	public Vector<Object> getForwardConnections(Object stationKey);
 
 	/**Returns a set of station keys specified station is connected to as a target.
 	 * @param stationKey: source station for which (source)connected stations must be
 	 * returned.
 	 * @return Vector containing keys for connected stations.
 	 */
-	public Vector getBackwardConnections(Object stationKey);
+	public Vector<Object> getBackwardConnections(Object stationKey);
 
 	/**
 	 * Returns the key of the station whose name is <code>stationName</code>. It
@@ -290,9 +288,9 @@ public interface StationDefinition {
 	 * @return the key of the station
 	 */
 	public Object getStationByName(String stationName);
-	
+
 	public void setStationQueueStrategy(Object stationKey, String strategy);
-	
+
 	public String getStationQueueStrategy(Object stationKey);
 
 }

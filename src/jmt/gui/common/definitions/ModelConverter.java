@@ -63,7 +63,7 @@ public class ModelConverter {
 	 * @param output target JSIM or JMODEL model. This is expected to be empty
 	 * @return a Vector with all found warnings during conversion (in String format)
 	 */
-	public static Vector convertJMVAtoJSIM(ExactModel input, CommonModel output) {
+	public static Vector<double[][]> convertJMVAtoJSIM(ExactModel input, CommonModel output) {
 		return convertJMVAtoJSIM(input, output, false);
 	}
 
@@ -208,10 +208,10 @@ public class ModelConverter {
 					key = output.addStation(name, CommonConstants.STATION_TYPE_SERVER);
 					output.setStationNumberOfServers(new Integer(servers), key);
 					// Sets distribution for each class
-					for (int j = 0; j < classKeys.length; j++) {
+					for (Object classKey : classKeys) {
 						Exponential ex = new Exponential();
 						ex.setMean(servTimes[i]);
-						output.setServiceTimeDistribution(key, classKeys[j], ex);
+						output.setServiceTimeDistribution(key, classKey, ex);
 					}
 					break;
 				case ExactConstants.STATION_LD:
@@ -271,16 +271,16 @@ public class ModelConverter {
 		}
 
 		// Create measures
-		for (int i = 0; i < classKeys.length; i++) {
-			for (int j = 0; j < stationKeys.length; j++) {
+		for (Object classKey : classKeys) {
+			for (Object stationKey : stationKeys) {
 				// Queue length
-				output.addMeasure(SimulationDefinition.MEASURE_QL, stationKeys[j], classKeys[i]);
+				output.addMeasure(SimulationDefinition.MEASURE_QL, stationKey, classKey);
 				// Residence Time
-				output.addMeasure(SimulationDefinition.MEASURE_RD, stationKeys[j], classKeys[i]);
+				output.addMeasure(SimulationDefinition.MEASURE_RD, stationKey, classKey);
 				// Utilization
-				output.addMeasure(SimulationDefinition.MEASURE_U, stationKeys[j], classKeys[i]);
+				output.addMeasure(SimulationDefinition.MEASURE_U, stationKey, classKey);
 				// Throughput
-				output.addMeasure(SimulationDefinition.MEASURE_X, stationKeys[j], classKeys[i]);
+				output.addMeasure(SimulationDefinition.MEASURE_X, stationKey, classKey);
 			}
 		}
 		// Restores default values
@@ -325,24 +325,24 @@ public class ModelConverter {
 	 * @param output empty JMVA model (write)
 	 * @return a vector that enumerates all conversion warnings and how they have been fixed
 	 */
-	public static Vector convertJSIMtoJMVA(CommonModel input, ExactModel output) {
+	public static Vector<String> convertJSIMtoJMVA(CommonModel input, ExactModel output) {
 		// Normalize probability routing
 		input.manageProbabilities();
 
 		// Used to store warnings
-		Vector res = new Vector();
+		Vector<String> res = new Vector<String>();
 		int classNum, stationNum;
 		// Used to iterate on lists
-		Iterator it;
+		Iterator<Object> it;
 
 		// Number of classes
 		classNum = input.getClassKeys().size();
-		Vector classKeys = input.getClassKeys();
+		Vector<Object> classKeys = input.getClassKeys();
 
 		// Find number of convertible stations
 		it = input.getStationKeys().iterator();
 		stationNum = 0;
-		Vector stationKeys = new Vector();
+		Vector<Object> stationKeys = new Vector<Object>();
 		while (it.hasNext()) {
 			Object key = it.next();
 			String stationType = input.getStationType(key);
@@ -455,7 +455,7 @@ public class ModelConverter {
 		serviceTimes = null;
 
 		// Now calculates visits starting from routing.
-		Vector stations; // This is not equivalent to stationKeys as routers are considered
+		Vector<Object> stations; // This is not equivalent to stationKeys as routers are considered
 		double[][] visits = new double[stationNum][classNum];
 		double[] vis = null; // array used to store results of mldivide
 		for (int cl = 0; cl < classNum; cl++) {
@@ -466,7 +466,7 @@ public class ModelConverter {
 				double[] p0;
 				if (refStat == null) {
 					// Reference station for this class was not set
-					Vector sources = input.getStationKeysSource();
+					Vector<Object> sources = input.getStationKeysSource();
 					if (sources.size() > 0) {
 						refStat = sources.get(0);
 						res.add("Reference station for " + output.getClassNames()[cl] + " was " + "not set. " + input.getStationName(refStat)
@@ -497,7 +497,7 @@ public class ModelConverter {
 			} else {
 				// Closed class, system is indefinded, so sets visits to reference station to
 				// 1 and builds a smaller P matrix
-				stations = new Vector(input.getStationKeysNoSourceSink());
+				stations = new Vector<Object>(input.getStationKeysNoSourceSink());
 				// Finds reference station
 				Object refStat = input.getClassRefStation(classKeys.get(cl));
 				if (refStat == null) {
@@ -549,7 +549,8 @@ public class ModelConverter {
 	 * @param warnings vector Vector to store warnings found during computation
 	 * @return an array with probability to reach each other station starting from given station
 	 */
-	private static double[] getRoutingProbability(Object stationKey, Object classKey, CommonModel model, Vector stations, Vector warnings) {
+	private static double[] getRoutingProbability(Object stationKey, Object classKey, CommonModel model, Vector<Object> stations,
+			Vector<String> warnings) {
 		double[] p = new double[stations.size()];
 		RoutingStrategy strategy = (RoutingStrategy) model.getRoutingStrategy(stationKey, classKey);
 		if (strategy instanceof ProbabilityRouting && !model.getStationType(stationKey).equals(CommonConstants.STATION_TYPE_FORK)) {
@@ -569,7 +570,7 @@ public class ModelConverter {
 						+ model.getStationName(stationKey) + " is not allowed. This was considered as RandomRouting");
 			}
 
-			Vector links = model.getForwardConnections(stationKey);
+			Vector<Object> links = model.getForwardConnections(stationKey);
 			int linksNum = links.size();
 			// Now ignores sinks for closed classes
 			if (model.getClassType(classKey) == CommonConstants.CLASS_TYPE_CLOSED) {
@@ -599,7 +600,7 @@ public class ModelConverter {
 	 * @param warnings Vector where computation warnings must be put
 	 * @return computated routing probability matrix
 	 */
-	private static double[][] buildProbabilityMatrix(Vector stations, CommonModel model, Object classKey, Vector warnings) {
+	private static double[][] buildProbabilityMatrix(Vector<Object> stations, CommonModel model, Object classKey, Vector<String> warnings) {
 		double[][] matrix = new double[stations.size()][stations.size()];
 		double[] tmp;
 		for (int i = 0; i < stations.size(); i++) {

@@ -61,48 +61,48 @@ public class ModelChecker implements CommonConstants {
 	//Variable that contains information about warnings
 	private boolean[] warnings;
 	//Vector containing the keys of the classes without a reference station
-	private Vector classesWithoutRefStation;
+	private Vector<Object> classesWithoutRefStation;
 	//Vector containing only the keys of the open classes without a reference station
 	private Vector openClassesWithoutRefStation;
 	//Vector containing the keys of the sources without a class associated to
-	private Vector sourceWithoutClasses;
+	private Vector<Object> sourceWithoutClasses;
 	//Vector containing the keys of stations with link problems
-	private Vector stationsWithLinkErrors;
+	private Vector<Object> stationsWithLinkErrors;
 	// HashMap containing the vector of keys of the stations where
 	// routing problems for this close class occour. The key of the
 	// Hash Map is the key of the closed class considered
-	private HashMap routingErrors;
+	private HashMap<Object, Vector<Object>> routingErrors;
 	// HashMap containing the vector of keys of the stations reacheable by a close class
 	//  The key of the Hash Map is the key of the closed class considered
-	private HashMap allForwardStationsAreSinkErrors;
+	private HashMap<Object, Vector<Object>> allForwardStationsAreSinkErrors;
 	//Vector containing the keys of measures defined more than once
-	private Vector redundantMeasure;
+	private Vector<Object> redundantMeasure;
 	//Vector containing the inconsistent performance indexes
-	private Vector inconsistentMeasures;
+	private Vector<Object> inconsistentMeasures;
 	//Vector containing the keys of servers with per class different
 	//queue startegies
-	private Vector BCMPserversWithDifferentQueueStrategy;
+	private Vector<Object> BCMPserversWithDifferentQueueStrategy;
 	//Vector containing the keys of servers with FCFS queueing strategy
 	//but mixed types of service
-	private Vector BCMPserversWithDifferentServiceTypes;
+	private Vector<Object> BCMPserversWithDifferentServiceTypes;
 	//Vector containing the keys of servers with FCFS queue strategy
 	// but a non exponential distribution
-	private Vector BCMPserversFCFSWithoutExponential;
+	private Vector<Object> BCMPserversFCFSWithoutExponential;
 	//Vector containing the keys of servers with FCFS, the same
 	//type of service for each class, but with different mean service
 	//times
-	private Vector BCMPFcfsServersWithDifferentServiceTimes;
+	private Vector<Object> BCMPFcfsServersWithDifferentServiceTimes;
 	//Vector containing the keys of delays with at least a service time
 	//distribution with a non rational Laplace transform
-	private Vector BCMPdelaysWithNonRationalServiceDistribution;
+	private Vector<Object> BCMPdelaysWithNonRationalServiceDistribution;
 	//Vector containing the keys of the stations where a non random routing is used.
 	//Used only in JMVA conversion
-	private Vector BCMPnonStateIndependentRoutingStations;
+	private Vector<Object> BCMPnonStateIndependentRoutingStations;
 	//Vector containing the stations (not Sinks or Sources) not backward connected. Used for
 	// warnings
-	private Vector stationWithoutBackwardLinks;
+	private Vector<Object> stationWithoutBackwardLinks;
 	/** Empty blocking regions */
-	private Vector emptyBlockingRegions;
+	private Vector<Object> emptyBlockingRegions;
 
 	//Vector containing the keys of the stations with a queue strategy different from FCFS.
 	//Used only in JMVA conversion
@@ -233,23 +233,23 @@ public class ModelChecker implements CommonConstants {
 		this.blocking_def = bd;
 		errors = new boolean[NUMBER_OF_ERROR_TYPES];
 		warnings = new boolean[NUMBER_OF_WARNING_TYPES];
-		classesWithoutRefStation = new Vector(0, 1);
+		classesWithoutRefStation = new Vector<Object>(0, 1);
 		openClassesWithoutRefStation = new Vector(0, 1);
-		sourceWithoutClasses = new Vector(0, 1);
-		stationsWithLinkErrors = new Vector(0, 1);
-		routingErrors = new HashMap(0, 1);
-		allForwardStationsAreSinkErrors = new HashMap(0, 1);
-		stationWithoutBackwardLinks = new Vector(0, 1);
-		redundantMeasure = new Vector(0, 1);
-		inconsistentMeasures = new Vector(0, 1);
-		BCMPserversWithDifferentQueueStrategy = new Vector(0, 1);
-		BCMPserversWithDifferentServiceTypes = new Vector(0, 1);
-		BCMPserversFCFSWithoutExponential = new Vector(0, 1);
-		BCMPFcfsServersWithDifferentServiceTimes = new Vector(0, 1);
-		BCMPdelaysWithNonRationalServiceDistribution = new Vector(0, 1);
+		sourceWithoutClasses = new Vector<Object>(0, 1);
+		stationsWithLinkErrors = new Vector<Object>(0, 1);
+		routingErrors = new HashMap<Object, Vector<Object>>(0, 1);
+		allForwardStationsAreSinkErrors = new HashMap<Object, Vector<Object>>(0, 1);
+		stationWithoutBackwardLinks = new Vector<Object>(0, 1);
+		redundantMeasure = new Vector<Object>(0, 1);
+		inconsistentMeasures = new Vector<Object>(0, 1);
+		BCMPserversWithDifferentQueueStrategy = new Vector<Object>(0, 1);
+		BCMPserversWithDifferentServiceTypes = new Vector<Object>(0, 1);
+		BCMPserversFCFSWithoutExponential = new Vector<Object>(0, 1);
+		BCMPFcfsServersWithDifferentServiceTimes = new Vector<Object>(0, 1);
+		BCMPdelaysWithNonRationalServiceDistribution = new Vector<Object>(0, 1);
 		//nonFCFSStations = new Vector(0,1);
-		BCMPnonStateIndependentRoutingStations = new Vector(0, 1);
-		emptyBlockingRegions = new Vector(0, 1);
+		BCMPnonStateIndependentRoutingStations = new Vector<Object>(0, 1);
+		emptyBlockingRegions = new Vector<Object>(0, 1);
 		isToJMVAChecker = isToJMVA;
 		checkModel();
 	}
@@ -711,7 +711,7 @@ public class ModelChecker implements CommonConstants {
 	 * has a reference station returns null.
 	 * @return a Vector containing the keys of the classes without a reference station.
 	 */
-	public Vector getKeysOfClassesWithoutRefStation() {
+	public Vector<Object> getKeysOfClassesWithoutRefStation() {
 		if (errors[REFERENCE_STATION_ERROR]) {
 			return classesWithoutRefStation;
 		} else {
@@ -734,7 +734,7 @@ public class ModelChecker implements CommonConstants {
 	 * source has a reference station or no source are defined returns null.
 	 * @return a Vector containing the keys of the sources with no classes associated to.
 	 */
-	public Vector getKeysOfSourceWithoutClasses() {
+	public Vector<Object> getKeysOfSourceWithoutClasses() {
 		if (errors[SOURCE_WITH_NO_OPEN_CLASSES_ERROR]) {
 			return sourceWithoutClasses;
 		} else {
@@ -751,7 +751,7 @@ public class ModelChecker implements CommonConstants {
 	* <br><br>If there isn't any problem it returns null.
 	* @return a Vector containing the keys of the stations with link problems.
 	*/
-	public Vector getKeysOfStationsWithLinkProblems() {
+	public Vector<Object> getKeysOfStationsWithLinkProblems() {
 		if (errors[STATION_LINK_ERROR]) {
 			return stationsWithLinkErrors;
 		} else {
@@ -763,7 +763,7 @@ public class ModelChecker implements CommonConstants {
 	 * Returns a vector with all empty blocking regions
 	 * @return a vector with all empty blocking regions keys.
 	 */
-	public Vector getKeysOfEmptyBlockingRegions() {
+	public Vector<Object> getKeysOfEmptyBlockingRegions() {
 		if (errors[EMPTY_BLOCKING_REGION]) {
 			return emptyBlockingRegions;
 		} else {
@@ -778,7 +778,7 @@ public class ModelChecker implements CommonConstants {
 	 * classes are defined it returns null.
 	 *  @return a HashMap where the key is the key of a close class.
 	 */
-	public HashMap getKeysOfAllForwardStationsAreSinkErrors() {
+	public HashMap<Object, Vector<Object>> getKeysOfAllForwardStationsAreSinkErrors() {
 		if (errors[ALL_FORWARD_STATION_ARE_SINK_ERROR]) {
 			return allForwardStationsAreSinkErrors;
 		} else {
@@ -792,7 +792,7 @@ public class ModelChecker implements CommonConstants {
 	 * or no close classes are defined it returns null.
 	 *  @return a HashMap where the key is the key of a close class.
 	 */
-	public HashMap getKeysOfRoutingProblems() {
+	public HashMap<Object, Vector<Object>> getKeysOfRoutingProblems() {
 		if (errors[ROUTING_ERROR]) {
 			return routingErrors;
 		} else {
@@ -805,7 +805,7 @@ public class ModelChecker implements CommonConstants {
 	 * for warnings.
 	 * @return the Vector with station (no Sinks or Sources) not backward connected.
 	 */
-	public Vector getKeysOfStationWithoutBackwardLinks() {
+	public Vector<Object> getKeysOfStationWithoutBackwardLinks() {
 		if (warnings[NO_BACKWARD_LINK_WARNING]) {
 			return stationWithoutBackwardLinks;
 		} else {
@@ -819,7 +819,7 @@ public class ModelChecker implements CommonConstants {
 	 * @return a Vector containing the keys of servers with per class
 	 *         different queue startegies
 	 */
-	public Vector getBCMPserversWithDifferentQueueStrategy() {
+	public Vector<Object> getBCMPserversWithDifferentQueueStrategy() {
 		return BCMPserversWithDifferentQueueStrategy;
 	}
 
@@ -829,7 +829,7 @@ public class ModelChecker implements CommonConstants {
 	 * @return a Vector containing the keys of servers with FCFS
 	 *         queueing strategy but mixed types of service
 	 */
-	public Vector getBCMPserversWithDifferentServiceTypes() {
+	public Vector<Object> getBCMPserversWithDifferentServiceTypes() {
 		return BCMPserversWithDifferentServiceTypes;
 	}
 
@@ -839,7 +839,7 @@ public class ModelChecker implements CommonConstants {
 	 * @return a Vector containing the keys of servers with FCFS
 	 *         queueing strategy but a non exponential distribution
 	 */
-	public Vector getBCMPserversFCFSWithoutExponential() {
+	public Vector<Object> getBCMPserversFCFSWithoutExponential() {
 		return BCMPserversFCFSWithoutExponential;
 	}
 
@@ -851,7 +851,7 @@ public class ModelChecker implements CommonConstants {
 	 *         queueing strategy, exponential distribution but different per
 	 *         class service times
 	 */
-	public Vector getBCMPFcfsServersWithDifferentServiceTimes() {
+	public Vector<Object> getBCMPFcfsServersWithDifferentServiceTimes() {
 		return BCMPFcfsServersWithDifferentServiceTimes;
 	}
 
@@ -863,7 +863,7 @@ public class ModelChecker implements CommonConstants {
 	 *         at least a service time distribution with a non rational Laplace
 	 *         transform
 	 */
-	public Vector getBCMPdelaysWithNonRationalServiceDistribution() {
+	public Vector<Object> getBCMPdelaysWithNonRationalServiceDistribution() {
 		return BCMPdelaysWithNonRationalServiceDistribution;
 	}
 
@@ -967,7 +967,7 @@ public class ModelChecker implements CommonConstants {
 	 */
 	private void checkForNoSinkWithOpenClassError() {
 		//vector used to contain the set of open class keys
-		Vector openClasses = new Vector(0, 1);
+		Vector<Object> openClasses = new Vector<Object>(0, 1);
 		//vector used to contain the complete set class keys
 		Vector classes = class_def.getClassKeys();
 		//for cicle used to collect the open class keys from the classes vector
@@ -1171,16 +1171,16 @@ public class ModelChecker implements CommonConstants {
 	private void checkForRoutingError() {
 		//vector collecting all the station keys where routing problems occour
 		// for this close class
-		Vector problemsPerClass = new Vector(0, 1);
+		Vector<Object> problemsPerClass = new Vector<Object>(0, 1);
 		Vector closedClassKeys = class_def.getClosedClassKeys();
-		Vector startingPoints = new Vector(0, 1);
+		Vector<Object> startingPoints = new Vector<Object>(0, 1);
 		//get the vector of the possible starting points
 		Vector noSourceSink = station_def.getStationKeysNoSourceSink();
 		for (int i = 0; i < closedClassKeys.size(); i++) {
 			//remove all elements from the problemsPerClass vector
 			problemsPerClass.removeAllElements();
 			//create the vector containing the already visited station keys
-			Vector alreadyVisited = new Vector(0, 1);
+			Vector<Object> alreadyVisited = new Vector<Object>(0, 1);
 			//get the class at i
 			Object thisClassKey = closedClassKeys.get(i);
 			//checks for each possible starting point if there are preloaded jobs for the class i.
@@ -1199,14 +1199,14 @@ public class ModelChecker implements CommonConstants {
 				//if this possible starting point has not been visited yet
 				if (!alreadyVisited.contains(thisStartingPoint)) {
 					alreadyVisited.add(thisStartingPoint);
-					Vector problemsForThisStartingPoint = exploreForRoutingProblems(thisClassKey, thisStartingPoint, alreadyVisited);
+					Vector<Object> problemsForThisStartingPoint = exploreForRoutingProblems(thisClassKey, thisStartingPoint, alreadyVisited);
 					for (int k = 0; k < problemsForThisStartingPoint.size(); k++) {
 						problemsPerClass.add(problemsForThisStartingPoint.get(k));
 					}
 				}
 			}
 			if (!problemsPerClass.isEmpty()) {
-				routingErrors.put(thisClassKey, problemsPerClass.clone());
+				routingErrors.put(thisClassKey, (Vector<Object>)problemsPerClass.clone());
 				errors[ROUTING_ERROR] = true;
 			}
 		}
@@ -1220,16 +1220,16 @@ public class ModelChecker implements CommonConstants {
 	private void checkForAllForwardStationsAreSinkError() {
 		//vector collecting all the station keys where errors occour
 		// for this close class
-		Vector problemsPerClass = new Vector(0, 1);
+		Vector<Object> problemsPerClass = new Vector<Object>(0, 1);
 		Vector closedClassKeys = class_def.getClosedClassKeys();
-		Vector startingPoints = new Vector(0, 1);
+		Vector<Object> startingPoints = new Vector<Object>(0, 1);
 		//get the vector of the possible starting points
 		Vector noSourceSink = station_def.getStationKeysNoSourceSink();
 		for (int i = 0; i < closedClassKeys.size(); i++) {
 			//remove all elements from the problemsPerClass vector
 			problemsPerClass.removeAllElements();
 			//create the vector containing the already visited station keys
-			Vector alreadyVisited = new Vector(0, 1);
+			Vector<Object> alreadyVisited = new Vector<Object>(0, 1);
 			//get the class at i
 			Object thisClassKey = closedClassKeys.get(i);
 			//checks for each possible starting point if there are preloaded jobs for the class i.
@@ -1248,14 +1248,15 @@ public class ModelChecker implements CommonConstants {
 				//if this possible starting point has not been visited yet
 				if (!alreadyVisited.contains(thisStartingPoint)) {
 					alreadyVisited.add(thisStartingPoint);
-					Vector problemsForThisStartingPoint = this.exploreForAllForwardStationAreSink(thisClassKey, thisStartingPoint, alreadyVisited);
+					Vector<Object> problemsForThisStartingPoint = this.exploreForAllForwardStationAreSink(thisClassKey, thisStartingPoint,
+							alreadyVisited);
 					for (int k = 0; k < problemsForThisStartingPoint.size(); k++) {
 						problemsPerClass.add(problemsForThisStartingPoint.get(k));
 					}
 				}
 			}
 			if (!problemsPerClass.isEmpty()) {
-				allForwardStationsAreSinkErrors.put(thisClassKey, problemsPerClass.clone());
+				allForwardStationsAreSinkErrors.put(thisClassKey, (Vector<Object>) problemsPerClass.clone());
 				errors[ALL_FORWARD_STATION_ARE_SINK_ERROR] = true;
 			}
 		}
@@ -1332,7 +1333,7 @@ public class ModelChecker implements CommonConstants {
 	 */
 	private void checkForMeasureError() {
 		Vector measures = simulation_def.getMeasureKeys();
-		Vector measuresAlreadyChecked = new Vector(0, 1);
+		Vector<String> measuresAlreadyChecked = new Vector<String>(0, 1);
 		for (int i = 0; i < measures.size(); i++) {
 			Object thisMeasure = measures.get(i);
 			String thisMeasureType = simulation_def.getMeasureType(thisMeasure);
@@ -1450,9 +1451,9 @@ public class ModelChecker implements CommonConstants {
 	 * @param alreadyVisited vector containing the keys of the already visited stations
 	 * @return the Vector containing the keys of the stations where the routing problem occours
 	 */
-	private Vector exploreForRoutingProblems(Object classKey, Object startingStationKey, Vector alreadyVisited) {
+	private Vector<Object> exploreForRoutingProblems(Object classKey, Object startingStationKey, Vector<Object> alreadyVisited) {
 		//Vector containing the keys to be returned
-		Vector toBeReturned = new Vector(0, 1);
+		Vector<Object> toBeReturned = new Vector<Object>(0, 1);
 		//Vector containing the keys of the forward stations
 		Vector forwardStations = station_def.getForwardConnections(startingStationKey);
 		/*//if there is one only forward station ...
@@ -1505,7 +1506,7 @@ public class ModelChecker implements CommonConstants {
 				}
 				// ... else thisForwardStation isn't a Sink ...
 				else {
-					Vector temp;
+					Vector<Object> temp;
 					// ... if the routing policy is ProbabilityRouting ...
 					if (strategy instanceof ProbabilityRouting) {
 						HashMap probabilities = strategy.getValues();
@@ -1543,10 +1544,10 @@ public class ModelChecker implements CommonConstants {
 	 * @param alreadyVisited vector containing the keys of the already visited stations
 	 * @return the Vector containing the keys of the stations where the error occours
 	 */
-	private Vector exploreForAllForwardStationAreSink(Object classKey, Object startingStationKey, Vector alreadyVisited) {
+	private Vector<Object> exploreForAllForwardStationAreSink(Object classKey, Object startingStationKey, Vector<Object> alreadyVisited) {
 		boolean allSink = true;
 		//Vector containing the keys to be returned
-		Vector toBeReturned = new Vector(0, 1);
+		Vector<Object> toBeReturned = new Vector<Object>(0, 1);
 		//Vector containing the keys of the forward stations
 		Vector forwardStations = station_def.getForwardConnections(startingStationKey);
 		//Check if forwardStations are all sink
@@ -1570,7 +1571,7 @@ public class ModelChecker implements CommonConstants {
 				Object thisForwardStation = forwardStations.get(i);
 				//... if it has not been explored yet ...
 				if (!alreadyVisited.contains(thisForwardStation)) {
-					Vector temp = null;
+					Vector<Object> temp = null;
 					//... add the element to the alreadyVisited vector ...
 					alreadyVisited.add(thisForwardStation);
 					// ... if thisForwardStation is not a Sink ...
@@ -1837,8 +1838,8 @@ public class ModelChecker implements CommonConstants {
 					} else if (service instanceof LDStrategy) {
 						LDStrategy ld = (LDStrategy) service;
 						Object[] ranges = ld.getAllRanges();
-						for (int h = 0; h < ranges.length; h++) {
-							Distribution d = ld.getRangeDistribution(ranges[h]);
+						for (Object range : ranges) {
+							Distribution d = ld.getRangeDistribution(range);
 							if (!d.getName().equals(CommonConstants.DISTRIBUTION_EXPONENTIAL)) {
 								warnings[BCMP_FCFS_EXPONENTIAL_WARNING] = true;
 								BCMPserversFCFSWithoutExponential.add(thisServer);
@@ -1915,8 +1916,8 @@ public class ModelChecker implements CommonConstants {
 					} else if (service instanceof LDStrategy) {
 						LDStrategy ld = (LDStrategy) service;
 						Object[] ranges = ld.getAllRanges();
-						for (int h = 0; h < ranges.length; h++) {
-							if (ld.getRangeDistribution(ranges[h]).getName().equals(CommonConstants.DISTRIBUTION_PARETO)) {
+						for (Object range : ranges) {
+							if (ld.getRangeDistribution(range).getName().equals(CommonConstants.DISTRIBUTION_PARETO)) {
 								warnings[BCMP_DELAY_WARNING] = true;
 								BCMPdelaysWithNonRationalServiceDistribution.add(thisDelay);
 								break;

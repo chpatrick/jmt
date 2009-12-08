@@ -100,7 +100,7 @@ public interface BlockingRegionDefinition {
 	 * Returns the entire set of blocking region keys
 	 * @return the entire set of blocking region keys
 	 */
-	public Vector getRegionKeys();
+	public Vector<Object> getRegionKeys();
 
 	/**
 	 * Sets a customer number constraint for a given region and an user class
@@ -153,7 +153,7 @@ public interface BlockingRegionDefinition {
 	 * @param regionKey search's key for given blocking region
 	 * @return a set with every station inside given blocking region
 	 */
-	public Set getBlockingRegionStations(Object regionKey);
+	public Set<Object> getBlockingRegionStations(Object regionKey);
 
 	/**
 	 * Gets blocking region of a given station
@@ -167,7 +167,7 @@ public interface BlockingRegionDefinition {
 	 * @return a vector of search's keys of every station that can be added
 	 * to a blocking region
 	 */
-	public Vector getBlockableStationKeys();
+	public Vector<Object> getBlockableStationKeys();
 
 	/**
 	 * Returns name of the station in <code>String</code> representation,

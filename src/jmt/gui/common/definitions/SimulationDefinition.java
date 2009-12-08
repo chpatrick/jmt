@@ -74,6 +74,7 @@ public interface SimulationDefinition {
 	//Added as a part of process 
 	//of including the system power performance index to JSIM
 	public static final String MEASURE_S_SP = "System Power";
+
 	//Added by ASHANKA STOP
 
 	/*------------------------------------------------------------------------------------------
@@ -106,7 +107,7 @@ public interface SimulationDefinition {
 	/**Returns list of measure search keys
 	 * @return Vector containing all of the measure search keys
 	 */
-	public Vector getMeasureKeys();
+	public Vector<Object> getMeasureKeys();
 
 	/** Returns type of measure, given measure searchkey.
 	 * @param measureKey: search key

@@ -34,22 +34,26 @@ public class ProbabilityRouting extends RoutingStrategy {
 				+ "If the sum of the probabilities is different from 1, all the values will be " + "scaled to sum 1.";
 	}
 
-	private HashMap probabilities = new HashMap();
+	private HashMap<Object, Double> probabilities = new HashMap<Object, Double>();
 
+	@Override
 	public String getName() {
 		return "Probabilities";
 	}
 
-	public HashMap getValues() {
+	@Override
+	public HashMap<Object, Double> getValues() {
 		return probabilities;
 	}
 
+	@Override
 	public Object clone() {
 		ProbabilityRouting pr = new ProbabilityRouting();
-		pr.probabilities = new HashMap(probabilities);
+		pr.probabilities = new HashMap<Object, Double>(probabilities);
 		return pr;
 	}
 
+	@Override
 	public String getClassPath() {
 		return "jmt.engine.NetStrategies.RoutingStrategies.EmpiricalStrategy";
 	}
@@ -62,6 +66,7 @@ public class ProbabilityRouting extends RoutingStrategy {
 	 *
 	 * Author: Francesco D'Aquino
 	 */
+	@Override
 	public boolean isModelStateDependent() {
 		return false;
 	}

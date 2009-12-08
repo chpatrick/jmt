@@ -37,15 +37,16 @@ import jmt.framework.gui.graph.MeasureValue;
  */
 public class ResultsModel implements MeasureDefinition {
 	private TempMeasure[] measures; // An array with all TempMeasures
-	private Vector queueLength = new Vector(), queueTime = new Vector(), residenceTime = new Vector(), responseTime = new Vector(),
-			utilization = new Vector(), throughput = new Vector(), dropRate = new Vector(), systemResponseTime = new Vector(),
-			systemThroughput = new Vector(), customerNumber = new Vector(), systemDropRate = new Vector();
-	
+	private Vector<Integer> queueLength = new Vector<Integer>(), queueTime = new Vector<Integer>(), residenceTime = new Vector<Integer>(),
+			responseTime = new Vector<Integer>(), utilization = new Vector<Integer>(), throughput = new Vector<Integer>(),
+			dropRate = new Vector<Integer>(), systemResponseTime = new Vector<Integer>(), systemThroughput = new Vector<Integer>(),
+			customerNumber = new Vector<Integer>(), systemDropRate = new Vector<Integer>();
+
 	//Added by ASHANKA START
 	//Vector ro contain the Measure index of the System Power. 
 	//This is done as a part of the addition of System Power
 	//inclusion in the JSIM as a performance Index.
-	private Vector systemPower = new Vector();
+	private Vector<Integer> systemPower = new Vector<Integer>();
 	//Added by ASHANKA STOP
 
 	private Vector[] measuresVector; // For each TempMeasure holds a Vector with its value at every poll
@@ -120,7 +121,7 @@ public class ResultsModel implements MeasureDefinition {
 				//Added by ASHANKA STOP
 			}
 			// Adds to allMeasures HashMap a vector to collect all values of this measure
-			Vector temp_mean = new Vector();
+			Vector<MeasureValueImpl> temp_mean = new Vector<MeasureValueImpl>();
 			temp_mean.add(new MeasureValueImpl(measures[i]));
 			measuresVector[i] = temp_mean;
 			finished[i] = false;
@@ -264,7 +265,7 @@ public class ResultsModel implements MeasureDefinition {
 	 * @param measureIndex index of the measure
 	 * @return vector of termporary values until now
 	 */
-	public synchronized Vector getValues(int measureIndex) {
+	public synchronized Vector<MeasureValue> getValues(int measureIndex) {
 		return measuresVector[measureIndex];
 	}
 
@@ -302,7 +303,7 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getQueueLengthMeasures() {
 		int[] tmp = new int[queueLength.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) queueLength.get(i)).intValue();
+			tmp[i] = queueLength.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -314,7 +315,7 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getThroughputMeasures() {
 		int[] tmp = new int[throughput.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) throughput.get(i)).intValue();
+			tmp[i] = throughput.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -326,7 +327,7 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getDropRateMeasures() {
 		int[] tmp = new int[dropRate.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) dropRate.get(i)).intValue();
+			tmp[i] = dropRate.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -338,7 +339,7 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getSystemDropRateMeasures() {
 		int[] tmp = new int[systemDropRate.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) systemDropRate.get(i)).intValue();
+			tmp[i] = systemDropRate.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -350,7 +351,7 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getQueueTimeMeasures() {
 		int[] tmp = new int[queueTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) queueTime.get(i)).intValue();
+			tmp[i] = queueTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -362,7 +363,7 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getResidenceTimeMeasures() {
 		int[] tmp = new int[residenceTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) residenceTime.get(i)).intValue();
+			tmp[i] = residenceTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -374,7 +375,7 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getResponseTimeMeasures() {
 		int[] tmp = new int[responseTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) responseTime.get(i)).intValue();
+			tmp[i] = responseTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -386,7 +387,7 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getUtilizationMeasures() {
 		int[] tmp = new int[utilization.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) utilization.get(i)).intValue();
+			tmp[i] = utilization.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -399,7 +400,7 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getSystemResponseTimeMeasures() {
 		int[] tmp = new int[systemResponseTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) systemResponseTime.get(i)).intValue();
+			tmp[i] = systemResponseTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -412,7 +413,7 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getSystemThroughputMeasures() {
 		int[] tmp = new int[systemThroughput.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) systemThroughput.get(i)).intValue();
+			tmp[i] = systemThroughput.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -425,22 +426,23 @@ public class ResultsModel implements MeasureDefinition {
 	public int[] getCustomerNumberMeasures() {
 		int[] tmp = new int[customerNumber.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) customerNumber.get(i)).intValue();
+			tmp[i] = customerNumber.get(i).intValue();
 		}
 		return tmp;
 	}
 
 	//Added by ASHANKA START
 	//Return the Indices of each Measures related to System Power.
-	public int[] getSystemPowerMeasures(){
+	public int[] getSystemPowerMeasures() {
 		int[] tmp = new int[systemPower.size()];
-		for(int i=0;i<tmp.length;i++){
-			tmp[i] = ((Integer) systemPower.get(i)).intValue();
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = systemPower.get(i).intValue();
 		}
-		return tmp;		
+		return tmp;
 	}
+
 	//Added by ASHANKA STOP
-	
+
 	/**
 	 * Returns simulation polling interval. This is the time elapsed between two temp values.
 	 * @return simulation polling interval in seconds

@@ -55,6 +55,7 @@ public class Uniform extends Distribution {
 	 * Returns precondition that parameters' values must satisfy for this distribution to be valid
 	 * @return Message describing distribution's preconditions
 	 */
+	@Override
 	public String getPrecondition() {
 		return "value of 'max' must be greater than value of 'min'";
 	}
@@ -63,6 +64,7 @@ public class Uniform extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Distribution.Parameter[] setParameters() {
 		// Creates parameter array
 		Distribution.Parameter[] parameters = new Distribution.Parameter[2];
@@ -102,6 +104,7 @@ public class Uniform extends Distribution {
 	 * user to understand meaning of parameters.
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("Uniform");
 	}
@@ -110,6 +113,7 @@ public class Uniform extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		return "U(" + FormatNumber(((Double) parameters[0].getValue()).doubleValue()) + "; "
 				+ FormatNumber(((Double) parameters[1].getValue()).doubleValue()) + ")";
@@ -119,6 +123,7 @@ public class Uniform extends Distribution {
 	 * Sets the mean for this distribution
 	 * @param value mean value
 	 */
+	@Override
 	public void setMean(double value) {
 		setCM(value, c);
 	}
@@ -127,6 +132,7 @@ public class Uniform extends Distribution {
 	 * Sets the variation coefficient C for this distribution
 	 * @param value variation coefficient C value
 	 */
+	@Override
 	public void setC(double value) {
 		setCM(mean, value);
 	}
@@ -155,6 +161,7 @@ public class Uniform extends Distribution {
 	 * This method is called whenever a parameter changes and <code>hasC</code> or
 	 * <code>hasMean</code> are true
 	 */
+	@Override
 	public void updateCM() {
 		double max = ((Double) getParameter("max").getValue()).doubleValue();
 		double min = ((Double) getParameter("min").getValue()).doubleValue();

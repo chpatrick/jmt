@@ -45,6 +45,7 @@ public class Pareto extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Parameter[] setParameters() {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[2];
@@ -84,6 +85,7 @@ public class Pareto extends Distribution {
 	 * user to understand meaning of parameters.
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("Pareto");
 	}
@@ -92,6 +94,7 @@ public class Pareto extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		return "par(" + FormatNumber(((Double) parameters[0].getValue()).doubleValue()) + "; "
 				+ FormatNumber(((Double) parameters[1].getValue()).doubleValue()) + ")";
@@ -101,6 +104,7 @@ public class Pareto extends Distribution {
 	 * Sets the mean for this distribution
 	 * @param value mean value
 	 */
+	@Override
 	public void setMean(double value) {
 		setCM(value, c);
 	}
@@ -109,6 +113,7 @@ public class Pareto extends Distribution {
 	 * Sets the variation coefficient C for this distribution
 	 * @param value variation coefficient C value
 	 */
+	@Override
 	public void setC(double value) {
 		setCM(mean, value);
 	}
@@ -137,6 +142,7 @@ public class Pareto extends Distribution {
 	 * This method is called whenever a parameter changes and <code>hasC</code> or
 	 * <code>hasMean</code> are true
 	 */
+	@Override
 	public void updateCM() {
 		double a, k;
 		a = ((Double) getParameter("alpha").getValue()).doubleValue();

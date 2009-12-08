@@ -49,6 +49,7 @@ public class Burst extends Distribution {
 	 * user to understand meaning of parameters.
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		ImageIcon icon = JMTImageLoader.loadImage("Burst");
 
@@ -59,6 +60,7 @@ public class Burst extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Parameter[] setParameters() {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[6];
@@ -92,10 +94,12 @@ public class Burst extends Distribution {
 	 * Returns precondition that parameters' values must satisfy for this distribution to be valid
 	 * @return Message describing distribution's preconditions
 	 */
+	@Override
 	public String getPrecondition() {
 		return "All values and interval-length distributions have to be defined";
 	}
 
+	@Override
 	public boolean isNestable() {
 		return isNestable;
 	}
@@ -104,6 +108,7 @@ public class Burst extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		DecimalFormat df = new DecimalFormat("#.############");
 		df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));

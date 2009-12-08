@@ -34,20 +34,22 @@ import jmt.framework.gui.graph.MeasureValue;
  *         Time: 14.10.50
  */
 public class StoredResultsModel implements MeasureDefinition {
-	protected Vector measures = new Vector();
-	protected HashMap names = new HashMap();
+	protected Vector<Measure> measures = new Vector<Measure>();
+	protected HashMap<String, Measure> names = new HashMap<String, Measure>();
 	protected double pollingInterval = 1;
-	private Vector queueLength = new Vector(), queueTime = new Vector(), residenceTime = new Vector(), responseTime = new Vector(),
-			utilization = new Vector(), throughput = new Vector(), dropRate = new Vector(), systemResponseTime = new Vector(),
-			systemThroughput = new Vector(), customerNumber = new Vector(), systemDropRate = new Vector();
-	
+	private Vector<Integer> queueLength = new Vector<Integer>(), queueTime = new Vector<Integer>(), residenceTime = new Vector<Integer>(),
+			responseTime = new Vector<Integer>(), utilization = new Vector<Integer>(), throughput = new Vector<Integer>(),
+			dropRate = new Vector<Integer>(), systemResponseTime = new Vector<Integer>(), systemThroughput = new Vector<Integer>(),
+			customerNumber = new Vector<Integer>(), systemDropRate = new Vector<Integer>();
+
 	//Added by ASHANKA START
 	//Added as a part of addition of the performance index system power to the 
 	//JSIM
-	private Vector systemPower = new Vector();
+	private Vector<Integer> systemPower = new Vector<Integer>();
+
 	//Added by ASHANKA STOP
 
-	public Vector getMeasures() {
+	public Vector<Measure> getMeasures() {
 		return measures;
 	}
 
@@ -67,7 +69,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @return station name
 	 */
 	public String getStationName(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).stationName;
+		return measures.get(measureIndex).stationName;
 	}
 
 	/**
@@ -77,7 +79,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @return class name
 	 */
 	public String getClassName(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).className;
+		return measures.get(measureIndex).className;
 	}
 
 	/**
@@ -87,7 +89,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @return alpha
 	 */
 	public double getAlpha(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).alpha;
+		return measures.get(measureIndex).alpha;
 	}
 
 	/**
@@ -97,7 +99,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @return precision
 	 */
 	public double getPrecision(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).precision;
+		return measures.get(measureIndex).precision;
 	}
 
 	/**
@@ -107,7 +109,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @return number of analized samples
 	 */
 	public int getAnalizedSamples(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).analyzedSamples;
+		return measures.get(measureIndex).analyzedSamples;
 	}
 
 	/**
@@ -117,7 +119,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @return name of the measure
 	 */
 	public String getName(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).name;
+		return measures.get(measureIndex).name;
 	}
 
 	/**
@@ -127,7 +129,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @return name of the measure
 	 */
 	public String getNodeType(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).nodeType;
+		return measures.get(measureIndex).nodeType;
 	}
 
 	/**
@@ -137,8 +139,8 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @param measureIndex index of the measure
 	 * @return vector of termporary values until now
 	 */
-	public Vector getValues(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).values;
+	public Vector<MeasureValue> getValues(int measureIndex) {
+		return measures.get(measureIndex).values;
 	}
 
 	/**
@@ -149,7 +151,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @return measure state
 	 */
 	public int getMeasureState(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).state;
+		return measures.get(measureIndex).state;
 	}
 
 	/**
@@ -159,7 +161,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @return measure type
 	 */
 	public int getMeasureType(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).type;
+		return measures.get(measureIndex).type;
 	}
 
 	/**
@@ -169,7 +171,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getQueueLengthMeasures() {
 		int[] tmp = new int[queueLength.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) queueLength.get(i)).intValue();
+			tmp[i] = queueLength.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -181,7 +183,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getThroughputMeasures() {
 		int[] tmp = new int[throughput.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) throughput.get(i)).intValue();
+			tmp[i] = throughput.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -193,7 +195,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getQueueTimeMeasures() {
 		int[] tmp = new int[queueTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) queueTime.get(i)).intValue();
+			tmp[i] = queueTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -205,7 +207,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getResidenceTimeMeasures() {
 		int[] tmp = new int[residenceTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) residenceTime.get(i)).intValue();
+			tmp[i] = residenceTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -217,7 +219,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getResponseTimeMeasures() {
 		int[] tmp = new int[responseTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) responseTime.get(i)).intValue();
+			tmp[i] = responseTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -229,7 +231,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getDropRateMeasures() {
 		int[] tmp = new int[dropRate.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) dropRate.get(i)).intValue();
+			tmp[i] = dropRate.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -241,7 +243,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getSystemDropRateMeasures() {
 		int[] tmp = new int[systemDropRate.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) systemDropRate.get(i)).intValue();
+			tmp[i] = systemDropRate.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -253,7 +255,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getUtilizationMeasures() {
 		int[] tmp = new int[utilization.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) utilization.get(i)).intValue();
+			tmp[i] = utilization.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -266,7 +268,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getSystemResponseTimeMeasures() {
 		int[] tmp = new int[systemResponseTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) systemResponseTime.get(i)).intValue();
+			tmp[i] = systemResponseTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -279,7 +281,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getSystemThroughputMeasures() {
 		int[] tmp = new int[systemThroughput.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) systemThroughput.get(i)).intValue();
+			tmp[i] = systemThroughput.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -292,11 +294,11 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getCustomerNumberMeasures() {
 		int[] tmp = new int[customerNumber.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) customerNumber.get(i)).intValue();
+			tmp[i] = customerNumber.get(i).intValue();
 		}
 		return tmp;
 	}
-	
+
 	//Added by ASHANKA START
 	//Returns each indices of the System Power as a part of the process of adding the System Power as a new Paerformance index to the 
 	//JSIM
@@ -308,10 +310,11 @@ public class StoredResultsModel implements MeasureDefinition {
 	public int[] getSystemPowerMeasures() {
 		int[] tmp = new int[systemPower.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) systemPower.get(i)).intValue();
+			tmp[i] = systemPower.get(i).intValue();
 		}
-		return tmp;	
+		return tmp;
 	}
+
 	//Added by ASHANKA STOP
 
 	/**
@@ -396,7 +399,7 @@ public class StoredResultsModel implements MeasureDefinition {
 			//Added as a process of adding system power to the 
 			//JSIM as a new performance index
 			case SimConstants.SYSTEM_POWER:
-				systemPower.add(new Integer(measures.size()-1));
+				systemPower.add(new Integer(measures.size() - 1));
 				break;
 			//Added by ASHANKA STOP
 		}
@@ -410,7 +413,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @param lowerBound lower bound of the sample
 	 */
 	public void addMeasureSample(String measureName, double meanValue, double upperBound, double lowerBound) {
-		Measure tmp = (Measure) names.get(measureName);
+		Measure tmp = names.get(measureName);
 		tmp.addSample(meanValue, upperBound, lowerBound);
 	}
 
@@ -430,7 +433,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 */
 	protected class Measure {
 		public String name, stationName, className, nodeType;
-		public Vector values;
+		public Vector<MeasureValue> values;
 		public double alpha, precision;
 		public int analyzedSamples, state, type;
 
@@ -455,7 +458,7 @@ public class StoredResultsModel implements MeasureDefinition {
 			this.analyzedSamples = analyzedSamples;
 			this.state = state;
 			this.type = type;
-			values = new Vector();
+			values = new Vector<MeasureValue>();
 			this.nodeType = nodeType;
 		}
 

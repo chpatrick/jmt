@@ -44,6 +44,7 @@ public class Exponential extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Parameter[] setParameters() {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[1];
@@ -69,6 +70,7 @@ public class Exponential extends Distribution {
 	 * user to understand meaning of parameters.
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("Exponential");
 	}
@@ -77,6 +79,7 @@ public class Exponential extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		return "exp(" + FormatNumber(((Double) parameters[0].getValue()).doubleValue()) + ")";
 	}
@@ -85,6 +88,7 @@ public class Exponential extends Distribution {
 	 * Sets the mean for this distribution
 	 * @param value mean value
 	 */
+	@Override
 	public void setMean(double value) {
 		// mean = 1 / lambda
 		if (getParameter(0).setValue(new Double(1 / value))) {
@@ -96,6 +100,7 @@ public class Exponential extends Distribution {
 	 * This method is called whenever a parameter changes and <code>hasC</code> or
 	 * <code>hasMean</code> are true
 	 */
+	@Override
 	public void updateCM() {
 		mean = 1 / ((Double) getParameter(0).getValue()).doubleValue();
 	}

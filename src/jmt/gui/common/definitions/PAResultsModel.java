@@ -39,25 +39,26 @@ import jmt.gui.common.xml.XMLConstantNames;
  * 		                and "System Customer Number" to "System Number of Customers".
  */
 public class PAResultsModel implements MeasureDefinition {
-	private Vector measures; // An array with all Measures
+	private Vector<Measure> measures; // An array with all Measures
 	private Vector parameterValues;
-	private Vector queueLength = new Vector(), queueTime = new Vector(), residenceTime = new Vector(), responseTime = new Vector(),
-			utilization = new Vector(), throughput = new Vector(), dropRate = new Vector(), systemResponseTime = new Vector(),
-			systemThroughput = new Vector(), customerNumber = new Vector(), systemDropRate = new Vector();
+	private Vector<Integer> queueLength = new Vector<Integer>(), queueTime = new Vector<Integer>(), residenceTime = new Vector<Integer>(),
+			responseTime = new Vector<Integer>(), utilization = new Vector<Integer>(), throughput = new Vector<Integer>(),
+			dropRate = new Vector<Integer>(), systemResponseTime = new Vector<Integer>(), systemThroughput = new Vector<Integer>(),
+			customerNumber = new Vector<Integer>(), systemDropRate = new Vector<Integer>();
 	//Added by ASHANKA START
 	//Added for System power changes for JSIM simulation engine.
 	//This adds the index of the measure System Power.	
-	private Vector systemPower = new Vector();
+	private Vector<Integer> systemPower = new Vector<Integer>();
 	//Added by ASHANKA STOP
-	
-	private HashMap names = new HashMap();
+
+	private HashMap<String, Measure> names = new HashMap<String, Measure>();
 
 	//private boolean[] finished;
 	//private boolean simulationFinished = false;
 
 	public PAResultsModel(CommonModel model) {
-		Vector measureKeys = model.getMeasureKeys();
-		measures = new Vector(measureKeys.size());
+		Vector<Object> measureKeys = model.getMeasureKeys();
+		measures = new Vector<Measure>(measureKeys.size());
 		for (int i = 0; i < measureKeys.size(); i++) {
 			Object thisMeasure = measureKeys.get(i);
 			String stationName = model.getStationName(model.getMeasureStation(thisMeasure));
@@ -83,15 +84,14 @@ public class PAResultsModel implements MeasureDefinition {
 			type = type.toLowerCase();
 			int numType = 0;
 			if ((type.startsWith("customer") && type.endsWith("number") && !"".equalsIgnoreCase(stationName)) //condition is for backward compatibility
-					||(type.startsWith("queue") && type.endsWith("length"))// OR condition is for backward compatibility
-						||(type.startsWith("number") && type.endsWith("customers"))) {//present name is "Number of Customers"
+					|| (type.startsWith("queue") && type.endsWith("length"))// OR condition is for backward compatibility
+					|| (type.startsWith("number") && type.endsWith("customers"))) {//present name is "Number of Customers"
 				numType = SimConstants.QUEUE_LENGTH;
 				queueLength.add(new Integer(i));
 			} else if (type.startsWith("utilization")) {
 				numType = SimConstants.UTILIZATION;
 				utilization.add(new Integer(i));
-			}
-			else if (type.startsWith("throughput")) {
+			} else if (type.startsWith("throughput")) {
 				numType = SimConstants.THROUGHPUT;
 				throughput.add(new Integer(i));
 			} else if (type.startsWith("response") && type.endsWith("time")) {
@@ -114,14 +114,14 @@ public class PAResultsModel implements MeasureDefinition {
 				//Added by ASHANKA START
 				//Added the following to Include the new
 				//performance index called System Power
-				else if  (type.endsWith("power")) {
+				else if (type.endsWith("power")) {
 					numType = SimConstants.SYSTEM_POWER;
 					systemPower.add(new Integer(i));
 				}
 				//Added by ASHANKA STOP
 			} else if ((type.startsWith("customer") && type.endsWith("number") && "".equalsIgnoreCase(stationName))//Backward compatibility condition
-					||(type.startsWith("system") && type.endsWith("number")) //Backward compatibility condition
-							||(type.startsWith("system") && type.endsWith("customers"))){//Present name of the perf index which is System Number of Customers
+					|| (type.startsWith("system") && type.endsWith("number")) //Backward compatibility condition
+					|| (type.startsWith("system") && type.endsWith("customers"))) {//Present name of the perf index which is System Number of Customers
 				numType = SimConstants.SYSTEM_JOB_NUMBER;
 				customerNumber.add(new Integer(i));
 			} else if (type.startsWith("drop") && type.endsWith("rate")) {
@@ -137,7 +137,7 @@ public class PAResultsModel implements MeasureDefinition {
 	}
 
 	public PAResultsModel(CommonModel model, boolean loadFromFile) {
-		measures = new Vector();
+		measures = new Vector<Measure>();
 		parameterValues = model.getParametricAnalysisModel().getParameterValues();
 	}
 
@@ -199,12 +199,12 @@ public class PAResultsModel implements MeasureDefinition {
 	}
 
 	public void addSample(int measureIndex, double lowerBound, double meanValue, double upperBound, boolean validity) {
-		Measure requested = (Measure) measures.get(measureIndex);
+		Measure requested = measures.get(measureIndex);
 		requested.addSample(meanValue, upperBound, lowerBound, validity);
 	}
 
 	public void addSample(String measureName, double lowerBound, double meanValue, double upperBound, boolean validity) {
-		Measure requested = (Measure) names.get(measureName);
+		Measure requested = names.get(measureName);
 		requested.addSample(meanValue, upperBound, lowerBound, validity);
 	}
 
@@ -228,7 +228,7 @@ public class PAResultsModel implements MeasureDefinition {
 	 * @return station name
 	 */
 	public String getStationName(int measureIndex) {
-		String name = ((Measure) measures.get(measureIndex)).stationName;
+		String name = measures.get(measureIndex).stationName;
 		//if (name == null) name = "Network";
 		return name;
 	}
@@ -240,7 +240,7 @@ public class PAResultsModel implements MeasureDefinition {
 	 * @return class name
 	 */
 	public String getClassName(int measureIndex) {
-		String name = ((Measure) measures.get(measureIndex)).className;
+		String name = measures.get(measureIndex).className;
 		//if (name == null) name = "All classes";
 		return name;
 	}
@@ -252,7 +252,7 @@ public class PAResultsModel implements MeasureDefinition {
 	 * @return alpha
 	 */
 	public double getAlpha(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).alpha;
+		return measures.get(measureIndex).alpha;
 	}
 
 	/**
@@ -262,7 +262,7 @@ public class PAResultsModel implements MeasureDefinition {
 	 * @return precision
 	 */
 	public double getPrecision(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).precision;
+		return measures.get(measureIndex).precision;
 	}
 
 	/**
@@ -273,7 +273,7 @@ public class PAResultsModel implements MeasureDefinition {
 	 * @return number of analized samples
 	 */
 	public int getAnalizedSamples(int measureIndex) {
-		return ((Measure) (measures.get(measureIndex))).getNumberOfSamples();
+		return (measures.get(measureIndex)).getNumberOfSamples();
 	}
 
 	/**
@@ -283,7 +283,7 @@ public class PAResultsModel implements MeasureDefinition {
 	 * @return name of the measure
 	 */
 	public String getName(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).name;
+		return measures.get(measureIndex).name;
 	}
 
 	/**
@@ -293,8 +293,8 @@ public class PAResultsModel implements MeasureDefinition {
 	 * @param measureIndex index of the measure
 	 * @return vector of values
 	 */
-	public Vector getValues(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).getValues();
+	public Vector<MeasureValue> getValues(int measureIndex) {
+		return measures.get(measureIndex).getValues();
 	}
 
 	/**
@@ -316,7 +316,7 @@ public class PAResultsModel implements MeasureDefinition {
 	 * @return measure type
 	 */
 	public int getMeasureType(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).type;
+		return measures.get(measureIndex).type;
 	}
 
 	/**
@@ -326,7 +326,7 @@ public class PAResultsModel implements MeasureDefinition {
 	 * @return measure type
 	 */
 	public String getNodeType(int measureIndex) {
-		return ((Measure) measures.get(measureIndex)).nodeType;
+		return measures.get(measureIndex).nodeType;
 	}
 
 	/**
@@ -337,7 +337,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getQueueLengthMeasures() {
 		int[] tmp = new int[queueLength.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) queueLength.get(i)).intValue();
+			tmp[i] = queueLength.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -350,7 +350,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getThroughputMeasures() {
 		int[] tmp = new int[throughput.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) throughput.get(i)).intValue();
+			tmp[i] = throughput.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -363,7 +363,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getQueueTimeMeasures() {
 		int[] tmp = new int[queueTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) queueTime.get(i)).intValue();
+			tmp[i] = queueTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -376,7 +376,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getResidenceTimeMeasures() {
 		int[] tmp = new int[residenceTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) residenceTime.get(i)).intValue();
+			tmp[i] = residenceTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -388,7 +388,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getResponseTimeMeasures() {
 		int[] tmp = new int[responseTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) responseTime.get(i)).intValue();
+			tmp[i] = responseTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -400,7 +400,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getUtilizationMeasures() {
 		int[] tmp = new int[utilization.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) utilization.get(i)).intValue();
+			tmp[i] = utilization.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -413,7 +413,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getSystemResponseTimeMeasures() {
 		int[] tmp = new int[systemResponseTime.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) systemResponseTime.get(i)).intValue();
+			tmp[i] = systemResponseTime.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -426,7 +426,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getSystemThroughputMeasures() {
 		int[] tmp = new int[systemThroughput.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) systemThroughput.get(i)).intValue();
+			tmp[i] = systemThroughput.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -439,7 +439,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getCustomerNumberMeasures() {
 		int[] tmp = new int[customerNumber.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) customerNumber.get(i)).intValue();
+			tmp[i] = customerNumber.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -451,7 +451,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getDropRateMeasures() {
 		int[] tmp = new int[dropRate.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) dropRate.get(i)).intValue();
+			tmp[i] = dropRate.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -463,7 +463,7 @@ public class PAResultsModel implements MeasureDefinition {
 	public int[] getSystemDropRateMeasures() {
 		int[] tmp = new int[systemDropRate.size()];
 		for (int i = 0; i < tmp.length; i++) {
-			tmp[i] = ((Integer) systemDropRate.get(i)).intValue();
+			tmp[i] = systemDropRate.get(i).intValue();
 		}
 		return tmp;
 	}
@@ -534,7 +534,7 @@ public class PAResultsModel implements MeasureDefinition {
 	 */
 	protected class Measure {
 		public String name, stationName, className, nodeType;
-		public Vector values;
+		public Vector<MeasureValue> values;
 		public double alpha, precision;
 		public int samples, state, type;
 
@@ -555,7 +555,7 @@ public class PAResultsModel implements MeasureDefinition {
 			this.precision = precision;
 			//this.state = state;
 			this.type = type;
-			values = new Vector();
+			values = new Vector<MeasureValue>();
 			this.nodeType = nodeType;
 		}
 
@@ -585,7 +585,7 @@ public class PAResultsModel implements MeasureDefinition {
 		 * <code>MeasureValue</code>
 		 * @return the Vector containing the values of this Measure
 		 */
-		public Vector getValues() {
+		public Vector<MeasureValue> getValues() {
 			return values;
 		}
 
@@ -640,8 +640,8 @@ public class PAResultsModel implements MeasureDefinition {
 	//Added by ASHANKA START
 	public int[] getSystemPowerMeasures() {
 		int[] tmp = new int[systemPower.size()];
-		for(int i=0;i<tmp.length;i++){
-			tmp[i] = ((Integer) systemPower.get(i)).intValue();
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = systemPower.get(i).intValue();
 		}
 		return tmp;
 	}

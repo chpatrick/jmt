@@ -45,6 +45,7 @@ public class Normal extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Distribution.Parameter[] setParameters() {
 		// Creates parameter array
 		Distribution.Parameter[] parameters = new Distribution.Parameter[2];
@@ -84,6 +85,7 @@ public class Normal extends Distribution {
 	 * user to understand meaning of parameters.
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("Normal");
 	}
@@ -92,6 +94,7 @@ public class Normal extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		return "norm(" + FormatNumber(((Double) parameters[0].getValue()).doubleValue()) + "; "
 				+ FormatNumber(((Double) parameters[1].getValue()).doubleValue()) + ")";
@@ -101,6 +104,7 @@ public class Normal extends Distribution {
 	 * Sets the mean for this distribution
 	 * @param value mean value
 	 */
+	@Override
 	public void setMean(double value) {
 		setCM(value, c);
 	}
@@ -109,6 +113,7 @@ public class Normal extends Distribution {
 	 * Sets the variation coefficient C for this distribution
 	 * @param value variation coefficient C value
 	 */
+	@Override
 	public void setC(double value) {
 		setCM(mean, value);
 	}
@@ -136,6 +141,7 @@ public class Normal extends Distribution {
 	 * This method is called whenever a parameter changes and <code>hasC</code> or
 	 * <code>hasMean</code> are true
 	 */
+	@Override
 	public void updateCM() {
 		mean = ((Double) getParameter("mean").getValue()).doubleValue();
 		c = Math.sqrt(((Double) getParameter("standardDeviation").getValue()).doubleValue()) / mean;

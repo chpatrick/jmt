@@ -43,6 +43,7 @@ public class StudentT extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Parameter[] setParameters() {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[1];
@@ -68,6 +69,7 @@ public class StudentT extends Distribution {
 	 * user to understand meaning of parameters.
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("StudentT");
 	}
@@ -76,6 +78,7 @@ public class StudentT extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		return "studT(" + ((Double) parameters[0].getValue()).longValue() + ")";
 	}

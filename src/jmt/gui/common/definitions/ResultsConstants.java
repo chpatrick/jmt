@@ -64,16 +64,15 @@ public interface ResultsConstants {
 
 	// Tabbed panels description
 	public static final String DESCRIPTION_QUEUELENGTHS = HTML_START + HTML_FONT_TITLE + "Number of Customers" + HTML_FONT_TIT_END + HTML_FONT_NORM
-	+ "Average number of customers for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;
+			+ "Average number of customers for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_THROUGHPUTS = HTML_START + HTML_FONT_TITLE + "Throughput" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average throughput for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_RESPONSETIMES = HTML_START + HTML_FONT_TITLE + "Response Time" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average response time for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_UTILIZATIONS = HTML_START + HTML_FONT_TITLE + "Utilization" + HTML_FONT_TIT_END + HTML_FONT_NORM
-			+ "Utilization of a customer class at the selected station. The utilization of a queueing station with more than one server is the " +
-			  "average utilization of each server.  The utilization of a delay station is the average number of customers in the station " +
-			  "(it may be greater than 1)" 
-			+ HTML_FONT_NOR_END + HTML_END;
+			+ "Utilization of a customer class at the selected station. The utilization of a queueing station with more than one server is the "
+			+ "average utilization of each server.  The utilization of a delay station is the average number of customers in the station "
+			+ "(it may be greater than 1)" + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_RESIDENCETIMES = HTML_START + HTML_FONT_TITLE + "Residence Time" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average residence time for each chosen class at each chosen station. (Residence Time = Number of Visits * Response Time)"
 			+ HTML_FONT_NOR_END + HTML_END;
@@ -83,18 +82,18 @@ public interface ResultsConstants {
 			+ HTML_FONT_NORM + "Average response time of the entire system for each chosen class." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_SYSTEMTHROUGHPUTS = HTML_START + HTML_FONT_TITLE + "System Throughput" + HTML_FONT_TIT_END
 			+ HTML_FONT_NORM + "Average throughput of the entire system for each chosen class." + HTML_FONT_NOR_END + HTML_END;
-	public static final String DESCRIPTION_CUSTOMERNUMBERS = HTML_START + HTML_FONT_TITLE + "System Number of Customers" + HTML_FONT_TIT_END + HTML_FONT_NORM
-	+ "Average customer number for each chosen class." + HTML_FONT_NOR_END + HTML_END;
+	public static final String DESCRIPTION_CUSTOMERNUMBERS = HTML_START + HTML_FONT_TITLE + "System Number of Customers" + HTML_FONT_TIT_END
+			+ HTML_FONT_NORM + "Average customer number for each chosen class." + HTML_FONT_NOR_END + HTML_END;
 	//Added by ASHANKA START
 	//Added for System Power changes in the JSIM
 	//Its a new performance index.
 	public static final String DESCRIPTION_SYSTEMPOWER = HTML_START + HTML_FONT_TITLE + "System Power" + HTML_FONT_TIT_END + HTML_FONT_NORM
-	+ "System Power for each chosen class." + HTML_FONT_NOR_END + HTML_END;
+			+ "System Power for each chosen class." + HTML_FONT_NOR_END + HTML_END;
 
 	//Added by ASHANKA STOP
-	
+
 	public static final String DESCRIPTION_DROPRATE = HTML_START + HTML_FONT_TITLE + "Drop Rate" + HTML_FONT_TIT_END + HTML_FONT_NORM
-	+ "Rate of the customers dropped before entering the station" + HTML_FONT_NOR_END + HTML_END;
+			+ "Rate of the customers dropped before entering the station" + HTML_FONT_NOR_END + HTML_END;
 
 	// Temp measure mean label
 	public static final String TEMP_MEAN = HTML_START + HTML_FONT_NORM + "<b>Average value: </b>" + HTML_FONT_NOR_END + HTML_END;

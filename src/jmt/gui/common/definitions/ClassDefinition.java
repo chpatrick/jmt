@@ -51,14 +51,14 @@ public interface ClassDefinition {
 	/**
 	 * This method returns the entire set of class keys.
 	 */
-	public Vector getClassKeys();
+	public Vector<Object> getClassKeys();
 
 	/**
 	 * This method returns the set of open class keys.
 	 *
 	 * Author: Francesco D'Aquino
 	 */
-	public Vector getOpenClassKeys();
+	public Vector<Object> getOpenClassKeys();
 
 	/**
 	 * This method returns the sum of population of each close class
@@ -71,7 +71,7 @@ public interface ClassDefinition {
 	/**
 	* This method returns the set of closed class keys.
 	*/
-	public Vector getClosedClassKeys();
+	public Vector<Object> getClosedClassKeys();
 
 	/**
 	 * Returns name of the class linked to the specific key

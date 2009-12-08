@@ -20,6 +20,8 @@ package jmt.gui.common.definitions;
 
 import java.util.Vector;
 
+import jmt.framework.gui.graph.MeasureValue;
+
 /**
  * <p>Title: Measure Definition Interface</p>
  * <p>Description: This interface is implemented by each measure definition data structure. It is
@@ -103,7 +105,7 @@ public interface MeasureDefinition {
 	 * @param measureIndex index of the measure
 	 * @return vector of termporary values until now
 	 */
-	public Vector getValues(int measureIndex);
+	public Vector<MeasureValue> getValues(int measureIndex);
 
 	/**
 	 * Returns the state of a measure, that can be MEASURE_IN_PROGRESS, MEASURE_NO_SAMPLES,
@@ -185,8 +187,7 @@ public interface MeasureDefinition {
 	 * @return an array with measures' index
 	 */
 	public int[] getCustomerNumberMeasures();
-	
-	
+
 	//Added by ASHANKA START
 	//Added a new performance index for the JSIM Graph Simulation tool
 	//This is System Power given by the formula: System/System Response Time
@@ -195,6 +196,7 @@ public interface MeasureDefinition {
 	 * @return an array with measures' index
 	 */
 	public int[] getSystemPowerMeasures();
+
 	//Added by ASHANKA STOP
 
 	/**

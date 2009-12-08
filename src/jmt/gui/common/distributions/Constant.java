@@ -44,6 +44,7 @@ public class Constant extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Parameter[] setParameters() {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[1];
@@ -69,6 +70,7 @@ public class Constant extends Distribution {
 	 * user to understand meaning of parameters.
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("Constant");
 	}
@@ -77,6 +79,7 @@ public class Constant extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		return "const(" + FormatNumber(((Double) parameters[0].getValue()).doubleValue()) + ")";
 	}
@@ -85,6 +88,7 @@ public class Constant extends Distribution {
 	 * Sets the mean for this distribution
 	 * @param value mean value
 	 */
+	@Override
 	public void setMean(double value) {
 		// mean = value
 		if (getParameter(0).setValue(new Double(value))) {
@@ -96,6 +100,7 @@ public class Constant extends Distribution {
 	 * This method is called whenever a parameter changes and <code>hasC</code> or
 	 * <code>hasMean</code> are true
 	 */
+	@Override
 	public void updateCM() {
 		mean = ((Double) getParameter(0).getValue()).doubleValue();
 	}

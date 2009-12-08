@@ -53,6 +53,7 @@ public class MAP extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Parameter[] setParameters() {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[2];
@@ -81,6 +82,7 @@ public class MAP extends Distribution {
 	 * user to understand meaning of parameters.
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("MMPP2");
 	}
@@ -89,6 +91,7 @@ public class MAP extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		return "MAP(" + (String) parameters[0].getValue() + "," + (String) parameters[1].getValue() + ")";
 	}

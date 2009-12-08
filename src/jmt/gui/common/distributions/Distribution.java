@@ -21,8 +21,8 @@ package jmt.gui.common.distributions;
 import java.lang.reflect.Field;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.Locale;
-import java.util.Vector;
 
 import javax.swing.ImageIcon;
 
@@ -128,9 +128,9 @@ public abstract class Distribution implements ServiceStrategy {
 	 * @return requested parameter or null if a parameter with specified name does not exist
 	 */
 	public Parameter getParameter(String name) {
-		for (int i = 0; i < parameters.length; i++) {
-			if (parameters[i].getName().equals(name)) {
-				return parameters[i];
+		for (Parameter parameter : parameters) {
+			if (parameter.getName().equals(name)) {
+				return parameter;
 			}
 		}
 		return null;
@@ -170,12 +170,13 @@ public abstract class Distribution implements ServiceStrategy {
 	 * Returns a deep copy of this Distribution
 	 * @return a clone of this distribution
 	 */
+	@Override
 	public Object clone() {
 		// Gets subtype of this class to instantiate new object through reflection
-		Class instance = this.getClass();
+		Class<? extends Distribution> instance = this.getClass();
 		Distribution tmp = null;
 		try {
-			tmp = (Distribution) instance.newInstance();
+			tmp = instance.newInstance();
 			// Newly created instance will have default parameters. Now will clone parameters
 			// of this and sets them as parameters of new instance.
 			Parameter[] parameters = new Parameter[this.parameters.length];
@@ -279,11 +280,11 @@ public abstract class Distribution implements ServiceStrategy {
 		String path = "jmt.gui.common.distributions.";
 
 		Field[] fields = jmt.gui.jmodel.JMODELConstants.class.getFields();
-		Vector tmp = new Vector();
+		ArrayList<Distribution> tmp = new ArrayList<Distribution>();
 		try {
-			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].getName().startsWith("DISTRIBUTION_")) {
-					tmp.add(Class.forName(path + (String) fields[i].get(null)).newInstance());
+			for (Field field : fields) {
+				if (field.getName().startsWith("DISTRIBUTION_")) {
+					tmp.add((Distribution)Class.forName(path + (String) field.get(null)).newInstance());
 				}
 			}
 		} catch (IllegalAccessException ex) {
@@ -298,7 +299,7 @@ public abstract class Distribution implements ServiceStrategy {
 		}
 		Distribution[] ret = new Distribution[tmp.size()];
 		for (int i = 0; i < tmp.size(); i++) {
-			ret[i] = (Distribution) tmp.get(i);
+			ret[i] = tmp.get(i);
 		}
 		all = ret;
 		return ret;
@@ -316,9 +317,9 @@ public abstract class Distribution implements ServiceStrategy {
 		Distribution[] all = findAll();
 		Distribution[] tmp = new Distribution[all.length];
 		int n = 0;
-		for (int i = 0; i < all.length; i++) {
-			if (all[i].hasMean()) {
-				tmp[n++] = all[i];
+		for (Distribution element : all) {
+			if (element.hasMean()) {
+				tmp[n++] = element;
 			}
 		}
 		// Now removes empty elements into tmp array
@@ -341,9 +342,9 @@ public abstract class Distribution implements ServiceStrategy {
 		Distribution[] all = findAll();
 		Distribution[] tmp = new Distribution[all.length];
 		int n = 0;
-		for (int i = 0; i < all.length; i++) {
-			if (all[i].isNestable()) {
-				tmp[n++] = all[i];
+		for (Distribution element : all) {
+			if (element.isNestable()) {
+				tmp[n++] = element;
 			}
 		}
 		// Now removes empty elements into tmp array
@@ -359,6 +360,7 @@ public abstract class Distribution implements ServiceStrategy {
 	 * @param o other distribution
 	 * @return true if equals, false otherwise
 	 */
+	@Override
 	public boolean equals(Object o) {
 		if (!(o instanceof Distribution)) {
 			return false;
@@ -396,6 +398,7 @@ public abstract class Distribution implements ServiceStrategy {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public abstract String toString();
 
 	// ----- Methods that must be implemented ONLY if hasC or hasMean are true ----------------------------
@@ -429,7 +432,7 @@ public abstract class Distribution implements ServiceStrategy {
 	 * but will be accessed with public methods
 	 */
 	public class Parameter implements Cloneable {
-		protected Class valueClass;
+		protected Class<?> valueClass;
 		protected Object value;
 		protected String name;
 		protected String description;
@@ -445,7 +448,7 @@ public abstract class Distribution implements ServiceStrategy {
 		 * @param defaultValue initial value for this parameter
 		 * <code>getParameterClasspath()</code> for more details.
 		 */
-		public Parameter(String name, String description, Class valueClass, Object defaultValue) {
+		public Parameter(String name, String description, Class<?> valueClass, Object defaultValue) {
 			this(name, description, valueClass, defaultValue, false);
 		}
 
@@ -460,7 +463,7 @@ public abstract class Distribution implements ServiceStrategy {
 		 * @param directParameter indicates if this parameter will be added to the distribution of the parameter object when translating it to XML
 		 * <code>getParameterClasspath()</code> for more details.
 		 */
-		public Parameter(String name, String description, Class valueClass, Object defaultValue, boolean directParameter) {
+		public Parameter(String name, String description, Class<?> valueClass, Object defaultValue, boolean directParameter) {
 			this.name = name;
 			this.description = description;
 			this.valueClass = valueClass;
@@ -554,7 +557,7 @@ public abstract class Distribution implements ServiceStrategy {
 		 * Gets this parameter value's class, ie the class of which parameter value is instance of.
 		 * @return parameter value's class
 		 */
-		public Class getValueClass() {
+		public Class<?> getValueClass() {
 			return valueClass;
 		}
 
@@ -588,6 +591,7 @@ public abstract class Distribution implements ServiceStrategy {
 		 * not be a problem as every value should be an immutable type.
 		 * @return a copy of this parameter
 		 */
+		@Override
 		public Object clone() {
 			Parameter tmp = new Parameter(this.name, this.description, this.valueClass, this.value, this.directParameter);
 			tmp.setValueChecker(this.checker);

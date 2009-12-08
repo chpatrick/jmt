@@ -45,6 +45,7 @@ public class Erlang extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Parameter[] setParameters() {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[2];
@@ -83,6 +84,7 @@ public class Erlang extends Distribution {
 	 * Set illustrating figure in distribution panel
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("Erlang");
 	}
@@ -91,6 +93,7 @@ public class Erlang extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		return "erl(" + FormatNumber(((Double) parameters[0].getValue()).doubleValue()) + "; "
 				+ FormatNumber(((Double) parameters[1].getValue()).doubleValue()) + ")";
@@ -100,6 +103,7 @@ public class Erlang extends Distribution {
 	 * Sets the mean for this distribution
 	 * @param value mean value
 	 */
+	@Override
 	public void setMean(double value) {
 		setCM(value, c);
 	}
@@ -108,6 +112,7 @@ public class Erlang extends Distribution {
 	 * Sets the variation coefficient C for this distribution
 	 * @param value variation coefficient C value
 	 */
+	@Override
 	public void setC(double value) {
 		setCM(mean, value);
 	}
@@ -135,6 +140,7 @@ public class Erlang extends Distribution {
 	 * This method is called whenever a parameter changes and <code>hasC</code> or
 	 * <code>hasMean</code> are true
 	 */
+	@Override
 	public void updateCM() {
 		mean = ((Double) getParameter("r").getValue()).doubleValue() / ((Double) getParameter("alpha").getValue()).doubleValue();
 		c = 1 / Math.sqrt(((Double) getParameter("r").getValue()).doubleValue());

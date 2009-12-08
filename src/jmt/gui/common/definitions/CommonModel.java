@@ -63,33 +63,34 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	/**
 	 * search keysets for classes, stations and measures
 	 */
-	protected Vector classesKeyset = new Vector(), noSourceSinkKeyset = new Vector(), stationsKeyset = new Vector(), measuresKeyset = new Vector(),
-			blockingRegionsKeyset = new Vector(), measuresBlockingKeyset = new Vector(), blockableStations = new Vector();
+	protected Vector<Object> classesKeyset = new Vector<Object>(), noSourceSinkKeyset = new Vector<Object>(), stationsKeyset = new Vector<Object>(),
+			measuresKeyset = new Vector<Object>(), blockingRegionsKeyset = new Vector<Object>(), measuresBlockingKeyset = new Vector<Object>(),
+			blockableStations = new Vector<Object>();
 
 	/**
 	 * Hashmap for classes parameters
 	 */
-	protected HashMap classDataHM = new CachedHashMap(),
+	protected HashMap<Object, Object> classDataHM = new CachedHashMap<Object, Object>(),
 
 	/**
 	 * Hashmap containing station parameters
 	 */
-	stationDataHM = new CachedHashMap(),
+	stationDataHM = new CachedHashMap<Object, Object>(),
 
 	/**
 	 * Hashmap containing measure parameters
 	 */
-	measureDataHM = new CachedHashMap(),
+	measureDataHM = new CachedHashMap<Object, Object>(),
 
 	/**
 	 * Hashmap containing blocking region parameters
 	 */
-	blockingDataHM = new CachedHashMap(),
+	blockingDataHM = new CachedHashMap<Object, Object>(),
 
 	/**
 	 * Hashmap containing measure parameters
 	 */
-	blockingMeasureDataHM = new CachedHashMap();
+	blockingMeasureDataHM = new CachedHashMap<Object, Object>();
 
 	/**
 	 * BDMap containing station connections. On X coordinate will be put stationKeys for
@@ -147,7 +148,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	/**
 	 * This method returns the entire set of class keys.
 	 */
-	public synchronized Vector getClassKeys() {
+	public synchronized Vector<Object> getClassKeys() {
 		return classesKeyset;
 	}
 
@@ -156,9 +157,9 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 *
 	 * Author: Francesco D'Aquino
 	 */
-	public Vector getOpenClassKeys() {
-		Vector classes = this.getClassKeys();
-		Vector openClassKeys = new Vector(0, 1);
+	public Vector<Object> getOpenClassKeys() {
+		Vector<Object> classes = this.getClassKeys();
+		Vector<Object> openClassKeys = new Vector<Object>(0, 1);
 		for (int i = 0; i < classes.size(); i++) {
 			Object thisClass = classes.get(i);
 			if (this.getClassType(thisClass) == CommonConstants.CLASS_TYPE_OPEN) {
@@ -177,7 +178,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 */
 	public int getTotalCloseClassPopulation() {
 		int sum = 0;
-		Vector closeClasses = getClosedClassKeys();
+		Vector<Object> closeClasses = getClosedClassKeys();
 		for (int i = 0; i < closeClasses.size(); i++) {
 			sum += getClassPopulation(closeClasses.get(i)).intValue();
 		}
@@ -187,8 +188,8 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	/**
 	* This method returns the set of closed class keys.
 	*/
-	public synchronized Vector getClosedClassKeys() {
-		Vector closedClasses = new Vector(0, 1);
+	public synchronized Vector<Object> getClosedClassKeys() {
+		Vector<Object> closedClasses = new Vector<Object>(0, 1);
 		for (int i = 0; i < classesKeyset.size(); i++) {
 			Object thisClassKey = classesKeyset.get(i);
 			int classType = getClassType(thisClassKey);
@@ -514,9 +515,9 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 *
 	 * Author: Francesco D'Aquino
 	 */
-	public Vector getStationKeysSource() {
-		Vector stations = this.getStationKeys();
-		Vector sources = new Vector(0, 1);
+	public Vector<Object> getStationKeysSource() {
+		Vector<Object> stations = this.getStationKeys();
+		Vector<Object> sources = new Vector<Object>(0, 1);
 		for (int i = 0; i < stations.size(); i++) {
 			Object thisStation = stations.get(i);
 			if (this.getStationType(thisStation).equals(CommonConstants.STATION_TYPE_SOURCE)) {
@@ -533,9 +534,9 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 *
 	 * Author: Francesco D'Aquino
 	 */
-	public Vector getStationKeysServer() {
-		Vector stations = this.getStationKeys();
-		Vector servers = new Vector(0, 1);
+	public Vector<Object> getStationKeysServer() {
+		Vector<Object> stations = this.getStationKeys();
+		Vector<Object> servers = new Vector<Object>(0, 1);
 		for (int i = 0; i < stations.size(); i++) {
 			Object thisStation = stations.get(i);
 			if (this.getStationType(thisStation).equals(CommonConstants.STATION_TYPE_SERVER)) {
@@ -552,9 +553,9 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 *
 	 * Author: Francesco D'Aquino
 	 */
-	public Vector getStationKeysDelay() {
-		Vector stations = this.getStationKeys();
-		Vector delays = new Vector(0, 1);
+	public Vector<Object> getStationKeysDelay() {
+		Vector<Object> stations = this.getStationKeys();
+		Vector<Object> delays = new Vector<Object>(0, 1);
 		for (int i = 0; i < stations.size(); i++) {
 			Object thisStation = stations.get(i);
 			if (this.getStationType(thisStation).equals(CommonConstants.STATION_TYPE_DELAY)) {
@@ -571,9 +572,9 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 *
 	 * Author: Michael Fercu (Marco Bertoli) 0.7.4
 	 */
-	public Vector getStationKeysLogger() {
-		Vector stations = this.getStationKeys();
-		Vector loggers = new Vector(0, 1);
+	public Vector<Object> getStationKeysLogger() {
+		Vector<Object> stations = this.getStationKeys();
+		Vector<Object> loggers = new Vector<Object>(0, 1);
 		for (int i = 0; i < stations.size(); i++) {
 			Object thisStation = stations.get(i);
 			if (this.getStationType(thisStation).equals(CommonConstants.STATION_TYPE_LOGGER)) {
@@ -583,25 +584,24 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		return loggers;
 	}
 
-	
 	/**Returns entire key set for search of stations. Objects contained  in returned vector
 	 * can be directly passed to methods for parameters retrieval.*/
-	public Vector getStationKeys() {
+	public Vector<Object> getStationKeys() {
 		return stationsKeyset;
 	}
 
 	/**
 	 * This method returns all station keys except source and sink ones.
 	 */
-	public Vector getStationKeysNoSourceSink() {
+	public Vector<Object> getStationKeysNoSourceSink() {
 		return noSourceSinkKeyset;
 	}
 
 	/* (non-Javadoc)
 	 * @see jmt.gui.common.definitions.StationDefinition#getStationRegionKeysNoSourceSink()
 	 */
-	public Vector getStationRegionKeysNoSourceSink() {
-		Vector vect = new Vector(noSourceSinkKeyset);
+	public Vector<Object> getStationRegionKeysNoSourceSink() {
+		Vector<Object> vect = new Vector<Object>(noSourceSinkKeyset);
 		vect.addAll(blockingRegionsKeyset);
 		return vect;
 	}
@@ -802,7 +802,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		if (sd.queueStrategy.equals(QUEUE_STRATEGY_STATION_PS) && !sd.type.equals(STATION_TYPE_SERVER)) {
 			sd.queueStrategy = QUEUE_STRATEGY_STATION_QUEUE;
 		}
-		
+
 		sd.numOfServers = numberOfServers;
 		sd.queueCapacity = queueCapacity;
 
@@ -941,7 +941,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			current.dropRule = rule;
 		}
 	}
-	
+
 	public void setStationQueueStrategy(Object stationKey, String strategy) {
 		StationData station = (StationData) stationDataHM.get(stationKey);
 		if (station != null) {
@@ -951,7 +951,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			station.queueStrategy = strategy;
 		}
 	}
-	
+
 	public String getStationQueueStrategy(Object stationKey) {
 		StationData station = (StationData) stationDataHM.get(stationKey);
 		if (station != null) {
@@ -1018,81 +1018,85 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		}
 	}
 
-    /**
-     * Michael Fercu (Marco Bertoli) - 0.7.4
-     * Access methods for "Logger"
-     */
-    public void setLoggingParameters(Object stationKey, Object loggerParameters) {
-        StationData sd;
-        if(stationDataHM.containsKey(stationKey)){
-            sd = (StationData) stationDataHM.get(stationKey);
-        }else return;
+	/**
+	 * Michael Fercu (Marco Bertoli) - 0.7.4
+	 * Access methods for "Logger"
+	 */
+	public void setLoggingParameters(Object stationKey, Object loggerParameters) {
+		StationData sd;
+		if (stationDataHM.containsKey(stationKey)) {
+			sd = (StationData) stationDataHM.get(stationKey);
+		} else {
+			return;
+		}
 
-		if (sd.loggerParameters == null)
+		if (sd.loggerParameters == null) {
 			save = true;
-		else if (!sd.loggerParameters.equals(loggerParameters))
-            save = true;
+		} else if (!sd.loggerParameters.equals(loggerParameters)) {
+			save = true;
+		}
 
 		sd.loggerParameters = loggerParameters;
-    }
+	}
 
-    public Object getLoggingParameters(Object stationKey) {
-        Object loggerParams = null;
+	public Object getLoggingParameters(Object stationKey) {
+		Object loggerParams = null;
 
-    	if(stationDataHM.containsKey(stationKey)){
-            StationData sd = (StationData)stationDataHM.get(stationKey);
-            loggerParams = (sd.loggerParameters != null) ? sd.loggerParameters : new LoggerParameters();
-        }
-    	else return null;
-    	return loggerParams;
-    }
+		if (stationDataHM.containsKey(stationKey)) {
+			StationData sd = (StationData) stationDataHM.get(stationKey);
+			loggerParams = (sd.loggerParameters != null) ? sd.loggerParameters : new LoggerParameters();
+		} else {
+			return null;
+		}
+		return loggerParams;
+	}
 
-    public String getLoggingGlbParameter(String selector) {
+	public String getLoggingGlbParameter(String selector) {
 
-    	// The global parameters must be instantiated for a new file
-    	if (loggerGlbParams == null)
-    		loggerGlbParams = new LoggerGlobalParameters();
-    	
-    	if (selector.equalsIgnoreCase("path") == true)
-    		return loggerGlbParams.path;
-    	else if (selector.equalsIgnoreCase("delim") == true)
-    		return loggerGlbParams.delimiter;
-    	else if (selector.equalsIgnoreCase("decimalSeparator") == true)
-    		return loggerGlbParams.decimalSeparator;
-    	else if (selector.equalsIgnoreCase("autoAppend") == true)
-    		return loggerGlbParams.autoAppendMode.toString();
-    	else
-    		debugLog.error("No such selector " + selector + " for " +
-    				new Exception().getStackTrace()[0] + "\n" + new Exception().getStackTrace()[1]);
-    		return null;
-    }
+		// The global parameters must be instantiated for a new file
+		if (loggerGlbParams == null) {
+			loggerGlbParams = new LoggerGlobalParameters();
+		}
 
-    public void setLoggingGlbParameter(String selector, String value) {
+		if (selector.equalsIgnoreCase("path") == true) {
+			return loggerGlbParams.path;
+		} else if (selector.equalsIgnoreCase("delim") == true) {
+			return loggerGlbParams.delimiter;
+		} else if (selector.equalsIgnoreCase("decimalSeparator") == true) {
+			return loggerGlbParams.decimalSeparator;
+		} else if (selector.equalsIgnoreCase("autoAppend") == true) {
+			return loggerGlbParams.autoAppendMode.toString();
+		} else {
+			debugLog.error("No such selector " + selector + " for " + new Exception().getStackTrace()[0] + "\n" + new Exception().getStackTrace()[1]);
+		}
+		return null;
+	}
 
-    	// The global parameters must be instantiated for a new file
-    	if (loggerGlbParams == null)
-    		loggerGlbParams = new LoggerGlobalParameters();
+	public void setLoggingGlbParameter(String selector, String value) {
 
-    	// debugLog.debug("glbParameter <" + selector + "=" + value + "> assigned by " + (new Exception().getStackTrace()[1]).toString().substring(19));
-    	debugLog.debug("glbParameter <" + selector + "=" + value + ">");
-    	
-    	if (selector.equalsIgnoreCase("path") == true)
-    		this.loggerGlbParams.path = value;
-    	else if (selector.equalsIgnoreCase("decimalSeparator") == true)
-    		this.loggerGlbParams.decimalSeparator = value;
-    	else if (selector.equalsIgnoreCase("delim") == true)
-    		this.loggerGlbParams.delimiter = value;
-    	else if (selector.equalsIgnoreCase("autoAppend") == true)
-    		this.loggerGlbParams.autoAppendMode = new Integer(value);
-    	else
-    	{
-    		debugLog.error("No such selector " + selector + " for " +
-    				new Exception().getStackTrace()[0] + "\n" + new Exception().getStackTrace()[1]);
-    		return;
-    	}
-    	
-    	save = true;
-    }
+		// The global parameters must be instantiated for a new file
+		if (loggerGlbParams == null) {
+			loggerGlbParams = new LoggerGlobalParameters();
+		}
+
+		// debugLog.debug("glbParameter <" + selector + "=" + value + "> assigned by " + (new Exception().getStackTrace()[1]).toString().substring(19));
+		debugLog.debug("glbParameter <" + selector + "=" + value + ">");
+
+		if (selector.equalsIgnoreCase("path") == true) {
+			this.loggerGlbParams.path = value;
+		} else if (selector.equalsIgnoreCase("decimalSeparator") == true) {
+			this.loggerGlbParams.decimalSeparator = value;
+		} else if (selector.equalsIgnoreCase("delim") == true) {
+			this.loggerGlbParams.delimiter = value;
+		} else if (selector.equalsIgnoreCase("autoAppend") == true) {
+			this.loggerGlbParams.autoAppendMode = new Integer(value);
+		} else {
+			debugLog.error("No such selector " + selector + " for " + new Exception().getStackTrace()[0] + "\n" + new Exception().getStackTrace()[1]);
+			return;
+		}
+
+		save = true;
+	}
 
 	/**
 	 * Used by jmodel.controller.Mediator to get the <i>files that could be overwritten</i>,
@@ -1101,45 +1105,41 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 * @return String[] of the filename of all log files that will be written to.
 	 */
 	public String[] getLoggerNameList() {
-		Vector loggerkeys = getStationKeysLogger();
+		Vector<Object> loggerkeys = getStationKeysLogger();
 		int loggerkeyssize = loggerkeys.size();
 		String[] lknames = new String[loggerkeyssize];
 		String[] lknames2;
 		int size = 0;
 		boolean globalWasProcessed = false;
-		
+
 		// get the list of all filenames from their keys
-		for (int i=0; i<loggerkeyssize; i++)
-		{
-			LoggerParameters lp = (LoggerParameters)getLoggingParameters(loggerkeys.get(i));
-			if (lp.name.equalsIgnoreCase("global") == false)
-			{
+		for (int i = 0; i < loggerkeyssize; i++) {
+			LoggerParameters lp = (LoggerParameters) getLoggingParameters(loggerkeys.get(i));
+			if (lp.name.equalsIgnoreCase("global") == false) {
 				lknames[size++] = lp.name;
-			}
-			else if ((lp.name.equalsIgnoreCase("global") == true) && (globalWasProcessed == false))
-			{
+			} else if ((lp.name.equalsIgnoreCase("global") == true) && (globalWasProcessed == false)) {
 				globalWasProcessed = true;
 				lknames[size++] = lp.name;
 			}
 		}
-		
+
 		lknames2 = new String[size];
-		for (int i=0; i<size;i++)
+		for (int i = 0; i < size; i++) {
 			lknames2[i] = lknames[i];
-		
+		}
+
 		return lknames2;
 	}
 
-    
 	/**
 	 * Francesco D'Aquino
 	 * Normalizes the routing probabilities for each station
 	 */
 	public void manageProbabilities() {
 		//get the vector of the stations
-		Vector stations = getStationKeys();
+		Vector<Object> stations = getStationKeys();
 		//get the vector of the classes
-		Vector classes = getClassKeys();
+		Vector<Object> classes = getClassKeys();
 		//for each station ...
 		for (int i = 0; i < stations.size(); i++) {
 			//get the station at i from the station vector
@@ -1152,9 +1152,9 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 					//check if the routing strategy in thisStation is ProbabilityRouting
 					if (getRoutingStrategy(thisStation, thisClass) instanceof ProbabilityRouting) {
 						//if it is so, normalize routing probabilities
-						Vector outputKeys = getForwardConnections(thisStation);
+						Vector<Object> outputKeys = getForwardConnections(thisStation);
 						ProbabilityRouting pr = (ProbabilityRouting) getRoutingStrategy(thisStation, thisClass);
-						Map values = pr.getValues();
+						Map<Object, Double> values = pr.getValues();
 						normalizeProbabilities(values, outputKeys);
 					}
 				}
@@ -1163,22 +1163,22 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	}
 
 	// NB: cut from jmt.gui.common.xml.XMLWriter
-	public void normalizeProbabilities(Map values, Vector outputKeys) {
+	public void normalizeProbabilities(Map<Object, Double> values, Vector<Object> outputKeys) {
 		Double[] probabilities = new Double[outputKeys.size()];
 		Object[] keys = new Object[outputKeys.size()];
 		outputKeys.toArray(keys);
 		//extract all values from map in array form
 		for (int i = 0; i < keys.length; i++) {
-			probabilities[i] = (Double) values.get(keys[i]);
+			probabilities[i] = values.get(keys[i]);
 		}
 		values.clear();
 		//scan for null values and for total sum
 		double totalSum = 0.0;
 		int totalNonNull = 0;
 		boolean allNull = true;
-		for (int i = 0; i < probabilities.length; i++) {
-			if (probabilities[i] != null) {
-				totalSum += probabilities[i].doubleValue();
+		for (Double probabilitie : probabilities) {
+			if (probabilitie != null) {
+				totalSum += probabilitie.doubleValue();
 				totalNonNull++;
 				allNull = false;
 			}
@@ -1222,7 +1222,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			defaultDetails = new StationClassData(null, null, null);
 		} else if (STATION_TYPE_TERMINAL.equals(sd.type)) {
 			defaultDetails = new StationClassData(null, null, Defaults.getAsNewInstance("stationRoutingStrategy"));
-		}else if((STATION_TYPE_ROUTER.equals(sd.type)) || (STATION_TYPE_LOGGER.equals(sd.type))){
+		} else if ((STATION_TYPE_ROUTER.equals(sd.type)) || (STATION_TYPE_LOGGER.equals(sd.type))) {
 			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), null, Defaults.getAsNewInstance("stationRoutingStrategy"));
 		} else if (STATION_TYPE_FORK.equals(sd.type)) {
 			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), null, null);
@@ -1236,7 +1236,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 * values are set.*/
 	protected void addNewStationDetails(Object stationKey) {
 		StationData sd = (StationData) stationDataHM.get(stationKey);
-		Vector classKeys = getClassKeys();
+		Vector<Object> classKeys = getClassKeys();
 		for (int i = 0; i < classKeys.size(); i++) {
 			stationDetailsBDM.put(classKeys.get(i), stationKey, getDefaultDetailsForStationType(sd));
 		}
@@ -1245,7 +1245,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	/**Adds details for a new station. For each type of station proper parameter
 	 * values are set.*/
 	protected void addStationDetailsForClass(Object classKey) {
-		Vector stationKeys = getStationKeys();
+		Vector<Object> stationKeys = getStationKeys();
 		for (int i = 0; i < stationKeys.size(); i++) {
 			StationData sd = (StationData) stationDataHM.get(stationKeys.get(i));
 			StationClassData defaultDetails = getDefaultDetailsForStationType(sd);
@@ -1331,7 +1331,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 * returned.
 	 * @return Vector containing keys for connected stations.
 	 */
-	public Vector getForwardConnections(Object stationKey) {
+	public Vector<Object> getForwardConnections(Object stationKey) {
 		//must find entry for row index (e.g. connection sources set)
 		Map conns = connectionsBDM.get(stationKey, BDMap.Y);
 		return scanForConnections(conns);
@@ -1342,15 +1342,15 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 * returned.
 	 * @return Vector containing keys for connected stations.
 	 */
-	public Vector getBackwardConnections(Object stationKey) {
+	public Vector<Object> getBackwardConnections(Object stationKey) {
 		//must find entry for row index (e.g. connection targets set)
 		Map conns = connectionsBDM.get(stationKey, BDMap.X);
 		return scanForConnections(conns);
 	}
 
 	//finds out connections, given a connection set
-	private Vector scanForConnections(Map conns) {
-		Vector retval = new Vector(0);
+	private Vector<Object> scanForConnections(Map conns) {
+		Vector<Object> retval = new Vector<Object>(0);
 		//check returned map not to be null
 		if (conns != null) {
 			//scan all of the station entries to find out which selected one is connected to
@@ -1388,7 +1388,8 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		}
 		// No connection between a router or a fork or join and itself
 		if (sourceKey == targetKey
-				&& (source.type.equals(STATION_TYPE_ROUTER) || source.type.equals(STATION_TYPE_FORK) || source.type.equals(STATION_TYPE_JOIN) || source.type.equals(STATION_TYPE_LOGGER))) {
+				&& (source.type.equals(STATION_TYPE_ROUTER) || source.type.equals(STATION_TYPE_FORK) || source.type.equals(STATION_TYPE_JOIN) || source.type
+						.equals(STATION_TYPE_LOGGER))) {
 			return false;
 		}
 		//no direct connections from source to sink
@@ -1407,7 +1408,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		//picking all possible targets
 		Vector keys = new Vector(connectionsBDM.keySet(BDMap.X));
 		int size = keys.size();
-		Map conns = new HashMap();
+		Map<Object, Connection> conns = new HashMap<Object, Connection>();
 		//building set of forward connections
 		for (int i = 0; i < size; i++) {
 			//current station key
@@ -1419,7 +1420,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		//picking all possible sources
 		keys = new Vector(connectionsBDM.keySet(BDMap.Y));
 		size = keys.size();
-		conns = new HashMap();
+		conns = new HashMap<Object, Connection>();
 		//building set of backward connections
 		for (int i = 0; i < size; i++) {
 			//current station key
@@ -1460,7 +1461,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		}
 	}
 
-	public Vector getMeasureKeys() {
+	public Vector<Object> getMeasureKeys() {
 		return measuresKeyset;
 	}
 
@@ -1574,7 +1575,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 				//Combo Box in the Measure Panel as System Power is calculated at whole System or each class
 				//level but has no meaning for each station level.
 				|| type.equals(SimulationDefinition.MEASURE_S_SP)
-				//Added by ASHANKA END
+		//Added by ASHANKA END
 		;
 	}
 
@@ -1932,7 +1933,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		if (blockingRegionsKeyset.contains(key)) {
 			BlockingRegionData bd = (BlockingRegionData) blockingDataHM.remove(key);
 			// Removes blocking region from station reference
-			Iterator it = bd.stations.iterator();
+			Iterator<Object> it = bd.stations.iterator();
 			while (it.hasNext()) {
 				Object stationKey = it.next();
 				((StationData) stationDataHM.get(stationKey)).blockingRegion = null;
@@ -2075,7 +2076,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 *
 	 * @return the entire set of blocking region keys
 	 */
-	public Vector getRegionKeys() {
+	public Vector<Object> getRegionKeys() {
 		return blockingRegionsKeyset;
 	}
 
@@ -2176,7 +2177,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 * @param regionKey search's key for given blocking region
 	 * @return a set with every station inside given blocking region
 	 */
-	public Set getBlockingRegionStations(Object regionKey) {
+	public Set<Object> getBlockingRegionStations(Object regionKey) {
 		if (blockingRegionsKeyset.contains(regionKey)) {
 			return ((BlockingRegionData) blockingDataHM.get(regionKey)).stations;
 		} else {
@@ -2204,7 +2205,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 * @return a vector of search's keys of every station that can be added
 	 *         to a blocking region
 	 */
-	public Vector getBlockableStationKeys() {
+	public Vector<Object> getBlockableStationKeys() {
 		return blockableStations;
 	}
 
@@ -2213,7 +2214,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 * @param classKey search's key for created class
 	 */
 	protected void addBlockingDetailsForClass(Object classKey) {
-		Vector blockingKeys = getRegionKeys();
+		Vector<Object> blockingKeys = getRegionKeys();
 		for (int i = 0; i < blockingKeys.size(); i++) {
 			blockingDetailsBDM.put(classKey, blockingKeys.get(i), new BlockingClassData(Defaults.getAsInteger("blockingMaxJobsPerClass"), Defaults
 					.getAsBoolean("blockingDropPerClass")));
@@ -2225,7 +2226,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	 * @param blockingRegionKey search's key for created blocking region
 	 */
 	protected void addBlockingDetails(Object blockingRegionKey) {
-		Vector classKeys = getClassKeys();
+		Vector<Object> classKeys = getClassKeys();
 		for (int i = 0; i < classKeys.size(); i++) {
 			blockingDetailsBDM.put(classKeys.get(i), blockingRegionKey, new BlockingClassData(Defaults.getAsInteger("blockingMaxJobsPerClass"),
 					Defaults.getAsBoolean("blockingDropPerClass")));
@@ -2301,13 +2302,13 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		public String type;
 		public Integer maxJobs;
 		/** Reference to owned stations */
-		public HashSet stations;
+		public HashSet<Object> stations;
 
 		public BlockingRegionData(String name, String type, Integer maxJobs) {
 			this.name = name;
 			this.type = type;
 			this.maxJobs = maxJobs;
-			stations = new HashSet();
+			stations = new HashSet<Object>();
 		}
 	}
 
@@ -2381,14 +2382,13 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		public String delimiter;
 		public String decimalSeparator;
 		public Integer autoAppendMode;
-		
-		LoggerGlobalParameters()
-		{
+
+		LoggerGlobalParameters() {
 			path = ".";
 			delimiter = Defaults.get("loggerDelimiter");
 			decimalSeparator = Defaults.get("loggerDecimalSeparator");
 			autoAppendMode = Defaults.getAsInteger("loggerAutoAppend");
-			
+
 			// debugLog.debug("LoggerGlobalParameters constructor called by \n  " + new Exception().getStackTrace()[1] + "\n  " + new Exception().getStackTrace()[2]);
 		}
 	}

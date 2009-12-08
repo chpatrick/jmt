@@ -46,6 +46,7 @@ public class Hyperexponential extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Parameter[] setParameters() {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[3];
@@ -99,6 +100,7 @@ public class Hyperexponential extends Distribution {
 	 * user to understand meaning of parameters.
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("Hyperexponential");
 	}
@@ -107,6 +109,7 @@ public class Hyperexponential extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		return "hyp(" + FormatNumber(((Double) parameters[0].getValue()).doubleValue()) + "; "
 				+ FormatNumber(((Double) parameters[1].getValue()).doubleValue()) + "; "
@@ -117,6 +120,7 @@ public class Hyperexponential extends Distribution {
 	 * Sets the mean for this distribution
 	 * @param value mean value
 	 */
+	@Override
 	public void setMean(double value) {
 		setCM(value, c);
 	}
@@ -125,6 +129,7 @@ public class Hyperexponential extends Distribution {
 	 * Sets the variation coefficient C for this distribution
 	 * @param value variation coefficient C value
 	 */
+	@Override
 	public void setC(double value) {
 		setCM(mean, value);
 	}
@@ -154,6 +159,7 @@ public class Hyperexponential extends Distribution {
 	 * This method is called whenever a parameter changes and <code>hasC</code> or
 	 * <code>hasMean</code> are true
 	 */
+	@Override
 	public void updateCM() {
 		double p, l1, l2;
 		p = ((Double) getParameter(0).getValue()).doubleValue();

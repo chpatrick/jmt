@@ -57,6 +57,7 @@ public class Replayer extends Distribution {
 	 * Returns precondition that parameters' values must satisfy for this distribution to be valid
 	 * @return Message describing distribution's preconditions
 	 */
+	@Override
 	public String getPrecondition() {
 		return "specified 'fileName' does not exists. Try to provide a correct path.";
 	}
@@ -65,6 +66,7 @@ public class Replayer extends Distribution {
 	 * Used to set parameters of this distribution.
 	 * @return distribution parameters
 	 */
+	@Override
 	protected Distribution.Parameter[] setParameters() {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[1];
@@ -78,6 +80,7 @@ public class Replayer extends Distribution {
 	 * user to understand meaning of parameters.
 	 * @return illustrating figure
 	 */
+	@Override
 	protected ImageIcon setImage() {
 		return JMTImageLoader.loadImage("Replayer");
 	}
@@ -86,6 +89,7 @@ public class Replayer extends Distribution {
 	 * Returns this distribution's short description
 	 * @return distribution's short description
 	 */
+	@Override
 	public String toString() {
 		return "Replayer";
 	}
