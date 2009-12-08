@@ -202,6 +202,7 @@ public class ForkSectionPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Fork Section";
 	}

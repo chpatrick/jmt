@@ -192,6 +192,7 @@ public class BlockingRegionParameterPanel extends WizardPanel implements CommonC
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Finite Capacity Region Parameters";
 	}
@@ -199,6 +200,7 @@ public class BlockingRegionParameterPanel extends WizardPanel implements CommonC
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		// Aborts editing of table
 		TableCellEditor editor = table.getCellEditor();
@@ -210,6 +212,7 @@ public class BlockingRegionParameterPanel extends WizardPanel implements CommonC
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		// Fires a table change event
 		table.tableChanged(new TableModelEvent(table.getModel()));
@@ -304,6 +307,7 @@ public class BlockingRegionParameterPanel extends WizardPanel implements CommonC
 			setRowHeight(ROW_HEIGHT);
 		}
 
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (column == 0) {
 				return classEditor.getRenderer();
@@ -316,6 +320,7 @@ public class BlockingRegionParameterPanel extends WizardPanel implements CommonC
 			}
 		}
 
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 3) {
 				return ComboBoxCellEditor.getEditorInstance(dropRules);
@@ -351,14 +356,17 @@ public class BlockingRegionParameterPanel extends WizardPanel implements CommonC
 			return 4;
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			return columnNames[columnIndex];
 		}
 
-		public Class getColumnClass(int columnIndex) {
+		@Override
+		public Class<Integer> getColumnClass(int columnIndex) {
 			return columnClasses[columnIndex];
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			// Drop rule, infinity constraint are editables. Number value is editable if infinity is uncecked
 			return columnIndex == 3 || columnIndex == 2 || (columnIndex == 1 && !((Boolean) getValueAt(rowIndex, columnIndex + 1)).booleanValue());
@@ -387,6 +395,7 @@ public class BlockingRegionParameterPanel extends WizardPanel implements CommonC
 		}
 
 		/**Puts edited values to the underlying data structure for model implementation*/
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			Object classKey = cd.getClassKeys().get(rowIndex);
 			Integer value;

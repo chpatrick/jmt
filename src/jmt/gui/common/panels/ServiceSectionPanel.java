@@ -182,6 +182,7 @@ public class ServiceSectionPanel extends WizardPanel implements CommonConstants 
 		});
 	}
 
+	@Override
 	public void repaint() {
 		if (serviceTable != null) {
 			serviceTable.tableChanged(new TableModelEvent(serviceTable.getModel()));
@@ -192,6 +193,7 @@ public class ServiceSectionPanel extends WizardPanel implements CommonConstants 
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Service Section";
 	}
@@ -199,6 +201,7 @@ public class ServiceSectionPanel extends WizardPanel implements CommonConstants 
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		// Aborts editing of table
 		TableCellEditor editor = serviceTable.getCellEditor();
@@ -210,6 +213,7 @@ public class ServiceSectionPanel extends WizardPanel implements CommonConstants 
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		classEditor.clearCache();
 	}
@@ -245,6 +249,7 @@ public class ServiceSectionPanel extends WizardPanel implements CommonConstants 
 			setRowHeight(ROW_HEIGHT);
 		}
 
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (column == columnSizes.length - 1 && getValueAt(row, 1) != SERVICE_ZERO) {
 				return new ButtonCellEditor(editButton);
@@ -257,6 +262,7 @@ public class ServiceSectionPanel extends WizardPanel implements CommonConstants 
 			}
 		}
 
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 1) {
 				return ComboBoxCellEditor.getEditorInstance(serviceType);
@@ -291,14 +297,17 @@ public class ServiceSectionPanel extends WizardPanel implements CommonConstants 
 			return 4;
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			return columnNames[columnIndex];
 		}
 
-		public Class getColumnClass(int columnIndex) {
+		@Override
+		public Class<Integer> getColumnClass(int columnIndex) {
 			return columnClasses[columnIndex];
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return ((columnIndex == columnNames.length - 1 && getValueAt(rowIndex, 1) != SERVICE_ZERO) || columnIndex == 1);
 		}
@@ -324,6 +333,7 @@ public class ServiceSectionPanel extends WizardPanel implements CommonConstants 
 		}
 
 		/**Puts edited values to the underlying data structure for model implementation*/
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			Object classKey = classData.getClassKeys().get(rowIndex);
 			switch (columnIndex) {

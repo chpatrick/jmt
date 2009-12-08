@@ -166,10 +166,12 @@ public class WarningWindow {
 		*/
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void setBounds(int x, int y, int width, int height) {
 			super.setBounds(x, y, getParent().getWidth(), height);
 		}
 
+		@Override
 		public Dimension getPreferredSize() {
 			return new Dimension(getWidth(), getPreferredHeight());
 		}

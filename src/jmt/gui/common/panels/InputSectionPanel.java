@@ -71,7 +71,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 	 * Used to define drop rules
 	 */
 	protected Object[] dropRules = { CommonConstants.FINITE_WAITING, CommonConstants.FINITE_BLOCK, CommonConstants.FINITE_DROP };
-	
+
 	protected Object[] serverQueuePolicy = { QUEUE_STRATEGY_STATION_PS, QUEUE_STRATEGY_STATION_QUEUE, QUEUE_STRATEGY_STATION_QUEUE_PRIORITY };
 
 	protected Object[] stationQueuePolicy = { QUEUE_STRATEGY_STATION_QUEUE, QUEUE_STRATEGY_STATION_QUEUE_PRIORITY };
@@ -86,7 +86,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 	protected StationDefinition data;
 	protected ClassDefinition classData;
 	protected Object stationKey;
-	
+
 	protected JComboBox queuePolicyCombo;
 
 	public InputSectionPanel(StationDefinition sd, ClassDefinition cd, Object stationKey) {
@@ -124,7 +124,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 		queueStrategy.add(queuePolicyCombo, BorderLayout.CENTER);
 		queuePolicyPanel.add(queueStrategy, BorderLayout.NORTH);
 		queueStrategy.setBorder(BorderFactory.createEmptyBorder(2, 5, 10, 5));
-		
+
 		queueLengthPanel.setAlignmentY(Component.BOTTOM_ALIGNMENT);
 		queueLengthPanel.add(infiniteQueueSelector);
 		queueLengthPanel.add(finiteQueueSelector);
@@ -173,10 +173,10 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 
 		infiniteQueueSelector.addChangeListener(buttonListener);
 		finiteQueueSelector.addChangeListener(buttonListener);
-		
+
 		queuePolicyCombo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				data.setStationQueueStrategy(stationKey, (String)queuePolicyCombo.getSelectedItem());
+				data.setStationQueueStrategy(stationKey, (String) queuePolicyCombo.getSelectedItem());
 				queueTable.repaint();
 			}
 		});
@@ -209,6 +209,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Queue Section";
 	}
@@ -216,6 +217,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		classEditor.clearCache();
 		if (data.getStationType(stationKey).equals(STATION_TYPE_SERVER)) {
@@ -229,6 +231,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		// Aborts editing of table
 		TableCellEditor editor = queueTable.getCellEditor();
@@ -258,6 +261,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 1) {
 				return ComboBoxCellEditor.getEditorInstance(queuePolicy);
@@ -268,6 +272,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (column == 0) {
 				return classEditor.getRenderer();
@@ -299,16 +304,20 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 			return columnNames.length;
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			return columnNames[columnIndex];
 		}
 
-		public Class getColumnClass(int columnIndex) {
+		@Override
+		public Class<Integer> getColumnClass(int columnIndex) {
 			return columnClasses[columnIndex];
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
-			return (columnIndex == 1 && !data.getStationQueueStrategy(stationKey).equals(QUEUE_STRATEGY_STATION_PS)) || (columnIndex == 2 && data.getStationQueueCapacity(stationKey).intValue() >= 0);
+			return (columnIndex == 1 && !data.getStationQueueStrategy(stationKey).equals(QUEUE_STRATEGY_STATION_PS))
+					|| (columnIndex == 2 && data.getStationQueueCapacity(stationKey).intValue() >= 0);
 		}
 
 		public Object getValueAt(int rowIndex, int columnIndex) {
@@ -322,6 +331,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			Object classKey = indexToKey(rowIndex);
 			if (columnIndex == 1) {
@@ -363,6 +373,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 		/* (non-Javadoc)
 		 * @see jmt.gui.common.editors.ComboBoxCellEditor#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
 		 */
+		@Override
 		public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 			if (column == 1) {
 				if (data.getStationQueueStrategy(stationKey).equals(QUEUE_STRATEGY_STATION_PS)) {

@@ -119,6 +119,7 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		// Aborts editing of table
 		TableCellEditor editor = routingStrategies.getCellEditor();
@@ -133,6 +134,7 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		classEditor.clearCache();
 		// Select first routing strategy
@@ -144,6 +146,7 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Routing Section";
 	}
@@ -161,6 +164,7 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 			setRowHeight(18);
 		}
 
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 1) {
 				return ComboBoxCellEditor.getEditorInstance(RoutingStrategy.findAll());
@@ -169,6 +173,7 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 			}
 		}
 
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (column == 0) {
 				return classEditor.getRenderer();
@@ -186,6 +191,7 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 			}
 		}
 
+		@Override
 		public void valueChanged(ListSelectionEvent e) {
 			super.valueChanged(e);
 			int row = getSelectedRow();
@@ -219,14 +225,17 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 			return columnNames.length;
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			return columnNames[columnIndex];
 		}
 
-		public Class getColumnClass(int columnIndex) {
+		@Override
+		public Class<Integer> getColumnClass(int columnIndex) {
 			return columnClasses[columnIndex];
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return columnIndex == 1;
 		}
@@ -242,6 +251,7 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 			}
 		}
 
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			if (columnIndex == 1) {
 				Object classKey = indexToKey(rowIndex);

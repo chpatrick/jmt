@@ -1792,6 +1792,10 @@ public class ModelChecker implements CommonConstants {
 		Vector classes = class_def.getClassKeys();
 		for (int i = 0; i < servers.size(); i++) {
 			Object thisServer = servers.get(i);
+			// Processor sharing stations are okay.
+			if (CommonConstants.QUEUE_STRATEGY_STATION_PS.equals(station_def.getStationQueueStrategy(thisServer))) {
+				continue;
+			}
 			for (int j = 1; j < classes.size(); j++) {
 				//Object thisClass = classes.get(j);
 				String s0 = station_def.getQueueStrategy(thisServer, classes.get(j - 1));
@@ -1823,6 +1827,10 @@ public class ModelChecker implements CommonConstants {
 		Vector classes = class_def.getClassKeys();
 		for (int i = 0; i < servers.size(); i++) {
 			Object thisServer = servers.get(i);
+			// Processor sharing stations are okay.
+			if (CommonConstants.QUEUE_STRATEGY_STATION_PS.equals(station_def.getStationQueueStrategy(thisServer))) {
+				continue;
+			}
 			if ((this.isAllFCFSQueueingStrategy(thisServer)) && (this.isTypeUniformServiceStrategy(thisServer))) {
 				boolean ok = true;
 				for (int j = 0; j < classes.size(); j++) {
@@ -1862,6 +1870,10 @@ public class ModelChecker implements CommonConstants {
 		if ((!servers.isEmpty()) && (!classes.isEmpty())) {
 			for (int i = 0; i < servers.size(); i++) {
 				Object thisServer = servers.get(i);
+				// Processor sharing stations are okay.
+				if (CommonConstants.QUEUE_STRATEGY_STATION_PS.equals(station_def.getStationQueueStrategy(thisServer))) {
+					continue;
+				}
 				if ((this.mustHaveSameExponentialServiceTimes(thisServer)) && (!BCMPserversFCFSWithoutExponential.contains(thisServer))) {
 					Object service = station_def.getServiceTimeDistribution(thisServer, classes.get(0));
 					if (service instanceof Distribution) {

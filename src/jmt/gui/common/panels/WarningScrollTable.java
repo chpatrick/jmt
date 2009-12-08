@@ -53,7 +53,7 @@ public class WarningScrollTable extends JRootPane {
 	protected static final int BORDERSIZE = 5;
 	protected static final Dimension warningBoxSize = new Dimension(170, 90);
 	protected JTable table;
-	protected Vector vectors;
+	protected Vector<Vector> vectors;
 
 	/**
 	 * Constructs a new WarningScrollTable, given a table and a warning message to display if the
@@ -88,7 +88,7 @@ public class WarningScrollTable extends JRootPane {
 	 */
 	public void addCheckVector(Vector v) {
 		if (vectors == null) {
-			vectors = new Vector();
+			vectors = new Vector<Vector>();
 		}
 		vectors.add(v);
 	}
@@ -104,6 +104,7 @@ public class WarningScrollTable extends JRootPane {
 	 * Override default paint method
 	 * @param g graphic object
 	 */
+	@Override
 	public void paint(Graphics g) {
 		if (vectors == null) {
 			if (table != null) {
@@ -123,7 +124,7 @@ public class WarningScrollTable extends JRootPane {
 	protected boolean checkEmptyVectors() {
 		boolean res = false;
 		for (int i = 0; i < vectors.size(); i++) {
-			if (((Vector) vectors.get(i)).size() == 0) {
+			if (vectors.get(i).size() == 0) {
 				res = true;
 				break;
 			}

@@ -67,6 +67,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		// Aborts editing of table
 		TableCellEditor editor = measureTable.getCellEditor();
@@ -93,12 +94,12 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 	protected static final String[] measureTypes = new String[] { SimulationDefinition.MEASURE_QL, SimulationDefinition.MEASURE_QT,
 			SimulationDefinition.MEASURE_RD, SimulationDefinition.MEASURE_RP, SimulationDefinition.MEASURE_U, SimulationDefinition.MEASURE_X,
 			SimulationDefinition.MEASURE_DR, SimulationDefinition.MEASURE_S_X, SimulationDefinition.MEASURE_S_RP, SimulationDefinition.MEASURE_S_DR,
-			SimulationDefinition.MEASURE_S_CN, 
+			SimulationDefinition.MEASURE_S_CN,
 			//Added by ASHANKA START
 			//Adds system power index to the performance index combo box in the JSIM panel
-			SimulationDefinition.MEASURE_S_SP 
-			//Added by ASHANKA STOP
-			};
+			SimulationDefinition.MEASURE_S_SP
+	//Added by ASHANKA STOP
+	};
 
 	// Measure selection ComboBox
 	protected JComboBox measureSelection = new JComboBox(measureTypes);
@@ -186,12 +187,14 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		stationsCombos.clearCache();
 		classesCombos.clearCache();
 		refreshComponents();
 	}
 
+	@Override
 	public void repaint() {
 		refreshComponents();
 		super.repaint();
@@ -222,6 +225,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 		measureTable.tableChanged(new TableModelEvent(measureTable.getModel()));
 	}
 
+	@Override
 	public String getName() {
 		return "Performance Indices";
 	}
@@ -254,6 +258,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 5) {
 				return new ButtonCellEditor(deleteButton);
@@ -266,6 +271,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (column == 5) {
 				return new ButtonCellEditor(deleteButton);
@@ -299,14 +305,17 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 			return columnNames.length;
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			return columnNames[columnIndex];
 		}
 
-		public Class getColumnClass(int columnIndex) {
+		@Override
+		public Class<Integer> getColumnClass(int columnIndex) {
 			return columnClasses[columnIndex];
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			// Avoid editing of Measure type
 			if (columnIndex == 0) {
@@ -341,6 +350,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 			return null;
 		}
 
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			Object key = simData.getMeasureKeys().get(rowIndex);
 			switch (columnIndex) {

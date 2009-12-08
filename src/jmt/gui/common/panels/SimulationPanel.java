@@ -64,7 +64,7 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 	protected ClassDefinition cd;
 	protected StationDefinition sd;
 	protected SimulationDefinition simd;
-	protected HashMap unallocated;
+	protected HashMap<Object, Integer> unallocated;
 
 	// Simulation parameters
 	protected JCheckBox randomSeed, infDuration, noStatistic;
@@ -112,7 +112,7 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 	 */
 	protected void refreshDataStructures() {
 		// Creates an hashmap with unallocated jobs for every class closed class
-		unallocated = new HashMap();
+		unallocated = new HashMap<Object, Integer>();
 		for (int i = 0; i < cd.getClassKeys().size(); i++) {
 			Object key = cd.getClassKeys().get(i);
 			if (cd.getClassType(key) == CLASS_TYPE_CLOSED) {
@@ -124,6 +124,7 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		refreshDataStructures();
 		this.removeAll();
@@ -134,6 +135,7 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		// Aborts editing of table
 		TableCellEditor editor = preloadTable.getCellEditor();
@@ -433,7 +435,8 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 			return sd.getStationKeysNoSourceSink().size();
 		}
 
-		public Class getColumnClass(int columnIndex) {
+		@Override
+		public Class<?> getColumnClass(int columnIndex) {
 			if (columnIndex >= 0) {
 				return Integer.class;
 			} else {
@@ -441,6 +444,7 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			if (index >= 0 && sd.getStationKeysNoSourceSink().size() > 0) {
 				return sd.getStationName(getStationKey(index));
@@ -449,6 +453,7 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public Object getPrototype(int i) {
 			if (i == -1) {
 				return rowHeaderPrototype;
@@ -457,11 +462,13 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			Object row = getClassKey(rowIndex), col = getStationKey(columnIndex);
 			return simd.getPreloadedJobs(col, row);
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			String className = cd.getClassName(getClassKey(rowIndex));
 			Integer population = cd.getClassPopulation(getClassKey(rowIndex));
@@ -482,6 +489,7 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 			return cd.getClassKeys().get(index);
 		}
 
+		@Override
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			try {
 				if (value instanceof Integer || value instanceof String) {
@@ -497,9 +505,9 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 					if (i >= 0) {
 						if (cd.getClassType(key) == CLASS_TYPE_OPEN) {
 							simd.setPreloadedJobs(new Integer(i), getStationKey(columnIndex), key);
-						} else if (i - oldjobs <= ((Integer) unallocated.get(key)).intValue()) {
+						} else if (i - oldjobs <= unallocated.get(key).intValue()) {
 							simd.setPreloadedJobs(new Integer(i), getStationKey(columnIndex), key);
-							int newunallocated = ((Integer) unallocated.get(key)).intValue() - i + oldjobs;
+							int newunallocated = unallocated.get(key).intValue() - i + oldjobs;
 							unallocated.put(key, new Integer(newunallocated));
 						}
 					}
@@ -509,16 +517,18 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public void clear(int row, int col) {
 			int oldjobs = simd.getPreloadedJobs(getStationKey(col), getClassKey(row)).intValue();
 			simd.setPreloadedJobs(new Integer(0), getStationKey(col), getClassKey(row));
 			// If class is closed, put back oldjobs into unallocated data structure
 			if (cd.getClassType(getClassKey(row)) == CLASS_TYPE_CLOSED) {
-				int newunallocated = ((Integer) unallocated.get(getClassKey(row))).intValue() + oldjobs;
+				int newunallocated = unallocated.get(getClassKey(row)).intValue() + oldjobs;
 				unallocated.put(getClassKey(row), new Integer(newunallocated));
 			}
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return true;
 		}
@@ -528,6 +538,7 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * @return name to be displayed on the tab, when inserted in a wizard tabbed pane
 	 */
+	@Override
 	public String getName() {
 		return "Simulation";
 	}

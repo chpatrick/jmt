@@ -155,19 +155,20 @@ public class StationParameterPanel extends WizardPanel implements CommonConstant
 			}
 
 		}
-        if(hasLoggerSection(type)){
-            if(lsPane==null){
-                    lsPane = new LoggerSectionPanel(stationData, classData, stationKey);
-            }else{
-                    lsPane.setData(stationData, classData, stationKey);
-            }
-            mainPanel.add(lsPane, lsPane.getName());
+		if (hasLoggerSection(type)) {
+			if (lsPane == null) {
+				lsPane = new LoggerSectionPanel(stationData, classData, stationKey);
+			} else {
+				lsPane.setData(stationData, classData, stationKey);
+			}
+			mainPanel.add(lsPane, lsPane.getName());
 
-            // If this was previously selected, selects this
-            if (oldComponent == lsPane)
-                mainPanel.setSelectedComponent(oldComponent);
+			// If this was previously selected, selects this
+			if (oldComponent == lsPane) {
+				mainPanel.setSelectedComponent(oldComponent);
+			}
 
-        }
+		}
 		if (hasRoutingSection(type)) {
 			if (rsPane == null) {
 				rsPane = new RoutingSectionPanel(stationData, classData, stationKey);
@@ -208,17 +209,18 @@ public class StationParameterPanel extends WizardPanel implements CommonConstant
 			return false;
 		} else {
 			return STATION_TYPE_SERVER.equals(type) || STATION_TYPE_DELAY.equals(type) || STATION_TYPE_SOURCE.equals(type)
-					|| STATION_TYPE_ROUTER.equals(type) || STATION_TYPE_LOGGER.equals(type)
-					|| STATION_TYPE_TERMINAL.equals(type) || STATION_TYPE_JOIN.equals(type);
+					|| STATION_TYPE_ROUTER.equals(type) || STATION_TYPE_LOGGER.equals(type) || STATION_TYPE_TERMINAL.equals(type)
+					|| STATION_TYPE_JOIN.equals(type);
 		}
 	}
 
-    private boolean hasLoggerSection(String type){
-        if(checkNullValues()) return false;
-        else{
-            return STATION_TYPE_LOGGER.equals(type);
-        }
-    }
+	private boolean hasLoggerSection(String type) {
+		if (checkNullValues()) {
+			return false;
+		} else {
+			return STATION_TYPE_LOGGER.equals(type);
+		}
+	}
 
 	private boolean hasForkSection(String type) {
 		if (checkNullValues()) {
@@ -256,6 +258,7 @@ public class StationParameterPanel extends WizardPanel implements CommonConstant
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Station Parameters";
 	}
@@ -263,6 +266,7 @@ public class StationParameterPanel extends WizardPanel implements CommonConstant
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		if (current != null) {
 			current.lostFocus();
