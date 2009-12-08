@@ -28,11 +28,11 @@ public class JWatVariableInputTableModel extends AbstractTableModel {
 			 String.class, String.class,JButton.class };*/
 
 	// Vettori dei valori
-	private Vector names = new Vector();
+	private Vector<Object> names = new Vector<Object>();
 
 	private Vector types = new Vector();
 
-	private Vector selected = new Vector();
+	private Vector<Object> selected = new Vector<Object>();
 
 	private Vector comments = new Vector();
 
@@ -50,6 +50,7 @@ public class JWatVariableInputTableModel extends AbstractTableModel {
 	 * Returns name for each column (given its index) to be displayed inside
 	 * table header
 	 */
+	@Override
 	public String getColumnName(int columnIndex) {
 		if (columnIndex < columnNames.length) {
 			return columnNames[columnIndex];
@@ -58,6 +59,7 @@ public class JWatVariableInputTableModel extends AbstractTableModel {
 		}
 	}
 
+	@Override
 	public Class getColumnClass(int index) {
 		return colClasses[index];
 	}
@@ -67,6 +69,7 @@ public class JWatVariableInputTableModel extends AbstractTableModel {
 	 * index) is editable or not. In this case distribution column is not
 	 * editable, as editing functionality is implemented via edit button
 	 */
+	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return true;
 	}
@@ -111,6 +114,7 @@ public class JWatVariableInputTableModel extends AbstractTableModel {
 		return null;
 	}
 
+	@Override
 	public void setValueAt(Object value, int r, int c) {
 		if (r < names.size()) {
 			switch (c) {
@@ -183,7 +187,7 @@ public class JWatVariableInputTableModel extends AbstractTableModel {
 		numVar = 0;
 	}
 
-	public Vector getVarNames() {
+	public Vector<Object> getVarNames() {
 		return names;
 	}
 
@@ -273,7 +277,7 @@ public class JWatVariableInputTableModel extends AbstractTableModel {
 		return -1;
 	}
 
-	public Vector getNames() {
+	public Vector<Object> getNames() {
 		return names;
 	}
 

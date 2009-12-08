@@ -35,6 +35,7 @@ public class MainKMean extends TimeConsumingWorker {
 		this.trasf = trasf;
 	}
 
+	@Override
 	public Object construct() {
 		boolean anti = false;
 		try {
@@ -47,15 +48,15 @@ public class MainKMean extends TimeConsumingWorker {
 		}
 		//Applicazione trasformazione alle variabili coinvolte nel clustering
 		if (trasf != VariableNumber.NONE) {
-			for (int i = 0; i < varSel.length; i++) {
-				m.getVariables()[varSel[i]].doClusteringTrasformation(trasf);
+			for (int element : varSel) {
+				m.getVariables()[element].doClusteringTrasformation(trasf);
 			}
 		}
 		if (isCanceled()) {
 			msg = "CLUSTERING ABORTED BY USER";
 			if (trasf != VariableNumber.NONE) {
-				for (int i = 0; i < varSel.length; i++) {
-					m.getVariables()[varSel[i]].undoClueringTrasformation();
+				for (int element : varSel) {
+					m.getVariables()[element].undoClueringTrasformation();
 				}
 			}
 			return null;
@@ -66,8 +67,8 @@ public class MainKMean extends TimeConsumingWorker {
 			if (isCanceled()) {
 				msg = "CLUSTERING ABORTED BY USER";
 				if (trasf != VariableNumber.NONE) {
-					for (int i = 0; i < varSel.length; i++) {
-						m.getVariables()[varSel[i]].undoClueringTrasformation();
+					for (int element : varSel) {
+						m.getVariables()[element].undoClueringTrasformation();
 					}
 				}
 				return null;
@@ -75,8 +76,8 @@ public class MainKMean extends TimeConsumingWorker {
 			if (!Cluster.DoClustering()) {
 				msg = "CLUSTERING ABORTED BY USER";
 				if (trasf != VariableNumber.NONE) {
-					for (int i = 0; i < varSel.length; i++) {
-						m.getVariables()[varSel[i]].undoClueringTrasformation();
+					for (int element : varSel) {
+						m.getVariables()[element].undoClueringTrasformation();
 					}
 				}
 				return null;
@@ -85,8 +86,8 @@ public class MainKMean extends TimeConsumingWorker {
 
 			if (trasf != VariableNumber.NONE) {
 				anti = true;
-				for (int i = 0; i < varSel.length; i++) {
-					m.getVariables()[varSel[i]].undoClueringTrasformation();
+				for (int element : varSel) {
+					m.getVariables()[element].undoClueringTrasformation();
 				}
 			}
 			updateInfos((iteration * numClust) + 2, "Saving Results", true);
@@ -100,8 +101,8 @@ public class MainKMean extends TimeConsumingWorker {
 			updateInfos((iteration * numClust) + 3, "errore", false);
 			msg = "Out of Memory. Try with more memory (1Gb JMT Version)";
 			if (trasf != VariableNumber.NONE && !anti) {
-				for (int i = 0; i < varSel.length; i++) {
-					m.getVariables()[varSel[i]].undoClueringTrasformation();
+				for (int element : varSel) {
+					m.getVariables()[element].undoClueringTrasformation();
 				}
 			}
 			return null;
@@ -109,6 +110,7 @@ public class MainKMean extends TimeConsumingWorker {
 		return clustering;
 	}
 
+	@Override
 	public void finished() {
 		if (this.get() != null) {
 			fireEventStatus(new EventClusteringDone(clustering));

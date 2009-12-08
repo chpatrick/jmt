@@ -246,7 +246,7 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 					//null test is true (the measure is almost always equal to 0.0)
 					if (!disableStatisticStop) {
 						end = true;
-					} 
+					}
 					confIntervalOk = true;
 					success = true;
 					measureIsZero = true;

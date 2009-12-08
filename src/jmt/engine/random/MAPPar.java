@@ -201,7 +201,7 @@ int BMAP::get_input(FILE* input, int& index)
 *//*************************************************************************
 * PURPOSE:     Generate interarrival time for BMAP
 * RETURN:      the number which follows BMAP distribution
-            bulk -- number of arrivals
+          bulk -- number of arrivals
 ************************************************************************/
 /*
 double BMAP::gen_interval(int & bulk)

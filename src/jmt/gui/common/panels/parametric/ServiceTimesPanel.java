@@ -122,7 +122,7 @@ public class ServiceTimesPanel extends ParameterOptionPanel {
 		radioButtonsPanel.setBorder(new EmptyBorder(5, 20, 0, 20));
 		JPanel edit = new JPanel(new GridLayout(5, 1, 0, 5));
 		ParametricAnalysisChecker checker = new ParametricAnalysisChecker(cd, sd, simd);
-		Vector avaibleS = checker.checkForServiceTimesParametricAnalysisAvaibleStations();
+		Vector<Object> avaibleS = checker.checkForServiceTimesParametricAnalysisAvaibleStations();
 		String[] stationNames = new String[avaibleS.size()];
 		for (int i = 0; i < avaibleS.size(); i++) {
 			stationNames[i] = sd.getStationName(avaibleS.get(i));
@@ -162,14 +162,14 @@ public class ServiceTimesPanel extends ParameterOptionPanel {
 			steps = new JSpinner(new SpinnerNumberModel(STPA.getNumberOfSteps(), 2, ParametricAnalysis.MAX_STEP_NUMBER, 1));
 			steps.setToolTipText("Sets the number of steps to be performed");
 			//get the vector containing the keys of the class that can be used to do this type of parametric analysis
-			Vector validC = checker.checkForServiceTimesParametricSimulationAvaibleClasses(STPA.getReferenceStation());
+			Vector<Object> validC = checker.checkForServiceTimesParametricSimulationAvaibleClasses(STPA.getReferenceStation());
 			String[] classeNames = new String[validC.size()];
 			for (int i = 0; i < validC.size(); i++) {
 				classeNames[i] = cd.getClassName(validC.get(i));
 			}
 			classChooser.removeAllItems();
-			for (int i = 0; i < classeNames.length; i++) {
-				classChooser.addItem(classeNames[i]);
+			for (String classeName : classeNames) {
+				classChooser.addItem(classeName);
 			}
 			classChooser.setEnabled(true);
 			classChooser.setSelectedItem(cd.getClassName(STPA.getReferenceClass()));
@@ -233,11 +233,12 @@ public class ServiceTimesPanel extends ParameterOptionPanel {
 		setListeners();
 	}
 
+	@Override
 	public void setEnabled(boolean enabled) {
 		if (enabled) {
 			//if the panel is enabled the allClass radioButton can be enabled only if all of the class have a service
 			//time distribution with a mean value, in the reference station contained in STPA.
-			Vector validC = checker.checkForServiceTimesParametricSimulationAvaibleClasses(STPA.getReferenceStation());
+			Vector<Object> validC = checker.checkForServiceTimesParametricSimulationAvaibleClasses(STPA.getReferenceStation());
 			if ((validC.size() < cd.getClassKeys().size()) || (cd.getClassKeys().size() == 1)) {
 				allClass.setEnabled(false);
 			} else {
@@ -324,7 +325,7 @@ public class ServiceTimesPanel extends ParameterOptionPanel {
 					STPA.setSingleClass(true);
 					//get the vector containing the keys of the valid classes. A class is valid if its service
 					//time distribution is load independent (inside the reference station of the STPA) and has a mean value.
-					Vector validC = checker.checkForServiceTimesParametricSimulationAvaibleClasses(STPA.getReferenceStation());
+					Vector<Object> validC = checker.checkForServiceTimesParametricSimulationAvaibleClasses(STPA.getReferenceStation());
 					String[] classNames = new String[validC.size()];
 					for (int i = 0; i < validC.size(); i++) {
 						classNames[i] = cd.getClassName(validC.get(i));
@@ -333,8 +334,8 @@ public class ServiceTimesPanel extends ParameterOptionPanel {
 					ItemListener listener = classChooser.getItemListeners()[0];
 					classChooser.removeItemListener(listener);
 					classChooser.removeAllItems();
-					for (int i = 0; i < classNames.length; i++) {
-						classChooser.addItem(classNames[i]);
+					for (String className : classNames) {
+						classChooser.addItem(className);
 					}
 					classChooser.addItemListener(listener);
 					//if no classes where previously associated, associate
@@ -380,7 +381,7 @@ public class ServiceTimesPanel extends ParameterOptionPanel {
 				STPA.setReferenceStation(getStationKey(stationName));
 				//get the vector containing the keys of the valid classes. A class is valid if its service
 				//time distribution is load independent (inside the reference station of the STPA) and has a mean value.
-				Vector validC = checker.checkForServiceTimesParametricSimulationAvaibleClasses(STPA.getReferenceStation());
+				Vector<Object> validC = checker.checkForServiceTimesParametricSimulationAvaibleClasses(STPA.getReferenceStation());
 				if (STPA.isSingleClass()) {
 					String[] classes = new String[validC.size()];
 					for (int i = 0; i < validC.size(); i++) {
@@ -397,8 +398,8 @@ public class ServiceTimesPanel extends ParameterOptionPanel {
 					ItemListener listener = classChooser.getItemListeners()[0];
 					classChooser.removeItemListener(listener);
 					classChooser.removeAllItems();
-					for (int i = 0; i < classes.length; i++) {
-						classChooser.addItem(classes[i]);
+					for (String classe : classes) {
+						classChooser.addItem(classe);
 					}
 					classChooser.setEnabled(true);
 					classChooser.setSelectedItem(cd.getClassName(STPA.getReferenceClass()));

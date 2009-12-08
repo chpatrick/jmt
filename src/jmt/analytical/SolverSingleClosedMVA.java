@@ -169,6 +169,7 @@ public class SolverSingleClosedMVA extends Solver {
 	 *  @param  v   array of visits to the service centers.
 	 *  @return true if the operation is completed with success
 	 */
+	@Override
 	public boolean input(String[] n, int[] t, double[][] s, double[] v) {
 		if ((n.length > stations) || (t.length > stations) || (s.length > stations) || (v.length > stations)) {
 			// wrong input.
@@ -177,8 +178,8 @@ public class SolverSingleClosedMVA extends Solver {
 
 		//number of not LD stations
 		countLI = 0;
-		for (int i = 0; i < t.length; i++) {
-			if (t[i] != Solver.LD) {
+		for (int element : t) {
+			if (element != Solver.LD) {
 				countLI++;
 			}
 		}
@@ -279,6 +280,7 @@ public class SolverSingleClosedMVA extends Solver {
 	 * WARNING: This method should be called before solving the system.
 	 * @return true if sufficient capacity exists for the given workload, false otherwise
 	 */
+	@Override
 	public boolean hasSufficientProcessingCapacity() {
 		//closed class: no saturation problem
 		return true;
@@ -302,6 +304,7 @@ public class SolverSingleClosedMVA extends Solver {
 	 *  "Mean Value Analysis of Closed Load Dependent Networks"<br>
 	 * </em>
 	 */
+	@Override
 	public void solve() {
 		//tests if all the resources, stations, are load independent
 		boolean loadIndep = true;
@@ -2108,15 +2111,15 @@ public class SolverSingleClosedMVA extends Solver {
 			//			}
 			//			System.out.println();
 			//			System.out.println();
-			for (int i = 0; i < nsCorr.length; i++) {
-				for (int j = 0; j < nsCorr[i].length; j++) {
+			for (double[] element : nsCorr) {
+				for (int j = 0; j < element.length; j++) {
 					//System.out.print(nsCorr[i][j] + " ");
 				}
 				//System.out.println();
 			}
 			//System.out.println();
-			for (int i = 0; i < usCorr.length; i++) {
-				for (int j = 0; j < usCorr[i].length; j++) {
+			for (double[] element : usCorr) {
+				for (int j = 0; j < element.length; j++) {
 					//System.out.print(usCorr[i][j] + " ");
 				}
 				//System.out.println();
@@ -2134,28 +2137,28 @@ public class SolverSingleClosedMVA extends Solver {
 		//System.out.println("m = " + m);
 		//System.out.println("n = " + n);
 		//System.out.print("Y = ");
-		for (int i = 0; i < Y.length; i++) {
+		for (double element : Y) {
 			//System.out.print(Y[i] + " ");
 
 		}
 		//System.out.println();
 		//System.out.println();
 		//System.out.print("X = ");
-		for (int i = 0; i < X.length; i++) {
+		for (double element : X) {
 			//System.out.print(X[i] + " ");
 
 		}
 		//System.out.println();
 		//System.out.println();
-		for (int i = 0; i < nsPrec.length; i++) {
-			for (int j = 0; j < nsPrec[i].length; j++) {
+		for (double[] element : nsPrec) {
+			for (int j = 0; j < element.length; j++) {
 				//System.out.print(nsPrec[i][j] + " ");
 			}
 			//System.out.println();
 		}
 		//System.out.println();
-		for (int i = 0; i < usPrec.length; i++) {
-			for (int j = 0; j < usPrec[i].length; j++) {
+		for (double[] element : usPrec) {
+			for (int j = 0; j < element.length; j++) {
 				//System.out.print(usPrec[i][j] + " ");
 			}
 			//System.out.println();
@@ -2899,6 +2902,7 @@ public class SolverSingleClosedMVA extends Solver {
 	 * @return the string
 	 */
 
+	@Override
 	public String toString() {
 		if (!intermediate_results) {
 			//if intermediate results haven't been saved, don't write them!

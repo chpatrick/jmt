@@ -849,6 +849,7 @@ public class DynamicDataAnalyzerImpl implements DynamicDataAnalyzer {
 	/** creates a string of the principals parameters calculated
 	 *  @return the string
 	 */
+	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append(getClass().getName());
@@ -1064,8 +1065,8 @@ public class DynamicDataAnalyzerImpl implements DynamicDataAnalyzer {
 				System.out.println("batch = " + batch);
 				System.out.println("data.length = " + data.length);
 				System.out.println("batchMean.length = " + batchMean.length);
-				for (int i = 0; i < batchMean.length; i++) {
-					System.out.print(batchMean[i] + "  ");
+				for (double element : batchMean) {
+					System.out.print(element + "  ");
 				}
 				System.out.println("");
 			}

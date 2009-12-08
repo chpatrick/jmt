@@ -103,6 +103,7 @@ public class ClickableTableHeader extends JTableHeader {
 	private class MouseColumnSelector extends MouseAdapter implements MouseMotionListener {
 		private int col0 = -1;
 
+		@Override
 		public void mousePressed(MouseEvent e) {
 			stopEditing(table);
 			col0 = columnAtPoint(e.getPoint());
@@ -119,6 +120,7 @@ public class ClickableTableHeader extends JTableHeader {
 			}
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent e) {
 			col0 = -1;
 		}

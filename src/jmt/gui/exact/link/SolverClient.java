@@ -174,6 +174,7 @@ public class SolverClient {
 		/**
 		 * Starts SolverDispatcher
 		 */
+		@Override
 		public void run() {
 			try {
 				solver.solve(model);

@@ -32,5 +32,5 @@ public interface ServiceStrategy extends Cloneable {
 	 * Overrides Cloneable 'clone' method, providing absence of exceptions
 	 * @return a clone of current service strategy
 	 */
-	public Object clone();
+	public ServiceStrategy clone();
 }

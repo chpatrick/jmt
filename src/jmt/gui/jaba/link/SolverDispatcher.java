@@ -45,13 +45,13 @@ public class SolverDispatcher {
 	public SolverDispatcher() {
 	}
 
-	public Vector solve(JabaModel model) throws SolverException, InputDataException {
+	public Vector<Object> solve(JabaModel model) throws SolverException, InputDataException {
 
 		/* disable all change-checking */
 		model.discardResults();
 		model.setChanged();
 
-		Vector res = new Vector();
+		Vector<Object> res = new Vector<Object>();
 
 		try {
 			if (model.getClasses() == 2) {
@@ -83,7 +83,7 @@ public class SolverDispatcher {
 		throw new SolverException(s.toString(), t);
 	}
 
-	private Vector solve2classes(JabaModel model) throws Exception {
+	private Vector<Object> solve2classes(JabaModel model) throws Exception {
 		//Solve two class models
 		int stations = model.getStations();
 		//Solver solver = null;
@@ -91,7 +91,7 @@ public class SolverDispatcher {
 		String[] classNames = model.getClassNames();
 		double[][][] serviceTimes = model.getServiceTimes();
 		double[][] visits = model.getVisits();
-		Vector vertices = new Vector();
+		Vector<newPoint> vertices = new Vector<newPoint>();
 
 		double prop;
 		prop = 100;
@@ -107,7 +107,7 @@ public class SolverDispatcher {
 		}
 
 		Calc calc = new Calc();
-		Vector res;
+		Vector<Object> res;
 		JabaResults jres = new JabaResults();
 		res = calc.Calc2D(vertices, stationNames, classNames);
 		jres.setResults(res);
@@ -122,7 +122,7 @@ public class SolverDispatcher {
 
 	}
 
-	private Vector solve3classes(JabaModel model) throws ConvexHullException {
+	private Vector<Object> solve3classes(JabaModel model) throws ConvexHullException {
 
 		// Solve 3 class models
 		int stations = model.getStations();
@@ -132,7 +132,7 @@ public class SolverDispatcher {
 		double[][][] serviceTimes = model.getServiceTimes();
 		double[][] visits = model.getVisits();
 
-		Vector vertices = new Vector();
+		Vector<Vertex> vertices = new Vector<Vertex>();
 
 		double prop;
 		prop = JabaConstants.SERVICE_DEMANDS_PROP;
@@ -148,14 +148,14 @@ public class SolverDispatcher {
 		}
 
 		Calc calc = new Calc();
-		Vector res = calc.Calc3D(vertices, stationNames, classNames);
+		Vector<Object> res = calc.Calc3D(vertices, stationNames, classNames);
 		//System.out.println("res.size(): "+res.size());
 		//ViewResults vres = new ViewResults();
 		//System.out.println("vres");
 
 		// Setta i risultati per la GUI
 		JabaResults jres = new JabaResults();
-		Vector out = new Vector();
+		Vector<Object> out = new Vector<Object>();
 
 		for (int i = 0; i < calc.getsett1staz().size(); i++) {
 			out.addElement(calc.getsett1staz().get(i));

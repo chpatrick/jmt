@@ -52,10 +52,12 @@ public class QNAnimator extends JPanel {
 			qna = animator;
 		}
 
+		@Override
 		public void start() {
 			fRunning = true;
 		}
 
+		@Override
 		public void run() {
 			while (fRunning) {
 				//while this trhead is running, repaints the animation every 0.033 seconds

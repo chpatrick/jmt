@@ -28,16 +28,16 @@ public class ModelWorkloadAnalysis implements JWatModel {
 	// Matrice delle osservazioni
 	private MatrixOsservazioni matrix = null;
 	// vector of the listener on set matrix
-	private Vector listenerOnMatrixChange = null; //<SetMatrixListener> 
+	private Vector<SetMatrixListener> listenerOnMatrixChange = null; //<SetMatrixListener> 
 	// vector of the listener on change variable ( transformations )
-	private Vector listenerOnChangeVariable = null; //<ChangeVariableListener> 
+	private Vector<ChangeVariableListener> listenerOnChangeVariable = null; //<ChangeVariableListener> 
 
 	/**
 	 * @param par
 	 */
 	public ModelWorkloadAnalysis() {
-		listenerOnMatrixChange = new Vector();
-		listenerOnChangeVariable = new Vector();
+		listenerOnMatrixChange = new Vector<SetMatrixListener>();
+		listenerOnChangeVariable = new Vector<ChangeVariableListener>();
 	}
 
 	/**
@@ -79,7 +79,7 @@ public class ModelWorkloadAnalysis implements JWatModel {
 	 */
 	public void setTransformation() {
 		for (int i = 0; i < listenerOnChangeVariable.size(); i++) {
-			((ChangeVariableListener) listenerOnChangeVariable.get(i)).onChangeVariableValues();
+			listenerOnChangeVariable.get(i).onChangeVariableValues();
 		}
 	}
 
@@ -88,13 +88,13 @@ public class ModelWorkloadAnalysis implements JWatModel {
 	 */
 	private void fireNotifyOnSetMatrixObservation() {
 		for (int i = 0; i < listenerOnMatrixChange.size(); i++) {
-			((SetMatrixListener) listenerOnMatrixChange.get(i)).onSetMatrixObservation();
+			listenerOnMatrixChange.get(i).onSetMatrixObservation();
 		}
 	}
 
 	private void fireNotifyOnResetMatrixObservation() {
 		for (int i = 0; i < listenerOnMatrixChange.size(); i++) {
-			((SetMatrixListener) listenerOnMatrixChange.get(i)).onResetMatrixObservation();
+			listenerOnMatrixChange.get(i).onResetMatrixObservation();
 		}
 	}
 

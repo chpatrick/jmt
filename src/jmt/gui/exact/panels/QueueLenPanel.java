@@ -66,6 +66,7 @@ public final class QueueLenPanel extends SolutionPanel {
 	/**
 	 * gets status from data object
 	 */
+	@Override
 	protected void sync() {
 		super.sync();
 		queueLen = data.getQueueLen();
@@ -76,10 +77,12 @@ public final class QueueLenPanel extends SolutionPanel {
 		//END
 	}
 
+	@Override
 	protected ExactTableModel getTableModel() {
 		return new QLTableModel();
 	}
 
+	@Override
 	protected String getDescriptionMessage() {
 		return ExactConstants.DESCRIPTION_QUEUELENGTHS;
 	}
@@ -128,6 +131,7 @@ public final class QueueLenPanel extends SolutionPanel {
 			//end NEW
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			if (rowIndex == 0) {
 				return "<html><i>Aggregate</i></html>";
@@ -136,6 +140,7 @@ public final class QueueLenPanel extends SolutionPanel {
 			}
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			if (index == 0) {
 				return "<html><i>Aggregate</i></html>";
@@ -144,6 +149,7 @@ public final class QueueLenPanel extends SolutionPanel {
 			}
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			double d = 0;
 			//OLD

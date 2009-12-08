@@ -215,6 +215,7 @@ public class ProgressWindow extends JDialog {
 		private boolean killed = false;
 		private DecimalFormat formatter = new DecimalFormat("#00");
 
+		@Override
 		public void run() {
 			long initialTime = System.currentTimeMillis();
 			synchronized (this) {

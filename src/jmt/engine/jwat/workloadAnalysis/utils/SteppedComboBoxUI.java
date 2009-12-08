@@ -9,6 +9,7 @@ import javax.swing.plaf.basic.ComboPopup;
 import com.jgoodies.looks.plastic.PlasticComboBoxUI;
 
 public class SteppedComboBoxUI extends PlasticComboBoxUI {
+	@Override
 	protected ComboPopup createPopup() {
 		BasicComboPopup popup = new BasicComboPopup(comboBox) {
 
@@ -17,6 +18,7 @@ public class SteppedComboBoxUI extends PlasticComboBoxUI {
 			 */
 			private static final long serialVersionUID = 1L;
 
+			@Override
 			public void show() {
 				Dimension popupSize = ((SteppedComboBox) comboBox).getPopupSize();
 				popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));

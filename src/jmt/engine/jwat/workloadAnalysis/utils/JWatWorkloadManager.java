@@ -4,7 +4,7 @@ import java.awt.Window;
 import java.util.Vector;
 
 public class JWatWorkloadManager {
-	public static Vector windows = new Vector();
+	public static Vector<Window> windows = new Vector<Window>();
 
 	/**
 	 * Adds a new Window to be checked for termination before terminating JVM
@@ -36,7 +36,7 @@ public class JWatWorkloadManager {
 	 */
 	public static void closeAll() {
 		while (windows.size() != 0) {
-			((Window) windows.remove(windows.size() - 1)).dispose();
+			windows.remove(windows.size() - 1).dispose();
 		}
 	}
 }

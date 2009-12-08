@@ -53,6 +53,11 @@ import jmt.gui.exact.table.ResultsTable;
  */
 public abstract class SolutionPanel extends WizardPanel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	protected String helpText, name;
 
 	protected ExactWizard ew;
@@ -124,15 +129,18 @@ public abstract class SolutionPanel extends WizardPanel {
 
 	}
 
+	@Override
 	public void gotFocus() {
 		sync();
 		table.updateStructure();
 	}
 
+	@Override
 	public void help() {
 		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}

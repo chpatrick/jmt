@@ -59,7 +59,7 @@ public class NewPlot extends Plot {
 	// Popup menu
 	private PlotPopupMenu popup = new PlotPopupMenu();
 	// Rescale listeners
-	private Vector listeners = new Vector();
+	private Vector<RescaleListener> listeners = new Vector<RescaleListener>();
 
 	public NewPlot() {
 		super();
@@ -68,6 +68,7 @@ public class NewPlot extends Plot {
 			/**
 			 * Invoked when the mouse has been clicked on a component.
 			 */
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON3) {
 					popup.show(NewPlot.this, e.getX(), e.getY());
@@ -120,9 +121,9 @@ public class NewPlot extends Plot {
 	 * Called each time a rescale event occurrs
 	 */
 	protected void fireRescaleEvent() {
-		Iterator i = listeners.iterator();
+		Iterator<RescaleListener> i = listeners.iterator();
 		while (i.hasNext()) {
-			((RescaleListener) i.next()).Rescaled();
+			i.next().Rescaled();
 		}
 	}
 
@@ -139,6 +140,7 @@ public class NewPlot extends Plot {
 	/**
 	 * Overrides default method to add firing of rescale change events
 	 */
+	@Override
 	public synchronized void setXRange(double v, double v1) {
 		super.setXRange(v, v1);
 		fireRescaleEvent();
@@ -148,6 +150,7 @@ public class NewPlot extends Plot {
 	 * Overrides default method to add firing of rescale change events
 	 * Avoid problems with machine precision on constant measures too.
 	 */
+	@Override
 	public synchronized void setYRange(double v, double v1) {
 		// Avoid rescaling to a too small scale (for machine precision problems)
 		if (Math.abs(v - v1) > 1e-8) {
@@ -359,6 +362,7 @@ public class NewPlot extends Plot {
 		/**
 		 * Overrides default method to provide a warning if saving over an existing file
 		 */
+		@Override
 		public void approveSelection() {
 			// Gets the choosed file name
 			String name = getSelectedFile().getName();
@@ -406,6 +410,7 @@ public class NewPlot extends Plot {
 		/**
 		 * Whether the given file is accepted by this filter.
 		 */
+		@Override
 		public boolean accept(File f) {
 			String name = f.getName().toLowerCase();
 			return name.endsWith(extension) || f.isDirectory();
@@ -415,6 +420,7 @@ public class NewPlot extends Plot {
 		 * The description of this filter
 		 * @see javax.swing.filechooser.FileView#getName
 		 */
+		@Override
 		public String getDescription() {
 			return description + " (*" + extension + ")";
 		}

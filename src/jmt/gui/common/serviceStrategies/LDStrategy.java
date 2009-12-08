@@ -42,7 +42,7 @@ import jmt.gui.common.distributions.Distribution;
 public class LDStrategy implements ServiceStrategy {
 	protected static final String VAR = "n"; // Dipendent variable
 	protected static DecimalFormat formatter = new DecimalFormat("#.####");
-	protected TreeMap ranges;
+	protected TreeMap<Object, Range> ranges;
 
 	/**
 	 * Return engine classpacth for LoadDependent strategy
@@ -56,7 +56,7 @@ public class LDStrategy implements ServiceStrategy {
 	 * Builds a new Load Dependent Service Time Strategy with default values
 	 */
 	public LDStrategy() {
-		ranges = new TreeMap();
+		ranges = new TreeMap<Object, Range>();
 		// Adds first range
 		ranges.put(new Integer(1), new Range(1));
 	}
@@ -90,7 +90,7 @@ public class LDStrategy implements ServiceStrategy {
 		if (ranges.firstKey() == key) {
 			return key;
 		}
-		Range tmp = (Range) ranges.remove(key);
+		Range tmp = ranges.remove(key);
 		tmp.from = startingInterval;
 		Object newkey = new Integer(startingInterval);
 		ranges.put(newkey, tmp);
@@ -103,8 +103,8 @@ public class LDStrategy implements ServiceStrategy {
 	 * @param distribution distribution to set in this range
 	 */
 	public synchronized void setRangeDistribution(Object key, Distribution distribution) {
-		Range tmp = (Range) ranges.get(key);
-		Distribution tmpdist = (Distribution) distribution.clone();
+		Range tmp = ranges.get(key);
+		Distribution tmpdist = distribution.clone();
 		// Preserve stored value of c, if applayable
 		if (tmp.distribution.hasC() && distribution.hasC()) {
 			double c = tmp.distribution.getC();
@@ -124,8 +124,8 @@ public class LDStrategy implements ServiceStrategy {
 	 * @param distribution distribution to set in this range
 	 */
 	public synchronized void setRangeDistributionNoCheck(Object key, Distribution distribution) {
-		Range tmp = (Range) ranges.get(key);
-		tmp.distribution = (Distribution) distribution.clone();
+		Range tmp = ranges.get(key);
+		tmp.distribution = distribution.clone();
 	}
 
 	/**
@@ -135,7 +135,7 @@ public class LDStrategy implements ServiceStrategy {
 	 * @param meanExpression expression to be evaluated to find mean value
 	 */
 	public synchronized void setRangeDistributionMean(Object key, String meanExpression) {
-		Range tmp = (Range) ranges.get(key);
+		Range tmp = ranges.get(key);
 		// Calculates min value using parser and sets it into distribution
 		Parser parser = new Parser(meanExpression, true);
 
@@ -160,7 +160,7 @@ public class LDStrategy implements ServiceStrategy {
 	 * @param meanExpression expression to be evaluated to find mean value
 	 */
 	public synchronized void setRangeDistributionMeanNoCheck(Object key, String meanExpression) {
-		Range tmp = (Range) ranges.get(key);
+		Range tmp = ranges.get(key);
 		tmp.meanExpression = meanExpression;
 
 	}
@@ -171,7 +171,7 @@ public class LDStrategy implements ServiceStrategy {
 	 * @param c variation coefficient
 	 */
 	public synchronized void setRangeDistributionC(Object key, double c) {
-		Range tmp = (Range) ranges.get(key);
+		Range tmp = ranges.get(key);
 		if (tmp.distribution.hasC()) {
 			tmp.distribution.setC(c);
 		}
@@ -183,7 +183,7 @@ public class LDStrategy implements ServiceStrategy {
 	 * @return starting number of jobs for this range
 	 */
 	public synchronized int getRangeFrom(Object key) {
-		Range tmp = (Range) ranges.get(key);
+		Range tmp = ranges.get(key);
 		return tmp.from;
 	}
 
@@ -195,7 +195,7 @@ public class LDStrategy implements ServiceStrategy {
 	public synchronized int getRangeTo(Object key) {
 		Integer nextKey = new Integer(((Integer) key).intValue() + 1);
 		try {
-			Range next = (Range) ranges.get(ranges.tailMap(nextKey).firstKey());
+			Range next = ranges.get(ranges.tailMap(nextKey).firstKey());
 			return next.from - 1;
 		} catch (NoSuchElementException ex) {
 			return -1;
@@ -208,7 +208,7 @@ public class LDStrategy implements ServiceStrategy {
 	 * @return its distribution
 	 */
 	public synchronized Distribution getRangeDistribution(Object key) {
-		Range tmp = (Range) ranges.get(key);
+		Range tmp = ranges.get(key);
 		return tmp.distribution;
 	}
 
@@ -219,7 +219,7 @@ public class LDStrategy implements ServiceStrategy {
 	 * @return expression to find mean value
 	 */
 	public synchronized String getRangeDistributionMean(Object key) {
-		Range tmp = (Range) ranges.get(key);
+		Range tmp = ranges.get(key);
 		return tmp.meanExpression;
 	}
 
@@ -254,6 +254,7 @@ public class LDStrategy implements ServiceStrategy {
 	 * Returns a String description of this object
 	 * @return a String description of this object
 	 */
+	@Override
 	public String toString() {
 		return "Load Dependent Service Strategy";
 	}
@@ -262,16 +263,17 @@ public class LDStrategy implements ServiceStrategy {
 	 * Clones this strategy in a new Object
 	 * @return a clone of current service strategy
 	 */
-	public Object clone() {
+	@Override
+	public LDStrategy clone() {
 		LDStrategy tmp = new LDStrategy();
 		// Sets first range
 		Object[] rangesKeys = ranges.keySet().toArray();
-		for (int i = 0; i < rangesKeys.length; i++) {
-			Range oldRange = (Range) ranges.get(rangesKeys[i]);
+		for (Object rangesKey : rangesKeys) {
+			Range oldRange = ranges.get(rangesKey);
 			Range newRange = new Range(oldRange.from);
-			newRange.distribution = (Distribution) oldRange.distribution.clone();
+			newRange.distribution = oldRange.distribution.clone();
 			newRange.meanExpression = oldRange.meanExpression;
-			tmp.ranges.put(rangesKeys[i], newRange);
+			tmp.ranges.put(rangesKey, newRange);
 		}
 		return tmp;
 	}
@@ -284,7 +286,7 @@ public class LDStrategy implements ServiceStrategy {
 	public double getMeanValue(int jobs) {
 		// Finds key of right range
 		Object key = ranges.headMap(new Integer(jobs + 1)).lastKey();
-		Range range = (Range) ranges.get(key);
+		Range range = ranges.get(key);
 
 		Parser parser = new Parser(range.meanExpression, true);
 

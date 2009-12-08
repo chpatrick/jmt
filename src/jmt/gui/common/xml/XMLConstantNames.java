@@ -31,10 +31,10 @@ public interface XMLConstantNames {
 	public static final String XML_A_ROOT_NAME = "name";
 	public static final String XML_A_ROOT_SEED = "seed";
 	public static final String XML_A_ROOT_DURATION = "maxTime";
-	public static final String XML_A_ROOT_LOGPATH = "logPath";	/* MF08 0.7.4 - path of logs */
-	public static final String XML_A_ROOT_LOGDELIM = "logDelimiter";	/* MF08 0.7.4 - delimiter character in log */
-	public static final String XML_A_ROOT_LOGDECIMALSEPARATOR = "logDecimalSeparator";	/* MF08 0.7.4 - delimiter character in log */
-	public static final String XML_A_ROOT_LOGREPLACE = "logReplaceMode";	/* MF08 0.7.4 - replacement mode */
+	public static final String XML_A_ROOT_LOGPATH = "logPath"; /* MF08 0.7.4 - path of logs */
+	public static final String XML_A_ROOT_LOGDELIM = "logDelimiter"; /* MF08 0.7.4 - delimiter character in log */
+	public static final String XML_A_ROOT_LOGDECIMALSEPARATOR = "logDecimalSeparator"; /* MF08 0.7.4 - delimiter character in log */
+	public static final String XML_A_ROOT_LOGREPLACE = "logReplaceMode"; /* MF08 0.7.4 - replacement mode */
 	public static final String XML_A_ROOT_POLLING = "polling";
 	public static final String XML_A_ROOT_MAXSAMPLES = "maxSamples";
 	public static final String XML_A_ROOT_DISABLESTATISTIC = "disableStatisticStop";
@@ -84,11 +84,11 @@ public interface XMLConstantNames {
 	public static final String XML_E_CLASSPOPULATION = "classPopulation";
 	public static final String XML_A_CLASSPOPULATION_NAME = "refClass";
 	public static final String XML_A_CLASSPOPULATION_POPULATION = "population";
-	
+
 	public static final String XML_LOG_FILENAME = "logfileName";
 	public static final String XML_LOG_FILEPATH = "logfilePath";
 	public static final String XML_LOG_B_EXECTIMESTAMP = "logExecTimestamp";
-	public static final String XML_LOG_B_LOGGERNAME = "logLoggerName"; 
+	public static final String XML_LOG_B_LOGGERNAME = "logLoggerName";
 	public static final String XML_LOG_B_TIMESTAMP = "logTimeStamp";
 	public static final String XML_LOG_B_JOBID = "logJobID";
 	public static final String XML_LOG_B_JOBCLASS = "logJobClass";
@@ -117,7 +117,7 @@ public interface XMLConstantNames {
 	public static final String CLASSNAME_PSSERVER = "PSServer";
 	public static final String CLASSNAME_DELAY = "Delay";
 	public static final String CLASSNAME_TUNNEL = "ServiceTunnel";
-	public static final String CLASSNAME_LOGGER = "LogTunnel";	/* MF08 0.7.4 - extends ServiceTunnel */
+	public static final String CLASSNAME_LOGGER = "LogTunnel"; /* MF08 0.7.4 - extends ServiceTunnel */
 	public static final String CLASSNAME_ROUTER = "Router";
 	public static final String CLASSNAME_FORK = "Fork";
 	public static final String CLASSNAME_JOIN = "Join";

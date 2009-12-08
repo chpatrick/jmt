@@ -29,8 +29,8 @@ public class PrintKmeanClustInfo {
 	public static void printInFile(File name, Vector v, Observation[] obs) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(name));
-			for (int i = 0; i < obs.length; i++) {
-				writer.write(obs[i].toString() + " - [Cluster " + v.get(obs[i].getID() - 1) + "]\n");
+			for (Observation ob : obs) {
+				writer.write(ob.toString() + " - [Cluster " + v.get(ob.getID() - 1) + "]\n");
 			}
 			writer.close();
 		} catch (IOException e) {

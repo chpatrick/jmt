@@ -64,7 +64,7 @@ public class PainterConvex2D {
 	 * @param height The height of the window
 	 * @param width The width of the window
 	 */
-	public PainterConvex2D(Vector allDominants, int height, int width) {
+	public PainterConvex2D(Vector<Point2D> allDominants, int height, int width) {
 		DPoint p;
 
 		for (int i = 0; i < allDominants.size(); i++) {
@@ -101,7 +101,7 @@ public class PainterConvex2D {
 	 * @param s3d Information aboute the classes
 	 * @param classNames The name of the classes
 	 */
-	public void drawSelectLine(Graphics2D g, DPoint p1, DPoint p2, Vector s3d, String[] classNames) {
+	public void drawSelectLine(Graphics2D g, DPoint p1, DPoint p2, Vector<Object> s3d, String[] classNames) {
 		if ((p1 != null) && (p2 != null)) {
 			//Draw the selected line
 			Stroke oldStro = g.getStroke();
@@ -134,8 +134,8 @@ public class PainterConvex2D {
 					continue;
 				}
 
-				Station2D d1 = (Station2D) (sect.getstation()).get(0);
-				Station2D d2 = (Station2D) (sect.getstation()).get(1);
+				Station2D d1 = (sect.getstation()).get(0);
+				Station2D d2 = (sect.getstation()).get(1);
 				int d1x = (int) (d1.getVert()).getX();
 				int d1y = (int) (d1.getVert()).getY();
 				int d2x = (int) (d2.getVert()).getX();
@@ -334,10 +334,10 @@ public class PainterConvex2D {
 	 * @param points The Vector who contains the points
 	 * @param c The color of the points
 	 */
-	public void drawPoint(Graphics g, Vector points, Color c, int size) {
+	public void drawPoint(Graphics g, Vector<Point2D> points, Color c, int size) {
 
 		for (int j = 0; j < points.size(); j++) {
-			Point2D p = (Point2D) points.get(j);
+			Point2D p = points.get(j);
 			g.setColor(c);
 			g.fillOval((int) (p.getX() * scale) - ((size / 2)) + tran_x, tran_y - (int) (p.getY() * scale) - ((size / 2)), size, size);
 		}
@@ -390,7 +390,7 @@ public class PainterConvex2D {
 	 * @param area The filter area
 	 * @param maskedoff The vector with the masked-off points
 	 */
-	public void drawArea(Graphics g, Vector allConvex, Vector allDominants, Color area, Color maskedoff) {
+	public void drawArea(Graphics g, Vector<Point2D> allConvex, Vector<Point2D> allDominants, Color area, Color maskedoff) {
 		//The first color in the maskedoff color beacause after will be draw
 		//the non-maskedoff areas
 		g.setColor(maskedoff);
@@ -438,7 +438,7 @@ public class PainterConvex2D {
 	 * @param gra The graphic object
 	 * @param points The vector with all points
 	 */
-	public void pointLabel(Graphics2D g, Vector points) {
+	public void pointLabel(Graphics2D g, Vector<Point2D> points) {
 		g.setColor(Color.black);
 
 		//Setting the Font
@@ -463,7 +463,7 @@ public class PainterConvex2D {
 	 * @param dominant The vector with the dominant points
 	 * @param dominates The vector with the dominates points
 	 */
-	public void drawDominantArrow(Graphics2D g, Vector dominant, Vector dominates) {
+	public void drawDominantArrow(Graphics2D g, Vector<Point2D> dominant, Vector<Point2D> dominates) {
 		DPoint p;
 		DPoint p2;
 		boolean first = true;

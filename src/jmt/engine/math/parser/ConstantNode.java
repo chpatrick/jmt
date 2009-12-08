@@ -128,6 +128,7 @@ public class ConstantNode implements ExpressionNode {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() {
 		return new ConstantNode(constant);
 	}
@@ -135,6 +136,7 @@ public class ConstantNode implements ExpressionNode {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		if (name == null) {
 			return getSubtype();

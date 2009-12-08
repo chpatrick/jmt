@@ -67,7 +67,7 @@ public class UniqueStartScreen extends JMTFrame {
 	private static final long serialVersionUID = 1L;
 	/*Data structure that must contain all of the images shown in this window. Will be initialized by
 	 *loadImages() method*/
-	HashMap imageIcons = new HashMap();
+	HashMap<String, ImageIcon> imageIcons = new HashMap<String, ImageIcon>();
 	/*symbolic names for the images represented as string constants initialized with relative path
 	 *of the images themselves*/
 	private static final int FONT_SIZE = 5;
@@ -219,7 +219,7 @@ public class UniqueStartScreen extends JMTFrame {
 		//add all of the listeners
 		addListeners();
 		if (isImageLoaded(IMG_SUITEICON)) {
-			Image jmtIcon = ((ImageIcon) imageIcons.get(IMG_SUITEICON)).getImage();
+			Image jmtIcon = imageIcons.get(IMG_SUITEICON).getImage();
 			this.setIconImage(jmtIcon.getScaledInstance(16, 16, Image.SCALE_SMOOTH));
 		}
 		sampleQNAni.start();
@@ -230,14 +230,14 @@ public class UniqueStartScreen extends JMTFrame {
 	private void loadImages() {
 		String[] imageNames = { IMG_LOGOPOLI, IMG_JMODELICON, IMG_JMVAICON, IMG_JABAICON, IMG_JMCHICON, IMG_JWATICON, IMG_JSIMICON, IMG_SUITEICON };
 		//load each image referenced in the above array
-		for (int i = 0; i < imageNames.length; i++) {
-			ImageIcon img = JMTImageLoader.loadImage(imageNames[i]);
-			if (imageNames[i].equals(IMG_LOGOPOLI)) {
+		for (String imageName : imageNames) {
+			ImageIcon img = JMTImageLoader.loadImage(imageName);
+			if (imageName.equals(IMG_LOGOPOLI)) {
 				//                Image imgSmall = img.getImage().getScaledInstance(400,(150*(400))/739,Image.SCALE_SMOOTH);
 				Image imgSmall = img.getImage().getScaledInstance(100, 100, Image.SCALE_SMOOTH);
 				img.setImage(imgSmall);
 			}
-			imageIcons.put(imageNames[i], img);
+			imageIcons.put(imageName, img);
 		}
 	}
 
@@ -252,7 +252,7 @@ public class UniqueStartScreen extends JMTFrame {
 		JLabel upperAreaDescr;
 		//components of the upper area
 		if (isImageLoaded(IMG_LOGOPOLI)) {
-			upperAreaDescr = new JLabel((ImageIcon) imageIcons.get(IMG_LOGOPOLI));
+			upperAreaDescr = new JLabel(imageIcons.get(IMG_LOGOPOLI));
 		} else {
 			upperAreaDescr = new JLabel("Couldn't load image from location " + IMG_LOGOPOLI);
 		}
@@ -313,6 +313,7 @@ public class UniqueStartScreen extends JMTFrame {
 			}
 		});
 		this.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) {
 				close();
 			}
@@ -347,6 +348,7 @@ public class UniqueStartScreen extends JMTFrame {
 		}
 	}
 
+	@Override
 	protected void doClose() {
 		sampleQNAni.stop();
 	}
@@ -364,8 +366,8 @@ public class UniqueStartScreen extends JMTFrame {
 
 	private void resizeButtons() {
 		JButton[] buttons = { introIta, introEng };
-		for (int i = 0; i < buttons.length; i++) {
-			buttons[i].setPreferredSize(new Dimension(140, 25));
+		for (JButton button : buttons) {
+			button.setPreferredSize(new Dimension(140, 25));
 		}
 	}
 

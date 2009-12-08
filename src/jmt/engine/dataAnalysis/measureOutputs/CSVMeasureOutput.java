@@ -80,6 +80,7 @@ public class CSVMeasureOutput extends MeasureOutput {
 		StdOutput = false;
 	}
 
+	@Override
 	public void write(double Sample, double Weight) {
 		try {
 			File.write(Sample + "; " + Weight + ";\n");
@@ -87,6 +88,7 @@ public class CSVMeasureOutput extends MeasureOutput {
 		}
 	}
 
+	@Override
 	public void writeMeasure() {
 		try {
 

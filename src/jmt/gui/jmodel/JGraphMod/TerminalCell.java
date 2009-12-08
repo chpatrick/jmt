@@ -61,6 +61,7 @@ public class TerminalCell extends JmtCell {
 	 *
 	 * @return array of ports
 	 */
+	@Override
 	public Port[] createPorts() {
 		Port[] ports = new Port[2];
 		ports[0] = new InputPort(this);
@@ -100,6 +101,7 @@ public class TerminalCell extends JmtCell {
 	 * management)
 	 * @return true if this station generates or destroy jobs, false otherwise
 	 */
+	@Override
 	public boolean generateOrDestroyJobs() {
 		return true;
 	}
@@ -109,6 +111,7 @@ public class TerminalCell extends JmtCell {
 	 *
 	 * @return the name of the icon of this cell
 	 */
+	@Override
 	public String getIcon() {
 		return ICON;
 	}

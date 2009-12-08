@@ -61,7 +61,7 @@ public class JmtOverlapping {
 	public void avoidOverlappingCell(Object[] cells2) {
 
 		Object[] listEdges = null;
-		ArrayList listEdges2 = new ArrayList();
+		ArrayList<Object> listEdges2 = new ArrayList<Object>();
 		for (int i = 0; i < cells2.length; i++) {
 
 			if (!(cells2[i] instanceof JmtEdge)) {
@@ -71,11 +71,11 @@ public class JmtOverlapping {
 					tmp[0] = cells2[i];
 					Object[] children = mediator.getGraph().getDescendants(tmp);
 					boolean passato = false;
-					for (int j = 0; j < children.length; j++) {
+					for (Object element : children) {
 
-						if (children[j] instanceof JmtCell && !passato) {
+						if (element instanceof JmtCell && !passato) {
 							passato = true;
-							cells2[i] = children[j];
+							cells2[i] = element;
 						}
 					}
 
@@ -105,17 +105,17 @@ public class JmtOverlapping {
 		//			Questo mi restituisce la lista dei lati che ho da analizzare per l intersezione		
 		listEdges = listEdges2.toArray();
 
-		for (int i = 0; i < listEdges.length; i++) {
+		for (Object listEdge : listEdges) {
 			Object[] celle = null;
-			EdgeView edgeView = (EdgeView) (mediator.getGraph().getGraphLayoutCache()).getMapping(listEdges[i], false);
+			EdgeView edgeView = (EdgeView) (mediator.getGraph().getGraphLayoutCache()).getMapping(listEdge, false);
 			Rectangle2D rett = edgeView.getBounds();
 			//				Questo metodo mi ritorna sia le porte che il lato e i vertici sorgenti, devo quindi
 			//					per questione di pesantezza fare un controllo di istanze
 			celle = (mediator.getGraph()).getDescendants(mediator.getGraph().getRoots(rett.getBounds()));
 			//				System.out.println("le celle che intersecano sono : "+celle.length);
-			ArrayList celle2 = new ArrayList();
-			JmtCell sourceOfEdge = (JmtCell) ((DefaultPort) ((JmtEdge) listEdges[i]).getSource()).getParent();
-			JmtCell targetOfEdge = (JmtCell) ((DefaultPort) ((JmtEdge) listEdges[i]).getTarget()).getParent();
+			ArrayList<Object> celle2 = new ArrayList<Object>();
+			JmtCell sourceOfEdge = (JmtCell) ((DefaultPort) ((JmtEdge) listEdge).getSource()).getParent();
+			JmtCell targetOfEdge = (JmtCell) ((DefaultPort) ((JmtEdge) listEdge).getTarget()).getParent();
 
 			for (int j = 0; j < celle.length; j++) {
 				if (celle[j] instanceof JmtCell && !(celle[j] == sourceOfEdge) && !(celle[j] == targetOfEdge)) {
@@ -126,12 +126,12 @@ public class JmtOverlapping {
 			Object[] cellsfinal = celle2.toArray();
 			int contatore = 0;
 			//				System.out.println("Sono in JmtOverlapping grandezza delle celle che interseco: "+cellsfinal.length);
-			for (int j = 0; j < cellsfinal.length; j++) {
+			for (Object element : cellsfinal) {
 
-				Rectangle2D cellBound = GraphConstants.getBounds(((JmtCell) cellsfinal[j]).getAttributes());
-				EdgeView viewtmp = (EdgeView) (mediator.getGraph().getGraphLayoutCache()).getMapping(listEdges[i], false);
+				Rectangle2D cellBound = GraphConstants.getBounds(((JmtCell) element).getAttributes());
+				EdgeView viewtmp = (EdgeView) (mediator.getGraph().getGraphLayoutCache()).getMapping(listEdge, false);
 				//				Point2D[] intersectionPoints=(Point2D[]) ((JmtEdge)listEdges[i]).intersects2(viewtmp,cellBound);
-				if (((JmtEdge) listEdges[i]).intersects(viewtmp, cellBound)) {
+				if (((JmtEdge) listEdge).intersects(viewtmp, cellBound)) {
 					//					________________DATI APPARTENENTI AL VERTICE
 					double vertexMinX = (int) cellBound.getMinX();
 					double vertexMinY = (int) cellBound.getMinY();
@@ -141,78 +141,70 @@ public class JmtOverlapping {
 					double vertexWidth = (int) cellBound.getWidth();
 					Rectangle cellBounds = cellBound.getBounds();
 					//					questi rappresentano i punti di intersezione di ogni vertici..in quanto sto ciclando il lato e dentro il vertice
-					ArrayList intersectionPoints = null;
-					intersectionPoints = ((JmtEdge) listEdges[i]).getIntersectionVertexPoint();
+					ArrayList<Point2D> intersectionPoints = null;
+					intersectionPoints = ((JmtEdge) listEdge).getIntersectionVertexPoint();
 					//					System.out.println("Grandezza di intersectionPoints in JmtOverlapping :"+intersectionPoints.size());
 					//					System.out.println("Numero di punti che ho ricevuto in avoid : "+ intersectionPoints.size());
 
 					//					
 					contatore++;
-					boolean upperSideIntersaction = ((JmtEdge) listEdges[i]).getUpperSideIntersaction();
-					boolean lowerSideIntersaction = ((JmtEdge) listEdges[i]).getLowerSideIntersaction();
-					boolean leftSideIntersaction = ((JmtEdge) listEdges[i]).getLeftSideIntersaction();
-					boolean rightSideIntersaction = ((JmtEdge) listEdges[i]).getRightSideIntersaction();
+					boolean upperSideIntersaction = ((JmtEdge) listEdge).getUpperSideIntersaction();
+					boolean lowerSideIntersaction = ((JmtEdge) listEdge).getLowerSideIntersaction();
+					boolean leftSideIntersaction = ((JmtEdge) listEdge).getLeftSideIntersaction();
+					boolean rightSideIntersaction = ((JmtEdge) listEdge).getRightSideIntersaction();
 
 					if (upperSideIntersaction && lowerSideIntersaction) {
 
-						Point2D tmp = ((Point2D) (intersectionPoints.get(0)));
+						Point2D tmp = (intersectionPoints.get(0));
 						int valoreIntermedio = ((int) vertexMaxX - (int) (vertexWidth / 2));
 
 						if ((int) tmp.getX() < valoreIntermedio) {
-							Point newPosition = findFreePosition((JmtEdge) listEdges[i], (JmtCell) cellsfinal[j], cellBound, tmp, false, false, true,
-									false);
+							Point newPosition = findFreePosition((JmtEdge) listEdge, (JmtCell) element, cellBound, tmp, false, false, true, false);
 							cellBounds.setLocation(newPosition);
-							GraphConstants.setBounds(((JmtCell) cellsfinal[j]).getAttributes(), cellBounds);
+							GraphConstants.setBounds(((JmtCell) element).getAttributes(), cellBounds);
 						} else {
-							Point newPosition = findFreePosition((JmtEdge) listEdges[i], (JmtCell) cellsfinal[j], cellBound, tmp, false, false,
-									false, true);
+							Point newPosition = findFreePosition((JmtEdge) listEdge, (JmtCell) element, cellBound, tmp, false, false, false, true);
 							cellBounds.setLocation(newPosition);
-							GraphConstants.setBounds(((JmtCell) cellsfinal[j]).getAttributes(), cellBounds);
+							GraphConstants.setBounds(((JmtCell) element).getAttributes(), cellBounds);
 						}
 					} else if (leftSideIntersaction && rightSideIntersaction) {
-						Point2D tmp = ((Point2D) (intersectionPoints.get(0)));
+						Point2D tmp = (intersectionPoints.get(0));
 						//						System.out.println("CHIAMATA DI OVERLAPPING Dx Sx");
 						int valoreIntermedio = ((int) vertexMaxY - (int) (vertexHeight / 2));
 						//						System.out.println("VAlore intermedio:"+valoreIntermedio+", valore di intersezione: "+(int)tmp.getY());
 						if ((int) tmp.getY() < valoreIntermedio) {
 							//							System.out.println("LA MANDO GIU- "+(JmtCell)cellsfinal[j]+", valore intermedio:"+valoreIntermedio+", "+(int)tmp.getY());
-							Point newPosition = findFreePosition((JmtEdge) listEdges[i], (JmtCell) cellsfinal[j], cellBound, tmp, false, true, false,
-									false);
+							Point newPosition = findFreePosition((JmtEdge) listEdge, (JmtCell) element, cellBound, tmp, false, true, false, false);
 							cellBounds.setLocation(newPosition);
-							GraphConstants.setBounds(((JmtCell) cellsfinal[j]).getAttributes(), cellBounds);
+							GraphConstants.setBounds(((JmtCell) element).getAttributes(), cellBounds);
 						} else {
 							//							System.out.println((JmtCell)cellsfinal[j]+", valore intermedio:"+valoreIntermedio+", "+(int)tmp.getY());
-							Point newPosition = findFreePosition((JmtEdge) listEdges[i], (JmtCell) cellsfinal[j], cellBound, tmp, true, false, false,
-									false);
+							Point newPosition = findFreePosition((JmtEdge) listEdge, (JmtCell) element, cellBound, tmp, true, false, false, false);
 							cellBounds.setLocation(newPosition);
-							GraphConstants.setBounds(((JmtCell) cellsfinal[j]).getAttributes(), cellBounds);
+							GraphConstants.setBounds(((JmtCell) element).getAttributes(), cellBounds);
 						}
 					} else if (upperSideIntersaction && rightSideIntersaction) {
-						Point2D tmp = ((Point2D) (intersectionPoints.get(0)));
-						Point newPosition = findFreePosition((JmtEdge) listEdges[i], (JmtCell) cellsfinal[j], cellBound, tmp, false, false, false,
-								true);
+						Point2D tmp = (intersectionPoints.get(0));
+						Point newPosition = findFreePosition((JmtEdge) listEdge, (JmtCell) element, cellBound, tmp, false, false, false, true);
 						cellBounds.setLocation(newPosition);
-						GraphConstants.setBounds(((JmtCell) cellsfinal[j]).getAttributes(), cellBounds);
+						GraphConstants.setBounds(((JmtCell) element).getAttributes(), cellBounds);
 
 					} else if (upperSideIntersaction && leftSideIntersaction) {
-						Point2D tmp = ((Point2D) (intersectionPoints.get(0)));
-						Point newPosition = findFreePosition((JmtEdge) listEdges[i], (JmtCell) cellsfinal[j], cellBound, tmp, false, false, true,
-								false);
+						Point2D tmp = (intersectionPoints.get(0));
+						Point newPosition = findFreePosition((JmtEdge) listEdge, (JmtCell) element, cellBound, tmp, false, false, true, false);
 						cellBounds.setLocation(newPosition);
-						GraphConstants.setBounds(((JmtCell) cellsfinal[j]).getAttributes(), cellBounds);
+						GraphConstants.setBounds(((JmtCell) element).getAttributes(), cellBounds);
 					} else if (lowerSideIntersaction && rightSideIntersaction) {
 
-						Point2D tmp = ((Point2D) (intersectionPoints.get(1)));
-						Point newPosition = findFreePosition((JmtEdge) listEdges[i], (JmtCell) cellsfinal[j], cellBound, tmp, false, false, false,
-								true);
+						Point2D tmp = (intersectionPoints.get(1));
+						Point newPosition = findFreePosition((JmtEdge) listEdge, (JmtCell) element, cellBound, tmp, false, false, false, true);
 						cellBounds.setLocation(newPosition);
-						GraphConstants.setBounds(((JmtCell) cellsfinal[j]).getAttributes(), cellBounds);
+						GraphConstants.setBounds(((JmtCell) element).getAttributes(), cellBounds);
 					} else if (lowerSideIntersaction && leftSideIntersaction) {
-						Point2D tmp = ((Point2D) (intersectionPoints.get(0)));
-						Point newPosition = findFreePosition((JmtEdge) listEdges[i], (JmtCell) cellsfinal[j], cellBound, tmp, false, false, true,
-								false);
+						Point2D tmp = (intersectionPoints.get(0));
+						Point newPosition = findFreePosition((JmtEdge) listEdge, (JmtCell) element, cellBound, tmp, false, false, true, false);
 						cellBounds.setLocation(newPosition);
-						GraphConstants.setBounds(((JmtCell) cellsfinal[j]).getAttributes(), cellBounds);
+						GraphConstants.setBounds(((JmtCell) element).getAttributes(), cellBounds);
 					}
 
 				}//fine if dove controllo se c'e' l intersezione
@@ -241,15 +233,15 @@ public class JmtOverlapping {
 
 		Object[] latiIn = (DefaultGraphModel.getIncomingEdges(mediator.getGraph().getModel(), vertex));
 		Object[] latiOut = (DefaultGraphModel.getOutgoingEdges(mediator.getGraph().getModel(), vertex));
-		Vector handledEdges = new Vector();
+		Vector<Object> handledEdges = new Vector<Object>();
 		if (latiIn.length > 0) {
-			for (int i = 0; i < latiIn.length; i++) {
-				handledEdges.add(latiIn[i]);
+			for (Object element : latiIn) {
+				handledEdges.add(element);
 			}
 		}
 		if (latiOut.length > 0) {
-			for (int i = 0; i < latiOut.length; i++) {
-				handledEdges.add(latiOut[i]);
+			for (Object element : latiOut) {
+				handledEdges.add(element);
 			}
 		}
 
@@ -276,7 +268,7 @@ public class JmtOverlapping {
 			int pointYToMove = (int) (tmp.getY() + 3);
 			Rectangle newRett = new Rectangle((int) vertexMinX, pointYToMove, (int) vertexWidth, (int) vertexHeight);
 			Object[] celletmp = (mediator.getGraph()).getDescendants(mediator.getGraph().getRoots(newRett));
-			Vector celle = new Vector();
+			Vector<Object> celle = new Vector<Object>();
 			for (int x = 0; x < celletmp.length; x++) {
 				if (!(celletmp[x] == vertex) && !((vertex.getChildren()).contains(celletmp[x])) && !(celletmp[x] == edge)) {
 					if (celletmp[x] instanceof JmtEdge) {
@@ -300,7 +292,7 @@ public class JmtOverlapping {
 
 			Object[] celletmp3 = (mediator.getGraph()).getDescendants(mediator.getGraph().getRoots(newRettUp));
 
-			Vector celle2 = new Vector();
+			Vector<Object> celle2 = new Vector<Object>();
 			for (int x = 0; x < celletmp3.length; x++) {
 				if (!(celletmp3[x] == vertex) && !((vertex.getChildren()).contains(celletmp3[x])) && !(celletmp3[x] == edge)) {
 					if (celletmp3[x] instanceof JmtEdge) {
@@ -340,7 +332,7 @@ public class JmtOverlapping {
 				pointYToMove = pointYToMove + 59;
 				Rectangle new2rett = new Rectangle((int) vertexMinX, pointYToMove, (int) vertexWidth, (int) vertexHeight);
 				Object[] celletmp2 = (mediator.getGraph()).getDescendants(mediator.getGraph().getRoots(new2rett));
-				celle = new Vector();
+				celle = new Vector<Object>();
 				for (int x = 0; x < celletmp2.length; x++) {
 					if (!(celletmp2[x] == vertex) && !((vertex.getChildren()).contains(celletmp[x])) && !(celletmp2[x] == edge)) {
 						if (celletmp2[x] instanceof JmtEdge) {
@@ -364,7 +356,7 @@ public class JmtOverlapping {
 			int pointYToMove = (int) vertexMinY - daScalare;;
 			Rectangle newRett = new Rectangle((int) vertexMinX, pointYToMove, (int) vertexWidth, (int) vertexHeight);
 			Object[] celletmp = (mediator.getGraph()).getDescendants(mediator.getGraph().getRoots(newRett));
-			Vector celle = new Vector();
+			Vector<Object> celle = new Vector<Object>();
 			for (int x = 0; x < celletmp.length; x++) {
 				if (!(celletmp[x] == vertex) && !((vertex.getChildren()).contains(celletmp[x])) && !(celletmp[x] == edge)) {
 					Object[] listEdgesIn = null;
@@ -374,13 +366,13 @@ public class JmtOverlapping {
 					listEdgesOut = DefaultGraphModel.getEdges(graphmodel, vertex, false);
 					boolean edgeIn = false;
 					boolean edgeOut = false;
-					for (int q = 0; q < listEdgesIn.length; q++) {
-						if (celletmp[x] instanceof JmtEdge && listEdgesIn[q].equals(celletmp[x])) {
+					for (Object element : listEdgesIn) {
+						if (celletmp[x] instanceof JmtEdge && element.equals(celletmp[x])) {
 							edgeIn = true;
 						}
 					}
-					for (int q = 0; q < listEdgesOut.length; q++) {
-						if (celletmp[x] instanceof JmtEdge && listEdgesOut[q].equals(celletmp[x])) {
+					for (Object element : listEdgesOut) {
+						if (celletmp[x] instanceof JmtEdge && element.equals(celletmp[x])) {
 							edgeIn = true;
 						}
 					}
@@ -397,7 +389,7 @@ public class JmtOverlapping {
 				}
 			}
 			Object[] celletmp3 = (mediator.getGraph()).getDescendants(mediator.getGraph().getRoots(newRettDown));
-			Vector celle2 = new Vector();
+			Vector<Object> celle2 = new Vector<Object>();
 			for (int x = 0; x < celletmp3.length; x++) {
 				if (!(celletmp3[x] == vertex) && !((vertex.getChildren()).contains(celletmp3[x])) && !(celletmp3[x] == edge)) {
 					if (celletmp3[x] instanceof JmtEdge) {
@@ -437,7 +429,7 @@ public class JmtOverlapping {
 			int pointXToMove = (int) (tmp.getX() + 12);
 			Rectangle newRett = new Rectangle(pointXToMove, (int) vertexMinY, (int) vertexWidth, (int) vertexHeight);
 			Object[] celletmp = (mediator.getGraph()).getDescendants(mediator.getGraph().getRoots(newRett));
-			Vector celle = new Vector();
+			Vector<Object> celle = new Vector<Object>();
 
 			for (int x = 0; x < celletmp.length; x++) {//BEGIN FOR
 
@@ -451,13 +443,13 @@ public class JmtOverlapping {
 					boolean edgeIn = false;
 					boolean edgeOut = false;
 
-					for (int q = 0; q < listEdgesIn.length; q++) {
-						if (celletmp[x] instanceof JmtEdge && listEdgesIn[q].equals(celletmp[x])) {
+					for (Object element : listEdgesIn) {
+						if (celletmp[x] instanceof JmtEdge && element.equals(celletmp[x])) {
 							edgeIn = true;
 						}
 					}
-					for (int q = 0; q < listEdgesOut.length; q++) {
-						if (celletmp[x] instanceof JmtEdge && listEdgesOut[q].equals(celletmp[x])) {
+					for (Object element : listEdgesOut) {
+						if (celletmp[x] instanceof JmtEdge && element.equals(celletmp[x])) {
 							edgeIn = true;
 						}
 					}
@@ -481,7 +473,7 @@ public class JmtOverlapping {
 			}//END FOR
 
 			Object[] celletmp3 = (mediator.getGraph()).getDescendants(mediator.getGraph().getRoots(newRettLeft));
-			Vector celle3 = new Vector();
+			Vector<Object> celle3 = new Vector<Object>();
 			for (int x = 0; x < celletmp3.length; x++) {
 
 				if (!(celletmp3[x] == vertex) && !((vertex.getChildren()).contains(celletmp3[x])) && !(celletmp3[x] == edge)) {
@@ -524,7 +516,7 @@ public class JmtOverlapping {
 			}
 			Rectangle newRett = new Rectangle(point2XToMove, (int) vertexMinY, (int) vertexWidth, (int) vertexHeight);
 			Object[] celletmp = (mediator.getGraph()).getDescendants(mediator.getGraph().getRoots(newRett));
-			Vector celle = new Vector();
+			Vector<Object> celle = new Vector<Object>();
 			for (int x = 0; x < celletmp.length; x++) {
 
 				if (!(celletmp[x] == vertex) && !((vertex.getChildren()).contains(celletmp[x])) && !(celletmp[x] == edge)) {
@@ -535,13 +527,13 @@ public class JmtOverlapping {
 					listEdgesOut = DefaultGraphModel.getEdges(graphmodel, vertex, false);
 					boolean edgeIn = false;
 					boolean edgeOut = false;
-					for (int q = 0; q < listEdgesIn.length; q++) {
-						if (celletmp[x] instanceof JmtEdge && listEdgesIn[q].equals(celletmp[x])) {
+					for (Object element : listEdgesIn) {
+						if (celletmp[x] instanceof JmtEdge && element.equals(celletmp[x])) {
 							edgeIn = true;
 						}
 					}
-					for (int q = 0; q < listEdgesOut.length; q++) {
-						if (celletmp[x] instanceof JmtEdge && listEdgesOut[q].equals(celletmp[x])) {
+					for (Object element : listEdgesOut) {
+						if (celletmp[x] instanceof JmtEdge && element.equals(celletmp[x])) {
 							edgeIn = true;
 						}
 					}
@@ -565,7 +557,7 @@ public class JmtOverlapping {
 			}
 
 			Object[] celletmp4 = (mediator.getGraph()).getDescendants(mediator.getGraph().getRoots(newRettRight));
-			Vector celle4 = new Vector();
+			Vector<Object> celle4 = new Vector<Object>();
 			for (int x = 0; x < celletmp4.length; x++) {
 				if (!(celletmp4[x] == vertex) && !((vertex.getChildren()).contains(celletmp4[x])) && !(celletmp4[x] == edge)) {
 					if (celletmp4[x] instanceof JmtEdge) {

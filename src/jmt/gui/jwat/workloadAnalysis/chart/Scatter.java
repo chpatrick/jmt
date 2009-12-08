@@ -116,6 +116,7 @@ public class Scatter extends JPanel {
 	//VectorGraphics vg = VectorGraphics.create(g);
 	//super.paintComponent(vg);
 	//}
+	@Override
 	public void paint(Graphics vg) {
 		if (vg == null) {
 			return;
@@ -180,6 +181,7 @@ public class Scatter extends JPanel {
 		if (first) {
 			first = false;
 			new TimeConsumingWorker(new ProgressMonitorShow(this, "Plotting observations ...", 100)) {
+				@Override
 				public Object construct() {
 					VectorGraphics g1 = VectorGraphics.create(graph.getGraphics());
 
@@ -223,6 +225,7 @@ public class Scatter extends JPanel {
 					return null;
 				}
 
+				@Override
 				public void finished() {
 					Scatter.this.repaint();
 				}
@@ -258,6 +261,7 @@ public class Scatter extends JPanel {
 			        super.paintComponent(vg);
 			    }*/
 
+		@Override
 		public void paint(Graphics g) {
 			if (zoomming) {
 				g.setColor(Color.BLUE);
@@ -464,6 +468,7 @@ public class Scatter extends JPanel {
 		/**
 		 * Overrides default method to provide a warning if saving over an existing file
 		 */
+		@Override
 		public void approveSelection() {
 			// Gets the choosed file name
 			String name = getSelectedFile().getName();
@@ -511,6 +516,7 @@ public class Scatter extends JPanel {
 		/**
 		 * Whether the given file is accepted by this filter.
 		 */
+		@Override
 		public boolean accept(File f) {
 			String name = f.getName().toLowerCase();
 			return name.endsWith(extension) || f.isDirectory();
@@ -520,6 +526,7 @@ public class Scatter extends JPanel {
 		 * The description of this filter
 		 * @see javax.swing.filechooser.FileView#getName
 		 */
+		@Override
 		public String getDescription() {
 			return description + " (*" + extension + ")";
 		}

@@ -35,7 +35,7 @@ public class LCFSstrategy implements QueueGetStrategy {
 	public Job get(JobInfoList Queue) throws jmt.common.exception.NetException {
 		return Queue.removeLast().getJob();
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jmt.common.AutoCheck#check()
 	 */

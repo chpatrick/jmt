@@ -9,12 +9,12 @@ import java.util.ArrayList;
 
 public class FormatFileReader {
 	private int numeroVariabili;
-	private ArrayList names;
-	private ArrayList comments;
-	private ArrayList delimiters;
-	private ArrayList regExpr;
-	private ArrayList defaults;
-	private ArrayList replaces;
+	private ArrayList<String> names;
+	private ArrayList<String> comments;
+	private ArrayList<String> delimiters;
+	private ArrayList<String> regExpr;
+	private ArrayList<String> defaults;
+	private ArrayList<String> replaces;
 	private boolean[] selected;
 	private int[] types;
 	private File fileName;
@@ -29,12 +29,12 @@ public class FormatFileReader {
 			numeroVariabili = Integer.parseInt(file.readLine());
 			types = new int[numeroVariabili];
 			selected = new boolean[numeroVariabili];
-			names = new ArrayList();
-			comments = new ArrayList();
-			delimiters = new ArrayList();
-			regExpr = new ArrayList();
-			defaults = new ArrayList();
-			replaces = new ArrayList();
+			names = new ArrayList<String>();
+			comments = new ArrayList<String>();
+			delimiters = new ArrayList<String>();
+			regExpr = new ArrayList<String>();
+			defaults = new ArrayList<String>();
+			replaces = new ArrayList<String>();
 			// Retrive single variable information
 			for (int i = 0; i < numeroVariabili; i++) {
 				names.add(file.readLine());
@@ -56,7 +56,7 @@ public class FormatFileReader {
 
 	public String getName() {
 		if (current != -1) {
-			return (String) names.get(current);
+			return names.get(current);
 		} else {
 			return null;
 		}
@@ -80,7 +80,7 @@ public class FormatFileReader {
 
 	public String getComment() {
 		if (current != -1) {
-			return (String) comments.get(current);
+			return comments.get(current);
 		} else {
 			return null;
 		}
@@ -88,7 +88,7 @@ public class FormatFileReader {
 
 	public String getDelimiters() {
 		if (current != -1) {
-			return (String) delimiters.get(current);
+			return delimiters.get(current);
 		} else {
 			return null;
 		}
@@ -96,7 +96,7 @@ public class FormatFileReader {
 
 	public String getRegExpr() {
 		if (current != -1) {
-			return (String) regExpr.get(current);
+			return regExpr.get(current);
 		} else {
 			return null;
 		}
@@ -104,7 +104,7 @@ public class FormatFileReader {
 
 	public String getDefaults() {
 		if (current != -1) {
-			return (String) defaults.get(current);
+			return defaults.get(current);
 		} else {
 			return null;
 		}
@@ -112,7 +112,7 @@ public class FormatFileReader {
 
 	public String getReplace() {
 		if (current != -1) {
-			return (String) replaces.get(current);
+			return replaces.get(current);
 		} else {
 			return null;
 		}

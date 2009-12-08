@@ -41,7 +41,8 @@ public class ZeroStrategy implements ServiceStrategy {
 	 * Clones this strategy. In this case it simply returns a new ZeroStrategy
 	 * @see java.lang.Object#clone()
 	 */
-	public Object clone() {
+	@Override
+	public ZeroStrategy clone() {
 		return new ZeroStrategy();
 	}
 
@@ -49,6 +50,7 @@ public class ZeroStrategy implements ServiceStrategy {
 	 * Returns the value of this strategy
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return "0";
 	}

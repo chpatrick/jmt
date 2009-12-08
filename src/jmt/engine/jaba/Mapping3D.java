@@ -68,8 +68,8 @@ public class Mapping3D {
 	 * @param sect
 	 * @return sect
 	 */
-	public Vector RemapAllSectors(Vector sect) {
-		Vector newsect = new Vector();
+	public Vector<Sector3D> RemapAllSectors(Vector<Object> sect) {
+		Vector<Sector3D> newsect = new Vector<Sector3D>();
 		int numofsect = sect.size();
 		for (int i = 0; i < numofsect; i++) {
 			newsect.addElement(RemapSector((Sector3D) sect.get(i)));

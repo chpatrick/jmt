@@ -60,7 +60,7 @@ public class AlphaNumStartScreen extends JMTFrame {
 	private static final long serialVersionUID = 1L;
 	/*Data structure that must contain all of the images shown in this window. Will be initialized by
 	 *loadImages() method*/
-	HashMap imageIcons = new HashMap();
+	HashMap<String, ImageIcon> imageIcons = new HashMap<String, ImageIcon>();
 	/*symbolic names for the images represented as string constants initialized with relative path
 	 *of the images themselves*/
 	private static final String IMG_LOGOPOLI = "JMT_LOGO",
@@ -97,7 +97,7 @@ public class AlphaNumStartScreen extends JMTFrame {
 		//add all of the listeners
 		addListeners();
 		if (isImageLoaded(IMG_SUITEICON)) {
-			Image jmtIcon = ((ImageIcon) imageIcons.get(IMG_SUITEICON)).getImage();
+			Image jmtIcon = imageIcons.get(IMG_SUITEICON).getImage();
 			this.setIconImage(jmtIcon.getScaledInstance(16, 16, Image.SCALE_SMOOTH));
 		}
 		sampleQNAni.start();
@@ -107,13 +107,13 @@ public class AlphaNumStartScreen extends JMTFrame {
 	private void loadImages() {
 		String[] imageNames = { IMG_LOGOPOLI, IMG_SUITEICON };
 		//load each image referenced in the above array
-		for (int i = 0; i < imageNames.length; i++) {
-			ImageIcon img = JMTImageLoader.loadImage(imageNames[i]);
-			if (imageNames[i].equals(IMG_LOGOPOLI)) {
+		for (String imageName : imageNames) {
+			ImageIcon img = JMTImageLoader.loadImage(imageName);
+			if (imageName.equals(IMG_LOGOPOLI)) {
 				Image imgSmall = img.getImage().getScaledInstance(400, (150 * 400) / 739, Image.SCALE_SMOOTH);
 				img.setImage(imgSmall);
 			}
-			imageIcons.put(imageNames[i], img);
+			imageIcons.put(imageName, img);
 		}
 	}
 
@@ -127,7 +127,7 @@ public class AlphaNumStartScreen extends JMTFrame {
 		JLabel upperArea;
 		//components of the upper area
 		if (isImageLoaded(IMG_LOGOPOLI)) {
-			upperArea = new JLabel((ImageIcon) imageIcons.get(IMG_LOGOPOLI));
+			upperArea = new JLabel(imageIcons.get(IMG_LOGOPOLI));
 		} else {
 			upperArea = new JLabel("Couldn't load image from location " + IMG_LOGOPOLI);
 		}
@@ -203,6 +203,7 @@ public class AlphaNumStartScreen extends JMTFrame {
 		});
 	}
 
+	@Override
 	protected void doClose() {
 		sampleQNAni.stop();
 	}
@@ -220,8 +221,8 @@ public class AlphaNumStartScreen extends JMTFrame {
 
 	private void resizeButtons() {
 		JButton[] buttons = { mvaAppl, simAppl, abaAppl };
-		for (int i = 0; i < buttons.length; i++) {
-			buttons[i].setPreferredSize(new Dimension(100, 25));
+		for (JButton button : buttons) {
+			button.setPreferredSize(new Dimension(100, 25));
 		}
 	}
 

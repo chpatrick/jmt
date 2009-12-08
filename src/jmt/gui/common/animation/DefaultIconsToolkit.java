@@ -34,6 +34,7 @@ import java.awt.image.BufferedImage;
  */
 public class DefaultIconsToolkit extends IconsToolkit {
 
+	@Override
 	public Image getJobIcon(Rectangle bounds) {
 		int width = 100, height = 100;
 		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
@@ -48,6 +49,7 @@ public class DefaultIconsToolkit extends IconsToolkit {
 		return bi.getScaledInstance(bounds.width, bounds.height, Image.SCALE_SMOOTH);
 	}
 
+	@Override
 	public Image getStationIcon(String type, Rectangle bounds) {
 		int qLength = 60, height = 40, width = 100;
 		BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
@@ -65,6 +67,7 @@ public class DefaultIconsToolkit extends IconsToolkit {
 		return bi.getScaledInstance(bounds.width, bounds.height, Image.SCALE_SMOOTH);
 	}
 
+	@Override
 	public Image getEdgeIcon(Rectangle bounds, Point[] anglePoints) {
 		/*creates background image.*/
 		BufferedImage bgImage = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_4BYTE_ABGR);
@@ -84,6 +87,7 @@ public class DefaultIconsToolkit extends IconsToolkit {
 		return bgImage;
 	}
 
+	@Override
 	public Image getBGTileIcon(Rectangle bounds) {
 		BufferedImage bi = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics g = bi.getGraphics();

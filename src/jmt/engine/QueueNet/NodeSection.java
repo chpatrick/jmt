@@ -82,7 +82,6 @@ public abstract class NodeSection {
 	/** Property Identifier: JobInfoList.*/
 	public static final int PROPERTY_ID_JOBINFOLIST = 0x0007;
 
-
 	//TODO: rendere più efficiente il meccanismo di rilevamneto dell'owner node? (per evitare troppi getNode)
 	/** Owner of this NodeSection. */
 	private NetNode ownerNode;
@@ -138,6 +137,7 @@ public abstract class NodeSection {
 		this.auto = auto;
 		this.nodeAuto = nodeAuto;
 	}
+
 	/** This method should be overriden to implement a specific beahviour of the
 	 * node section when the node section itself is linked to the owner node.
 	 * This method should be used to set node section properties depending on
@@ -510,7 +510,7 @@ public abstract class NodeSection {
 	protected RemoveToken sendMe(Job job, double delay) throws jmt.common.exception.NetException {
 		return ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, sectionID, ownerNode);
 	}
-	
+
 	/**
 	 * Removes a message previously sent
 	 * @param token the token to remove the message
@@ -669,8 +669,9 @@ public abstract class NodeSection {
 		}
 		return ownerNode.sendAckAfterDrop(NetEvent.EVENT_ACK, data, delay, sectionID, destinationSection, destination);
 	}
+
 	//end NEW
-	
+
 	/**
 	 * Tells if jobinfolist at node section should be updated automatically
 	 * @return true if it should be handled automatically, false otherwise

@@ -15,14 +15,16 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 23-mar-2004 by Ernesto
  *
  */
 package jmt.jmarkov.Graphics.constants;
 
-import java.awt.*;
+import java.awt.BasicStroke;
+import java.awt.Font;
+import java.awt.Stroke;
 
 /**
  * MMQueues
@@ -32,24 +34,15 @@ import java.awt.*;
  * @author Ernesto
  */
 public class DrawNormal implements DrawConstrains {
-	private static final double 
-							START_GAP = 5.0,
-							ELEM_HEIGHT = 30.0,
-							ELEM_WIDTH = 20.0,
-							ELEMS_GAP = 5.0,
-							PROC_RAD = 25.0,
-							STAT_RAD = 15.0;
-	private static final float STROKE_SIZE = 2.0f; 
-	
-	private static final Font 
-						F = new Font("Monospaced", Font.BOLD, 12),
-						FN = new Font("Verdana", Font.BOLD, 12),
-						FS = new Font("Verdana", Font.BOLD, 10),
-						FB = new Font("Verdana", Font.BOLD, 14);
+	private static final double START_GAP = 5.0, ELEM_HEIGHT = 30.0, ELEM_WIDTH = 20.0, ELEMS_GAP = 5.0, PROC_RAD = 25.0, STAT_RAD = 15.0;
+	private static final float STROKE_SIZE = 2.0f;
 
-	
+	private static final Font F = new Font("Monospaced", Font.BOLD, 12), FN = new Font("Verdana", Font.BOLD, 12), FS = new Font("Verdana", Font.BOLD,
+			10), FB = new Font("Verdana", Font.BOLD, 14);
+
 	private static final Stroke S = new BasicStroke(2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
 	private static final Stroke BS = new BasicStroke(STROKE_SIZE + STROKE_SIZE / 2.0f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+
 	/* (non-Javadoc)
 	 * @see Graphics.constants.DrawConstrains#getElementHeight()
 	 */
@@ -112,7 +105,7 @@ public class DrawNormal implements DrawConstrains {
 	public Stroke getBoldStroke() {
 		return BS;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see Graphics.constants.DrawConstrains#getNormalGUIFont()
 	 */

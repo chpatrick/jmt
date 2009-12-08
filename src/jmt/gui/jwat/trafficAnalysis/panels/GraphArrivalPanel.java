@@ -94,14 +94,14 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 	private String currentIndex = "Years";
 	private MainJwatWizard ew;
 	private Vector columnHeads;
-	private Vector rows;
+	private Vector<Vector<Comparable>> rows;
 	private JPanel left, mainPanel;
 	private double[] res;
 	private boolean minute = false, month = false, day = false, hour = false, year = false;
 	private long nYear, nMonth, nDay, nHour, nMinute = 0;
 	private VariableNumber v;
 	private SpinnerDateModel Sp1, Sp2;
-	Vector ArrDay, ArrYear, ArrMonth, ArrHour, ArrMinute;
+	Vector<double[]> ArrDay, ArrYear, ArrMonth, ArrHour, ArrMinute;
 	private BurstEngine engine = null;
 
 	/**
@@ -215,13 +215,13 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 	 * Is the method invoked to set the values in the table
 	 */
 	public void setTable(int j) {
-		rows = new Vector();
+		rows = new Vector<Vector<Comparable>>();
 		DecimalFormat df = new DecimalFormat("0.00000000");
 		int f = 0;
-		Vector line;
+		Vector<Comparable> line;
 		Date d = null;
 		double[] temp;
-		List l = new Vector();
+		List<String> l = new Vector<String>();
 
 		String s;
 
@@ -231,8 +231,8 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 				//ew.getTAP().redraw(ArrYear,0);
 				for (int i = 0; i < ArrYear.size(); i++) {
 
-					line = new Vector();
-					temp = (double[]) ArrYear.get(i);
+					line = new Vector<Comparable>();
+					temp = ArrYear.get(i);
 					d = new Date((long) temp[0]);
 					line.add(new Integer(f));
 					f++;
@@ -243,7 +243,7 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 					res[i] = temp[1] / 31104000;
 					rows.add(line);
 				}
-				temp = (double[]) ArrYear.get(0);
+				temp = ArrYear.get(0);
 				d = new Date((long) temp[0]);
 				s = new String("" + d.getYear());
 				graph.setXLabel(currentIndex + " from " + s);
@@ -253,8 +253,8 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 				//ew.getTAP().redraw(ArrMonth,1);
 				for (int i = 0; i < ArrMonth.size(); i++) {
 
-					line = new Vector();
-					temp = (double[]) ArrMonth.get(i);
+					line = new Vector<Comparable>();
+					temp = ArrMonth.get(i);
 					d = new Date((long) temp[0]);
 					line.add(new Integer(f));
 					f++;
@@ -265,7 +265,7 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 					res[i] = temp[1] / 2592000;
 					rows.add(line);
 				}
-				temp = (double[]) ArrMonth.get(0);
+				temp = ArrMonth.get(0);
 				d = new Date((long) temp[0]);
 				s = new String(d.getMonth() + "/" + d.getYear());
 				graph.setXLabel(currentIndex + " from " + s);
@@ -275,8 +275,8 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 				//ew.getTAP().redraw(ArrDay,2);
 				for (int i = 0; i < ArrDay.size(); i++) {
 
-					line = new Vector();
-					temp = (double[]) ArrDay.get(i);
+					line = new Vector<Comparable>();
+					temp = ArrDay.get(i);
 					d = new Date((long) temp[0]);
 					line.add(new Integer(f));
 					f++;
@@ -287,7 +287,7 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 					res[i] = temp[1] / 86400;
 					rows.add(line);
 				}
-				temp = (double[]) ArrDay.get(0);
+				temp = ArrDay.get(0);
 				d = new Date((long) temp[0]);
 				s = new String(d.getDate() + "/" + d.getMonth() + "/" + d.getYear());
 				graph.setXLabel(currentIndex + " from " + s);
@@ -298,8 +298,8 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 				//ew.getTAP().redraw(ArrHour,3);	
 				for (int i = 0; i < ArrHour.size(); i++) {
 
-					line = new Vector();
-					temp = (double[]) ArrHour.get(i);
+					line = new Vector<Comparable>();
+					temp = ArrHour.get(i);
 					d = new Date((long) temp[0]);
 					line.add(new Integer(f));
 					f++;
@@ -314,7 +314,7 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 					res[i] = temp[1] / 3600;
 					rows.add(line);
 				}
-				temp = (double[]) ArrHour.get(0);
+				temp = ArrHour.get(0);
 				d = new Date((long) temp[0]);
 
 				SimpleDateFormat dfo = new SimpleDateFormat("dd/MM/yyyy HH.00");
@@ -329,8 +329,8 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 				//ew.getTAP().redraw(ArrMinute,4);
 				for (int i = 0; i < ArrMinute.size(); i++) {
 
-					line = new Vector();
-					temp = (double[]) ArrMinute.get(i);
+					line = new Vector<Comparable>();
+					temp = ArrMinute.get(i);
 					d = new Date((long) temp[0]);
 					line.add(new Integer(f));
 					f++;
@@ -343,7 +343,7 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 					res[i] = temp[1] / 60;
 					rows.add(line);
 				}
-				temp = (double[]) ArrMinute.get(0);
+				temp = ArrMinute.get(0);
 				d = new Date((long) temp[0]);
 
 				SimpleDateFormat dfoM = new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -378,7 +378,7 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 	 * Is the method invoked to calculate the number of minutes in the log (Variable)
 	 */
 	private void ArrNumMinute() {
-		ArrMinute = new Vector();
+		ArrMinute = new Vector<double[]>();
 		double i[];
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date((long) v.getValue(0)));
@@ -435,7 +435,7 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 	 * Is the method invoked to calculate the number of hours in the log (Variable)
 	 */
 	private void ArrNumHour() {
-		ArrHour = new Vector();
+		ArrHour = new Vector<double[]>();
 		double i[];
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(new Date((long) v.getValue(0)));
@@ -485,7 +485,7 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 	 * Is the method invoked to calculate the number of days in the log (Variable)
 	 */
 	private void ArrNumDay() {
-		ArrDay = new Vector();
+		ArrDay = new Vector<double[]>();
 		double i[];
 		Calendar cal = Calendar.getInstance();
 		cal.setTimeInMillis((long) v.getValue(0));
@@ -522,7 +522,7 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 	 * Is the method invoked to calculate the number of months in the log (Variable)
 	 */
 	private void ArrNumMonth() {
-		ArrMonth = new Vector();
+		ArrMonth = new Vector<double[]>();
 		double i[];
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -565,7 +565,7 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 	 * Is the method invoked to calculate the number of years in the log (Variable)
 	 */
 	private void ArrNumYear() {
-		ArrYear = new Vector();
+		ArrYear = new Vector<double[]>();
 		double i[];
 		Calendar cal = Calendar.getInstance();
 		Calendar cal2 = Calendar.getInstance();
@@ -892,10 +892,12 @@ public class GraphArrivalPanel extends WizardPanel implements JWATConstants {
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Arrival Values";
 	}
 
+	@Override
 	public void lostFocus() {
 		ew.setLastPanel(TRAFFIC_GRAPHARRIVAL_PANEL);
 	}

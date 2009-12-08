@@ -167,7 +167,7 @@ public abstract class ParametricAnalysisDefinition implements ParametricAnalysis
 	 * Returns the values assumed by the varying parameter
 	 * @return a Vector containing the values assumed by the varying parameter
 	 */
-	public abstract Vector getParameterValues();
+	public abstract Vector<Number> getParameterValues();
 
 	/**
 	 * Gets the reference class.
@@ -195,7 +195,7 @@ public abstract class ParametricAnalysisDefinition implements ParametricAnalysis
 	 * defined as constants inside this class.
 	 * @return a Map containing the value for each property
 	 */
-	public abstract Map getProperties();
+	public abstract Map<String, String> getProperties();
 
 	/**
 	 * Sets the value for the specified property

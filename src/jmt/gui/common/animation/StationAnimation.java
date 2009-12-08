@@ -39,7 +39,7 @@ public class StationAnimation implements Animation, JobContainer {
 	private String typeOfStation;
 
 	/**list of jobs currently passing through this station.*/
-	protected Vector jobAnimations = new Vector();
+	protected Vector<JobAnimation> jobAnimations = new Vector<JobAnimation>();
 
 	// current image to be rendered
 	private Image img;
@@ -87,7 +87,7 @@ public class StationAnimation implements Animation, JobContainer {
 	 * overriding method must implement job routing or recall this method.*/
 	public void refresh() {
 		for (int i = 0; i < jobAnimations.size(); i++) {
-			JobAnimation ja = (JobAnimation) jobAnimations.get(i);
+			JobAnimation ja = jobAnimations.get(i);
 			boolean exceededResidencetime = System.currentTimeMillis() - ja.getTimeOfEntrance() >= residencetime;
 			if (exceededResidencetime) {
 				routeJob(ja);

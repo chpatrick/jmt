@@ -68,6 +68,7 @@ public class JmtGraphUI extends BasicGraphUI {
 	 * be messaged with false, true, false to cancel any lingering
 	 * editing.
 	 */
+	@Override
 	public void completeEditing() {
 		super.completeEditing();
 	}
@@ -80,6 +81,7 @@ public class JmtGraphUI extends BasicGraphUI {
 	 * Creates the listener responsible for calling the correct handlers
 	 * based on mouse events, and to select invidual cells.
 	 */
+	@Override
 	protected MouseListener createMouseListener() {
 		return null;
 	}
@@ -87,6 +89,7 @@ public class JmtGraphUI extends BasicGraphUI {
 	// Conti Andrea 29-08-2003
 	/* We want some actions to be enabled/disabled in response to selection changes:
 	    a good way to accomplish this is through a GraphSelectionListener */
+	@Override
 	protected GraphSelectionListener createGraphSelectionListener() {
 		return new JmtGraphSelectionHandler();
 	}
@@ -102,6 +105,7 @@ public class JmtGraphUI extends BasicGraphUI {
 		 */
 		private static final long serialVersionUID = 1L;
 
+		@Override
 		public void valueChanged(GraphSelectionEvent e) {
 			super.valueChanged(e);
 			// Bomb out with a ClassCastException in case the event's source is
@@ -114,20 +118,20 @@ public class JmtGraphUI extends BasicGraphUI {
 			boolean cannotAddBlockingRegion = false;
 			boolean foundConnection = false;
 			Object[] cells = sm.getSelectionCells();
-			for (int i = 0; i < cells.length; i++) {
-				if (cells[i] instanceof JmtCell) {
+			for (Object cell : cells) {
+				if (cell instanceof JmtCell) {
 					foundStations = true;
 					// If selected station is member of a BlockingRegion, signals it
-					if (((JmtCell) cells[i]).getParent() instanceof BlockingRegion) {
+					if (((JmtCell) cell).getParent() instanceof BlockingRegion) {
 						cannotAddBlockingRegion = true;
 					}
 					// If selected cell cannot be added to a blocking region, signals it
-					if (((JmtCell) cells[i]).generateOrDestroyJobs()) {
+					if (((JmtCell) cell).generateOrDestroyJobs()) {
 						cannotAddBlockingRegion = true;
 					}
-				} else if (cells[i] instanceof BlockingRegion) {
+				} else if (cell instanceof BlockingRegion) {
 					cannotAddBlockingRegion = true;
-				} else if (cells[i] instanceof JmtEdge) {
+				} else if (cell instanceof JmtEdge) {
 					foundConnection = true;
 				}
 				// Shorten cycle to avoid useless computation
@@ -164,6 +168,7 @@ public class JmtGraphUI extends BasicGraphUI {
 	// Conti Andrea 29-08-2003
 	// fix that wrong-selection-color-on-insert bug
 	// btw, what is "LockedHandle" supposed to mean??? "Focused" maybe???
+	@Override
 	protected void installDefaults() {
 		super.installDefaults();
 		graph.setLockedHandleColor(graph.getHighlightColor());
@@ -180,6 +185,7 @@ public class JmtGraphUI extends BasicGraphUI {
 	 menuitems. In this case you have to remove the mappings from the graph's ActionMap or
 	 the keystrokes will trigger the "default" actions instead of your ones.
 	 */
+	@Override
 	protected void installKeyboardActions() {
 		super.installKeyboardActions();
 		ActionMap am = SwingUtilities.getUIActionMap(graph);
@@ -201,6 +207,7 @@ public class JmtGraphUI extends BasicGraphUI {
 	/**
 	 * Update the handle using createHandle.
 	 */
+	@Override
 	public void updateHandle() {
 		//    	System.out.println("UPDATEHANDLE IN JMTGRAPHUI");
 		if (graphLayoutCache != null) {

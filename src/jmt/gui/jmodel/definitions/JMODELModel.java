@@ -46,9 +46,9 @@ import jmt.gui.jmodel.JMODELConstants;
 public class JMODELModel extends CommonModel implements JmodelClassDefinition, JmodelStationDefinition, JMODELConstants {
 
 	// ----- Variables -------------------------------------------------------------
-	protected HashMap objectNumber = new HashMap(); // Used to generate progressive unique default names
-	protected HashMap classColor = new HashMap(); // Used to store classes color
-	protected HashMap stationPositions = new HashMap(); // Used to store station positions
+	protected HashMap<String, Long> objectNumber = new HashMap<String, Long>(); // Used to generate progressive unique default names
+	protected HashMap<Object, Color> classColor = new HashMap<Object, Color>(); // Used to store classes color
+	protected HashMap<Object, JMTPoint> stationPositions = new HashMap<Object, JMTPoint>(); // Used to store station positions
 	protected Color[] defaultColor = new Color[] { Color.blue, Color.red, Color.green, Color.magenta, Color.orange, Color.cyan, Color.yellow }; // Defaults color prompted when inserting new class (next ones are generated random)
 
 	//Francesco D'Aquino
@@ -76,7 +76,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 			num = new Long(0L);
 		} else {
 			// Uses next number
-			num = (Long) objectNumber.get(Defaults.get("className"));
+			num = objectNumber.get(Defaults.get("className"));
 			num = new Long(num.longValue() + 1);
 		}
 		objectNumber.put(Defaults.get("className"), num);
@@ -89,6 +89,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * @param key search key for class to be deleted
 	 * Overrides default one to add "Color"
 	 */
+	@Override
 	public void deleteClass(Object key) {
 		super.deleteClass(key);
 		classColor.remove(key);
@@ -104,6 +105,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * @return search key identifying the new class.
 	 * Overrides default one to add "Color"
 	 */
+	@Override
 	public Object addClass(String name, int type, int priority, Integer population, Object distribution) {
 		Object tmp = super.addClass(getUniqueClassName(name), type, priority, population, distribution);
 		this.setClassColor(tmp, getNewColor());
@@ -115,6 +117,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * @param name name to be set to selected class
 	 * @param key search's key for selected class
 	 */
+	@Override
 	public void setClassName(String name, Object key) {
 		super.setClassName(getUniqueClassName(name), key);
 	}
@@ -127,6 +130,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * @return selected parameter's value
 	 * Overrides default one to add "Color"
 	 */
+	@Override
 	public Object getClassParameter(Object key, int parameterName) {
 		if (parameterName == CLASS_COLOR) {
 			return getClassColor(key);
@@ -145,6 +149,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * @param value selected parameter should be setted to this value
 	 * Overrides default one to add "Color"
 	 */
+	@Override
 	public void setClassParameter(Object key, int parameterName, Object value) {
 		if (parameterName == CLASS_COLOR) {
 			setClassColor(key, (Color) value);
@@ -159,6 +164,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * Sets type of the class linked to the specific key. Type of class is represented by
 	 * an int number whose value is contained in <code>JMODELConstants</code>.
 	 * */
+	@Override
 	public synchronized void setClassType(int type, Object key) {
 		// If a class type changes, resets its reference station
 		int old = getClassType(key);
@@ -193,7 +199,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * @return Color associated with given class, or null if class does not exist
 	 */
 	public Color getClassColor(Object key) {
-		return (Color) classColor.get(key);
+		return classColor.get(key);
 	}
 
 	/**
@@ -208,7 +214,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 			num = new Long(0L);
 		} else {
 			// Uses next number
-			num = (Long) objectNumber.get(COLOR_NAME);
+			num = objectNumber.get(COLOR_NAME);
 			num = new Long(num.longValue() + 1);
 		}
 		objectNumber.put(COLOR_NAME, num);
@@ -225,6 +231,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 *
 	 * @return true if the animation is enabled
 	 */
+	@Override
 	public boolean isAnimationEnabled() {
 		return this.animationEnabled;
 	}
@@ -234,6 +241,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 *
 	 * @param isEnabled - set it to true to enable queue animation
 	 */
+	@Override
 	public void setAnimationEnabled(boolean isEnabled) {
 		animationEnabled = isEnabled;
 	}
@@ -300,7 +308,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * @return unique name
 	 */
 	private String getUniqueClassName(String name) {
-		TreeSet names = new TreeSet(); // Map of all unique names with their first users
+		TreeSet<String> names = new TreeSet<String>(); // Map of all unique names with their first users
 		Vector keys = getClassKeys();
 		// Finds all used names
 		for (int i = 0; i < keys.size(); i++) {
@@ -349,11 +357,11 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 			num = new Long(0L);
 		} else {
 			// Uses next number
-			num = (Long) objectNumber.get(type);
+			num = objectNumber.get(type);
 			num = new Long(num.longValue() + 1);
 		}
 		objectNumber.put(type, num);
-		return super.addStation(getUniqueStationName((String)STATION_NAMES.get(type) + " " + num), type);
+		return super.addStation(getUniqueStationName(STATION_NAMES.get(type) + " " + num), type);
 	}
 
 	/**
@@ -361,6 +369,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * @param key: search key for station to be modified
 	 * @param name: name of station.
 	 */
+	@Override
 	public void setStationName(String name, Object key) {
 		// Changes station name only if needed
 		if (!name.equals(getStationName(key))) {
@@ -372,6 +381,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * Deletes station given a search key
 	 * @param key search key for station to be deleted
 	 */
+	@Override
 	public synchronized void deleteStation(Object key) {
 		super.deleteStation(key);
 		stationPositions.remove(key);
@@ -395,7 +405,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * @return position where target station has to be placed
 	 */
 	public JMTPoint getStationPosition(Object key) {
-		return (JMTPoint) stationPositions.get(key);
+		return stationPositions.get(key);
 	}
 
 	/**
@@ -409,7 +419,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 		if (!objectNumber.containsKey(type)) {
 			return getUniqueStationName(type + "0");
 		} else {
-			return getUniqueStationName(type + ((Long) objectNumber.get(type)).toString());
+			return getUniqueStationName(type + objectNumber.get(type).toString());
 		}
 	}
 
@@ -440,11 +450,11 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 		// in the meantime)
 		Object[] classkeyset = ss.serviceStrategy.keySet().toArray();
 		Vector currentclasses = getClassKeys();
-		for (int i = 0; i < classkeyset.length; i++) {
-			if (currentclasses.contains(classkeyset[i])) {
-				setQueueStrategy(key, classkeyset[i], (String) ss.queueStrategy.get(classkeyset[i]));
-				setServiceTimeDistribution(key, classkeyset[i], ss.serviceStrategy.get(classkeyset[i]));
-				setRoutingStrategy(key, classkeyset[i], ss.routingStrategy.get(classkeyset[i]));
+		for (Object element : classkeyset) {
+			if (currentclasses.contains(element)) {
+				setQueueStrategy(key, element, ss.queueStrategy.get(element));
+				setServiceTimeDistribution(key, element, ss.serviceStrategy.get(element));
+				setRoutingStrategy(key, element, ss.routingStrategy.get(element));
 			}
 		}
 		return key;
@@ -461,9 +471,9 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 		public Integer numOfServers;
 		public Integer queueCapacity;
 		// Attributes of the tuple (class, this station)
-		public HashMap queueStrategy = new HashMap();
-		public HashMap serviceStrategy = new HashMap();
-		public HashMap routingStrategy = new HashMap();
+		public HashMap<Object, String> queueStrategy = new HashMap<Object, String>();
+		public HashMap<Object, ServiceStrategy> serviceStrategy = new HashMap<Object, ServiceStrategy>();
+		public HashMap<Object, RoutingStrategy> routingStrategy = new HashMap<Object, RoutingStrategy>();
 
 		public SerializedStation() {
 
@@ -490,6 +500,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 		 * Returns a deep copy of this object
 		 * @return A deep copy of this object
 		 */
+		@Override
 		public Object clone() {
 			SerializedStation ss = new SerializedStation();
 			ss.key = key;
@@ -500,10 +511,10 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 			Object[] classes = serviceStrategy.keySet().toArray();
 			// QueueStrategy can share values as they are strings (immutable). On the other hand,
 			// as Distribution and RoutingStrategy are mutable, they have to be cloned explicitly
-			ss.queueStrategy = new HashMap(queueStrategy);
-			for (int i = 0; i < classes.length; i++) {
-				ss.serviceStrategy.put(classes[i], ((ServiceStrategy) serviceStrategy.get(classes[i])).clone());
-				ss.routingStrategy.put(classes[i], ((RoutingStrategy) routingStrategy.get(classes[i])).clone());
+			ss.queueStrategy = new HashMap<Object, String>(queueStrategy);
+			for (Object classe : classes) {
+				ss.serviceStrategy.put(classe, serviceStrategy.get(classe).clone());
+				ss.routingStrategy.put(classe, routingStrategy.get(classe).clone());
 			}
 			return ss;
 		}
@@ -515,7 +526,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 	 * @return unique name
 	 */
 	private String getUniqueStationName(String name) {
-		TreeSet names = new TreeSet(); // Map of all unique names with their first users
+		TreeSet<String> names = new TreeSet<String>(); // Map of all unique names with their first users
 		Vector keys = getStationKeys();
 		// Finds all used names
 		for (int i = 0; i < keys.size(); i++) {
@@ -561,7 +572,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 		String baseName = Defaults.get("blockingRegionName");
 
 		// Gets all blocking region names to find an unique name
-		TreeSet names = new TreeSet();
+		TreeSet<String> names = new TreeSet<String>();
 		Vector keys = getRegionKeys();
 		for (int i = 0; i < keys.size(); i++) {
 			names.add(getRegionName(keys.get(i)));

@@ -425,7 +425,7 @@ public class DistributionsEditor extends JMTDialog {
 		this.initial = initial;
 		this.target = initial;
 		if (initial != null) {
-			this.current = (Distribution) initial.clone();
+			this.current = initial.clone();
 		} else {
 			this.current = new Exponential(); // Default distribution if nothing is selected
 		}

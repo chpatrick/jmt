@@ -55,6 +55,7 @@ public final class ResTimePanel extends SolutionPanel {
 	/**
 	 * gets status from data object
 	 */
+	@Override
 	protected void sync() {
 		super.sync();
 		resTimes = data.getResTimes();
@@ -65,10 +66,12 @@ public final class ResTimePanel extends SolutionPanel {
 		//END
 	}
 
+	@Override
 	protected ExactTableModel getTableModel() {
 		return new RTTableModel();
 	}
 
+	@Override
 	protected String getDescriptionMessage() {
 		return ExactConstants.DESCRIPTION_RESPONSETIMES;
 	}
@@ -120,6 +123,7 @@ public final class ResTimePanel extends SolutionPanel {
 			//end NEW
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			if (rowIndex == 0) {
 				return "<html><i>Aggregate</i></html>";
@@ -127,6 +131,7 @@ public final class ResTimePanel extends SolutionPanel {
 			return stationNames[rowIndex - 1];
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			if (index == 0) {
 				return "<html><i>Aggregate</i></html>";
@@ -134,6 +139,7 @@ public final class ResTimePanel extends SolutionPanel {
 			return classNames[index - 1];
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			double d;
 			//NEW Dall'Orso

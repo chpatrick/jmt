@@ -33,6 +33,7 @@ public class PATimerThread extends Thread {
 	 * Thread run's method. It will wait until maxDuration has elapsed, then stops
 	 * simulation.
 	 */
+	@Override
 	public void run() {
 		initialTime = System.currentTimeMillis();
 		// Wait for residual time. This is true unless pause button is pressed.

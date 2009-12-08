@@ -171,6 +171,7 @@ public class ExactTable extends JTable {
 		installMouse();
 
 		selectionListener = new TableSelectionListener() {
+			@Override
 			protected void selectionChanged(JTable table, ListSelectionEvent e, int type) {
 				updateActions();
 			}
@@ -220,6 +221,7 @@ public class ExactTable extends JTable {
 	/**
 	 * Overridden to make sure column sizes are mantained
 	 */
+	@Override
 	public void tableChanged(TableModelEvent e) {
 		super.tableChanged(e);
 		if ((e == null || e.getFirstRow() == TableModelEvent.HEADER_ROW)) {
@@ -267,6 +269,7 @@ public class ExactTable extends JTable {
 		}
 	}
 
+	@Override
 	public void setColumnSelectionAllowed(boolean allowed) {
 		super.setColumnSelectionAllowed(allowed);
 		allowed = getColumnSelectionAllowed();
@@ -276,6 +279,7 @@ public class ExactTable extends JTable {
 		setSelectAllStatus(allowed || getRowSelectionAllowed());
 	}
 
+	@Override
 	public void setRowSelectionAllowed(boolean allowed) {
 		super.setRowSelectionAllowed(allowed);
 		allowed = getRowSelectionAllowed();
@@ -306,6 +310,7 @@ public class ExactTable extends JTable {
 	/**
 	 * Overridden to return our nifty header
 	 */
+	@Override
 	protected JTableHeader createDefaultTableHeader() {
 		return new ClickableTableHeader(columnModel);
 	}
@@ -313,6 +318,7 @@ public class ExactTable extends JTable {
 	/**
 	 * duplicated to avoid repeating the same checks multiple times
 	 */
+	@Override
 	protected void configureEnclosingScrollPane() {
 		Container p = getParent();
 		if (p instanceof JViewport) {
@@ -340,6 +346,7 @@ public class ExactTable extends JTable {
 		}
 	}
 
+	@Override
 	protected void unconfigureEnclosingScrollPane() {
 		Container p = getParent();
 		if (p instanceof JViewport) {
@@ -412,6 +419,7 @@ public class ExactTable extends JTable {
 	/**
 	 * Overridden to stop editing
 	 */
+	@Override
 	public void selectAll() {
 		stopEditing();
 		super.selectAll();
@@ -522,6 +530,7 @@ public class ExactTable extends JTable {
 	/**
 	 * Try to keep the viewport aligned on column boundaries in the direction of interest
 	 */
+	@Override
 	public int getScrollableUnitIncrement(Rectangle visibleRect, int orientation, int direction) {
 
 		if (orientation == SwingConstants.HORIZONTAL) {
@@ -530,6 +539,7 @@ public class ExactTable extends JTable {
 		return getRowHeight();
 	}
 
+	@Override
 	public int getScrollableBlockIncrement(Rectangle visibleRect, int orientation, int direction) {
 		/* borrowed from JTable */
 		if (orientation == SwingConstants.HORIZONTAL) {
@@ -608,6 +618,7 @@ public class ExactTable extends JTable {
 			sbf.append("\n");
 		}
 		stsel = new StringSelection(sbf.toString()) {
+			@Override
 			public void lostOwnership(Clipboard clipboard, Transferable contents) {
 				canPaste = false;
 			}
@@ -802,10 +813,12 @@ public class ExactTable extends JTable {
 			}
 		}
 
+		@Override
 		public void mousePressed(MouseEvent e) {
 			processME(e);
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent e) {
 			processME(e);
 		}

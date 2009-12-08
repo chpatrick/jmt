@@ -33,22 +33,22 @@ import java.util.Vector;
 public class EngineConvex2D {
 
 	//All the point of the category
-	private Vector imperant;
-	private Vector dominates;
-	private Vector convex;
-	private Vector points;
+	private Vector<Point2D> imperant;
+	private Vector<Point2D> dominates;
+	private Vector<Point2D> convex;
+	private Vector<Point2D> points;
 
 	//	All the point of the category
-	private Vector allPoints;
-	private Vector allConvex;
-	private Vector allImperant;
-	private Vector allDominates;
+	private Vector<Point2D> allPoints;
+	private Vector<Point2D> allConvex;
+	private Vector<Point2D> allImperant;
+	private Vector<Point2D> allDominates;
 
 	// The filtered point in each category
-	private Vector filtDominants;
-	private Vector filtDominates;
-	private Vector filtPoints;
-	private Vector filtConvex;
+	private Vector<Point2D> filtDominants;
+	private Vector<Point2D> filtDominates;
+	private Vector<DPoint> filtPoints;
+	private Vector<Point2D> filtConvex;
 
 	//The filtered area
 	private Area filtArea;
@@ -60,16 +60,16 @@ public class EngineConvex2D {
 	 * @param allPoints All the point of the graph
 	 * @param sd3 The sector of saturation
 	 */
-	public EngineConvex2D(Vector allPoints, Vector sd3) {
-		this.allPoints = (Vector) allPoints.clone();
-		allConvex = new Vector();
-		allImperant = (Vector) allPoints.clone();
-		allDominates = new Vector();
+	public EngineConvex2D(Vector<Point2D> allPoints, Vector<Object> sd3) {
+		this.allPoints = (Vector<Point2D>) allPoints.clone();
+		allConvex = new Vector<Point2D>();
+		allImperant = (Vector<Point2D>) allPoints.clone();
+		allDominates = new Vector<Point2D>();
 
-		filtDominants = new Vector();
-		filtDominates = new Vector();
-		filtPoints = new Vector();
-		filtConvex = new Vector();
+		filtDominants = new Vector<Point2D>();
+		filtDominates = new Vector<Point2D>();
+		filtPoints = new Vector<DPoint>();
+		filtConvex = new Vector<Point2D>();
 
 		filtArea = new Area();
 
@@ -77,10 +77,10 @@ public class EngineConvex2D {
 		//calcConvex();
 		calcConvex(sd3);
 
-		dominates = (Vector) allDominates.clone();
-		imperant = (Vector) allImperant.clone();
-		convex = (Vector) allConvex.clone();
-		points = (Vector) this.allPoints.clone();
+		dominates = (Vector<Point2D>) allDominates.clone();
+		imperant = (Vector<Point2D>) allImperant.clone();
+		convex = (Vector<Point2D>) allConvex.clone();
+		points = (Vector<Point2D>) this.allPoints.clone();
 	}
 
 	/**
@@ -223,7 +223,7 @@ public class EngineConvex2D {
 
 		//Move from allPoints vector the filtered points
 		for (int k = 0; k < filtPoints.size(); k++) {
-			p = (DPoint) filtPoints.get(k);
+			p = filtPoints.get(k);
 			p.setSelect(false);
 			if ((x2 > p.getX()) && (y2 > p.getY()) && (x1 < p.getX()) && (y1 < p.getY())) {
 				filtPoints.removeElementAt(k);
@@ -236,84 +236,84 @@ public class EngineConvex2D {
 	/**
 	 * Return the no-filtered dominates point
 	 */
-	public Vector getDominates() {
+	public Vector<Point2D> getDominates() {
 		return dominates;
 	}
 
 	/**
 	 * Return the no-filtered dominants point
 	 */
-	public Vector getDominants() {
+	public Vector<Point2D> getDominants() {
 		return imperant;
 	}
 
 	/**
 	 * Return the no-filtered convex point
 	 */
-	public Vector getConvex() {
+	public Vector<Point2D> getConvex() {
 		return convex;
 	}
 
 	/**
 	 * Return the no-filtered point
 	 */
-	public Vector getPoints() {
+	public Vector<Point2D> getPoints() {
 		return points;
 	}
 
 	/**
 	 * Return all the dominates point
 	 */
-	public Vector getAllDominates() {
+	public Vector<Point2D> getAllDominates() {
 		return allDominates;
 	}
 
 	/**
 	 * Return all the dominates point
 	 */
-	public Vector getAllDominants() {
+	public Vector<Point2D> getAllDominants() {
 		return allImperant;
 	}
 
 	/**
 	 * Return all the convex hull point
 	 */
-	public Vector getAllConvex() {
+	public Vector<Point2D> getAllConvex() {
 		return allConvex;
 	}
 
 	/**
 	 * Return all points
 	 */
-	public Vector getAllPoints() {
+	public Vector<Point2D> getAllPoints() {
 		return allPoints;
 	}
 
 	/**
 	 * Return the filtered dominate points
 	 */
-	public Vector getFiltDominates() {
+	public Vector<Point2D> getFiltDominates() {
 		return filtDominates;
 	}
 
 	/**
 	 * Return the filtered dominant points
 	 */
-	public Vector getFiltDominants() {
+	public Vector<Point2D> getFiltDominants() {
 		return filtDominants;
 	}
 
 	/**
 	 * Return the filtered Convex hull point
 	 */
-	public Vector getFiltConvex() {
+	public Vector<Point2D> getFiltConvex() {
 		return filtConvex;
 	}
 
 	/**
 	 * Return the filtered points
 	 */
-	public Vector getFiltPoints() {
+	public Vector<DPoint> getFiltPoints() {
 		return filtPoints;
 	}
 
@@ -327,9 +327,9 @@ public class EngineConvex2D {
 		 * doinants one.
 		 */
 		for (int i = 0; i < allPoints.size(); i++) {
-			Point2D p1 = (Point2D) allPoints.get(i);
+			Point2D p1 = allPoints.get(i);
 			for (int k = 0; k < allImperant.size(); k++) {
-				Point2D p2 = (Point2D) allImperant.get(k);
+				Point2D p2 = allImperant.get(k);
 				if ((p1.getX() < p2.getX()) && (p1.getY() < p2.getY())) {
 					allDominates.add(p1);
 					allImperant.remove(p1);
@@ -347,16 +347,16 @@ public class EngineConvex2D {
 	 * @param v The vector to order
 	 * @return The vector ordered
 	 */
-	private Vector orderByX(Vector v) {
-		Vector r = (Vector) v.clone();
+	private Vector<Point2D> orderByX(Vector<Point2D> v) {
+		Vector<Point2D> r = (Vector<Point2D>) v.clone();
 		boolean again = true;
 
 		while (again) {
 			again = false;
 			for (int k = 0; k < r.size() - 1; k++) {
 				//Take the points
-				Point2D p1 = (Point2D) r.get(k);
-				Point2D p2 = (Point2D) r.get(k + 1);
+				Point2D p1 = r.get(k);
+				Point2D p2 = r.get(k + 1);
 
 				if (p1.getX() < p2.getX()) {
 					//swap
@@ -375,7 +375,7 @@ public class EngineConvex2D {
 	 * Set the convex hull points from results of the jaba engine
 	 * @param s3d The data from the jaba engine
 	 */
-	private void calcConvex(Vector s3d) {
+	private void calcConvex(Vector<Object> s3d) {
 		for (int i = 0; i < s3d.size(); i++) {
 			// Current sector
 			FinalSect2D sect = (FinalSect2D) s3d.get(i);
@@ -385,7 +385,7 @@ public class EngineConvex2D {
 			//String pb22 = formatter.format(sect.getBeta2());
 
 			for (int z = 0; z < sect.countStation(); z++) {
-				Station2D d = (Station2D) (sect.getstation()).get(z);
+				Station2D d = (sect.getstation()).get(z);
 				DPoint p;
 				for (int k = 0; k < allImperant.size(); k++) {
 					p = (DPoint) allImperant.get(k);

@@ -38,7 +38,7 @@ import jmt.gui.common.definitions.StationDefinition;
  */
 public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	public static final int STEPS = 10; //It must be < than ParametricAnalysis.MAX_STEP_NUMBER
-	public Vector values;
+	public Vector<Number> values;
 
 	public SeedParametricAnalysis(ClassDefinition cd, StationDefinition sd, SimulationDefinition simd) {
 		type = PA_TYPE_SEED;
@@ -46,7 +46,7 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 		classDef = cd;
 		stationDef = sd;
 		simDef = simd;
-		values = new Vector();
+		values = new Vector<Number>();
 	}
 
 	/**
@@ -54,6 +54,7 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	 *
 	 * @return the type of parametric analysis
 	 */
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -61,6 +62,7 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	/**
 	 * Changes the model preparing it for the next step
 	 */
+	@Override
 	public void changeModel(int step) {
 		Long nextSeed = (Long) values.get(step);
 		simDef.setSimulationSeed(nextSeed);
@@ -72,6 +74,7 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	 *
 	 * @return the maximum number of steps
 	 */
+	@Override
 	public int searchForAvaibleSteps() {
 		return Integer.MAX_VALUE;
 	}
@@ -80,6 +83,7 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	 * Finds the set of possible values of the population on which the
 	 * simulation may be iterated on.
 	 */
+	@Override
 	public void createValuesSet() {
 		MersenneTwister generator = new MersenneTwister();
 		generator.setNewSeed(simDef.getSimulationSeed().longValue());
@@ -92,6 +96,7 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	/**
 	 * Restore the original values of the parameter
 	 */
+	@Override
 	public void restoreOriginalValues() {
 		simDef.setSimulationSeed((Long) originalValues);
 	}
@@ -106,6 +111,7 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	 *         1 - If the PA model is no more valid, but it will be corrected <br>
 	 *         2 - If the PA model can be no more used
 	 */
+	@Override
 	public int checkCorrectness(boolean autocorrect) {
 		if ((classDef.getClassKeys().isEmpty()) && (stationDef.getStationKeys().isEmpty())) {
 			return 2;
@@ -119,7 +125,8 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	 *
 	 * @return a Vector containing the values assumed by the varying parameter
 	 */
-	public Vector getParameterValues() {
+	@Override
+	public Vector<Number> getParameterValues() {
 		return values;
 	}
 
@@ -129,8 +136,9 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	 *
 	 * @return a Map containing the value for each property
 	 */
-	public Map getProperties() {
-		TreeMap properties = new TreeMap();
+	@Override
+	public Map<String, String> getProperties() {
+		TreeMap<String, String> properties = new TreeMap<String, String>();
 		properties.put(TYPE_PROPERTY, getType());
 		properties.put(STEPS_PROPERTY, Integer.toString(numberOfSteps));
 		return properties;
@@ -142,6 +150,7 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	 * @param propertyName the name of the property to be set
 	 * @param value        the value to be set
 	 */
+	@Override
 	public void setProperty(String propertyName, String value) {
 		if (propertyName.equals(STEPS_PROPERTY)) {
 			numberOfSteps = Integer.parseInt(value);
@@ -154,6 +163,7 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	 *
 	 * @return reference classKey
 	 */
+	@Override
 	public Object getReferenceClass() {
 		return null; //To change body of implemented methods use File | Settings | File Templates.
 	}
@@ -163,6 +173,7 @@ public class SeedParametricAnalysis extends ParametricAnalysisDefinition {
 	 *
 	 * @return the name of the class
 	 */
+	@Override
 	public String getReferenceClassName() {
 		return null; //To change body of implemented methods use File | Settings | File Templates.
 	}

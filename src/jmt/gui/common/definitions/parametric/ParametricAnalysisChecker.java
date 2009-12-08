@@ -72,9 +72,9 @@ public class ParametricAnalysisChecker {
 	 */
 	public String[] getRunnableParametricAnalysis() {
 		String[] runnable;
-		Vector runnableVector = new Vector(0, 1);
+		Vector<String> runnableVector = new Vector<String>(0, 1);
 		//check if "Number of customer" parametric analysis is runnable
-		Vector temp = cd.getClosedClassKeys();
+		Vector<Object> temp = cd.getClosedClassKeys();
 		if (!temp.isEmpty()) {
 			runnableVector.add(ParametricAnalysis.PA_TYPE_NUMBER_OF_CUSTOMERS);
 		}
@@ -100,7 +100,7 @@ public class ParametricAnalysisChecker {
 		//initilalize runnable array
 		runnable = new String[runnableVector.size()];
 		for (int i = 0; i < runnable.length; i++) {
-			runnable[i] = (String) runnableVector.get(i);
+			runnable[i] = runnableVector.get(i);
 		}
 		return runnable;
 	}
@@ -111,8 +111,8 @@ public class ParametricAnalysisChecker {
 	 *  analysis.
 	 * @return the Vector containing the keys of avaible stations
 	 */
-	public Vector checkForServiceTimesParametricAnalysisAvaibleStations() {
-		Vector avaibleStations = new Vector(0, 1);
+	public Vector<Object> checkForServiceTimesParametricAnalysisAvaibleStations() {
+		Vector<Object> avaibleStations = new Vector<Object>(0, 1);
 		Vector stations = sd.getStationKeysNoSourceSink();
 		Vector classes = cd.getClassKeys();
 		for (int i = 0; i < stations.size(); i++) {
@@ -143,8 +143,8 @@ public class ParametricAnalysisChecker {
 	 * @param stationKey the key of the station whose service times will be varied.
 	 * @return a Vector containing the keys of avaible classes
 	 */
-	public Vector checkForServiceTimesParametricSimulationAvaibleClasses(Object stationKey) {
-		Vector valid = new Vector(0, 1);
+	public Vector<Object> checkForServiceTimesParametricSimulationAvaibleClasses(Object stationKey) {
+		Vector<Object> valid = new Vector<Object>(0, 1);
 		Vector classes = cd.getClassKeys();
 		for (int j = 0; j < classes.size(); j++) {
 			Object thisClass = classes.get(j);
@@ -165,8 +165,8 @@ public class ParametricAnalysisChecker {
 	 * analysis.
 	 * @return a Vector containing the keys of avaible classes
 	 */
-	public Vector checkForArrivalRatesParametricSimulationAvaibleClasses() {
-		Vector valid = new Vector(0, 1);
+	public Vector<Object> checkForArrivalRatesParametricSimulationAvaibleClasses() {
+		Vector<Object> valid = new Vector<Object>(0, 1);
 		Vector classes = cd.getOpenClassKeys();
 		for (int j = 0; j < classes.size(); j++) {
 			Object thisClass = classes.get(j);

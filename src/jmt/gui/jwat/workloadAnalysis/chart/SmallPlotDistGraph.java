@@ -56,6 +56,7 @@ public class SmallPlotDistGraph extends Plot {
 		// Adds mouselistener
 		this.addMouseListener(new MouseAdapter() {
 			// Creates new windows with enlarged graph
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					// Creates and sets up new window
@@ -63,10 +64,12 @@ public class SmallPlotDistGraph extends Plot {
 
 					JWatWorkloadManager.addJMTWindow(plotFrame);
 					plotFrame.addWindowListener(new WindowAdapter() {
+						@Override
 						public void windowClosing(WindowEvent e) {
 							JWatWorkloadManager.exit(plotFrame);
 						}
 
+						@Override
 						public void windowClosed(WindowEvent e) {
 							JWatWorkloadManager.exit(plotFrame);
 						}

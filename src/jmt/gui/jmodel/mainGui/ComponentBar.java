@@ -51,8 +51,8 @@ public class ComponentBar extends JMTToolBar {
 		addSeparator();
 		// Adds insert mode buttons.
 		String[] stations = getStationList();
-		for (int i = 0; i < stations.length; i++) {
-			addGenericButton(new SetInsertState(m, stations[i]));
+		for (String station : stations) {
+			addGenericButton(new SetInsertState(m, station));
 		}
 		addSeparator();
 		// Adds link button
@@ -81,10 +81,10 @@ public class ComponentBar extends JMTToolBar {
 		String[] stationNames = new String[fields.length];
 		int index = 0;
 		try {
-			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].getName().startsWith("STATION_TYPE_")) {
+			for (Field field : fields) {
+				if (field.getName().startsWith("STATION_TYPE_")) {
 					// Checks for existance of graphic component
-					String name = ((String) fields[i].get(null)).replaceAll(" ", "") + "Cell";
+					String name = ((String) field.get(null)).replaceAll(" ", "") + "Cell";
 					try {
 						boolean enabled = Class.forName(path + name).getDeclaredField("canBePlaced").getBoolean(null);
 						if (enabled) {

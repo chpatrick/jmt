@@ -58,11 +58,11 @@ public class Beta2D {
 	 * @param verticesnp    il vettore di vertici passato
 	 * @return              un vettore con le beta con la struttura dati di BetaCalc2D
 	 */
-	public Vector BetaVector(Vector verticesnp) {
-		Vector sector = new Vector();
+	public Vector<Sector2D> BetaVector(Vector<newPoint> verticesnp) {
+		Vector<Sector2D> sector = new Vector<Sector2D>();
 		for (int i = 0; i < (verticesnp.size() - 1); i++) {
 			Sector2D out = new Sector2D();
-			out = BetaCalc2D((newPoint) verticesnp.get(i), (newPoint) verticesnp.get(i + 1));
+			out = BetaCalc2D(verticesnp.get(i), verticesnp.get(i + 1));
 			sector.addElement(out);
 		}
 		return sector;
@@ -77,15 +77,14 @@ public class Beta2D {
 	 * @return              {b1,1-b1,b2,1-b2,xa,ya,xb,yb}
 	 *                      se nel settore sat 1sola staz=>xb,yb=-1
 	 */
-	public Vector StatAss(Vector sector) {
+	public Vector<Sector2D> StatAss(Vector<Sector2D> sector) {
 		//Util2d uti = new Util2d();
-		Vector out = new Vector();
+		Vector<Sector2D> out = new Vector<Sector2D>();
 		// supponiamo di avere 2 intervalli [b1,1-b1]->[b2,1-b2] e [b3,1-b3]->[b4,1-b4]
 
 		// se b1!=0 associo alla stazione A l'intervallo [0,1]->[b1,1-b1]
-		if (((Sector2D) sector.get(0)).getBeta1() > EPSYLON) {
-			Sector2D sss = new Sector2D(0, 1, ((Sector2D) sector.get(0)).getBeta1(), ((Sector2D) sector.get(0)).getBeta11(), ((Sector2D) sector
-					.get(0)).getP1());
+		if (sector.get(0).getBeta1() > EPSYLON) {
+			Sector2D sss = new Sector2D(0, 1, sector.get(0).getBeta1(), sector.get(0).getBeta11(), sector.get(0).getP1());
 			out.addElement(sss);
 		}
 
@@ -94,22 +93,21 @@ public class Beta2D {
 
 			// Settore normale
 
-			Sector2D sss = new Sector2D(((Sector2D) sector.get(i)).getBeta1(), ((Sector2D) sector.get(i)).getBeta11(), ((Sector2D) sector.get(i))
-					.getBeta2(), ((Sector2D) sector.get(i)).getBeta22(), ((Sector2D) sector.get(i)).getP1(), ((Sector2D) sector.get(i)).getP2());
+			Sector2D sss = new Sector2D(sector.get(i).getBeta1(), sector.get(i).getBeta11(), sector.get(i).getBeta2(), sector.get(i).getBeta22(),
+					sector.get(i).getP1(), sector.get(i).getP2());
 			out.addElement(sss);
 
 			// se gli estremi b2 e b3 non coincidono (a meno di EPSYLON) associo b2-->b3 alla stazione di b2
 			if (i != (sector.size() - 1) //todo controllare l'estensione
-					&& (((Sector2D) sector.get(i + 1)).getBeta1() - ((Sector2D) sector.get(i)).getBeta2()) > EPSYLON) {
-				Sector2D ss1 = new Sector2D(((Sector2D) sector.get(i)).getBeta2(), ((Sector2D) sector.get(i)).getBeta22(), ((Sector2D) sector
-						.get(i + 1)).getBeta1(), ((Sector2D) sector.get(i + 1)).getBeta11(), ((Sector2D) sector.get(i)).getP2());
+					&& (sector.get(i + 1).getBeta1() - sector.get(i).getBeta2()) > EPSYLON) {
+				Sector2D ss1 = new Sector2D(sector.get(i).getBeta2(), sector.get(i).getBeta22(), sector.get(i + 1).getBeta1(), sector.get(i + 1)
+						.getBeta11(), sector.get(i).getP2());
 				out.addElement(ss1);
 			}
 
 			//Associo all'ultima stazione l'intervallo b4->1 se b4!=0
-			else if (i == (sector.size() - 1) && ((Sector2D) sector.get(i)).getBeta2() != 1) {
-				Sector2D ssf = new Sector2D(((Sector2D) sector.get(i)).getBeta2(), ((Sector2D) sector.get(i)).getBeta22(), 1, 0, ((Sector2D) sector
-						.get(i)).getP2()); //aggiungere ,end
+			else if (i == (sector.size() - 1) && sector.get(i).getBeta2() != 1) {
+				Sector2D ssf = new Sector2D(sector.get(i).getBeta2(), sector.get(i).getBeta22(), 1, 0, sector.get(i).getP2()); //aggiungere ,end
 				out.addElement(ssf);
 			}
 

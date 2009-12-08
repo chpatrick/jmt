@@ -12,8 +12,8 @@ public abstract class VariableMapping {
 	public double addNewValue(String value) {
 		//Check if value is already inserted in the mapping.
 		for (int i = 0; i < valMap.size(); i++) {
-			if (((Mapping) valMap.get(i)).getValue().equals(value)) {
-				return ((Mapping) valMap.get(i)).getConversion();
+			if (valMap.get(i).getValue().equals(value)) {
+				return valMap.get(i).getConversion();
 			}
 		}
 
@@ -32,6 +32,6 @@ public abstract class VariableMapping {
 		valMap.add(new Mapping(val, str));
 	}
 
-	ArrayList valMap = new ArrayList();
+	ArrayList<Mapping> valMap = new ArrayList<Mapping>();
 
 }

@@ -454,6 +454,7 @@ public abstract class SolverMulti {
 	/** creates a string of the principals parameters calculated
 	 *  @return the string
 	 */
+	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("\n------------------------------------");

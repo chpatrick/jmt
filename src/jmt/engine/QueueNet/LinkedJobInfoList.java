@@ -49,10 +49,10 @@ public class LinkedJobInfoList implements JobInfoList {
 			queueLengthPerClass[], dropRate, dropRatePerClass[];
 
 	private InverseMeasure throughput, throughputPerClass[];
-	
+
 	/** The number of servers to estimate Utilization measure on multiserver environments. */
 	private int serverNumber = 1;
-	
+
 	/** Creates a new JobInfoList instance.
 	* @param numberOfJobClasses number of job classes.
 	* @param save True to create and use a list to add/remove
@@ -608,7 +608,7 @@ public class LinkedJobInfoList implements JobInfoList {
 
 	private void updateUtilization(JobClass JobClass) {
 		double divisor = serverNumber;
-		
+
 		if (utilizationPerClass != null) {
 			int c = JobClass.getId();
 			Measure m = utilizationPerClass[c];
@@ -784,7 +784,6 @@ public class LinkedJobInfoList implements JobInfoList {
 			return false;
 		}
 	}
-	
 
 	/* (non-Javadoc)
 	 * @see jmt.engine.QueueNet.JobInfoList#setServerNumber(int)

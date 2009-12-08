@@ -100,19 +100,20 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 
 	// Data structures
 	private ExactModel data;
-	private TreeMap classNames; // A map className --> index in source array
-	private TreeMap closedClassNames, openClassNames;
-	private TreeMap stationNames; // A map stationName --> index in source array without LD stations
+	private TreeMap<String, Integer> classNames; // A map className --> index in source array
+	private TreeMap<String, Integer> closedClassNames, openClassNames;
+	private TreeMap<String, Integer> stationNames; // A map stationName --> index in source array without LD stations
 	private double[] values;
 	private String currentType, currentClass;
-	private Vector openClasses, closedClasses; // All open classes and closed classes names
-	private Vector modes = new Vector(); // Available what-if types
+	private Vector<String> openClasses, closedClasses; // All open classes and closed classes names
+	private Vector<String> modes = new Vector<String>(); // Available what-if types
 	// Current value ('from' field)
 	private double current;
 
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "What-if";
 	}
@@ -136,13 +137,13 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		data = wizard.getData();
 
 		// Adds all classes to classNames and closedClassNames/openClassNames arrays
-		closedClassNames = new TreeMap();
-		closedClasses = new Vector();
+		closedClassNames = new TreeMap<String, Integer>();
+		closedClasses = new Vector<String>();
 		closedClassNames.put(ALL_CLASSES, new Integer(-1));
-		openClassNames = new TreeMap();
+		openClassNames = new TreeMap<String, Integer>();
 		openClassNames.put(ALL_CLASSES, new Integer(-1));
-		openClasses = new Vector();
-		classNames = new TreeMap();
+		openClasses = new Vector<String>();
+		classNames = new TreeMap<String, Integer>();
 		classNames.put(ALL_CLASSES, new Integer(-1));
 		for (int i = 0; i < data.getClasses(); i++) {
 			String name = data.getClassNames()[i];
@@ -158,7 +159,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		}
 
 		// Removes LD stations
-		stationNames = new TreeMap();
+		stationNames = new TreeMap<String, Integer>();
 		for (int i = 0; i < data.getStations(); i++) {
 			if (data.getStationTypes()[i] != ExactConstants.STATION_LD) {
 				stationNames.put(data.getStationNames()[i], new Integer(i));
@@ -238,7 +239,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		// Sets from and to values
 		if (values != null && !type.equals(NO_ANALYSIS)) {
 			// Percentage values
-			if (((Integer) classNames.get(className.getSelectedItem())).intValue() < 0) {
+			if (classNames.get(className.getSelectedItem()).intValue() < 0) {
 				from.setText(doubleFormatter.format(values[0] * 100));
 				to.setText(doubleFormatter.format(values[values.length - 1] * 100));
 			}
@@ -269,13 +270,13 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 			data.setWhatIfType((String) type.getSelectedItem());
 			data.setWhatIfValues(values);
 			// Sets selected class
-			data.setWhatIfClass(((Integer) classNames.get(className.getSelectedItem())).intValue());
+			data.setWhatIfClass(classNames.get(className.getSelectedItem()).intValue());
 
 			// Sets selected station if Service Demands is selected
 			if (!data.getWhatIfType().equals(ExactConstants.WHAT_IF_DEMANDS)) {
 				data.setWhatIfStation(-1);
 			} else {
-				data.setWhatIfStation(((Integer) stationNames.get(stationName.getSelectedItem())).intValue());
+				data.setWhatIfStation(stationNames.get(stationName.getSelectedItem()).intValue());
 			}
 		}
 	}
@@ -414,7 +415,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 			tablePanel.setVisible(true);
 			// Disables from field
 			from.setEnabled(false);
-			Iterator it;
+			Iterator<String> it;
 			// Default help for 'from' and 'to' values (only changes for population mix)
 			help.removeHelp(from);
 			help.addHelp(from, "Initial value for what-if analysis. This is actual value.");
@@ -525,11 +526,11 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 				}
 			} else {
 				// Finds selected values
-				int selClass = ((Integer) classNames.get(className.getSelectedItem())).intValue();
+				int selClass = classNames.get(className.getSelectedItem()).intValue();
 				int selStation;
 				Object st = stationName.getSelectedItem();
 				if (st != null) {
-					selStation = ((Integer) stationNames.get(st)).intValue();
+					selStation = stationNames.get(st).intValue();
 				} else {
 					selStation = 0;
 				}
@@ -609,7 +610,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 			if (iterations < 2) {
 				iterations = 2;
 			}
-			int classNum = ((Integer) classNames.get(className.getSelectedItem())).intValue();
+			int classNum = classNames.get(className.getSelectedItem()).intValue();
 			int stationNum = -1;
 			// If from and to are expressed as percentage, divides them by 100
 			if (classNum < 0) {
@@ -627,14 +628,14 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 			}
 
 			if (stationName.getSelectedItem() != null) {
-				stationNum = ((Integer) stationNames.get(stationName.getSelectedItem())).intValue();
+				stationNum = stationNames.get(stationName.getSelectedItem()).intValue();
 			}
 			values = data.generateWhatIfValues(type, from, to, iterations, classNum, stationNum);
 		} catch (NumberFormatException e) {
 			// Number format is wrong, skips this update.
 		} catch (ArithmeticException ex) {
 			JOptionPane.showMessageDialog(this, "Closed class with 0 customers found. They will be set to 1.", "Error", JOptionPane.ERROR_MESSAGE);
-			double[] classData = (double[]) data.getClassData().clone();
+			double[] classData = data.getClassData().clone();
 			for (int i = 0; i < classData.length; i++) {
 				if (data.getClassTypes()[i] == ExactConstants.CLASS_CLOSED && classData[i] < 1) {
 					classData[i] = 1.0;
@@ -675,6 +676,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	/**
 	 * called by the Wizard when the user presses the help button
 	 */
+	@Override
 	public void help() {
 		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 	}
@@ -682,6 +684,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		retrieveData();
 	}
@@ -689,6 +692,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		commitData();
 	}
@@ -753,6 +757,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		 *                 where 0 is the first column
 		 * @return the <code>Component</code> under the event location
 		 */
+		@Override
 		public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
 			Component comp = super.prepareRenderer(renderer, row, column);
 			if (comp instanceof JLabel) {
@@ -856,16 +861,16 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 					return getColumnName(columnIndex);
 				case 1: // customers or arrival rates
 					if (parameter.equals(WHAT_IF_CUSTOMERS) || parameter.equals(WHAT_IF_MIX)) {
-						index = ((Integer) closedClassNames.get(closedClasses.get(columnIndex - 1))).intValue();
+						index = closedClassNames.get(closedClasses.get(columnIndex - 1)).intValue();
 					} else if (parameter.equals(WHAT_IF_ARRIVAL)) {
-						index = ((Integer) openClassNames.get(openClasses.get(columnIndex - 1))).intValue();
+						index = openClassNames.get(openClasses.get(columnIndex - 1)).intValue();
 					} else {
 						index = columnIndex - 1;
 					}
 					// Retrives class data
 					double num;
 					if (parameter.equals(WHAT_IF_DEMANDS)) {
-						int station = ((Integer) stationNames.get(stationName.getSelectedItem())).intValue();
+						int station = stationNames.get(stationName.getSelectedItem()).intValue();
 						num = data.getServiceTimes()[station][index][0] * data.getVisits()[station][index];
 					} else {
 						num = data.getClassData()[index];
@@ -878,12 +883,13 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 					}
 				case 2: // betas
 					// This is available only for closed classes
-					index = ((Integer) closedClassNames.get(closedClasses.get(columnIndex - 1))).intValue();
+					index = closedClassNames.get(closedClasses.get(columnIndex - 1)).intValue();
 					return doubleFormatter.format(data.getClassData()[index] / data.getMaxpop());
 			}
 			return null;
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			// First column is row header
 			String parameter = (String) type.getSelectedItem();
@@ -891,9 +897,9 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 				return "";
 			}
 			if (parameter.equals(WHAT_IF_CUSTOMERS) || parameter.equals(WHAT_IF_MIX)) {
-				return (String) closedClasses.get(index - 1);
+				return closedClasses.get(index - 1);
 			} else if (parameter.equals(WHAT_IF_ARRIVAL)) {
-				return (String) openClasses.get(index - 1);
+				return openClasses.get(index - 1);
 			} else {
 				return data.getClassNames()[index - 1];
 			}

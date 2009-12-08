@@ -70,6 +70,7 @@ public class DispatcherThread extends Thread implements AbortMeasure {
 	 * Run method. This method will simply start simualtion, it is designed to be called only
 	 * after startSimulation has been called.
 	 */
+	@Override
 	public void run() {
 		if (timer != null) {
 			timer.start();
@@ -187,6 +188,7 @@ public class DispatcherThread extends Thread implements AbortMeasure {
 			this.dispatcher = dispatcher;
 		}
 
+		@Override
 		public void run() {
 			if (gui instanceof Mediator) {
 				((Mediator) gui).setGraphCursor(new Cursor(Cursor.WAIT_CURSOR));
@@ -277,6 +279,7 @@ public class DispatcherThread extends Thread implements AbortMeasure {
 		 * Thread run's method. It will wait until maxDuration has elapsed, then stops
 		 * simulation.
 		 */
+		@Override
 		public void run() {
 			initialTime = System.currentTimeMillis();
 			// Wait for residual time. This is true unless pause button is pressed.

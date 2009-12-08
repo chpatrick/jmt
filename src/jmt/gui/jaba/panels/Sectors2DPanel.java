@@ -30,7 +30,6 @@ import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 
 import jmt.engine.jaba.FinalSect2D;
-import jmt.engine.jaba.Station2D;
 
 /**
  * <p>Title: Sectors 2D Panel</p>
@@ -49,7 +48,7 @@ public class Sectors2DPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Vector s3d;
+	private Vector<Object> s3d;
 	private String[] classNames;
 
 	// Margin used for labels and around graph
@@ -81,7 +80,7 @@ public class Sectors2DPanel extends JPanel {
 	 * @param s3d vector with output of Jaba engine
 	 * @param classNames name of classes to be shown on axis
 	 */
-	public Sectors2DPanel(Vector s3d, String[] classNames) {
+	public Sectors2DPanel(Vector<Object> s3d, String[] classNames) {
 		super();
 		this.s3d = s3d;
 		this.classNames = classNames;
@@ -93,6 +92,7 @@ public class Sectors2DPanel extends JPanel {
 	 * Overrides default paint method to draw the graph
 	 * @param g graphic object. <b>Must</b> be an instance of Graphics2D
 	 */
+	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
 
@@ -188,7 +188,7 @@ public class Sectors2DPanel extends JPanel {
 
 			// Now draws station name labels. They are centered on the line of the caption (if possible)
 			g2.setColor(BLACK);
-			String etichetta = ((Station2D) (sect.getstation()).get(0)).getName();
+			String etichetta = (sect.getstation()).get(0).getName();
 
 			// position of first label. Try to center with the middle of the sector but avoids overlapping with previous ones
 			boolean overlapping = false;
@@ -204,7 +204,7 @@ public class Sectors2DPanel extends JPanel {
 			g2.drawString(etichetta, xetich, firstpos);
 			// Next labels
 			for (int j = 1; j < numstat; j++) {
-				String etich = ((Station2D) (sect.getstation()).get(j)).getName();
+				String etich = (sect.getstation()).get(j).getName();
 				g2.drawString(etich, xetich, firstpos + j * (float) fontBounds.getHeight());
 			}
 

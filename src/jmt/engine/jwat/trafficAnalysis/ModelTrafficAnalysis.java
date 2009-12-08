@@ -7,7 +7,7 @@ import jmt.gui.jwat.JWatModel;
 
 public class ModelTrafficAnalysis implements JWatModel {
 	private MatrixOsservazioni matrix = null;
-	private ArrayList resetModel = new ArrayList();
+	private ArrayList<OnResetModel> resetModel = new ArrayList<OnResetModel>();
 
 	public MatrixOsservazioni getMatrix() {
 		return matrix;
@@ -30,7 +30,7 @@ public class ModelTrafficAnalysis implements JWatModel {
 
 	private void notifyResetModel() {
 		for (int i = 0; i < resetModel.size(); i++) {
-			((OnResetModel) resetModel.get(i)).modelResetted();
+			resetModel.get(i).modelResetted();
 		}
 	}
 

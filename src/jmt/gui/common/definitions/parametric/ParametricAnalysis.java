@@ -52,15 +52,15 @@ public interface ParametricAnalysis {
 	*/
 
 	public class ValuesTable {
-		HashMap table;
+		HashMap<Object, Vector> table;
 		ClassDefinition classDef;
 		int numberOfSteps;
-		Vector classSet;
+		Vector<Object> classSet;
 
-		public ValuesTable(ClassDefinition cd, Vector classSet, int numberOfSteps) {
+		public ValuesTable(ClassDefinition cd, Vector<Object> classSet, int numberOfSteps) {
 			this.numberOfSteps = numberOfSteps;
 			this.classSet = classSet;
-			table = new HashMap(numberOfSteps, 1);
+			table = new HashMap<Object, Vector>(numberOfSteps, 1);
 			for (int i = 0; i < classSet.size(); i++) {
 				table.put(classSet.get(i), new Vector(numberOfSteps));
 			}
@@ -74,7 +74,7 @@ public interface ParametricAnalysis {
 		 * @param value the value it will assume
 		 */
 		public void setValue(Object classKey, double value) {
-			Vector classValues = (Vector) table.get(classKey);
+			Vector<Double> classValues = table.get(classKey);
 			classValues.add(new Double(value));
 		}
 
@@ -85,7 +85,7 @@ public interface ParametricAnalysis {
 		 * @return the value the parameter will assume.
 		 */
 		public double getValue(Object classKey, int step) {
-			Vector classValues = (Vector) table.get(classKey);
+			Vector classValues = table.get(classKey);
 			return ((Double) (classValues.get(step))).doubleValue();
 		}
 
@@ -96,7 +96,7 @@ public interface ParametricAnalysis {
 		public int getNumberOfInsertedSteps() {
 			int steps = 0;
 			if (!table.isEmpty()) {
-				Vector temp = (Vector) table.get(classSet.get(0));
+				Vector temp = table.get(classSet.get(0));
 				steps = temp.size();
 			}
 			return steps;
@@ -114,7 +114,7 @@ public interface ParametricAnalysis {
 		 * Returns a Set containing the class Keys
 		 * @return a Set containing the class Keys
 		 */
-		public Set getClassKeySet() {
+		public Set<Object> getClassKeySet() {
 			return table.keySet();
 		}
 	}

@@ -43,6 +43,7 @@ public class Station2D {
 		return vert;
 	}
 
+	@Override
 	public String toString() {
 		return name;
 	}

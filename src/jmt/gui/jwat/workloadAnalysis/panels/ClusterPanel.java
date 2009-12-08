@@ -69,6 +69,7 @@ public class ClusterPanel extends WizardPanel implements CommonConstants, JWATCo
 		initPanel();
 	}
 
+	@Override
 	public String getName() {
 		return "Clustering";
 	}
@@ -197,10 +198,12 @@ public class ClusterPanel extends WizardPanel implements CommonConstants, JWATCo
 		//return varList.getSelectedIndices();
 	}
 
+	@Override
 	public boolean canGoForward() {
 		return canGoOn;
 	}
 
+	@Override
 	public void gotFocus() {
 		int pos = clustList.getSelectedIndex();
 		clustList.clearSelection();
@@ -266,10 +269,12 @@ public class ClusterPanel extends WizardPanel implements CommonConstants, JWATCo
 			+ "You can apply temporary transformation to selected variables (<I>Recommanded</I>).<br>"
 			+ "Press solve button to start clustering algorithm.</html>";
 
+	@Override
 	public void help() {
 		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 	}
 
+	@Override
 	public void lostFocus() {
 		parent.setLastPanel(WORKLOAD_CLUSTERING_PANEL);
 	}
@@ -288,11 +293,13 @@ public class ClusterPanel extends WizardPanel implements CommonConstants, JWATCo
 			numSelected = 0;
 		}
 
+		@Override
 		public boolean isSelectedIndex(int index) {
 			//System.out.println("IS");
 			return isSelected[index];
 		}
 
+		@Override
 		public void setSelectionInterval(int index0, int index1) {
 			if (isSelected[index0]) {
 				isSelected[index0] = false;

@@ -76,6 +76,7 @@ public class SolverSingleOpen extends Solver {
 	 * (only LI and DELAY stations are allowed).
 	 <br>* "input(...)" method must have been called before solving the model!!
 	 */
+	@Override
 	public void solve() {
 
 		for (int i = 0; i < stations; i++) {
@@ -137,6 +138,7 @@ public class SolverSingleOpen extends Solver {
 	 * WARNING: This method should be called before solving the system.
 	 * @return true if sufficient capacity exists for the given workload, false otherwise
 	 */
+	@Override
 	public boolean hasSufficientProcessingCapacity() {
 
 		//load lambda must be < 1/Dmax (that is Uj < 1 for all stations)

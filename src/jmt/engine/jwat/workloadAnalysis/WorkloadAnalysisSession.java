@@ -23,27 +23,27 @@ import org.w3c.dom.Element;
 
 public class WorkloadAnalysisSession extends JwatSession {
 	// vector containing the results of one or more clustering operations
-	private Vector clusterOperation = null; //<Clustering> 
+	private Vector<Clustering> clusterOperation = null; //<Clustering> 
 	// vector of the listener on adding clustering or deleting
-	private Vector listenerOnModifyClustering = null;
+	private Vector<ModifiedClustering> listenerOnModifyClustering = null;
 
 	public WorkloadAnalysisSession() {
 		super(new ModelWorkloadAnalysis());
-		clusterOperation = new Vector();
-		listenerOnModifyClustering = new Vector();
+		clusterOperation = new Vector<Clustering>();
+		listenerOnModifyClustering = new Vector<ModifiedClustering>();
 
 	}
 
 	public WorkloadAnalysisSession(ModelWorkloadAnalysis model) {
 		super(model);
-		clusterOperation = new Vector();
-		listenerOnModifyClustering = new Vector();
+		clusterOperation = new Vector<Clustering>();
+		listenerOnModifyClustering = new Vector<ModifiedClustering>();
 	}
 
 	public WorkloadAnalysisSession(ModelWorkloadAnalysis model, String filepath, String filename) {
 		super(model, filepath, filename);
-		clusterOperation = new Vector();
-		listenerOnModifyClustering = new Vector();
+		clusterOperation = new Vector<Clustering>();
+		listenerOnModifyClustering = new Vector<ModifiedClustering>();
 	}
 
 	public void addClustering(Clustering clust) {
@@ -51,13 +51,13 @@ public class WorkloadAnalysisSession extends JwatSession {
 		fireNotifyOnModifiedClustering();
 	}
 
-	public Vector getListOfClustering() {
+	public Vector<Clustering> getListOfClustering() {
 		return clusterOperation;
 	}
 
 	private void fireNotifyOnModifiedClustering() {
 		for (int i = 0; i < listenerOnModifyClustering.size(); i++) {
-			((ModifiedClustering) listenerOnModifyClustering.get(i)).onModifiedClustering();
+			listenerOnModifyClustering.get(i).onModifiedClustering();
 		}
 	}
 
@@ -84,11 +84,13 @@ public class WorkloadAnalysisSession extends JwatSession {
 		fireNotifyOnModifiedClustering();
 	}
 
+	@Override
 	public void resetSession() {
 		clusterOperation.removeAllElements();
 		model.resetModel();
 	}
 
+	@Override
 	public void appendXMLResults(Document doc, Element root, ZipOutputStream zos) {
 		Element varEl = doc.createElement("Results");
 		Element tmp;
@@ -100,16 +102,16 @@ public class WorkloadAnalysisSession extends JwatSession {
 
 		for (int i = 0; i < numRes; i++) {
 			tmp = doc.createElement("Clustering");
-			tmp.setAttribute("name", ((Clustering) clusterOperation.get(i)).getName());
-			algo = ((Clustering) clusterOperation.get(i)).getClusteringType();
+			tmp.setAttribute("name", clusterOperation.get(i).getName());
+			algo = clusterOperation.get(i).getClusteringType();
 			tmp.setAttribute("algo", String.valueOf(algo));
-			tmp.setAttribute("numcluster", String.valueOf(((Clustering) clusterOperation.get(i)).getNumCluster()));
-			varSel = ((Clustering) clusterOperation.get(i)).getVarClust();
-			for (int s = 0; s < varSel.length; s++) {
+			tmp.setAttribute("numcluster", String.valueOf(clusterOperation.get(i).getNumCluster()));
+			varSel = clusterOperation.get(i).getVarClust();
+			for (int element : varSel) {
 				if (varStr == null) {
-					varStr = String.valueOf(varSel[s]);
+					varStr = String.valueOf(element);
 				} else {
-					varStr += "," + String.valueOf(varSel[s]);
+					varStr += "," + String.valueOf(element);
 				}
 			}
 			tmp.setAttribute("varsel", varStr);
@@ -203,13 +205,14 @@ public class WorkloadAnalysisSession extends JwatSession {
 
 	}
 
+	@Override
 	public void saveResultsFile(Document doc, Element root, ZipOutputStream zos) throws IOException {
 		int algo, numRes = clusterOperation.size();
 		String algoName;
 
 		for (int i = 0; i < numRes; i++) {
-			algo = ((Clustering) clusterOperation.get(i)).getClusteringType();
-			algoName = String.valueOf(((Clustering) clusterOperation.get(i)).getName());
+			algo = clusterOperation.get(i).getClusteringType();
+			algoName = String.valueOf(clusterOperation.get(i).getName());
 			algoName += "_" + i;
 			zos.putNextEntry(new ZipEntry(algoName + JwatSession.BINext));
 			switch (algo) {
@@ -225,12 +228,13 @@ public class WorkloadAnalysisSession extends JwatSession {
 
 	}
 
+	@Override
 	public void copySession(JwatSession newSession) {
 		model.setMatrix(newSession.getDataModel().getMatrix());
-		Vector listClust = ((WorkloadAnalysisSession) newSession).getListOfClustering();
+		Vector<Clustering> listClust = ((WorkloadAnalysisSession) newSession).getListOfClustering();
 
 		for (int nn = 0; nn < listClust.size(); nn++) {
-			addClustering((Clustering) listClust.get(nn));
+			addClustering(listClust.get(nn));
 		}
 
 	}

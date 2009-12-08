@@ -36,6 +36,7 @@ public class OptimizedQNAnimation extends QueueNetAnimation {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Override
 	public void paint(Graphics g, ImageObserver io) {
 		for (int i = 0; i < jobs.size(); i++) {
 			Rectangle lastBounds = ((OptimizedJobAnimation) jobs.get(i)).getLastBounds();
@@ -47,17 +48,19 @@ public class OptimizedQNAnimation extends QueueNetAnimation {
 			((OptimizedEdgeAnimation) edges.get(i)).paint(g, io);
 		}
 		for (int i = 0; i < stations.size(); i++) {
-			((StationAnimation) stations.get(i)).paint(g, io);
+			stations.get(i).paint(g, io);
 		}
 		for (int i = 0; i < jobs.size(); i++) {
 			((OptimizedJobAnimation) jobs.get(i)).paint(g, io);
 		}
 	}
 
+	@Override
 	public void addJob(JobAnimation jobAnimation, JobContainer startingPoint) {
 		super.addJob(new OptimizedJobAnimation(jobAnimation), startingPoint);
 	}
 
+	@Override
 	public void addEdge(EdgeAnimation edge, StationAnimation station1, StationAnimation station2) {
 		super.addEdge(new OptimizedEdgeAnimation(edge), station1, station2);
 	}
@@ -72,6 +75,7 @@ class OptimizedJobAnimation extends JobAnimation {
 		super(job);
 	}
 
+	@Override
 	public void setBounds(Rectangle r) {
 		lastBounds = getBounds();
 		super.setBounds(r);
@@ -88,6 +92,7 @@ class OptimizedEdgeAnimation extends EdgeAnimation {
 		super(ea);
 	}
 
+	@Override
 	public void paint(Graphics g, ImageObserver io) {
 		if (jobAnimations.size() > 0) {
 			super.paint(g, io);

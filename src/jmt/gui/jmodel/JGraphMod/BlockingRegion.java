@@ -83,9 +83,9 @@ public class BlockingRegion extends DefaultGraphCell {
 	public void addStations(Object[] cells) {
 		mediator.getGraph().getGraphLayoutCache().insertGroup(this, cells);
 		// Resets parent for added cells
-		for (int i = 0; i < cells.length; i++) {
-			if (cells[i] instanceof JmtCell) {
-				((JmtCell) cells[i]).resetParent();
+		for (Object cell : cells) {
+			if (cell instanceof JmtCell) {
+				((JmtCell) cell).resetParent();
 			}
 		}
 	}
@@ -104,6 +104,7 @@ public class BlockingRegion extends DefaultGraphCell {
 	 * to this component that will be even more dirty.
 	 * @return an empty String
 	 */
+	@Override
 	public String toString() {
 		String newName = mediator.getBlockingRegionDefinition().getRegionName(key);
 		if (newName != null && !newName.equals(name)) {

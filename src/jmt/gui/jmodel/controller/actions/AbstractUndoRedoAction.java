@@ -41,7 +41,11 @@ import jmt.gui.jmodel.controller.Mediator;
  */
 public abstract class AbstractUndoRedoAction extends AbstractJmodelAction {
 
-	protected static Vector instances = new Vector(); //a list holding all the instances of this action
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	protected static Vector<AbstractUndoRedoAction> instances = new Vector<AbstractUndoRedoAction>(); //a list holding all the instances of this action
 	protected static int instanceCount = 0; //local copy of instances.size();
 
 	public AbstractUndoRedoAction(String name, Mediator mediator) {
@@ -61,7 +65,7 @@ public abstract class AbstractUndoRedoAction extends AbstractJmodelAction {
 	 */
 	public static void updateAll() {
 		for (int i = 0; i < instanceCount; i++) {
-			((AbstractUndoRedoAction) instances.get(i)).update();
+			instances.get(i).update();
 		}
 	}
 

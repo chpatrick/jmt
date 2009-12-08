@@ -257,8 +257,8 @@ public class XMLResultsReader implements XMLResultsConstants {
 			String tmp = type.toLowerCase();
 			int numType = 0;
 			if ((tmp.startsWith("customer") && tmp.endsWith("number") && !"".equalsIgnoreCase(stationName))//condition is for backward compatibility
-					||(tmp.startsWith("queue") && tmp.endsWith("length")) //OR condition is for backward compatibility
-						||(tmp.startsWith("number") && tmp.endsWith("customers"))) {//The present condition
+					|| (tmp.startsWith("queue") && tmp.endsWith("length")) //OR condition is for backward compatibility
+					|| (tmp.startsWith("number") && tmp.endsWith("customers"))) {//The present condition
 				numType = SimConstants.QUEUE_LENGTH;
 			} else if (tmp.startsWith("utilization")) {
 				numType = SimConstants.UTILIZATION;
@@ -275,10 +275,10 @@ public class XMLResultsReader implements XMLResultsConstants {
 			} else if (tmp.startsWith("system") && tmp.endsWith("throughput")) {
 				numType = SimConstants.SYSTEM_THROUGHPUT;
 			} else if ((tmp.startsWith("customer") && tmp.endsWith("number") && "".equalsIgnoreCase(stationName)) //backward comp. condition
-					||(tmp.startsWith("system") && tmp.endsWith("number")) //backward comp. cond. for Label change: customer Number to System Customer Number
-						||(tmp.startsWith("system") && tmp.endsWith("customers"))) {//present cond.
+					|| (tmp.startsWith("system") && tmp.endsWith("number")) //backward comp. cond. for Label change: customer Number to System Customer Number
+					|| (tmp.startsWith("system") && tmp.endsWith("customers"))) {//present cond.
 				numType = SimConstants.SYSTEM_JOB_NUMBER;
-			} else if (tmp.startsWith("drop") && tmp.endsWith("rate")) {				
+			} else if (tmp.startsWith("drop") && tmp.endsWith("rate")) {
 				numType = SimConstants.DROP_RATE;
 			} else if (tmp.startsWith("system") && tmp.endsWith("rate")) {
 				numType = SimConstants.SYSTEM_DROP_RATE;
@@ -287,7 +287,7 @@ public class XMLResultsReader implements XMLResultsConstants {
 			//Added as a part of the System Power addition to the Performance index of JSIM
 			else if (tmp.startsWith("system") && tmp.endsWith("power")) {
 				numType = SimConstants.SYSTEM_POWER;
-			} 
+			}
 			//Added by ASHANKA STOP
 
 			// Adds loaded informations into model data structure

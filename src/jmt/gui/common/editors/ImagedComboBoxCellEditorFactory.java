@@ -244,7 +244,7 @@ public class ImagedComboBoxCellEditorFactory {
 				// This is only a string
 				if (isStation) {
 					// If this is a station type string, resolves label names
-					setText((String) CommonConstants.STATION_NAMES.get(key));
+					setText(CommonConstants.STATION_NAMES.get(key));
 				} else {
 					setText((String) key);
 				}

@@ -160,6 +160,7 @@ public class JWatMainPanel extends WizardPanel {
 		/**
 		 * Invoked when the mouse enters a component.
 		 */
+		@Override
 		public void mouseEntered(MouseEvent e) {
 			((Component) e.getSource()).setBackground(rollover);
 		}
@@ -167,6 +168,7 @@ public class JWatMainPanel extends WizardPanel {
 		/**
 		 * Invoked when the mouse exits a component.
 		 */
+		@Override
 		public void mouseExited(MouseEvent e) {
 			((Component) e.getSource()).setBackground(normal);
 		}
@@ -193,8 +195,8 @@ public class JWatMainPanel extends WizardPanel {
 		eastPanel.add(Box.createVerticalStrut(5), BorderLayout.NORTH);
 		JPanel buttonPanel = new JPanel(new GridLayout(buttonAction.length, 1, 2, 15));
 		eastPanel.add(buttonPanel, BorderLayout.CENTER);
-		for (int i = 0; i < buttonAction.length; i++) {
-			buttonPanel.add(createButton(buttonAction[i]));
+		for (AbstractAction element : buttonAction) {
+			buttonPanel.add(createButton(element));
 		}
 		JLabel imageLabel = new JLabel();
 		imageLabel.setBorder(BorderFactory.createEmptyBorder(BUTTONSIZE - 5, 1, 0, 0));
@@ -222,6 +224,7 @@ public class JWatMainPanel extends WizardPanel {
 		});
 	}
 
+	@Override
 	public String getName() {
 		return "Main panel";
 	}
@@ -303,6 +306,7 @@ public class JWatMainPanel extends WizardPanel {
 		parent.setMenuBar(workloadMenubar);
 	}
 
+	@Override
 	public void gotFocus() {
 		if (parent.getModel() != null && parent.getModel().getMatrix() != null) {
 			if (JOptionPane.showConfirmDialog(this, "This operation resets all data. Continue ?", "WARNING", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {

@@ -193,9 +193,9 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 		elem.setAttribute(XML_A_ROOT_DISABLESTATISTIC, model.getDisableStatistic().toString());
 		// Write attributes used by the logs - Michael Fercu
 		elem.setAttribute(XML_A_ROOT_LOGPATH, model.getLoggingGlbParameter("path"));
-		elem.setAttribute(XML_A_ROOT_LOGREPLACE,model.getLoggingGlbParameter("autoAppend"));
-		elem.setAttribute(XML_A_ROOT_LOGDELIM,model.getLoggingGlbParameter("delim"));
-		elem.setAttribute(XML_A_ROOT_LOGDECIMALSEPARATOR,model.getLoggingGlbParameter("decimalSeparator"));
+		elem.setAttribute(XML_A_ROOT_LOGREPLACE, model.getLoggingGlbParameter("autoAppend"));
+		elem.setAttribute(XML_A_ROOT_LOGDELIM, model.getLoggingGlbParameter("delim"));
+		elem.setAttribute(XML_A_ROOT_LOGDECIMALSEPARATOR, model.getLoggingGlbParameter("decimalSeparator"));
 		// Write all elements
 		writeClasses(modelDoc, elem, model);
 		writeStations(modelDoc, elem, model);
@@ -270,10 +270,10 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 				writeQueueSection(doc, elem, model, stationKey);
 				writeTunnelSection(doc, elem, model, stationKey);
 				writeRouterSection(doc, elem, model, stationKey);
-            } else if(STATION_TYPE_LOGGER.equals(stationType)) {
-                writeQueueSection(doc, elem, model, stationKey);
-                writeLoggerSection(doc, elem, model, stationKey);
-                writeRouterSection(doc, elem, model, stationKey);
+			} else if (STATION_TYPE_LOGGER.equals(stationType)) {
+				writeQueueSection(doc, elem, model, stationKey);
+				writeLoggerSection(doc, elem, model, stationKey);
+				writeRouterSection(doc, elem, model, stationKey);
 			} else if (STATION_TYPE_FORK.equals(stationType)) {
 				writeQueueSection(doc, elem, model, stationKey);
 				writeTunnelSection(doc, elem, model, stationKey);
@@ -521,70 +521,53 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 		nodeNode.appendChild(elem);
 	}
 
-    /**
-     * Write all parameters for a Logger section.
-     * @param doc XML document
-     * @param node XML hierarchy node
-     * @param model link to data structure
-     * @param stationKey key of search for this source station into data structure
-     * @author Michael Fercu (Bertoli Marco)
-     *		   Date: 08-aug-2008
-     * @see jmt.engine.log.LoggerParameters LoggerParameters
-     * @see jmt.gui.common.definitions.CommonModel#getLoggingParameters CommonModel.getLoggingParameters()
-     * @see jmt.gui.common.XMLReader#parseLogger XMLReader.parseLogger()
-     * @see jmt.engine.NodeSections.LogTunnel LogTunnel
-     */
-    static protected void writeLoggerSection(Document doc, Node nodeNode,
-                                            CommonModel model, Object stationKey){
-        Element elem = doc.createElement(XML_E_STATION_SECTION);
-        elem.setAttribute(XML_A_STATION_SECTION_CLASSNAME, CLASSNAME_LOGGER);
-        nodeNode.appendChild(elem);
+	/**
+	 * Write all parameters for a Logger section.
+	 * @param doc XML document
+	 * @param node XML hierarchy node
+	 * @param model link to data structure
+	 * @param stationKey key of search for this source station into data structure
+	 * @author Michael Fercu (Bertoli Marco)
+	 *		   Date: 08-aug-2008
+	 * @see jmt.engine.log.LoggerParameters LoggerParameters
+	 * @see jmt.gui.common.definitions.CommonModel#getLoggingParameters CommonModel.getLoggingParameters()
+	 * @see jmt.gui.common.XMLReader#parseLogger XMLReader.parseLogger()
+	 * @see jmt.engine.NodeSections.LogTunnel LogTunnel
+	 */
+	static protected void writeLoggerSection(Document doc, Node nodeNode, CommonModel model, Object stationKey) {
+		Element elem = doc.createElement(XML_E_STATION_SECTION);
+		elem.setAttribute(XML_A_STATION_SECTION_CLASSNAME, CLASSNAME_LOGGER);
+		nodeNode.appendChild(elem);
 
-        // Get this station's logger parameters
-        LoggerParameters loggerParameters = (LoggerParameters)model.getLoggingParameters(stationKey);
+		// Get this station's logger parameters
+		LoggerParameters loggerParameters = (LoggerParameters) model.getLoggingParameters(stationKey);
 
-        XMLParameter name = new XMLParameter(
-        		XML_LOG_FILENAME, "java.lang.String", null, loggerParameters.name.toString(), false
-        );
-        name.appendParameterElement(doc, elem);
-        loggerParameters.path = model.getLoggingGlbParameter("path"); // temporary fix
-        XMLParameter path = new XMLParameter(
-        		XML_LOG_FILEPATH, "java.lang.String", null, loggerParameters.getpath().toString(), false
-        );
-        path.appendParameterElement(doc, elem);
-        XMLParameter logExecTimestamp = new XMLParameter(
-        		XML_LOG_B_EXECTIMESTAMP, "java.lang.Boolean", null, loggerParameters.boolExecTimestamp.toString(), false
-        );
-        logExecTimestamp.appendParameterElement(doc, elem);
-        XMLParameter logLoggerName = new XMLParameter(
-        		XML_LOG_B_LOGGERNAME, "java.lang.Boolean", null, loggerParameters.boolLoggername.toString(), false
-        );
-        logLoggerName.appendParameterElement(doc, elem);
-        XMLParameter logTimeStamp = new XMLParameter(
-        		XML_LOG_B_TIMESTAMP, "java.lang.Boolean", null, loggerParameters.boolTimeStamp.toString(), false
-        );
-        logTimeStamp.appendParameterElement(doc, elem);
-        XMLParameter logJobID = new XMLParameter(
-        		XML_LOG_B_JOBID, "java.lang.Boolean", null, loggerParameters.boolJobID.toString(), false
-        );
-        logJobID.appendParameterElement(doc, elem);
-        XMLParameter logJobClass = new XMLParameter(
-        		XML_LOG_B_JOBCLASS, "java.lang.Boolean", null, loggerParameters.boolJobClass.toString(), false
-        );
-        logJobClass.appendParameterElement(doc, elem);
-        XMLParameter logTimeSameClass = new XMLParameter(
-        		XML_LOG_B_TIMESAMECLS, "java.lang.Boolean", null, loggerParameters.boolTimeSameClass.toString(), false
-        );
-        logTimeSameClass.appendParameterElement(doc, elem);
-        XMLParameter logTimeAnyClass = new XMLParameter(
-        		XML_LOG_B_TIMEANYCLS, "java.lang.Boolean", null, loggerParameters.boolTimeAnyClass.toString(), false
-        );
-        logTimeAnyClass.appendParameterElement(doc, elem);
-        XMLParameter classSize = new XMLParameter(
-                "numClasses", "java.lang.Integer", null, new Integer(model.getClassKeys().size()).toString(), false
-        );
-        classSize.appendParameterElement(doc, elem);
-    }
+		XMLParameter name = new XMLParameter(XML_LOG_FILENAME, "java.lang.String", null, loggerParameters.name.toString(), false);
+		name.appendParameterElement(doc, elem);
+		loggerParameters.path = model.getLoggingGlbParameter("path"); // temporary fix
+		XMLParameter path = new XMLParameter(XML_LOG_FILEPATH, "java.lang.String", null, loggerParameters.getpath().toString(), false);
+		path.appendParameterElement(doc, elem);
+		XMLParameter logExecTimestamp = new XMLParameter(XML_LOG_B_EXECTIMESTAMP, "java.lang.Boolean", null, loggerParameters.boolExecTimestamp
+				.toString(), false);
+		logExecTimestamp.appendParameterElement(doc, elem);
+		XMLParameter logLoggerName = new XMLParameter(XML_LOG_B_LOGGERNAME, "java.lang.Boolean", null, loggerParameters.boolLoggername.toString(),
+				false);
+		logLoggerName.appendParameterElement(doc, elem);
+		XMLParameter logTimeStamp = new XMLParameter(XML_LOG_B_TIMESTAMP, "java.lang.Boolean", null, loggerParameters.boolTimeStamp.toString(), false);
+		logTimeStamp.appendParameterElement(doc, elem);
+		XMLParameter logJobID = new XMLParameter(XML_LOG_B_JOBID, "java.lang.Boolean", null, loggerParameters.boolJobID.toString(), false);
+		logJobID.appendParameterElement(doc, elem);
+		XMLParameter logJobClass = new XMLParameter(XML_LOG_B_JOBCLASS, "java.lang.Boolean", null, loggerParameters.boolJobClass.toString(), false);
+		logJobClass.appendParameterElement(doc, elem);
+		XMLParameter logTimeSameClass = new XMLParameter(XML_LOG_B_TIMESAMECLS, "java.lang.Boolean", null, loggerParameters.boolTimeSameClass
+				.toString(), false);
+		logTimeSameClass.appendParameterElement(doc, elem);
+		XMLParameter logTimeAnyClass = new XMLParameter(XML_LOG_B_TIMEANYCLS, "java.lang.Boolean", null,
+				loggerParameters.boolTimeAnyClass.toString(), false);
+		logTimeAnyClass.appendParameterElement(doc, elem);
+		XMLParameter classSize = new XMLParameter("numClasses", "java.lang.Integer", null, new Integer(model.getClassKeys().size()).toString(), false);
+		classSize.appendParameterElement(doc, elem);
+	}
 
 	static protected void writeDelaySection(Document doc, Node nodeNode, CommonModel model, Object stationKey) {
 		Element elem = doc.createElement(XML_E_STATION_SECTION);
@@ -711,10 +694,10 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 		Vector stations = model.getStationKeys();
 		Vector classes = model.getClassKeys();
 		// A map containing all stations that need preloading
-		Vector p_stations = new Vector();
+		Vector<Element> p_stations = new Vector<Element>();
 		for (int stat = 0; stat < stations.size(); stat++) {
 			Object key = stations.get(stat);
-			Vector p_class = new Vector();
+			Vector<Element> p_class = new Vector<Element>();
 			for (int i = 0; i < classes.size(); i++) {
 				Object classKey = classes.get(i);
 				Integer jobs = model.getPreloadedJobs(key, classKey);
@@ -730,7 +713,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 				Element elem = doc.createElement(XML_E_STATIONPOPULATIONS);
 				elem.setAttribute(XML_A_PRELOADSTATION_NAME, model.getStationName(key));
 				while (!p_class.isEmpty()) {
-					elem.appendChild((Element) p_class.remove(0));
+					elem.appendChild(p_class.remove(0));
 				}
 				p_stations.add(elem);
 			}
@@ -739,7 +722,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 		if (!p_stations.isEmpty()) {
 			Element preload = doc.createElement(XML_E_PRELOAD);
 			while (!p_stations.isEmpty()) {
-				preload.appendChild((Element) p_stations.remove(0));
+				preload.appendChild(p_stations.remove(0));
 			}
 			simNode.appendChild(preload);
 		}
@@ -858,9 +841,9 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 				parameter.appendChild(value);
 			}
 			if (parameters != null) {
-				for (int i = 0; i < parameters.length; i++) {
-					if (parameters[i] != null) {
-						parameters[i].appendParameterElement(doc, parameter);
+				for (XMLParameter parameter2 : parameters) {
+					if (parameter2 != null) {
+						parameter2.appendParameterElement(doc, parameter);
 					}
 				}
 			}
@@ -905,9 +888,9 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 		static XMLParameter[] getDistributionParameter(Distribution distr) {
 
 			// a list of direct parameter -> parameter which must be passed directly to the distribution object
-			List directParams = new Vector();
+			List<XMLParameter> directParams = new Vector<XMLParameter>();
 			// a list of parameters which are passed to the distribution parameter
-			List nonDirectParams = new Vector();
+			List<XMLParameter> nonDirectParams = new Vector<XMLParameter>();
 
 			Distribution.Parameter distrPar;
 			//Object valueObj;
@@ -925,13 +908,13 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 			//get an array of the direct parameters
 			XMLParameter[] directPars = new XMLParameter[directParams.size()];
 			for (int i = 0; i < directPars.length; i++) {
-				directPars[i] = (XMLParameter) directParams.get(i);
+				directPars[i] = directParams.get(i);
 			}
 
 			//get an array of the non direct parameters
 			XMLParameter[] nonDirectPars = new XMLParameter[nonDirectParams.size()];
 			for (int i = 0; i < nonDirectPars.length; i++) {
-				nonDirectPars[i] = (XMLParameter) nonDirectParams.get(i);
+				nonDirectPars[i] = nonDirectParams.get(i);
 			}
 
 			//create the distribution parameter with the direct parameters

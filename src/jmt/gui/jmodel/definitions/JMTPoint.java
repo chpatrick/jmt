@@ -68,6 +68,7 @@ public class JMTPoint extends Point2D {
 	/* (non-Javadoc)
 	 * @see java.awt.geom.Point2D#getX()
 	 */
+	@Override
 	public double getX() {
 		return x;
 	}
@@ -75,6 +76,7 @@ public class JMTPoint extends Point2D {
 	/* (non-Javadoc)
 	 * @see java.awt.geom.Point2D#getY()
 	 */
+	@Override
 	public double getY() {
 		return y;
 	}
@@ -82,6 +84,7 @@ public class JMTPoint extends Point2D {
 	/* (non-Javadoc)
 	 * @see java.awt.geom.Point2D#setLocation(double, double)
 	 */
+	@Override
 	public void setLocation(double x, double y) {
 		this.x = x;
 		this.y = y;
@@ -90,6 +93,7 @@ public class JMTPoint extends Point2D {
 	/* (non-Javadoc)
 	 * @see java.awt.geom.Point2D#clone()
 	 */
+	@Override
 	public Object clone() {
 		return new JMTPoint(x, y, rotate);
 	}

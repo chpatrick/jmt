@@ -132,7 +132,7 @@ public class ArrivalRatesPanel extends ParameterOptionPanel {
 			steps = new JSpinner(new SpinnerNumberModel(ARPA.getNumberOfSteps(), 2, ParametricAnalysis.MAX_STEP_NUMBER, 1));
 			steps.setToolTipText("Sets the number of steps to be performed");
 			//get the vector containing the keys of the class that can be used to do this type of parametric analysis
-			Vector validC = checker.checkForArrivalRatesParametricSimulationAvaibleClasses();
+			Vector<Object> validC = checker.checkForArrivalRatesParametricSimulationAvaibleClasses();
 			String[] classNames = new String[validC.size()];
 			for (int i = 0; i < validC.size(); i++) {
 				classNames[i] = cd.getClassName(validC.get(i));
@@ -143,8 +143,8 @@ public class ArrivalRatesPanel extends ParameterOptionPanel {
 				allClass.setEnabled(false);
 			}
 			classChooser.removeAllItems();
-			for (int i = 0; i < classNames.length; i++) {
-				classChooser.addItem(classNames[i]);
+			for (String className : classNames) {
+				classChooser.addItem(className);
 			}
 			classChooser.setEnabled(true);
 			classChooser.setSelectedItem(cd.getClassName(ARPA.getReferenceClass()));
@@ -213,11 +213,12 @@ public class ArrivalRatesPanel extends ParameterOptionPanel {
 		this.setBorder(new EmptyBorder(5, 0, 5, 0));
 	}
 
+	@Override
 	public void setEnabled(boolean enabled) {
 		if (enabled) {
 			//if the panel is enabled the allClass radioButton can be enabled only if all of the class have a service
 			//time distribution with a mean value, in the reference station contained in STPA.
-			Vector validC = checker.checkForArrivalRatesParametricSimulationAvaibleClasses();
+			Vector<Object> validC = checker.checkForArrivalRatesParametricSimulationAvaibleClasses();
 			if ((validC.size() < cd.getOpenClassKeys().size() || (cd.getOpenClassKeys().size() == 1))) {
 				allClass.setEnabled(false);
 			} else {
@@ -303,7 +304,7 @@ public class ArrivalRatesPanel extends ParameterOptionPanel {
 					classChooser.setEnabled(true);
 					//get the vector containing the keys of the valid classes. A class is valid if its service
 					//time distribution is load independent (inside the reference station of the STPA) and has a mean value.
-					Vector validC = checker.checkForArrivalRatesParametricSimulationAvaibleClasses();
+					Vector<Object> validC = checker.checkForArrivalRatesParametricSimulationAvaibleClasses();
 					String[] classNames = new String[validC.size()];
 					for (int i = 0; i < validC.size(); i++) {
 						classNames[i] = cd.getClassName(validC.get(i));
@@ -311,8 +312,8 @@ public class ArrivalRatesPanel extends ParameterOptionPanel {
 					ItemListener listener = classChooser.getItemListeners()[0];
 					classChooser.removeItemListener(listener);
 					classChooser.removeAllItems();
-					for (int i = 0; i < classNames.length; i++) {
-						classChooser.addItem(classNames[i]);
+					for (String className : classNames) {
+						classChooser.addItem(className);
 					}
 					classChooser.addItemListener(listener);
 					//if no classes where previously associated, associate

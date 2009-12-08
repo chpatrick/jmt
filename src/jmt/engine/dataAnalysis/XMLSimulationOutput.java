@@ -206,7 +206,7 @@ public class XMLSimulationOutput extends SimulationOutput {
 				break;
 
 			case SimConstants.SYSTEM_JOB_NUMBER:
-				typeName = "System Number of Customers";				
+				typeName = "System Number of Customers";
 				break;
 			case SimConstants.DROP_RATE:
 				typeName = "Drop Rate";
@@ -214,7 +214,7 @@ public class XMLSimulationOutput extends SimulationOutput {
 			case SimConstants.SYSTEM_DROP_RATE:
 				typeName = "System Drop Rate";
 				break;
-	        //Added by ASHANKA START
+			//Added by ASHANKA START
 			//Adds the performance index system power for jsim
 			case SimConstants.SYSTEM_POWER:
 				typeName = "System Power";
@@ -255,10 +255,10 @@ public class XMLSimulationOutput extends SimulationOutput {
 		if (regions != null) {
 			//at least one region has been defined
 
-			for (int r = 0; r < regions.length; r++) {
+			for (BlockingRegion region : regions) {
 				try {
 					//retrieves the blocking queue of the input station
-					NodeSection ns = regions[r].getInputStation().getSection(NodeSection.INPUT);
+					NodeSection ns = region.getInputStation().getSection(NodeSection.INPUT);
 
 					if (ns instanceof BlockingQueue) {
 
@@ -268,7 +268,7 @@ public class XMLSimulationOutput extends SimulationOutput {
 							Element el = doc.createElement("measure");
 							root.appendChild(el);
 
-							String inputStation = regions[r].getInputStation().getName();
+							String inputStation = region.getInputStation().getName();
 							String className = classes[c].getName();
 
 							el.setAttribute("station", inputStation);
@@ -299,7 +299,7 @@ public class XMLSimulationOutput extends SimulationOutput {
 							el.setAttribute("precision", Double.toString(0));
 							el.setAttribute("alfa", Double.toString(0));
 							*/
-							logger.debug("Dropped jobs percentage region " + regions[r].getName() + "-" + className + ": " + drop_percentage);
+							logger.debug("Dropped jobs percentage region " + region.getName() + "-" + className + ": " + drop_percentage);
 						}
 					}
 
@@ -325,9 +325,9 @@ public class XMLSimulationOutput extends SimulationOutput {
 		if (regions != null) {
 			//at least one region has been defined
 
-			for (int r = 0; r < regions.length; r++) {
+			for (BlockingRegion region : regions) {
 
-				BlockingRegion reg = regions[r];
+				BlockingRegion reg = region;
 
 				if (!reg.hasGlobalConstraint()) {
 					continue;
@@ -352,8 +352,8 @@ public class XMLSimulationOutput extends SimulationOutput {
 					if (classWeight == 0.0) {
 						regUtilization = 0.0;
 					} else {
-						for (int s = 0; s < stations.length; s++) {
-							double queue = findQueueMeasure(className, stations[s]);
+						for (String station : stations) {
+							double queue = findQueueMeasure(className, station);
 							if (queue == -1) {
 								success = false;
 								break;
@@ -392,9 +392,9 @@ public class XMLSimulationOutput extends SimulationOutput {
 	}
 
 	public File writeAllMeasures() {
-		for (int i = 0; i < measureList.length; i++) {
+		for (Measure element : measureList) {
 			//writes all the measures in a Document
-			writeMeasure(measureList[i]);
+			writeMeasure(element);
 		}
 
 		//writeMeasures_regionDroppedJobs();
@@ -510,7 +510,7 @@ public class XMLSimulationOutput extends SimulationOutput {
 
 				if (!currentMeasure.getAttribute("measureType").equalsIgnoreCase("Queue Length")//backward compatibility condition
 						&& !currentMeasure.getAttribute("measureType").equalsIgnoreCase("Customer Number")//backward compatibility condition
-							&& !currentMeasure.getAttribute("measureType").equalsIgnoreCase("Number of Customers")) {//Present condition
+						&& !currentMeasure.getAttribute("measureType").equalsIgnoreCase("Number of Customers")) {//Present condition
 					continue;
 				}
 

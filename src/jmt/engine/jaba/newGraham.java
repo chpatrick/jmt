@@ -29,10 +29,10 @@ import java.util.Vector;
  */
 public class newGraham {
 
-	Vector point = new Vector(2);
-	Vector convexHull = new Vector(2);
-	Vector newconvexHull = new Vector();
-	Vector newnewconvexHull = new Vector();
+	Vector<PPoint> point = new Vector<PPoint>(2);
+	Vector<PPoint> convexHull = new Vector<PPoint>(2);
+	Vector<newPoint> newconvexHull = new Vector<newPoint>();
+	Vector<newPoint> newnewconvexHull = new Vector<newPoint>();
 
 	int height, width;
 
@@ -63,7 +63,7 @@ public class newGraham {
 		newconvexHull.addElement(pt);
 	}
 
-	public Vector GrahamScan(Vector q) {
+	public Vector<newPoint> GrahamScan(Vector q) {
 
 		//todo Conversione newPoint a Ppoint
 		emptyPt();
@@ -71,7 +71,7 @@ public class newGraham {
 			newPointToPt((newPoint) q.get(i));
 		}
 
-		Vector p = new Vector(point.size());
+		Vector<PPoint> p = new Vector<PPoint>(point.size());
 		convexHull.removeAllElements();
 
 		PPoint alpha = new PPoint();
@@ -80,7 +80,7 @@ public class newGraham {
 		int nalpha = -1;
 
 		for (int i = 0; i < point.size(); i++) {
-			PPoint npoint = ((PPoint) point.elementAt(i));
+			PPoint npoint = point.elementAt(i);
 			if (npoint.y <= alpha.y) {
 				if (npoint.y < alpha.y) {
 					alpha = npoint;
@@ -98,7 +98,7 @@ public class newGraham {
 		convexHull.addElement(alpha);
 
 		for (int i = 0; i < point.size(); i++) {
-			PPoint npoint = (PPoint) point.elementAt(i);
+			PPoint npoint = point.elementAt(i);
 			// angle will be in range 0 - pi
 			npoint.angle = (float) Math.atan2(npoint.y - alpha.y, npoint.x - alpha.x);
 
@@ -109,7 +109,7 @@ public class newGraham {
 					break;
 				}
 
-				PPoint ppoint = (PPoint) p.elementAt(j);
+				PPoint ppoint = p.elementAt(j);
 				if (npoint.angle == ppoint.angle) {
 					// abandon nearest
 					if (Math.sqrt(ppoint.x * ppoint.x + ppoint.y * ppoint.y) < Math.sqrt(npoint.x * npoint.x + npoint.y * npoint.y)) {
@@ -138,13 +138,13 @@ public class newGraham {
 
 		for (int i = 2; i < nalpha; i++) {
 			PPoint p1, p2, pn;
-			pn = (PPoint) p.elementAt(i);
-			p1 = (PPoint) convexHull.elementAt(convexHull.size() - 2);
-			p2 = (PPoint) convexHull.elementAt(convexHull.size() - 1);
-			while (NonLeftTurn(p1, p2, pn, (PPoint) convexHull.firstElement())) {
+			pn = p.elementAt(i);
+			p1 = convexHull.elementAt(convexHull.size() - 2);
+			p2 = convexHull.elementAt(convexHull.size() - 1);
+			while (NonLeftTurn(p1, p2, pn, convexHull.firstElement())) {
 				convexHull.removeElementAt(convexHull.size() - 1);
 				p2 = p1;
-				p1 = (PPoint) convexHull.elementAt(convexHull.size() - 2);
+				p1 = convexHull.elementAt(convexHull.size() - 2);
 			}
 			convexHull.addElement(pn);
 		}
@@ -154,7 +154,7 @@ public class newGraham {
 
 		//todo conversione da PPoint a newPoint
 		for (int i = 0; i < convexHull.size(); i++) {
-			PtTonewPoint((PPoint) convexHull.get(i));
+			PtTonewPoint(convexHull.get(i));
 		}
 
 		//todo bisogna invertire l'ordine di uscita dei punti

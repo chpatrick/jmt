@@ -18,6 +18,7 @@ public class AllInputLoader extends InputLoader implements JWATConstants {
 		super(param, fileName, map, prg);
 	}
 
+	@Override
 	public Object construct() {
 		int i;
 		boolean[] sel = param.getVarSelected();
@@ -150,7 +151,7 @@ public class AllInputLoader extends InputLoader implements JWATConstants {
 				return null;
 			}
 			updateInfos(totalRaw, "Calculating Statistics...", false);
-			m = new MatrixOsservazioni((Observation[]) valori.toArray(new Observation[valori.size()]), param.getSelName(), param.getSelType(), map);
+			m = new MatrixOsservazioni(valori.toArray(new Observation[valori.size()]), param.getSelName(), param.getSelType(), map);
 			updateInfos(totalRaw + 1, "Done", true);
 			return m;
 

@@ -146,6 +146,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants, Commo
 				getColumnModel().getColumn(3).setPreferredWidth(55);
 			}
 
+			@Override
 			public TableCellRenderer getCellRenderer(int row, int column) {
 				if (column == 3) {
 					return new ColorRenderer();
@@ -178,6 +179,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants, Commo
 				getColumnModel().getColumn(2).setPreferredWidth(55);
 			}
 
+			@Override
 			public TableCellRenderer getCellRenderer(int row, int column) {
 				if (column == 2) {
 					return new ColorRenderer();
@@ -281,6 +283,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants, Commo
 		final JLabel l = new JLabel();
 		final pieChartIcon p = new pieChartIcon(numClust);
 		l.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
 			public void mouseMoved(MouseEvent e) {
 				int pos;
 
@@ -313,6 +316,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants, Commo
 		final JLabel l = new JLabel();
 		pieChartVars = new pieChartIcon(numClust);
 		l.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
 			public void mouseMoved(MouseEvent e) {
 				int pos;
 
@@ -443,6 +447,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants, Commo
 		 * Returns name for each column (given its index) to be displayed inside
 		 * table header
 		 */
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < colHeader.length) {
 				return colHeader[columnIndex];
@@ -456,6 +461,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants, Commo
 		 * index) is editable or not. In this case distribution column is not
 		 * editable, as editing functionality is implemented via edit button
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}
@@ -506,6 +512,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants, Commo
 		 * Returns name for each column (given its index) to be displayed inside
 		 * table header
 		 */
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < colHeader.length) {
 				return colHeader[columnIndex];
@@ -519,6 +526,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants, Commo
 		 * index) is editable or not. In this case distribution column is not
 		 * editable, as editing functionality is implemented via edit button
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}

@@ -38,30 +38,28 @@ import jmt.jmarkov.Queues.Exceptions.NoJobsException;
  */
 public final class Arrivals {
 
-
 	//if the arrival is limited then jobsToDo must be greater than zero
-	private boolean limited=false;	
+	private boolean limited = false;
 	private int jobsToDo = 0;
-	
+
 	private QueueLogic ql;
 
 	public Simulator sim;
 
-//	private boolean noJobs = true;	
+	//	private boolean noJobs = true;	
 
 	private Notifier n[];
 
 	private JobQueue q;
 
-//	private double at;	
+	//	private double at;	
 
 	private int jobIdCounter;
 
-	
 	public void createJob(double currentTime) {
 		double interarrivalTime;
 		if ((jobsToDo > 0) || (!limited)) {
-			try{
+			try {
 				interarrivalTime = getInterarrivalTime();
 			} catch (NoJobsException e) {
 				// lambda is zero
@@ -70,34 +68,34 @@ public final class Arrivals {
 			}
 			jobIdCounter++;
 			Job job = new Job(jobIdCounter, currentTime);
-			job.setEnteringQueueTime( interarrivalTime + currentTime);
+			job.setEnteringQueueTime(interarrivalTime + currentTime);
 			sim.enqueueJob(job);
 		}
 	}
 
-	public void addQ(Job job,double time) {
+	public void addQ(Job job, double time) {
 		try {
-			if (limited)
+			if (limited) {
 				jobsToDo--;
-			if (ql.getMaxStates() == 0 || q.size() < ql.getMaxStates() ) {
+			}
+			if (ql.getMaxStates() == 0 || q.size() < ql.getMaxStates()) {
 				q.addToQueueVoid(job);
-				
+
 				job.setStateEnterQueue();
-				notifyGraphics("addQ", job.getJobId(),time);
-			} else
-				notifyGraphics("lostJob", job.getJobId(),time);
+				notifyGraphics("addQ", job.getJobId(), time);
+			} else {
+				notifyGraphics("lostJob", job.getJobId(), time);
+			}
 		} catch (InfiniteBufferException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public void animate(Job job,double time) {
-		notifyGraphics("animate", job.getJobId(),time);
+	public void animate(Job job, double time) {
+		notifyGraphics("animate", job.getJobId(), time);
 
 	}
-
-	
 
 	public Arrivals(QueueLogic ql, JobQueue q) {
 		setParameters(ql, q);
@@ -106,7 +104,7 @@ public final class Arrivals {
 	public Arrivals(QueueLogic ql, JobQueue q, Notifier n[], int jobsToDo) {
 		setParameters(ql, q, n, jobsToDo);
 	}
-	
+
 	private void setParameters(QueueLogic ql, JobQueue q) {
 		this.ql = ql;
 		this.q = q;
@@ -114,35 +112,32 @@ public final class Arrivals {
 		this.limited = false;
 		jobIdCounter = 0;
 	}
-	
+
 	private void setParameters(QueueLogic ql, JobQueue q, Notifier n[], int jobsToDo) {
-		setParameters(ql,q) ;
-		this.n = n;		
-		if (jobsToDo > 0){
+		setParameters(ql, q);
+		this.n = n;
+		if (jobsToDo > 0) {
 			this.limited = true;
 			this.jobsToDo = jobsToDo;
 		}
 	}
 
-
-
-	
 	/**
 	 * Notify the changes to the user interface
 	 * 
 	 */
 	private void notifyGraphics(String gi, int jobId, double time) {
 		if (gi == "addQ") {
-			for (int i = 0; i < n.length; i++) {
-				n[i].enterQueue(jobId, time);
+			for (Notifier element : n) {
+				element.enterQueue(jobId, time);
 			}
 		} else if (gi == "lostJob") {
-			for (int i = 0; i < n.length; i++) {
-				n[i].jobLost(jobId, time);
+			for (Notifier element : n) {
+				element.jobLost(jobId, time);
 			}
 		} else if (gi == "animate") {
-			for (int i = 0; i < n.length; i++) {
-				n[i].updateQueue(jobId, time);
+			for (Notifier element : n) {
+				element.updateQueue(jobId, time);
 			}
 		}
 	}
@@ -151,8 +146,8 @@ public final class Arrivals {
 	 * Get the interarrival time from queue logic
 	 * 
 	 */
-	private double getInterarrivalTime() throws NoJobsException{
-			return ql.getArrivalTime();
+	private double getInterarrivalTime() throws NoJobsException {
+		return ql.getArrivalTime();
 
 	}
 

@@ -35,7 +35,7 @@ public class Sector2D {
 	private double beta22;
 	private newPoint p1;
 	private newPoint p2;
-	private Vector vp;
+	private Vector<newPoint> vp;
 
 	//private int[] stations;
 
@@ -50,7 +50,7 @@ public class Sector2D {
 		beta22 = b22;
 		this.p1 = p1;
 		this.p2 = new newPoint(-1, -1);
-		vp = new Vector();
+		vp = new Vector<newPoint>();
 		//stations[0]=-1;
 
 	}
@@ -62,12 +62,12 @@ public class Sector2D {
 		beta22 = b22;
 		this.p1 = p1;
 		this.p2 = p2;
-		vp = new Vector();
+		vp = new Vector<newPoint>();
 		//stations[0]=-1;
 
 	}
 
-	public Sector2D(double b1, double b11, double b2, double b22, newPoint p1, newPoint p2, Vector vs) {
+	public Sector2D(double b1, double b11, double b2, double b22, newPoint p1, newPoint p2, Vector<newPoint> vs) {
 		beta1 = b1;
 		beta11 = b11;
 		beta2 = b2;
@@ -107,7 +107,7 @@ public class Sector2D {
 	/**
 	 * @return      il vettore con i newPoint collineari
 	 */
-	public Vector getCollinear() {
+	public Vector<newPoint> getCollinear() {
 		return vp;
 	}
 
@@ -180,6 +180,7 @@ public class Sector2D {
 		return stat;
 	}
 
+	@Override
 	public String toString() {
 		String out = "";
 		if (p2 != null && vp.size() == 0) {

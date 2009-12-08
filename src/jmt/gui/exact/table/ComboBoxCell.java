@@ -72,6 +72,7 @@ public class ComboBoxCell extends DefaultCellEditor implements TableCellRenderer
 		return (JComboBox) super.getComponent();
 	}
 
+	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 		return jcb;
 	}

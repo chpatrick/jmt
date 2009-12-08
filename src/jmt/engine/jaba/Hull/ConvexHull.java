@@ -47,18 +47,18 @@ public class ConvexHull extends DSurface {
 	 * @exception - ConvexHullException
 	 *              if hull construction fails
 	 */
-	public ConvexHull(Vector vertices) throws ConvexHullException {
+	public ConvexHull(Vector<Vertex> vertices) throws ConvexHullException {
 		super();
 
 		if (vertices.size() < 4) {
 			throw new ConvexHullException("Too few (" + vertices.size() + ") vertices to form hull");
 		}
-		Enumeration e = vertices.elements();
+		Enumeration<Vertex> e = vertices.elements();
 		if (e.hasMoreElements()) {
-			Vertex v1 = (Vertex) e.nextElement();
+			Vertex v1 = e.nextElement();
 			Vertex v2 = null;
 			for (; e.hasMoreElements();) {
-				v2 = (Vertex) e.nextElement();
+				v2 = e.nextElement();
 				if (!Vertex.sameVertex(v1, v2)) {
 					break;
 				}
@@ -66,9 +66,9 @@ public class ConvexHull extends DSurface {
 
 			Vertex v3 = null;
 			Triangle t = null;
-			Vector coVerts = new Vector();
+			Vector<Vertex> coVerts = new Vector<Vertex>();
 			for (; e.hasMoreElements();) {
-				v3 = (Vertex) e.nextElement();
+				v3 = e.nextElement();
 				if (Vertex.collinear(v1, v2, v3)) {
 					coVerts.addElement(v3);
 				} else {
@@ -79,7 +79,7 @@ public class ConvexHull extends DSurface {
 
 			Vertex v4 = null;
 			for (; e.hasMoreElements();) {
-				v4 = (Vertex) e.nextElement();
+				v4 = e.nextElement();
 				int volSign = t.volumeSign(v4);
 				if (volSign == 0) {
 					coVerts.addElement(v4);
@@ -100,13 +100,13 @@ public class ConvexHull extends DSurface {
 
 			// Add vertices to the hull one at a time
 			for (; e.hasMoreElements();) {
-				addVertex((Vertex) e.nextElement());
+				addVertex(e.nextElement());
 			}
 
 			// Reprocess the previously found co-linear/planar vertices
 			if (getFaces().size() > 0) {
 				for (e = coVerts.elements(); e.hasMoreElements();) {
-					addVertex((Vertex) e.nextElement());
+					addVertex(e.nextElement());
 				}
 
 			} else {
@@ -121,16 +121,16 @@ public class ConvexHull extends DSurface {
 	 * @param - s1, s2  the vertex sets
 	 * @return - returns a vector of triangles that lie on the hull
 	 */
-	public Vector interSetFaces(Vector s1, Vector s2) {
-		Vector faces = getFaces();
-		Vector xFaces = new Vector();
+	public Vector<Triangle> interSetFaces(Vector s1, Vector s2) {
+		Vector<Polygon> faces = getFaces();
+		Vector<Triangle> xFaces = new Vector<Triangle>();
 
-		for (Enumeration e = faces.elements(); e.hasMoreElements();) {
-			Triangle t = (Triangle) e.nextElement();
-			Vector v = t.getVertices();
-			Vertex v1 = (Vertex) v.firstElement();
-			Vertex v2 = (Vertex) v.elementAt(1);
-			Vertex v3 = (Vertex) v.lastElement();
+		for (Polygon polygon : faces) {
+			Triangle t = (Triangle) polygon;
+			Vector<Vertex> v = t.getVertices();
+			Vertex v1 = v.firstElement();
+			Vertex v2 = v.elementAt(1);
+			Vertex v3 = v.lastElement();
 			if ((s1.contains(v1) || s1.contains(v2) || s1.contains(v3)) && (s2.contains(v1) || s2.contains(v2) || s2.contains(v3))) {
 				xFaces.addElement(t);
 			}
@@ -149,9 +149,9 @@ public class ConvexHull extends DSurface {
 	private static boolean checkVertex(Vertex vertex) {
 		int[] c = vertex.getCoords();
 		if (Math.abs(c[0]) > COORD_RANGE || Math.abs(c[1]) > COORD_RANGE || Math.abs(c[2]) > COORD_RANGE) { /*
-		  System.out.println
-		    ("Warning: vertex coordinates > " + COORD_RANGE + " or < " +
-		     -COORD_RANGE + " may create problems"); */
+																											System.out.println
+																											("Warning: vertex coordinates > " + COORD_RANGE + " or < " +
+																											-COORD_RANGE + " may create problems"); */
 			return false;
 		}
 		return true;
@@ -165,10 +165,10 @@ public class ConvexHull extends DSurface {
 	 * @param vol - indicates on which side of face vertex lies
 	 */
 	private void triToTet(Polygon face, Vertex vertex, int vol) {
-		Vector v = face.getVertices();
-		Vertex v1 = (Vertex) v.elementAt(0);
-		Vertex v2 = (Vertex) v.elementAt(1);
-		Vertex v3 = (Vertex) v.elementAt(2);
+		Vector<Vertex> v = face.getVertices();
+		Vertex v1 = v.elementAt(0);
+		Vertex v2 = v.elementAt(1);
+		Vertex v3 = v.elementAt(2);
 
 		// Store the vertices in CCW order
 		if (vol < 0) {
@@ -193,15 +193,15 @@ public class ConvexHull extends DSurface {
 	 * @param vertex - the vertex to add to the convex hull.
 	 */
 	private void addVertex(Vertex vertex) {
-		Vector visEdges = new Vector();
-		Vector visFaces = new Vector();
+		Vector<Edge> visEdges = new Vector<Edge>();
+		Vector<Triangle> visFaces = new Vector<Triangle>();
 
 		// Check vertex coordinates
 		checkVertex(vertex);
 
 		// Delete visible faces
-		for (Enumeration e = getFaces().elements(); e.hasMoreElements();) {
-			Triangle face = (Triangle) e.nextElement();
+		for (Polygon polygon : getFaces()) {
+			Triangle face = (Triangle) polygon;
 			if (face.volumeSign(vertex) < 0) {
 				visFaces.addElement(face);
 				// System.out.println(vertex + " visible from " + face);
@@ -212,16 +212,15 @@ public class ConvexHull extends DSurface {
 			// }
 		}
 		// Delete visible faces and construct visible edges list
-		for (Enumeration e = visFaces.elements(); e.hasMoreElements();) {
-			Polygon face = (Polygon) e.nextElement();
+		for (Enumeration<Triangle> e = visFaces.elements(); e.hasMoreElements();) {
+			Polygon face = e.nextElement();
 			deleteVisibleFace(face, visEdges);
 		}
 
 		// System.out.println("Visible edges: " + visEdges);
 
 		// Construct new faces using visible edges
-		for (Enumeration f = visEdges.elements(); f.hasMoreElements();) {
-			Edge edge = (Edge) f.nextElement();
+		for (Edge edge : visEdges) {
 			Vertex ends[] = edge.getVertices();
 			addFace(new Triangle(ends[0], ends[1], vertex));
 		}
@@ -234,11 +233,11 @@ public class ConvexHull extends DSurface {
 	 * @param face -  a face visible from a vertex to be deleted
 	 * @param visibleEdges - the list of hull edges visible from a vertex
 	 */
-	private void deleteVisibleFace(Polygon face, Vector visibleEdges) {
-		Vector v = face.getVertices();
-		Vertex v1 = (Vertex) v.elementAt(0);
-		Vertex v2 = (Vertex) v.elementAt(1);
-		Vertex v3 = (Vertex) v.elementAt(2);
+	private void deleteVisibleFace(Polygon face, Vector<Edge> visibleEdges) {
+		Vector<Vertex> v = face.getVertices();
+		Vertex v1 = v.elementAt(0);
+		Vertex v2 = v.elementAt(1);
+		Vertex v3 = v.elementAt(2);
 		Edge e1 = new Edge(v1, v2);
 		Edge e2 = new Edge(v2, v3);
 		Edge e3 = new Edge(v3, v1);
@@ -255,12 +254,12 @@ public class ConvexHull extends DSurface {
 	 * @param e - a visible edge
 	 * @param visibleEdges - a list of edges visible from a vertex
 	 */
-	private void updateVisibleEdges(Edge e, Vector visibleEdges) {
-		Enumeration f;
+	private void updateVisibleEdges(Edge e, Vector<Edge> visibleEdges) {
+		Enumeration<Edge> f;
 		boolean same = false;
 
 		for (f = visibleEdges.elements(); f.hasMoreElements();) {
-			Edge edge = (Edge) f.nextElement();
+			Edge edge = f.nextElement();
 			if (Edge.sameEdge(e, edge)) {
 				same = true;
 				e = edge;

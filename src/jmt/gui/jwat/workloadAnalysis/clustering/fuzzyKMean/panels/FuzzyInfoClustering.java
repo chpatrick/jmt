@@ -195,6 +195,7 @@ public class FuzzyInfoClustering extends JPanel implements CommonConstants, JWAT
 		 * Returns name for each column (given its index) to be displayed inside
 		 * table header
 		 */
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < colHeader.length) {
 				return colHeader[columnIndex];
@@ -208,6 +209,7 @@ public class FuzzyInfoClustering extends JPanel implements CommonConstants, JWAT
 		 * index) is editable or not. In this case distribution column is not
 		 * editable, as editing functionality is implemented via edit button
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}

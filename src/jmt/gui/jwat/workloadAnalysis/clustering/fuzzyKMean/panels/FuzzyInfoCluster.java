@@ -147,6 +147,7 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants, JWATCon
 					getTableHeader().addMouseMotionListener(tips);
 				}
 
+				@Override
 				public TableCellRenderer getCellRenderer(int row, int column) {
 					if (column == 0) {
 						return getDefaultRenderer(Boolean.class);
@@ -234,8 +235,8 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants, JWATCon
 				}
 				if (columnIndex == 0) {
 					int[] sel = ((FuzzyKMean) session.getListOfClustering().get(clustering)).getVarClust();
-					for (int i = 0; i < sel.length; i++) {
-						if (sel[i] == rowIndex) {
+					for (int element : sel) {
+						if (element == rowIndex) {
 							return Boolean.TRUE;
 						}
 					}
@@ -257,6 +258,7 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants, JWATCon
 			return null;
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < header.length) {
 				return header[columnIndex];
@@ -269,10 +271,12 @@ public class FuzzyInfoCluster extends JPanel implements CommonConstants, JWATCon
 		 * index) is editable or not. In this case distribution column is not
 		 * editable, as editing functionality is implemented via edit button
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}
 
+		@Override
 		public Class getColumnClass(int index) {
 			return String.class;
 		}

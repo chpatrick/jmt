@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 11-mar-2004
  *
@@ -25,6 +25,7 @@
 package jmt.jmarkov.Queues;
 
 import java.util.LinkedList;
+
 import jmt.jmarkov.Job;
 
 /**
@@ -34,22 +35,25 @@ import jmt.jmarkov.Job;
  */
 public class JobQueue extends LinkedList {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
-		
 	/**
 	 * Initializer of JobQueue class 
 	 *  
 	 *  
 	 */
 	public JobQueue() {
-		super();		
+		super();
 	}
 
 	/**
 	 * add job in to system
 	 */
 	public synchronized void addToQueueVoid(Job newJob) {
-		super.add(newJob);	
+		super.add(newJob);
 	}
 
 	/**
@@ -57,11 +61,11 @@ public class JobQueue extends LinkedList {
 	 * 
 	 * @return returns the first element in the queue
 	 */
-	public  Job removeFromQueue() {						
-		return (Job)super.remove();
+	public Job removeFromQueue() {
+		return (Job) super.remove();
 	}
-	
-	public void clearQueue(){
+
+	public void clearQueue() {
 		super.clear();
 	}
 

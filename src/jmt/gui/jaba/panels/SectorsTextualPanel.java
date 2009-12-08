@@ -96,6 +96,7 @@ public class SectorsTextualPanel extends WizardPanel {
 				.setText("<html><body><center><font face=\"bold\" size=\"3\">Saturation Sectors will be here displayed once you solve the model.</font></center></body></html>");
 	}
 
+	@Override
 	public String getName() {
 		return "Saturation Sectors - Text";
 	}
@@ -139,6 +140,7 @@ public class SectorsTextualPanel extends WizardPanel {
 		}
 	}
 
+	@Override
 	public void gotFocus() {
 		redraw();
 		repaint();

@@ -110,8 +110,8 @@ public class Parameter {
 
 	public int getNumVarSelected() {
 		int ret = 0;
-		for (int i = 0; i < varSelected.length; i++) {
-			if (varSelected[i]) {
+		for (boolean element : varSelected) {
+			if (element) {
 				ret++;
 			}
 		}

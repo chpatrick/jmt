@@ -97,9 +97,9 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 					String s = "";
 					short[] c1 = ((ClusteringInfosFuzzy) ((FuzzyKMean) session.getListOfClustering().get(clustering)).getClusteringInfos(cluster - 2))
 							.getAssignment();
-					for (int i = 0; i < o.length; i++) {
-						if (c1[o[i].getID() - 1] == match) {
-							s += o[i].toString() + "\n";
+					for (Observation element : o) {
+						if (c1[element.getID() - 1] == match) {
+							s += element.toString() + "\n";
 						}
 					}
 					infoCluster.setText(s);
@@ -191,10 +191,12 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 
 						JWatWorkloadManager.addJMTWindow(f);
 						f.addWindowListener(new WindowAdapter() {
+							@Override
 							public void windowClosing(WindowEvent e) {
 								JWatWorkloadManager.exit(f);
 							}
 
+							@Override
 							public void windowClosed(WindowEvent e) {
 								JWatWorkloadManager.exit(f);
 							}
@@ -225,6 +227,7 @@ public class FuzzyClusterDetails extends JPanel implements CommonConstants {
 			});
 		}
 
+		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
 			//Draw Black rectangle

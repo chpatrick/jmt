@@ -40,6 +40,7 @@ public class SessionLoader extends TimeConsumingWorker {
 		zis = zf.getInputStream(new ZipEntry(file + JwatSession.XMLext));
 	}
 
+	@Override
 	public void finished() {
 		if (this.get() != null) {
 			fireEventStatus(new EventSessionLoaded((JwatSession) this.get()));
@@ -181,6 +182,7 @@ public class SessionLoader extends TimeConsumingWorker {
 		return map;
 	}
 
+	@Override
 	public Object construct() {
 		int i, j, numClustLoaded;
 		JwatSession session = null;

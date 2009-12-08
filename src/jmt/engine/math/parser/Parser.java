@@ -52,8 +52,8 @@ public class Parser {
 	private Element cc; // Current character
 	private ExpressionNode root; // Root of expression tree
 
-	private HashSet functions; // Used functions
-	private HashSet variables; // Used variables
+	private HashSet<String> functions; // Used functions
+	private HashSet<String> variables; // Used variables
 
 	/**
 	 * Class constructor
@@ -75,8 +75,8 @@ public class Parser {
 		root = null;
 		inp_cur = 0;
 		this.error = error;
-		functions = new HashSet();
-		variables = new HashSet();
+		functions = new HashSet<String>();
+		variables = new HashSet<String>();
 	}
 
 	/**
@@ -88,8 +88,7 @@ public class Parser {
 		char[] input = str.toCharArray();
 		char[] output = new char[input.length + 1]; // One more space for terminator
 		int pos = 0; // Position on output
-		for (int i = 0; i < input.length; i++) {
-			char c = input[i];
+		for (char c : input) {
 			if (isNumber(c) || isOperator(c) || isText(c) || isBracket(c)) {
 				output[pos++] = c;
 			}
@@ -134,8 +133,8 @@ public class Parser {
 	 * @return truth value
 	 */
 	private boolean isOperator(char c) {
-		for (int i = 0; i < OperatorNode.OPERATIONS.length; i++) {
-			if (c == OperatorNode.OPERATIONS[i]) {
+		for (char element : OperatorNode.OPERATIONS) {
+			if (c == element) {
 				return true;
 			}
 		}
@@ -469,7 +468,7 @@ public class Parser {
 	 * @return a set with all parsed functions
 	 * @throws ParseError if parsed input string was malformed
 	 */
-	public HashSet getParsedFunctions() throws ParseError {
+	public HashSet<String> getParsedFunctions() throws ParseError {
 		getTree();
 		return functions;
 	}
@@ -479,7 +478,7 @@ public class Parser {
 	 * @return a set with all parsed variables
 	 * @throws ParseError if parsed input string was malformed
 	 */
-	public HashSet getParsedVariables() throws ParseError {
+	public HashSet<String> getParsedVariables() throws ParseError {
 		getTree();
 		return variables;
 	}

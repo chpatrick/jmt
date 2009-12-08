@@ -22,18 +22,33 @@
  */
 package jmt.jmarkov.Graphics;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.LayoutManager;
+import java.awt.RenderingHints;
+import java.awt.Stroke;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.GeneralPath;
+import java.awt.geom.Point2D;
+import java.awt.geom.QuadCurve2D;
+import java.awt.geom.Rectangle2D;
+
+import javax.swing.JPanel;
+
 import jmt.jmarkov.Graphics.constants.DrawConstrains;
 import jmt.jmarkov.Graphics.constants.DrawNormal;
-import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.Queues.QueueLogic;
+import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.geom.*;
+public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/{
 
-
-public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
-
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private boolean animate;
 	//queue settings
 	private QueueLogic ql;
@@ -41,7 +56,7 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 	private int queueMax,//limited maximum queue
 			currentJob,//number of jobs in queue
 			lastJob;//for animate 
-			//				jobTmp;
+	//				jobTmp;
 
 	//panel settings
 	private double panelH = 250,//panel height
@@ -153,18 +168,19 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 
 	private void resize() {
 		int x = this.getWidth(), y = this.getHeight();
-		if (y < minH)
+		if (y < minH) {
 			panelH = minH;
-		else
+		} else {
 			panelH = y;
-		if (x < minW)
+		}
+		if (x < minW) {
 			panelW = minW;
-		else
+		} else {
 			panelW = x;
+		}
 	}
 
-	
-
+	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -172,7 +188,10 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 		g2d.setBackground(Color.white);
 		g2d.clearRect(0, 0, this.getWidth(), this.getHeight());
 		changeDrawSettings(dCst);
-		START_GAP = START_GAP * 2 + drawLegend(new Color[] { probC, queueC, animQueuesC }, new String[] { "probability", "queue", "current state" }, dCst.getFont(), START_GAP, START_GAP, g2d);
+		START_GAP = START_GAP
+				* 2
+				+ drawLegend(new Color[] { probC, queueC, animQueuesC }, new String[] { "probability", "queue", "current state" }, dCst.getFont(),
+						START_GAP, START_GAP, g2d);
 		updateQueueSettings();
 		pb = new double[queueLenght() + 1];
 		for (int i = 0; i < queueLenght() + 1; i++) {
@@ -212,8 +231,9 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 						}
 					}
 					//the status is not busy
-					if (i > currentJob)
+					if (i > currentJob) {
 						drawLastStatus("", 0.0, g2d, emptyC, probC);
+					}
 					break;
 				}
 
@@ -223,23 +243,27 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 				drawArc((i + 1), i, false, "", g2d, borderC);
 			}
 			//status is busy
-			if (i < currentJob)
+			if (i < currentJob) {
 				drawStatus(i, pb[i], g2d, queueC, queueProbC, borderC, false);
+			}
 			//status is in animation
-			if (i == currentJob)
+			if (i == currentJob) {
 				drawStatus(i, pb[i], g2d, animQueuesC, animProbC, animBorderC, false);
+			}
 			//status is not busy
-			if (i > currentJob)
+			if (i > currentJob) {
 				drawStatus(i, pb[i], g2d, emptyC, probC, borderC, false);
+			}
 		}
 		//animation
-		if ((lastJob != currentJob) && (currentJob < queueLenght() - 2) && animate)
+		if ((lastJob != currentJob) && (currentJob < queueLenght() - 2) && animate) {
 			animateTransition3(lastJob, currentJob, false, g2d, animBorderC, animQueuesC);
+		}
 
 	}
 
 	public void drawStatus(int status, double probability, Graphics2D g2d, Color sc, Color pc, Color borderC, boolean bold) {
-		double x = 2.0 * (2.0 * STATUS_RAD + ELEMS_GAP) * (double) status + START_GAP;
+		double x = 2.0 * (2.0 * STATUS_RAD + ELEMS_GAP) * status + START_GAP;
 		double y = panelH / 2.0 - STATUS_RAD;
 		double pie = probability * 360;
 		Color ctmp = g2d.getColor();
@@ -261,7 +285,7 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 	}
 
 	public void drawLastStatus(String jobStr, double probability, Graphics2D g2d, Color sc, Color pc) {
-		double x = 2.0 * (2.0 * STATUS_RAD + ELEMS_GAP) * (double) (queueLenght() - 1) + START_GAP;
+		double x = 2.0 * (2.0 * STATUS_RAD + ELEMS_GAP) * (queueLenght() - 1) + START_GAP;
 		double y = panelH / 2.0 - STATUS_RAD;
 		Color ctmp = g2d.getColor();
 		lastStatusE = new Ellipse2D.Double(x, y, STATUS_RAD * 2.0, STATUS_RAD * 2.0);
@@ -283,7 +307,7 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 	}
 
 	public void drawMoreStatus(Graphics2D g2d) {
-		double x = 2.0 * (2.0 * STATUS_RAD + ELEMS_GAP) * (double) (queueLenght() - 2) + START_GAP;
+		double x = 2.0 * (2.0 * STATUS_RAD + ELEMS_GAP) * (queueLenght() - 2) + START_GAP;
 		double y = panelH / 2.0 - STATUS_RAD;
 		Color ctmp = g2d.getColor();
 		g2d.setPaint(Color.BLACK);
@@ -296,8 +320,9 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 		g2d.setColor(c);
 		arrow = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
 		double x1, x2, ctrlx, ctrly, arrowx, arrowy, y;
-		if (bold)
+		if (bold) {
 			g2d.setStroke(strokeB);
+		}
 		if (from > to) {
 
 			// arc settings
@@ -376,8 +401,9 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 		g2d.setColor(f);
 		//arrow = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
 		double gap, x1, x2, y, ctrlx, ctrly;
-		if (bold)
+		if (bold) {
 			g2d.setStroke(strokeB);
+		}
 		if (from > to) {
 			x2 = to * (4 * STATUS_RAD + 2 * ELEMS_GAP) + START_GAP + STATUS_RAD * 2;//+ ELEMS_GAP;
 			x1 = from * (4 * STATUS_RAD + 2 * ELEMS_GAP) + START_GAP;// - ELEMS_GAP;				
@@ -397,26 +423,26 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 		ctrlx = (x1 + x2) / 2;
 		QuadCurve2D prova;
 		switch (frame) {
-		case 1:
-			prova = new QuadCurve2D.Double(x1, y, ctrlx, ctrly, x2, y);
-			prova.subdivide(prova, null);
-			prova.subdivide(prova, null);
-			break;
+			case 1:
+				prova = new QuadCurve2D.Double(x1, y, ctrlx, ctrly, x2, y);
+				prova.subdivide(prova, null);
+				prova.subdivide(prova, null);
+				break;
 
-		case 2:
-			prova = new QuadCurve2D.Double(x1, y, ctrlx, ctrly, x2, y);
-			prova.subdivide(prova, null);
-			break;
-		case 3:
-			prova = new QuadCurve2D.Double(x1, y, ctrlx, ctrly, x2, y);
-			prova.subdivide(null, prova);
-			prova.subdivide(null, prova);
-			break;
+			case 2:
+				prova = new QuadCurve2D.Double(x1, y, ctrlx, ctrly, x2, y);
+				prova.subdivide(prova, null);
+				break;
+			case 3:
+				prova = new QuadCurve2D.Double(x1, y, ctrlx, ctrly, x2, y);
+				prova.subdivide(null, prova);
+				prova.subdivide(null, prova);
+				break;
 
-		default:
-			prova = new QuadCurve2D.Double(x1, y, ctrlx, ctrly, x2, y);
-			prova.subdivide(prova, null);
-			break;
+			default:
+				prova = new QuadCurve2D.Double(x1, y, ctrlx, ctrly, x2, y);
+				prova.subdivide(prova, null);
+				break;
 		}
 		Point2D p = prova.getP2();
 		transitionE = new Ellipse2D.Double(p.getX() - ELEMS_GAP, p.getY() - gap, 2 * ELEMS_GAP, 2 * ELEMS_GAP);
@@ -452,7 +478,8 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 		txtBounds = f.getStringBounds(s, g2d.getFontRenderContext());
 		x = centerX - txtBounds.getWidth() / 2.0;
 		y = centerY - txtBounds.getY() - txtBounds.getHeight() / 2;
-		txtBounds.setRect(x - ELEMS_GAP, y - txtBounds.getHeight() / 2.0 - ELEMS_GAP, txtBounds.getWidth() + 2 * ELEMS_GAP, txtBounds.getHeight() + 2 * ELEMS_GAP);
+		txtBounds.setRect(x - ELEMS_GAP, y - txtBounds.getHeight() / 2.0 - ELEMS_GAP, txtBounds.getWidth() + 2 * ELEMS_GAP, txtBounds.getHeight() + 2
+				* ELEMS_GAP);
 		if (drawBorder) {
 			g2d.setColor(invertedColor(c));
 			g2d.fill(txtBounds);
@@ -478,7 +505,7 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 		//			- ELEMS_GAP )/(2 * (2 * STATUS_RAD + ELEMS_GAP)));
 		int tmp = (int) ((panelW - START_GAP - END_GAP + (2 * STATUS_RAD + 2 * ELEMS_GAP)) / (2 * (2 * STATUS_RAD + ELEMS_GAP)));
 		if ((queueMax > 0) && (queueMax < tmp)) {
-			return (int) queueMax;
+			return queueMax;
 		}
 		return tmp;
 	}
@@ -491,12 +518,14 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 	 */
 	public String probabilityToString(double p, int decimals) {
 		String tmp;
-		if (p > 1.0)
+		if (p > 1.0) {
 			return "impossibile";
-		if (p == 1.0)
+		}
+		if (p == 1.0) {
 			tmp = "1.";
-		else
+		} else {
 			tmp = "0.";
+		}
 		return (tmp + ("" + (int) ((p + 1.0) * Math.pow(10, decimals))).substring(1));
 	}
 
@@ -504,10 +533,11 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 	 * @param i
 	 */
 	public void setMaxJobs(int i) {
-		if (i > 0)
+		if (i > 0) {
 			queueMax = i;
-		else
+		} else {
 			queueMax = i;
+		}
 		repaint();
 	}
 
@@ -556,9 +586,11 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 			g2d.fill(ra[i]);
 			g2d.setColor(Color.BLACK);
 			g2d.draw(ra[i]);
-			g2d.drawString(sa[i], (float) (x + gap * 2 + tr.getHeight()), (float) (y + gap + (tr.getHeight() + gap) * (i + 1) + tr.getHeight() / 2.0 - tr.getY() / 2.0));
-			if (maxw < tba[i].getWidth())
+			g2d.drawString(sa[i], (float) (x + gap * 2 + tr.getHeight()),
+					(float) (y + gap + (tr.getHeight() + gap) * (i + 1) + tr.getHeight() / 2.0 - tr.getY() / 2.0));
+			if (maxw < tba[i].getWidth()) {
 				maxw = tba[i].getWidth();
+			}
 		}
 		g2d.drawRect((int) x, (int) y, (int) (maxw + 3.0 * gap + tr.getHeight()), (int) (y + (tr.getHeight() + gap) * (ca.length + 1) + gap));
 		g2d.drawRect((int) x, (int) y, (int) (maxw + 3.0 * gap + tr.getHeight()), (int) (tr.getHeight() + gap));
@@ -573,7 +605,7 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 
 	}
 
-	public void enterProcessor(int jobId, int processorId, double time,double executionTime) {
+	public void enterProcessor(int jobId, int processorId, double time, double executionTime) {
 		// TODO Auto-generated method stub
 
 	}
@@ -628,12 +660,14 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/ {
 
 	public void updateQueue(int jobId, double time) {
 		boolean lastAnimate = animate;
-		if (currentJobId == jobId && frame < maxframe)
+		if (currentJobId == jobId && frame < maxframe) {
 			frame++;
-		else
+		} else {
 			animate = false;
-		if (lastAnimate)
+		}
+		if (lastAnimate) {
 			this.repaint();
+		}
 	}
 
 }

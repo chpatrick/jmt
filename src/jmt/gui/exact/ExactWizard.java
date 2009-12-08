@@ -27,7 +27,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 import javax.help.HelpSet;
 import javax.help.JHelp;
@@ -351,6 +350,7 @@ public class ExactWizard extends Wizard {
 	/**
 	 * @return the button panel
 	 */
+	@Override
 	protected JComponent makeButtons() {
 		help = new HoverHelp();
 		helpLabel = help.getHelpLabel();
@@ -503,6 +503,7 @@ public class ExactWizard extends Wizard {
 		return data;
 	}
 
+	@Override
 	protected void finish() {
 		//OLD
 		//do not call this method!!! It's already called inside checkFinish() method.
@@ -511,6 +512,7 @@ public class ExactWizard extends Wizard {
 		solve();
 	}
 
+	@Override
 	protected boolean cancel() {
 		if (currentPanel != null) {
 			currentPanel.lostFocus();
@@ -598,7 +600,8 @@ public class ExactWizard extends Wizard {
 			JOptionPane.showMessageDialog(this, e.getMessage(), "Solver error", JOptionPane.ERROR_MESSAGE);
 			return;
 		} catch (OutOfMemoryError e) {
-			JOptionPane.showMessageDialog(this, "Out of memory error. Try to run Java Virtual Machine with more heap size (-Xmx<num>m)", "Out of Memory", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Out of memory error. Try to run Java Virtual Machine with more heap size (-Xmx<num>m)",
+					"Out of Memory", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 		this.data = newdata;
@@ -714,7 +717,7 @@ public class ExactWizard extends Wizard {
 		UtilizationPanel utilizations = new UtilizationPanel(this);
 		//Added by ASHANKA START
 		//Introducing the new System Power Panel as a Tabbed Pane
-		SysPowerPanel systemPower = new SysPowerPanel(this);		
+		SysPowerPanel systemPower = new SysPowerPanel(this);
 		//Added by ASHANKA STOP
 		if (selector != null) {
 			selector.addSolutionPanel(throughput);
@@ -769,8 +772,8 @@ public class ExactWizard extends Wizard {
 		//and then update all those data into panels
 		ForceUpdatablePanel[] fuPanes = { (ForceUpdatablePanel) serviceDemandsPanel, (ForceUpdatablePanel) serviceTimesPanel,
 				(ForceUpdatablePanel) serviceDemandsPanel };
-		for (int i = 0; i < fuPanes.length; i++) {
-			fuPanes[i].retrieveData();
+		for (ForceUpdatablePanel fuPane : fuPanes) {
+			fuPane.retrieveData();
 		}
 		repaint();
 	}
@@ -798,12 +801,13 @@ public class ExactWizard extends Wizard {
 		//NEW
 		for (int i = 0; i < panelCount; i++) {
 			if (panels.get(i) instanceof WizardPanel) {
-				((WizardPanel) (panels.get(i))).gotFocus();
+				(panels.get(i)).gotFocus();
 			}
 		}
 		//END
 	}
 
+	@Override
 	protected void updateActions() {
 		super.updateActions();
 		if (currentIndex < (panelCount - 1)) {

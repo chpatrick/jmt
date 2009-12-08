@@ -136,10 +136,12 @@ public class TextualPanel extends WizardPanel implements JWATConstants {
 				.setText("<html><body><center><font face=\"bold\" size=\"3\">Burstiness values will be here displayed once you solve the problem.</font></center></body></html>");
 	}
 
+	@Override
 	public String getName() {
 		return "Burst Values - Text";
 	}
 
+	@Override
 	public void gotFocus() {
 		redraw();
 		repaint();
@@ -234,6 +236,7 @@ public class TextualPanel extends WizardPanel implements JWATConstants {
 		/**
 		 * Overrides default method to provide a warning if saving over an existing file
 		 */
+		@Override
 		public void approveSelection() {
 			// Gets the choosed file name
 			String name = getSelectedFile().getName();
@@ -287,6 +290,7 @@ public class TextualPanel extends WizardPanel implements JWATConstants {
 		/**
 		 * Whether the given file is accepted by this filter.
 		 */
+		@Override
 		public boolean accept(File f) {
 			String name = f.getName().toLowerCase();
 			return name.endsWith(extension) || f.isDirectory();
@@ -296,6 +300,7 @@ public class TextualPanel extends WizardPanel implements JWATConstants {
 		 * The description of this filter
 		 * @see javax.swing.filechooser.FileView#getName
 		 */
+		@Override
 		public String getDescription() {
 			return description + " (*" + extension + ")";
 		}
@@ -311,6 +316,7 @@ public class TextualPanel extends WizardPanel implements JWATConstants {
 	}
 
 	// --------------------------------------------------------------------
+	@Override
 	public void lostFocus() {
 		burstwizard.setLastPanel(TRAFFIC_TEXTUAL_PANEL);
 	}

@@ -80,7 +80,7 @@ public class JSimProblemsWindow extends JFrame {
 	JLabel title;
 	JList problemsList;
 	ModelChecker mc;
-	Vector problems;
+	Vector<ProblemElement> problems;
 
 	GridBagLayout gblayout;
 	GridBagConstraints gbconstants;
@@ -104,7 +104,7 @@ public class JSimProblemsWindow extends JFrame {
 		GridBagLayout gblayout = new GridBagLayout();
 		GridBagConstraints gbconstants = new GridBagConstraints();
 		getContentPane().setLayout(gblayout);
-		problems = new Vector(0, 1);
+		problems = new Vector<ProblemElement>(0, 1);
 
 		setBounds(20, 20, 20, 20);
 
@@ -118,6 +118,7 @@ public class JSimProblemsWindow extends JFrame {
 		problemsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		problemsList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		problemsList.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				ProblemElement temp = (ProblemElement) problemsList.getSelectedValue();
 				if (temp != null) {
@@ -130,6 +131,7 @@ public class JSimProblemsWindow extends JFrame {
 		});
 
 		addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowActivated(WindowEvent e) {
 				updateProblemsShown(true);
 			}

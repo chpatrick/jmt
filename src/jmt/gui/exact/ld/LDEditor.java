@@ -61,6 +61,7 @@ public class LDEditor extends AbstractCellEditor implements TableCellEditor {
 	/**
 	 * stops cell editing. calls fireEditingStopped()
 	 */
+	@Override
 	public boolean stopCellEditing() {
 		return false;
 	}
@@ -68,6 +69,7 @@ public class LDEditor extends AbstractCellEditor implements TableCellEditor {
 	/**
 	 * cancels cell editing. calls fireEditingCanceled()
 	 */
+	@Override
 	public void cancelCellEditing() {
 		return;
 	}
@@ -143,6 +145,7 @@ public class LDEditor extends AbstractCellEditor implements TableCellEditor {
 	/**
 	 * borrowed from <code>DefaultCellEditor</code>
 	 */
+	@Override
 	public boolean isCellEditable(EventObject e) {
 		if (e instanceof MouseEvent) {
 			return ((MouseEvent) e).getClickCount() >= clicksToEdit;

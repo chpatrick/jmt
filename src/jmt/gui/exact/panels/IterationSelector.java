@@ -53,7 +53,7 @@ public class IterationSelector extends WizardPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	// Vector with all solution panels
-	private Vector panels = new Vector();
+	private Vector<SolutionPanel> panels = new Vector<SolutionPanel>();
 	// Data structure
 	private ExactModel model;
 	// Dimension of spinner
@@ -90,9 +90,9 @@ public class IterationSelector extends WizardPanel {
 	 * @param i iteration to be selected
 	 */
 	private void select(int i) {
-		Iterator it = panels.iterator();
+		Iterator<SolutionPanel> it = panels.iterator();
 		while (it.hasNext()) {
-			((SolutionPanel) it.next()).setIteration(i);
+			it.next().setIteration(i);
 		}
 		double value = model.getWhatIfValues()[i];
 		// Now adjusts description label
@@ -166,6 +166,7 @@ public class IterationSelector extends WizardPanel {
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Textual Results";
 	}

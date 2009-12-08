@@ -59,8 +59,8 @@ public class Station3D {
 		return coord;
 	}
 
-	public Vector CreateStations(Vector vertices) {
-		Vector out = new Vector();
+	public Vector<Station3D> CreateStations(Vector vertices) {
+		Vector<Station3D> out = new Vector<Station3D>();
 		for (int i = 0; i < vertices.size(); i++) {
 			Station3D st3d = new Station3D("Stazione " + i, ((Vertex) vertices.get(i)));
 			out.addElement(st3d);

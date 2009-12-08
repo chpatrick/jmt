@@ -60,6 +60,7 @@ public class DispQQPlotMatrix extends JScrollPane {
 		addListener();
 	}
 
+	@Override
 	protected void paintComponent(Graphics g) {
 		if (g == null) {
 			return;
@@ -117,6 +118,7 @@ public class DispQQPlotMatrix extends JScrollPane {
 					this.removeMouseListener(this.getMouseListeners()[0]);
 				}
 				this.addMouseListener(new MouseAdapter() {
+					@Override
 					public void mouseClicked(MouseEvent e) {
 						/* Visualizzazione dello scatter plot dettagliato */
 						if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
@@ -127,10 +129,12 @@ public class DispQQPlotMatrix extends JScrollPane {
 
 								JWatWorkloadManager.addJMTWindow(f);
 								f.addWindowListener(new WindowAdapter() {
+									@Override
 									public void windowClosing(WindowEvent e) {
 										JWatWorkloadManager.exit(f);
 									}
 
+									@Override
 									public void windowClosed(WindowEvent e) {
 										JWatWorkloadManager.exit(f);
 									}
@@ -152,6 +156,7 @@ public class DispQQPlotMatrix extends JScrollPane {
 			}
 		}
 
+		@Override
 		public void paintComponent(Graphics g) {
 			super.paintComponent(g);
 			if (Redraw && model.getMatrix() != null) {
@@ -161,6 +166,7 @@ public class DispQQPlotMatrix extends JScrollPane {
 				grap.fillRect(0, 0, WIDTH_TOT * model.getMatrix().getNumVariables() + 1, HEIGHT_TOT * model.getMatrix().getNumVariables() + 1);
 				grap.drawImage(chart, 0, 0, null);
 				TimeConsumingWorker worker = new TimeConsumingWorker(new ProgressMonitorShow(this, "Constructin Dispersion Matrix...", 1)) {
+					@Override
 					public Object construct() {
 						if (model.getMatrix() != null) {
 							Graphics g = chart.getGraphics();
@@ -236,6 +242,7 @@ public class DispQQPlotMatrix extends JScrollPane {
 						return null;
 					}
 
+					@Override
 					public void finished() {
 						DispersionPanel.this.repaint();
 					}

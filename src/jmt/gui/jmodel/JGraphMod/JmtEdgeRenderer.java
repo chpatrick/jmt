@@ -41,6 +41,7 @@ public class JmtEdgeRenderer extends EdgeRenderer {
 	 */
 	private static final long serialVersionUID = 1L;
 
+	@Override
 	protected Shape createShape() {
 
 		ArrayList tmp1 = new ArrayList();
@@ -104,9 +105,8 @@ public class JmtEdgeRenderer extends EdgeRenderer {
 					for (int i = 0; i < cell.intersectionEdgePoint.size(); i++) {
 						for (int j = i; j < cell.intersectionEdgePoint.size(); j++) {
 							if (i != j && i < j) {
-								if ((int) ((Point2D) cell.intersectionEdgePoint.get(j)).getX() < (int) ((Point2D) cell.intersectionEdgePoint.get(i))
-										.getX()) {
-									Point2D tmp2 = ((Point2D) cell.intersectionEdgePoint.get(j));
+								if ((int) (cell.intersectionEdgePoint.get(j)).getX() < (int) (cell.intersectionEdgePoint.get(i)).getX()) {
+									Point2D tmp2 = (cell.intersectionEdgePoint.get(j));
 									cell.intersectionEdgePoint.set(j, (cell.intersectionEdgePoint.get(i)));
 									cell.intersectionEdgePoint.set(i, tmp2);
 								}
@@ -138,18 +138,18 @@ public class JmtEdgeRenderer extends EdgeRenderer {
 								 * */
 								if (cell.isRing && i == 4) {
 									//	  	        			   System.out.println("____________ENTRATO NEL RING____________");
-									if ((int) p[i].getY() == (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY()
-											&& (((int) p[i].getX() < (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX()))) {
-										int intersectionPoint = (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX();
+									if ((int) p[i].getY() == (int) ((cell.intersectionEdgePoint.get(j))).getY()
+											&& (((int) p[i].getX() < (int) ((cell.intersectionEdgePoint.get(j))).getX()))) {
+										int intersectionPoint = (int) ((cell.intersectionEdgePoint.get(j))).getX();
 
 										if (intersectionPoint < ((int) p[5].getX()) && p[5].getX() > p[4].getX()) {
 											view.sharedPath.curveTo((float) ((p[4])).getX(), (float) ((p[4])).getY(), (float) ((p[4].getX() + p[5]
 													.getX()) / 2), (float) ((p[4])).getY() - 10, (float) ((p[5]).getX()), (float) ((p[5]).getY()));
 											view.sharedPath.moveTo((float) (p[5].getX()), (float) (p[5]).getY());
 										}
-									} else if ((int) p[i].getY() == (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY()
-											&& (((int) p[i].getX() > (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX()))) {
-										int intersectionPoint = (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX();
+									} else if ((int) p[i].getY() == (int) ((cell.intersectionEdgePoint.get(j))).getY()
+											&& (((int) p[i].getX() > (int) ((cell.intersectionEdgePoint.get(j))).getX()))) {
+										int intersectionPoint = (int) ((cell.intersectionEdgePoint.get(j))).getX();
 										if ((p[5].getX() < p[4].getX()) && (intersectionPoint > ((int) p[5].getX()))) {
 											view.sharedPath.curveTo((float) ((p[4])).getX(), (float) ((p[4])).getY(), (float) ((p[4].getX() + p[5]
 													.getX()) / 2), (float) ((p[4])).getY() - 10, (float) ((p[5]).getX()), (float) ((p[5]).getY()));
@@ -158,49 +158,44 @@ public class JmtEdgeRenderer extends EdgeRenderer {
 
 									}
 								} else {
-									if ((int) p[i + 1].getY() == (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY()
-											&& (int) p[i].getY() == (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY()
-											&& (((int) p[i].getX() < (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX()))
-											&& (((int) p[i + 1].getX() > (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX()))) {
+									if ((int) p[i + 1].getY() == (int) ((cell.intersectionEdgePoint.get(j))).getY()
+											&& (int) p[i].getY() == (int) ((cell.intersectionEdgePoint.get(j))).getY()
+											&& (((int) p[i].getX() < (int) ((cell.intersectionEdgePoint.get(j))).getX()))
+											&& (((int) p[i + 1].getX() > (int) ((cell.intersectionEdgePoint.get(j))).getX()))) {
 
 										//questo if serve per fare un grande arco quando ci sono due punti di int. vicini
 										if (((j + 1) < cell.intersectionEdgePoint.size())
-												&& (((Point2D) (cell.intersectionEdgePoint.get(j + 1))).getX() > ((Point2D) (cell.intersectionEdgePoint
-														.get(j))).getX())
-												&& (((Point2D) (cell.intersectionEdgePoint.get(j + 1))).getX()
-														- ((Point2D) (cell.intersectionEdgePoint.get(j))).getX() < 10)
-												&& ((Point2D) (cell.intersectionEdgePoint.get(j))).getY() == ((Point2D) (cell.intersectionEdgePoint
-														.get(j + 1))).getY()) {
-											double middleX = (((Point2D) (cell.intersectionEdgePoint.get(j + 1))).getX() + ((Point2D) (cell.intersectionEdgePoint
-													.get(j))).getX()) / 2;
+												&& (((cell.intersectionEdgePoint.get(j + 1))).getX() > ((cell.intersectionEdgePoint.get(j))).getX())
+												&& (((cell.intersectionEdgePoint.get(j + 1))).getX() - ((cell.intersectionEdgePoint.get(j))).getX() < 10)
+												&& ((cell.intersectionEdgePoint.get(j))).getY() == ((cell.intersectionEdgePoint.get(j + 1))).getY()) {
+											double middleX = (((cell.intersectionEdgePoint.get(j + 1))).getX() + ((cell.intersectionEdgePoint.get(j)))
+													.getX()) / 2;
 
-											view.sharedPath.lineTo((float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX() - 5,
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY());
-											view.sharedPath.moveTo((float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX() - 5,
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY());
-											view.sharedPath.curveTo((float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX() - 5,
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY(), (float) middleX,
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY() - 10,
-													(float) (((Point2D) (cell.intersectionEdgePoint.get(j + 1))).getX() + 5),
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j + 1))).getY());
-											view.sharedPath.moveTo((float) (((Point2D) (cell.intersectionEdgePoint.get(j + 1))).getX() + 5),
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY());
+											view.sharedPath.lineTo((float) ((cell.intersectionEdgePoint.get(j))).getX() - 5,
+													(float) ((cell.intersectionEdgePoint.get(j))).getY());
+											view.sharedPath.moveTo((float) ((cell.intersectionEdgePoint.get(j))).getX() - 5,
+													(float) ((cell.intersectionEdgePoint.get(j))).getY());
+											view.sharedPath.curveTo((float) ((cell.intersectionEdgePoint.get(j))).getX() - 5,
+													(float) ((cell.intersectionEdgePoint.get(j))).getY(), (float) middleX,
+													(float) ((cell.intersectionEdgePoint.get(j))).getY() - 10, (float) (((cell.intersectionEdgePoint
+															.get(j + 1))).getX() + 5), (float) ((cell.intersectionEdgePoint.get(j + 1))).getY());
+											view.sharedPath.moveTo((float) (((cell.intersectionEdgePoint.get(j + 1))).getX() + 5),
+													(float) ((cell.intersectionEdgePoint.get(j))).getY());
 											j++;
 
 										} else {
 											// System.out.println("------------------------------------------------------");
-											view.sharedPath.lineTo((float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX() - 5,
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY());
-											view.sharedPath.moveTo((float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX() - 5,
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY());
-											view.sharedPath.curveTo((float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX() - 5,
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY(),
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX(),
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY() - 10,
-													(float) (((Point2D) (cell.intersectionEdgePoint.get(j))).getX() + 5),
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY());
-											view.sharedPath.moveTo((float) (((Point2D) (cell.intersectionEdgePoint.get(j))).getX() + 5),
-													(float) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY());
+											view.sharedPath.lineTo((float) ((cell.intersectionEdgePoint.get(j))).getX() - 5,
+													(float) ((cell.intersectionEdgePoint.get(j))).getY());
+											view.sharedPath.moveTo((float) ((cell.intersectionEdgePoint.get(j))).getX() - 5,
+													(float) ((cell.intersectionEdgePoint.get(j))).getY());
+											view.sharedPath.curveTo((float) ((cell.intersectionEdgePoint.get(j))).getX() - 5,
+													(float) ((cell.intersectionEdgePoint.get(j))).getY(),
+													(float) ((cell.intersectionEdgePoint.get(j))).getX(),
+													(float) ((cell.intersectionEdgePoint.get(j))).getY() - 10, (float) (((cell.intersectionEdgePoint
+															.get(j))).getX() + 5), (float) ((cell.intersectionEdgePoint.get(j))).getY());
+											view.sharedPath.moveTo((float) (((cell.intersectionEdgePoint.get(j))).getX() + 5),
+													(float) ((cell.intersectionEdgePoint.get(j))).getY());
 										}
 									}
 
@@ -208,10 +203,10 @@ public class JmtEdgeRenderer extends EdgeRenderer {
 									//per cui la costruzione deve avvenire in modo inverso
 									else if (((passato == false) || ((passato == true) && (tmp1.size() > 0) && (!tmp1
 											.contains(cell.intersectionEdgePoint.get(j)))))
-											&& (int) p[i].getY() == (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY()
+											&& (int) p[i].getY() == (int) ((cell.intersectionEdgePoint.get(j))).getY()
 											&& (((int) p[i].getX() > (int) p[i + 1].getX()))
-											&& (int) p[i].getY() == (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getY()
-											&& (int) p[i + 1].getX() < (int) ((Point2D) (cell.intersectionEdgePoint.get(j))).getX()) {
+											&& (int) p[i].getY() == (int) ((cell.intersectionEdgePoint.get(j))).getY()
+											&& (int) p[i + 1].getX() < (int) ((cell.intersectionEdgePoint.get(j))).getX()) {
 										//	  	        			   System.out.println("Entratooooooooooooooooooooooooo in elseif");
 										//questo if serve per fare un grande arco quando ci sono due punti di int. vicini
 										//	  	        			______________________INSERIMENTO___________________________
@@ -219,9 +214,8 @@ public class JmtEdgeRenderer extends EdgeRenderer {
 
 										int contatore = 0;
 										for (int q = 0; q < cell.intersectionEdgePoint.size(); q++) {
-											if (((Point2D) cell.intersectionEdgePoint.get(q)).getY() == ((Point2D) cell.intersectionEdgePoint.get(j))
-													.getY()) {
-												tmp1.add(((Point2D) cell.intersectionEdgePoint.get(q)).clone());
+											if ((cell.intersectionEdgePoint.get(q)).getY() == (cell.intersectionEdgePoint.get(j)).getY()) {
+												tmp1.add((cell.intersectionEdgePoint.get(q)).clone());
 												//	  	        	 			cell.intersectionEdgePoint.remove(((Point2D)cell.intersectionEdgePoint.get(q)));
 												contatore++;
 											}
@@ -292,7 +286,7 @@ public class JmtEdgeRenderer extends EdgeRenderer {
 
 							Vector pointOnFirstPoints = new Vector();
 							for (int q = 0; q < cell.intersectionEdgePoint.size(); q++) {
-								if ((int) p[0].getY() == (int) ((Point2D) (cell.intersectionEdgePoint.get(q))).getY()) {
+								if ((int) p[0].getY() == (int) ((cell.intersectionEdgePoint.get(q))).getY()) {
 									pointOnFirstPoints.add((cell.intersectionEdgePoint.get(q)));
 								}
 							}

@@ -352,6 +352,7 @@ public class JabaWizard extends Wizard {
 	/**
 	 * @return the button panel
 	 */
+	@Override
 	protected JComponent makeButtons() {
 		help = new HoverHelp();
 		helpLabel = help.getHelpLabel();
@@ -497,6 +498,7 @@ public class JabaWizard extends Wizard {
 		return data;
 	}
 
+	@Override
 	protected void finish() {
 		//OLD
 		//do not call this method!!! It's already called inside checkFinish() method.
@@ -505,6 +507,7 @@ public class JabaWizard extends Wizard {
 		solve();
 	}
 
+	@Override
 	protected boolean cancel() {
 		if (currentPanel != null) {
 			currentPanel.lostFocus();
@@ -710,8 +713,8 @@ public class JabaWizard extends Wizard {
 		//and then update all those data into panels
 		ForceUpdatablePanel[] fuPanes = { (ForceUpdatablePanel) serviceDemandsPanel, (ForceUpdatablePanel) serviceTimesPanel,
 				(ForceUpdatablePanel) serviceDemandsPanel };
-		for (int i = 0; i < fuPanes.length; i++) {
-			fuPanes[i].retrieveData();
+		for (ForceUpdatablePanel fuPane : fuPanes) {
+			fuPane.retrieveData();
 		}
 		repaint();
 	}
@@ -726,12 +729,13 @@ public class JabaWizard extends Wizard {
 		//NEW
 		for (int i = 0; i < panelCount; i++) {
 			if (panels.get(i) instanceof WizardPanel) {
-				((WizardPanel) (panels.get(i))).gotFocus();
+				(panels.get(i)).gotFocus();
 			}
 		}
 		//END
 	}
 
+	@Override
 	protected void updateActions() {
 		super.updateActions();
 		if (currentIndex < (panelCount - 1)) {
@@ -786,6 +790,7 @@ public class JabaWizard extends Wizard {
 			initComponents();
 		}
 
+		@Override
 		public String getName() {
 			return "Saturation Sectors - Graphics";
 		}
@@ -824,6 +829,7 @@ public class JabaWizard extends Wizard {
 			}
 		}
 
+		@Override
 		public void gotFocus() {
 			redraw();
 		}
@@ -859,6 +865,7 @@ public class JabaWizard extends Wizard {
 			this.mainWin = mainWin;
 		}
 
+		@Override
 		public String getName() {
 			return "Convex Hull - Graphics";
 		}
@@ -898,6 +905,7 @@ public class JabaWizard extends Wizard {
 			}
 		}
 
+		@Override
 		public void gotFocus() {
 			redraw();
 		}

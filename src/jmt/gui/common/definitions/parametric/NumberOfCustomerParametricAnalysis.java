@@ -43,7 +43,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 
 	private boolean singleClass;
 	private Object classKey;
-	private Vector validParameterValues;
+	private Vector<Integer> validParameterValues;
 
 	private Object values;
 
@@ -94,6 +94,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	 * @return the key of the class whose number of jobs will be increased if the
 	 *         parametric analysis is single class, <code> null </code> otherwise.
 	 */
+	@Override
 	public Object getReferenceClass() {
 		if (singleClass) {
 			return classKey;
@@ -122,6 +123,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	 *
 	 * @return the type of parametric analysis
 	 */
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -138,6 +140,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	 * Changes the model preparing it for the next step
 	 *
 	 */
+	@Override
 	public void changeModel(int step) {
 		if (step >= numberOfSteps) {
 			return;
@@ -167,9 +170,10 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	 *
 	 * @return the maximum number of steps
 	 */
+	@Override
 	public int searchForAvaibleSteps() {
 		int max = (int) (finalValue - initialValue) + 1;
-		validParameterValues = new Vector(max, 1);
+		validParameterValues = new Vector<Integer>(max, 1);
 		if (singleClass) {
 			int pop = classDef.getClassPopulation(classKey).intValue();
 			for (int i = 0; i < max; i++) {
@@ -215,6 +219,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	 * simulation may be iterated on.
 	 *
 	 */
+	@Override
 	public void createValuesSet() {
 		int maxSteps = validParameterValues.size();
 		if (singleClass) {
@@ -225,7 +230,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 			double sum = 0;
 			for (int i = 0; i < numberOfSteps; i++) {
 				thisStep = (int) (sum);
-				((Vector) values).add(validParameterValues.get(thisStep));
+				((Vector<Integer>) values).add(validParameterValues.get(thisStep));
 				sum += p;
 			}
 			originalValues = new Integer(classDef.getClassPopulation(classKey).intValue());
@@ -233,7 +238,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 			double p = (double) (maxSteps - 1) / (double) (numberOfSteps - 1);
 			int thisStep;
 			double sum = 0;
-			Vector classSet = classDef.getClosedClassKeys();
+			Vector<Object> classSet = classDef.getClosedClassKeys();
 			values = new ValuesTable(classDef, classSet, numberOfSteps);
 			//calculate the proportion between classes populations
 			double[] betas = new double[classSet.size()];
@@ -244,7 +249,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 			}
 			for (int i = 0; i < numberOfSteps; i++) {
 				thisStep = (int) sum;
-				totalPop = ((Integer) validParameterValues.get(thisStep)).intValue();
+				totalPop = validParameterValues.get(thisStep).intValue();
 				for (int j = 0; j < classSet.size(); j++) {
 					double thisClassNextNumberOfJobs = totalPop * betas[j];
 					int value = (int) (thisClassNextNumberOfJobs);
@@ -256,7 +261,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 			for (int i = 0; i < classSet.size(); i++) {
 				Object thisClass = classSet.get(i);
 				Integer thisValue = new Integer(classDef.getClassPopulation(thisClass).intValue());
-				((Vector) originalValues).add(thisValue);
+				((Vector<Integer>) originalValues).add(thisValue);
 			}
 		}
 
@@ -265,6 +270,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	/**
 	 * Restore the original values of population
 	 */
+	@Override
 	public void restoreOriginalValues() {
 		if (singleClass) {
 			classDef.setClassPopulation((Integer) originalValues, classKey);
@@ -292,6 +298,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	 *         1 - If the PA model is no more valid, but it will be corrected <br>
 	 *         2 - If the PA model can be no more used
 	 */
+	@Override
 	public int checkCorrectness(boolean autocorrect) {
 		int code = 0;
 		Vector closeClasses = classDef.getClosedClassKeys();
@@ -357,7 +364,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 						}
 					}
 				} else {
-					Vector temp = validParameterValues;
+					Vector<Integer> temp = validParameterValues;
 					int temp2 = searchForAvaibleSteps();
 					//if the total nmber job equals initialValue, but the
 					//validParameterValues is different from the old one
@@ -396,8 +403,9 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	 *
 	 * @return a Vector containing the values assumed by the varying parameter
 	 */
-	public Vector getParameterValues() {
-		Vector assumedValues = new Vector(numberOfSteps);
+	@Override
+	public Vector<Number> getParameterValues() {
+		Vector<Number> assumedValues = new Vector<Number>(numberOfSteps);
 		if (singleClass) {
 			Vector temp = (Vector) values;
 			double initial = ((Integer) originalValues).doubleValue();
@@ -426,6 +434,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	 *
 	 * @return the name of the class
 	 */
+	@Override
 	public String getReferenceClassName() {
 		return classDef.getClassName(classKey);
 	}
@@ -435,8 +444,9 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	 * defined as constants inside this class.
 	 * @return a TreeMap containing the value for each property
 	 */
-	public Map getProperties() {
-		TreeMap properties = new TreeMap();
+	@Override
+	public Map<String, String> getProperties() {
+		TreeMap<String, String> properties = new TreeMap<String, String>();
 		properties.put(TYPE_PROPERTY, getType());
 		properties.put(TO_PROPERTY, Double.toString(finalValue));
 		properties.put(STEPS_PROPERTY, Integer.toString(numberOfSteps));
@@ -456,6 +466,7 @@ public class NumberOfCustomerParametricAnalysis extends ParametricAnalysisDefini
 	 * @param propertyName the name of the property to be set
 	 * @param value the value to be set
 	 */
+	@Override
 	public void setProperty(String propertyName, String value) {
 		if (propertyName.equals(TO_PROPERTY)) {
 			finalValue = Double.parseDouble(value);

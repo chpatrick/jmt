@@ -35,6 +35,7 @@ public class RndInputLoader extends InputLoader implements JWATConstants {
 	/* (non-Javadoc)
 	 * @see jwat.Input.workerLoader#construct()
 	 */
+	@Override
 	public Object construct() {
 		int i, maxInd, j, k;
 		boolean[] catchVal = new boolean[param.getOptions()[0]];
@@ -171,7 +172,7 @@ public class RndInputLoader extends InputLoader implements JWATConstants {
 			}
 
 			updateInfos(totalRaw, "Calculating Statistics...", false);
-			m = new MatrixOsservazioni((Observation[]) valori.toArray(new Observation[valori.size()]), param.getSelName(), param.getSelType(), map);
+			m = new MatrixOsservazioni(valori.toArray(new Observation[valori.size()]), param.getSelName(), param.getSelType(), map);
 			updateInfos(totalRaw + 1, "Done", true);
 			return m;
 

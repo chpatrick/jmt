@@ -95,9 +95,9 @@ public class SingleKMeanClusterInfo extends JPanel implements CommonConstants {
 					Observation[] o = model.getMatrix().getVariables()[0].getCurObs();
 					String s = "";
 					short[] c1 = ((KMean) session.getListOfClustering().get(clustering)).getAsseg()[cluster - 1];
-					for (int i = 0; i < o.length; i++) {
-						if (c1[o[i].getID() - 1] == match) {
-							s += o[i].toString() + "\n";
+					for (Observation element : o) {
+						if (c1[element.getID() - 1] == match) {
+							s += element.toString() + "\n";
 						}
 					}
 					infoCluster.setText(s);
@@ -189,10 +189,12 @@ public class SingleKMeanClusterInfo extends JPanel implements CommonConstants {
 
 						JWatWorkloadManager.addJMTWindow(f);
 						f.addWindowListener(new WindowAdapter() {
+							@Override
 							public void windowClosing(WindowEvent e) {
 								JWatWorkloadManager.exit(f);
 							}
 
+							@Override
 							public void windowClosed(WindowEvent e) {
 								JWatWorkloadManager.exit(f);
 							}
@@ -223,6 +225,7 @@ public class SingleKMeanClusterInfo extends JPanel implements CommonConstants {
 			});
 		}
 
+		@Override
 		public void paint(Graphics g) {
 			super.paint(g);
 			//Draw Black rectangle

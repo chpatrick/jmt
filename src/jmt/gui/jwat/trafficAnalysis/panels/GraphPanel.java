@@ -85,7 +85,7 @@ public class GraphPanel extends WizardPanel implements JWATConstants {
 	private String currentIndex = " b ";
 	private MainJwatWizard ew;
 	private Vector columnHeads;
-	private Vector rows;
+	private Vector<Vector<Comparable>> rows;
 	private JPanel left, mainPanel;
 	private double[] resA, resB;
 
@@ -199,8 +199,8 @@ public class GraphPanel extends WizardPanel implements JWATConstants {
 
 	public void setTable() {
 		DecimalFormat df = new DecimalFormat("0.00000000");
-		rows = new Vector();
-		Vector line;
+		rows = new Vector<Vector<Comparable>>();
+		Vector<Comparable> line;
 		double[] resultB = engine.getData("b");
 		double[] resultA = engine.getData("a");
 		resA = new double[resultA.length - 1];
@@ -208,7 +208,7 @@ public class GraphPanel extends WizardPanel implements JWATConstants {
 		int k = 0;
 		int count = 2;
 		for (int i = 1; i < engine.getEpochRange(); i++) {
-			line = new Vector();
+			line = new Vector<Comparable>();
 			line.add(new Integer(count));
 			line.add(new Double(df.format(resultB[i])));
 			line.add(new Double(df.format(resultA[i])));
@@ -383,10 +383,12 @@ public class GraphPanel extends WizardPanel implements JWATConstants {
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Burst Values - Graphics";
 	}
 
+	@Override
 	public void lostFocus() {
 		ew.setLastPanel(TRAFFIC_GRAPH_PANEL);
 	}

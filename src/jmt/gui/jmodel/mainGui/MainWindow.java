@@ -112,6 +112,7 @@ public class MainWindow extends JMTFrame {
 	/* (non-Javadoc)
 	 * @see jmt.framework.gui.components.JMTFrame#canBeClosed()
 	 */
+	@Override
 	public boolean canBeClosed() {
 		return !mediator.checkForSave("<html>Save changes before closing?</html>");
 	}
@@ -119,6 +120,7 @@ public class MainWindow extends JMTFrame {
 	/* (non-Javadoc)
 	 * @see jmt.framework.gui.components.JMTFrame#doClose()
 	 */
+	@Override
 	protected void doClose() {
 		// Ends simulation process if active
 		mediator.stopSimulation();

@@ -29,7 +29,7 @@ public class Triangle extends Polygon {
 	 */
 	public Triangle(Vertex v1, Vertex v2, Vertex v3) {
 		super();
-		Vector v = getVertices();
+		Vector<Vertex> v = getVertices();
 		v.addElement(v1);
 		v.addElement(v2);
 		v.addElement(v3);
@@ -45,18 +45,18 @@ public class Triangle extends Polygon {
 			return true;
 		}
 
-		Vector v1 = t1.getVertices();
-		Vector v2 = t2.getVertices();
+		Vector<Vertex> v1 = t1.getVertices();
+		Vector<Vertex> v2 = t2.getVertices();
 		if (v1 == v2) {
 			return true;
 		}
 
-		Vertex t1A = (Vertex) v1.firstElement();
-		Vertex t1B = (Vertex) v1.elementAt(1);
-		Vertex t1C = (Vertex) v1.lastElement();
-		Vertex t2A = (Vertex) v2.firstElement();
-		Vertex t2B = (Vertex) v2.elementAt(1);
-		Vertex t2C = (Vertex) v2.lastElement();
+		Vertex t1A = v1.firstElement();
+		Vertex t1B = v1.elementAt(1);
+		Vertex t1C = v1.lastElement();
+		Vertex t2A = v2.firstElement();
+		Vertex t2B = v2.elementAt(1);
+		Vertex t2C = v2.lastElement();
 		return (Vertex.sameVertex(t1A, t2A) || Vertex.sameVertex(t1A, t2B) || Vertex.sameVertex(t1A, t2C))
 				&& (Vertex.sameVertex(t1B, t2A) || Vertex.sameVertex(t1B, t2B) || Vertex.sameVertex(t1B, t2C))
 				&& (Vertex.sameVertex(t1C, t2A) || Vertex.sameVertex(t1C, t2B) || Vertex.sameVertex(t1C, t2C));
@@ -101,10 +101,10 @@ public class Triangle extends Polygon {
 	 *                vertices
 	 */
 	public Vertex thirdVertex(Vertex v1, Vertex v2) {
-		Vector vertices = getVertices();
-		Vertex vert1 = (Vertex) vertices.elementAt(0);
-		Vertex vert2 = (Vertex) vertices.elementAt(1);
-		Vertex vert3 = (Vertex) vertices.elementAt(2);
+		Vector<Vertex> vertices = getVertices();
+		Vertex vert1 = vertices.elementAt(0);
+		Vertex vert2 = vertices.elementAt(1);
+		Vertex vert3 = vertices.elementAt(2);
 		if (v1 == vert1 && v2 == vert2 || v2 == vert1 && v1 == vert2) {
 			return vert3;
 		}
@@ -128,7 +128,7 @@ public class Triangle extends Polygon {
 		for (Enumeration e = tris.elements(); e.hasMoreElements();) {
 			Triangle t = (Triangle) e.nextElement();
 			if (!sameTriangle(t, this)) {
-				Vector verts = t.getVertices();
+				Vector<Vertex> verts = t.getVertices();
 				if (verts.contains(v1) && verts.contains(v2)) {
 					return t;
 				}
@@ -150,10 +150,10 @@ public class Triangle extends Polygon {
 	 *           side of the triangle according to the rh-rule
 	 */
 	public int volumeSign(Vertex v) {
-		Vector vertices = getVertices();
-		int[] v1 = ((Vertex) vertices.firstElement()).getCoords();
-		int[] v2 = ((Vertex) vertices.elementAt(1)).getCoords();
-		int[] v3 = ((Vertex) vertices.lastElement()).getCoords();
+		Vector<Vertex> vertices = getVertices();
+		int[] v1 = vertices.firstElement().getCoords();
+		int[] v2 = vertices.elementAt(1).getCoords();
+		int[] v3 = vertices.lastElement().getCoords();
 		int[] v4 = v.getCoords();
 		long ax = v1[0] - v4[0];
 		long ay = v1[1] - v4[1];
@@ -186,10 +186,10 @@ public class Triangle extends Polygon {
 	 * @param v the vertex
 	 */
 	public int volume6(Vertex v) {
-		Vector vertices = getVertices();
-		int[] v1 = ((Vertex) vertices.firstElement()).getCoords();
-		int[] v2 = ((Vertex) vertices.elementAt(1)).getCoords();
-		int[] v3 = ((Vertex) vertices.lastElement()).getCoords();
+		Vector<Vertex> vertices = getVertices();
+		int[] v1 = vertices.firstElement().getCoords();
+		int[] v2 = vertices.elementAt(1).getCoords();
+		int[] v3 = vertices.lastElement().getCoords();
 		int[] v4 = v.getCoords();
 		int ax = v1[0];
 		int ay = v1[1];

@@ -118,8 +118,8 @@ public class ParametricAnalysisPanel extends WizardPanel implements CommonConsta
 			enabler.setSelected(simd.isParametricAnalysisEnabled());
 			ParametricAnalysisDefinition pad = simd.getParametricAnalysisModel();
 			parameters = pac.getRunnableParametricAnalysis();
-			for (int k = 0; k < parameters.length; k++) {
-				chooser.addItem(parameters[k]);
+			for (String parameter : parameters) {
+				chooser.addItem(parameter);
 			}
 			String temp = parameters[0];
 			if (pad == null) {
@@ -142,6 +142,7 @@ public class ParametricAnalysisPanel extends WizardPanel implements CommonConsta
 		this.setEnabled(enabler.isSelected());
 	}
 
+	@Override
 	public void setEnabled(boolean enabled) {
 		if (!enabled) {
 			chooser.setEnabled(false);
@@ -225,6 +226,7 @@ public class ParametricAnalysisPanel extends WizardPanel implements CommonConsta
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "What-if analysis";
 	}
@@ -286,6 +288,7 @@ public class ParametricAnalysisPanel extends WizardPanel implements CommonConsta
 	/**
 	 * Called in JSIM when the What-if analysis panel is selected
 	 */
+	@Override
 	public void gotFocus() {
 		this.removeAll();
 		initGui();

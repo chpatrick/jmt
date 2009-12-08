@@ -57,7 +57,7 @@ public class SimParameters {
 	private int maxSamples = 500000;
 
 	private boolean disableStatisticStop = false;
-	
+
 	// logging attributes: path, replacement, delimiter, execution time
 	String logfilepath, logreplacemode, logdelimiterchar, logdeciamlseparatorchar, logtimestampvalue;
 
@@ -176,36 +176,44 @@ public class SimParameters {
 	public void setDisableStatisticStop(boolean disableStatisticStop) {
 		this.disableStatisticStop = disableStatisticStop;
 	}
-	
+
 	/* TODO: Comment these */
 	public void setLogPath(String logfilepath) {
 		this.logfilepath = logfilepath;
 	}
+
 	public void setLogDelimiter(String logdelimiterchar) {
 		this.logdelimiterchar = logdelimiterchar;
 	}
+
 	public void setLogDecimalSeparator(String logdeciamlseparatorchar) {
 		this.logdeciamlseparatorchar = logdeciamlseparatorchar;
 	}
+
 	public void setLogReplaceMode(String logreplacemode) {
 		this.logreplacemode = logreplacemode;
 	}
+
 	public void setTimestampValue(String logtimestamp) {
 		this.logtimestampvalue = logtimestamp;
 	}
-	
+
 	public String getLogPath() {
 		return logfilepath;
 	}
+
 	public String getLogDelimiter() {
 		return logdelimiterchar;
 	}
+
 	public String getLogDecimalSeparator() {
 		return logdeciamlseparatorchar;
 	}
+
 	public String getLogReplaceMode() {
 		return logreplacemode;
 	}
+
 	public String getTimestampValue() {
 		return logtimestampvalue;
 	}

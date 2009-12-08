@@ -29,6 +29,7 @@ public abstract class PersistentObject extends Object implements java.io.Seriali
 	 *
 	 * @return a copy of the receiver.
 	 */
+	@Override
 	public Object clone() {
 		try {
 			return super.clone();

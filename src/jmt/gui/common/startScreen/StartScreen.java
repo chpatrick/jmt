@@ -30,7 +30,6 @@ import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.HashMap;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -64,7 +63,7 @@ public class StartScreen extends JMTFrame {
 	private static final long serialVersionUID = 1L;
 	/*Data structure that must contain all of the images shown in this window. Will be initialized by
 	 *loadImages() method*/
-	HashMap imageIcons = new HashMap();
+	HashMap<String, ImageIcon> imageIcons = new HashMap<String, ImageIcon>();
 	/*symbolic names for the images represented as string constants initialized with relative path
 	 *of the images themselves*/
 	private static final String IMG_LOGOPOLI = "JMT_LOGO", IMG_MVAICON = "EXACT_ICON", IMG_SIMICON = "GRAPH_ICON",
@@ -98,7 +97,7 @@ public class StartScreen extends JMTFrame {
 		//add all of the listeners
 		addListeners();
 		if (isImageLoaded(IMG_SUITEICON)) {
-			Image jmtIcon = ((ImageIcon) imageIcons.get(IMG_SUITEICON)).getImage();
+			Image jmtIcon = imageIcons.get(IMG_SUITEICON).getImage();
 			this.setIconImage(jmtIcon.getScaledInstance(16, 16, Image.SCALE_SMOOTH));
 		}
 		sampleQNAni.start();
@@ -111,18 +110,18 @@ public class StartScreen extends JMTFrame {
 	private void loadImages() {
 		String[] imageNames = { IMG_LOGOPOLI, IMG_MVAICON, IMG_SIMICON, IMG_ANIMATION, IMG_SUITEICON };
 		//load each image referenced in the above array
-		for (int i = 0; i < imageNames.length; i++) {
-			ImageIcon img = JMTImageLoader.loadImage(imageNames[i]);
+		for (String imageName : imageNames) {
+			ImageIcon img = JMTImageLoader.loadImage(imageName);
 			//if this image is an icon, i need a smaller version
-			if (imageNames[i].equals(IMG_MVAICON) || imageNames[i].equals(IMG_SIMICON)) {
+			if (imageName.equals(IMG_MVAICON) || imageName.equals(IMG_SIMICON)) {
 				Image imgSmall = img.getImage().getScaledInstance(32, 32, Image.SCALE_SMOOTH);
 				img.setImage(imgSmall);
 			}
-			if (imageNames[i].equals(IMG_LOGOPOLI)) {
+			if (imageName.equals(IMG_LOGOPOLI)) {
 				Image imgSmall = img.getImage().getScaledInstance(WIDTH - 20, (150 * (WIDTH - 20)) / 739, Image.SCALE_SMOOTH);
 				img.setImage(imgSmall);
 			}
-			imageIcons.put(imageNames[i], img);
+			imageIcons.put(imageName, img);
 		}
 	}
 
@@ -136,7 +135,7 @@ public class StartScreen extends JMTFrame {
 		JLabel upperArea;
 		//components of the upper area
 		if (isImageLoaded(IMG_LOGOPOLI)) {
-			upperArea = new JLabel((ImageIcon) imageIcons.get(IMG_LOGOPOLI));
+			upperArea = new JLabel(imageIcons.get(IMG_LOGOPOLI));
 		} else {
 			upperArea = new JLabel("Couldn't load image from location " + IMG_LOGOPOLI);
 		}
@@ -164,7 +163,7 @@ public class StartScreen extends JMTFrame {
 		simArea.setBorder(new EtchedBorder());
 		//add components to the mva area
 		if (isImageLoaded(IMG_MVAICON)) {
-			mvaAppl = new JButton((Icon) imageIcons.get(IMG_MVAICON));
+			mvaAppl = new JButton(imageIcons.get(IMG_MVAICON));
 		} else {
 			mvaAppl = new JButton("Start MVA");
 		}
@@ -174,7 +173,7 @@ public class StartScreen extends JMTFrame {
 		mvaArea.add(mvaDescr);
 		//add components to the sim area
 		if (isImageLoaded(IMG_SIMICON)) {
-			simAppl = new JButton((Icon) imageIcons.get(IMG_SIMICON));
+			simAppl = new JButton(imageIcons.get(IMG_SIMICON));
 		} else {
 			simAppl = new JButton("Start SIM");
 		}
@@ -222,6 +221,7 @@ public class StartScreen extends JMTFrame {
 			}
 		});
 		this.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) {
 				close();
 			}
@@ -236,6 +236,7 @@ public class StartScreen extends JMTFrame {
 		}
 	}
 
+	@Override
 	protected void doClose() {
 		sampleQNAni.stop();
 	}
@@ -253,12 +254,12 @@ public class StartScreen extends JMTFrame {
 
 	private void resizeButtons() {
 		JButton[] buttons = { introIta, introEng };
-		for (int i = 0; i < buttons.length; i++) {
-			buttons[i].setPreferredSize(new Dimension(140, 25));
+		for (JButton button : buttons) {
+			button.setPreferredSize(new Dimension(140, 25));
 		}
 		buttons = new JButton[] { mvaAppl, simAppl };
-		for (int i = 0; i < buttons.length; i++) {
-			buttons[i].setPreferredSize(new Dimension(40, 40));
+		for (JButton button : buttons) {
+			button.setPreferredSize(new Dimension(40, 40));
 		}
 	}
 

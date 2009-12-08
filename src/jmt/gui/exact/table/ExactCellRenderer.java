@@ -46,6 +46,7 @@ public class ExactCellRenderer extends DefaultTableCellRenderer {
 	private DecimalFormat df = new DecimalFormat("0.000000;-0.000000", dfs);
 	private NumberFormatter nf = new NumberFormatter(df);
 
+	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int col) {
 
 		//Federico Dall'Orso 22/6/2005
@@ -77,6 +78,7 @@ public class ExactCellRenderer extends DefaultTableCellRenderer {
 		//END Federico Dall'Orso
 	}
 
+	@Override
 	public void setValue(Object o) {
 		if (o instanceof Double) {
 			try {

@@ -36,6 +36,7 @@ public class ImageLoaderImpl extends ImageLoader {
 	/* (non-Javadoc)
 	 * @see jmt.framework.gui.image.ImageLoader#getImageURL(java.lang.String)
 	 */
+	@Override
 	protected URL getImageURL(String resourceName) {
 		return ImageLoaderImpl.class.getResource(resourceName);
 	}

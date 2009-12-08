@@ -187,6 +187,7 @@ public class LDEditingWindow extends JMTDialog {
 	 * makes the editing window follow the wizard if it is moved
 	 */
 	private ComponentListener moveCatcher = new ComponentAdapter() {
+		@Override
 		public void componentMoved(ComponentEvent e) {
 			setBase(owner.getLocation());
 		}
@@ -211,6 +212,7 @@ public class LDEditingWindow extends JMTDialog {
 
 		/* closing=cancel */
 		addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) {
 				LD_CANCEL.actionPerformed(null);
 			}
@@ -348,6 +350,7 @@ public class LDEditingWindow extends JMTDialog {
 		}
 	}
 
+	@Override
 	public void show() {
 		super.show();
 		addWindowFocusListener(focusCaptor);
@@ -357,6 +360,7 @@ public class LDEditingWindow extends JMTDialog {
 		ldTable.requestFocus();
 	}
 
+	@Override
 	public void hide() {
 		owner.removeComponentListener(moveCatcher);
 		removeWindowFocusListener(focusCaptor);
@@ -415,6 +419,7 @@ public class LDEditingWindow extends JMTDialog {
 
 		}
 
+		@Override
 		protected void updateActions() {
 			super.updateActions();
 			COPYDOWN_ACTION.setEnabled(getSelectedColumnCount() > 0);
@@ -478,18 +483,22 @@ public class LDEditingWindow extends JMTDialog {
 			return serviceTimes.length;
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			return classNames[index];
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			return new Double(serviceTimes[columnIndex][rowIndex]);
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			return new Integer(rowIndex + 1);
 		}
 
+		@Override
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			try {
 				double newVal = Double.parseDouble((String) value);
@@ -500,10 +509,12 @@ public class LDEditingWindow extends JMTDialog {
 			}
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return true;
 		}
 
+		@Override
 		public void clear(int row, int col) {
 			serviceTimes[col][row] = 0;
 		}
@@ -511,6 +522,7 @@ public class LDEditingWindow extends JMTDialog {
 		/**
 		 * Copy the contents of a cell to an area. Works directly on the data set.
 		 */
+		@Override
 		public void copyCellToArea(int sourceRow, int sourceCol, int rowFrom, int rowTo, int colFrom, int colTo) {
 
 			double source = serviceTimes[sourceCol][sourceRow];

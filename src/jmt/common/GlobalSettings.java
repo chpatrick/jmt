@@ -7,15 +7,14 @@ import java.util.Properties;
 public class GlobalSettings implements Serializable {
 	// Some settings
 	public static final String VERSION = "jmt.version";
-	
-	
+
 	private static final long serialVersionUID = 1L;
 	private static final String FILENAME = "globalsettings.conf";
 	/**
 	 * The data structure. Remember to access them in a thread-safe manner. 
 	 */
 	private static Properties props;
-	
+
 	/**
 	 * Initializes this class loading all the properties
 	 */
@@ -28,11 +27,11 @@ public class GlobalSettings implements Serializable {
 			throw new Error("Fatal error: unable to load global settings. Aborting JMT.");
 		}
 	}
-	
+
 	static {
 		load();
 	}
-	
+
 	/**
 	 * Returns a setting. Searches first on System properties, then on globalsettings.
 	 * @param name the name of the property
@@ -55,7 +54,7 @@ public class GlobalSettings implements Serializable {
 		}
 		return value;
 	}
-	
+
 	/**
 	 * Reloads properties cache. May be used for debugging purposes.
 	 */

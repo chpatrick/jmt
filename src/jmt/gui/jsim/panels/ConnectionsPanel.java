@@ -91,10 +91,12 @@ public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 		this.add(vBox);
 	}
 
+	@Override
 	public String getName() {
 		return "Connections";
 	}
 
+	@Override
 	public void repaint() {
 		if (connTab != null) {
 			connTab.updateStructure();
@@ -136,6 +138,7 @@ public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 				 */
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
 					Component cbox = boolRend.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 					cbox.setEnabled(true);
@@ -156,6 +159,7 @@ public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 				 */
 				private static final long serialVersionUID = 1L;
 
+				@Override
 				public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 					Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
 					if (value instanceof Boolean) {
@@ -192,6 +196,7 @@ public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 			return data.getStationKeys().size();
 		}
 
+		@Override
 		public Class getColumnClass(int columnIndex) {
 			if (columnIndex >= 0) {
 				return Boolean.class;
@@ -200,6 +205,7 @@ public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			if (index >= 0 && data.getStationKeys().size() > 0) {
 				return data.getStationName(getStationKey(index));
@@ -208,6 +214,7 @@ public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public Object getPrototype(int i) {
 			if (i == -1) {
 				return rowHeaderPrototype;
@@ -216,6 +223,7 @@ public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			Object row = getStationKey(rowIndex), col = getStationKey(columnIndex);
 			boolean areConnected = data.areConnected(row, col);
@@ -226,6 +234,7 @@ public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 			return new Boolean(areConnected);
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			return data.getStationName(getStationKey(rowIndex));
 		}
@@ -235,6 +244,7 @@ public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 			return data.getStationKeys().get(index);
 		}
 
+		@Override
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			if (value instanceof Boolean) {
 				boolean b = ((Boolean) value).booleanValue();
@@ -242,10 +252,12 @@ public class ConnectionsPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public void clear(int row, int col) {
 			data.setConnected(getStationKey(row), getStationKey(col), false);
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			Object row = getStationKey(rowIndex), col = getStationKey(columnIndex);
 			boolean areConnectable = data.areConnectable(row, col);

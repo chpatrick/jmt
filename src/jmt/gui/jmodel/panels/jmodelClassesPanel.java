@@ -74,6 +74,7 @@ public class jmodelClassesPanel extends ClassesPanel implements JMODELConstants 
 	/**Sets data model for this panel.
 	 * Instantly all of the panel components are assigned their specific value.
 	 * @param cd: data for class definition.*/
+	@Override
 	public void setData(ClassDefinition cd) {
 		data = cd;
 		classTable.setModel(new jmodelClassTableModel());
@@ -83,6 +84,7 @@ public class jmodelClassesPanel extends ClassesPanel implements JMODELConstants 
 	/**
 	 * Adds a new class
 	 */
+	@Override
 	protected void addClass() {
 		classdefinition.addClass();
 		refreshComponents();
@@ -103,6 +105,7 @@ public class jmodelClassesPanel extends ClassesPanel implements JMODELConstants 
 			columnSizes = new int[] { 8, 100, 60, 28, 38, 140, 39, 90, 18 };
 		}
 
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (column == 0) {
 				return new ColorCellEditor();
@@ -127,6 +130,7 @@ public class jmodelClassesPanel extends ClassesPanel implements JMODELConstants 
 			}
 		}
 
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 0) {
 				return new ColorCellEditor();
@@ -161,6 +165,7 @@ public class jmodelClassesPanel extends ClassesPanel implements JMODELConstants 
 					JComboBox.class, JButton.class };
 		}
 
+		@Override
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			if (columnIndex == 0) {
 				return classdefinition.getClassColor(classdefinition.getClassKeys().get(rowIndex));
@@ -171,6 +176,7 @@ public class jmodelClassesPanel extends ClassesPanel implements JMODELConstants 
 			}
 		}
 
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			if (columnIndex == 0) {
 				classdefinition.setClassColor(classdefinition.getClassKeys().get(rowIndex), (Color) aValue);
@@ -181,6 +187,7 @@ public class jmodelClassesPanel extends ClassesPanel implements JMODELConstants 
 			}
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			if (columnIndex == 4 && (getValueAt(rowIndex, 2).equals("Open"))) {
 				return false;

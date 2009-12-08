@@ -76,7 +76,7 @@ public class Dispatcher_jSIMschema {
 
 	// used to store progress time - Bertoli Marco
 	private double progressTime;
-	private Vector measuresToAbort = new Vector(); // Vector with measures to abort at refresh
+	private Vector<Integer> measuresToAbort = new Vector<Integer>(); // Vector with measures to abort at refresh
 
 	private long maxDuration = -1;
 
@@ -277,7 +277,7 @@ public class Dispatcher_jSIMschema {
 		if (pauseSim()) {
 			// Aborts measures (if any)
 			while (!measuresToAbort.isEmpty()) {
-				int index = ((Integer) measuresToAbort.remove(0)).intValue();
+				int index = measuresToAbort.remove(0).intValue();
 				tempMeasures[index].abort();
 			}
 
@@ -300,8 +300,8 @@ public class Dispatcher_jSIMschema {
 			} else {
 				//temp measures have already been retrieved
 				//only refresh temp values
-				for (int m = 0; m < tempMeasures.length; m++) {
-					tempMeasures[m].refreshMeasure();
+				for (TempMeasure tempMeasure : tempMeasures) {
+					tempMeasure.refreshMeasure();
 				}
 			}
 			// Updates simulation progress time
@@ -315,8 +315,8 @@ public class Dispatcher_jSIMschema {
 			restartSim();
 
 		} else if (simFinished) { // Gets last value for each measure
-			for (int m = 0; m < tempMeasures.length; m++) {
-				tempMeasures[m].refreshMeasure();
+			for (TempMeasure tempMeasure : tempMeasures) {
+				tempMeasure.refreshMeasure();
 			}
 		}
 	}
@@ -394,8 +394,8 @@ public class Dispatcher_jSIMschema {
 
 		if (pauseSim()) {
 			if (tempMeasures != null) {
-				for (int m = 0; m < tempMeasures.length; m++) {
-					TempMeasure temp = tempMeasures[m];
+				for (TempMeasure tempMeasure : tempMeasures) {
+					TempMeasure temp = tempMeasure;
 					if (!temp.isFinished()) {
 						System.out.println(temp.getName() + ": " + Double.toString(temp.getTempMean()) + " " + temp.getNsamples());
 					}

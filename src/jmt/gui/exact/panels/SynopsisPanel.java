@@ -103,6 +103,7 @@ public class SynopsisPanel extends WizardPanel {
 		this.add(vBox);
 	}
 
+	@Override
 	public String getName() {
 		return "Synopsis";
 	}
@@ -141,11 +142,11 @@ public class SynopsisPanel extends WizardPanel {
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Transform Exception", JOptionPane.ERROR_MESSAGE);
 			return;
 		}/*
-		        catch (FileNotFoundException fnfe){
-		            JOptionPane.showMessageDialog(null, fnfe.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
-		            return;
-		        }
-		        */
+			       catch (FileNotFoundException fnfe){
+			           JOptionPane.showMessageDialog(null, fnfe.getMessage(), "File Error", JOptionPane.ERROR_MESSAGE);
+			           return;
+			       }
+			       */
 	}
 
 	public void setDoc(File xmlFile) {

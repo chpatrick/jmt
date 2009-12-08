@@ -49,6 +49,7 @@ public class InsertState extends UIStateDefault {
 	 *
 	 * @param e mouse press event
 	 */
+	@Override
 	public void handlePress(MouseEvent e) {
 		// Does vertex overlap an existing cell?
 		if (mediator.overlapCells(e.getPoint(), mediator.getCellFactory().predictCellSize(insertClass))) {
@@ -59,6 +60,7 @@ public class InsertState extends UIStateDefault {
 		mediator.selectAt(e);
 	}
 
+	@Override
 	public void handleEnter(MouseEvent e) {
 		mediator.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}

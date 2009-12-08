@@ -151,6 +151,7 @@ public class KMeanSingleClusterScatter extends JPanel {
 		}
 	}
 
+	@Override
 	public void paintComponent(Graphics g) {
 		if (g == null) {
 			return;
@@ -218,6 +219,7 @@ public class KMeanSingleClusterScatter extends JPanel {
 		if (first) {
 			first = false;
 			new TimeConsumingWorker(new ProgressMonitorShow(this, "Plotting observations ...", 100)) {
+				@Override
 				public Object construct() {
 					Graphics2D g1 = (Graphics2D) graph.getGraphics();
 
@@ -265,6 +267,7 @@ public class KMeanSingleClusterScatter extends JPanel {
 					return null;
 				}
 
+				@Override
 				public void finished() {
 					KMeanSingleClusterScatter.this.repaint();
 				}
@@ -295,6 +298,7 @@ public class KMeanSingleClusterScatter extends JPanel {
 		/**
 		 * Overrides paintComponent method to add support for screenshots
 		 */
+		@Override
 		protected void paintComponent(Graphics g) {
 			if (g == null) {
 				return;
@@ -304,6 +308,7 @@ public class KMeanSingleClusterScatter extends JPanel {
 			super.paintComponent(vg);
 		}
 
+		@Override
 		public void paint(Graphics g) {
 			if (zoomming) {
 				g.setColor(Color.BLUE);
@@ -523,6 +528,7 @@ public class KMeanSingleClusterScatter extends JPanel {
 		/**
 		 * Overrides default method to provide a warning if saving over an existing file
 		 */
+		@Override
 		public void approveSelection() {
 			// Gets the choosed file name
 			String name = getSelectedFile().getName();
@@ -570,6 +576,7 @@ public class KMeanSingleClusterScatter extends JPanel {
 		/**
 		 * Whether the given file is accepted by this filter.
 		 */
+		@Override
 		public boolean accept(File f) {
 			String name = f.getName().toLowerCase();
 			return name.endsWith(extension) || f.isDirectory();
@@ -579,6 +586,7 @@ public class KMeanSingleClusterScatter extends JPanel {
 		 * The description of this filter
 		 * @see javax.swing.filechooser.FileView#getName
 		 */
+		@Override
 		public String getDescription() {
 			return description + " (*" + extension + ")";
 		}

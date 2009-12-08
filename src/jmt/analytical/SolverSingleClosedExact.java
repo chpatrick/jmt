@@ -185,6 +185,7 @@ public class SolverSingleClosedExact extends Solver {
 	 * WARNING: This method should be called before solving the system.
 	 * @return true if sufficient capacity exists for the given workload, false otherwise
 	 */
+	@Override
 	public boolean hasSufficientProcessingCapacity() {
 		//closed class: no saturation problem
 		return true;
@@ -202,6 +203,7 @@ public class SolverSingleClosedExact extends Solver {
 	 * </em>
 	 *
 	 */
+	@Override
 	public void solve() {
 		PrintWriter pw = new PrintWriter(System.out, true);
 		double Y = 0;

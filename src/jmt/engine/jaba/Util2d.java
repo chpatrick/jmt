@@ -78,17 +78,17 @@ public class Util2d {
 	 * @param vertices      è un vettore di NewPoint
 	 * @return              un vettore di NewPoint contenente i vertici non dominati
 	 */
-	public Vector DomRemove2D(Vector vertices) {
+	public Vector<newPoint> DomRemove2D(Vector<newPoint> vertices) {
 		//Vector out = vertices;
 
 		for (int i = 0; i < vertices.size(); i++) {
 			boolean t = false;
-			double x1 = ((newPoint) vertices.get(i)).getX();
-			double y1 = ((newPoint) vertices.get(i)).getY();
+			double x1 = vertices.get(i).getX();
+			double y1 = vertices.get(i).getY();
 			for (int j = 0; j < vertices.size(); j++) {
 
-				double x2 = ((newPoint) vertices.get(j)).getX();
-				double y2 = ((newPoint) vertices.get(j)).getY();
+				double x2 = vertices.get(j).getX();
+				double y2 = vertices.get(j).getY();
 				if (x1 < x2 && y1 < y2) {
 					t = true;
 					break;
@@ -108,13 +108,13 @@ public class Util2d {
 	 * @param vertices      è il vettore di NewPoint passato
 	 * @return              un vettore di NewPoint contenente i vertici iniziali + le proiezioni
 	 */
-	public Vector LExplode2D(Vector vertices) {
-		Vector lout = new Vector();
+	public Vector<newPoint> LExplode2D(Vector<newPoint> vertices) {
+		Vector<newPoint> lout = new Vector<newPoint>();
 		lout.addElement(new newPoint(0, 0));
 		for (int i = 0; i < vertices.size(); i++) {
-			lout.addElement(new newPoint((int) (((newPoint) vertices.get(i)).getX()), ((int) ((newPoint) vertices.get(i)).getY())));
-			lout.addElement(new newPoint(0, ((int) ((newPoint) vertices.get(i)).getY())));
-			lout.addElement(new newPoint(((int) ((newPoint) vertices.get(i)).getX()), 0));
+			lout.addElement(new newPoint((int) (vertices.get(i).getX()), ((int) vertices.get(i).getY())));
+			lout.addElement(new newPoint(0, ((int) vertices.get(i).getY())));
+			lout.addElement(new newPoint(((int) vertices.get(i).getX()), 0));
 		}
 		return lout;
 	}
@@ -125,10 +125,10 @@ public class Util2d {
 	 * @param vertices      il vettore di newPoint da controllare
 	 * @return              true se è presente
 	 */
-	public boolean VPresent(newPoint a, Vector vertices) {
+	public boolean VPresent(newPoint a, Vector<newPoint> vertices) {
 		boolean out = false;
 		for (int i = 0; i < vertices.size(); i++) {
-			if (a.x == ((newPoint) vertices.get(i)).x && a.y == ((newPoint) vertices.get(i)).y) {
+			if (a.x == vertices.get(i).x && a.y == vertices.get(i).y) {
 				out = true;
 				break;
 			}
@@ -136,14 +136,14 @@ public class Util2d {
 		return out;
 	}
 
-	public Vector RemoveCollinear(Vector vertices) {
-		Vector out = new Vector(vertices);
+	public Vector<newPoint> RemoveCollinear(Vector<newPoint> vertices) {
+		Vector<newPoint> out = new Vector<newPoint>(vertices);
 		int ilast = vertices.size() - 1;
-		newPoint first = ((newPoint) out.get(0));
+		newPoint first = out.get(0);
 		// Attenzione qui sotto out.get(0) -> out.get(1) ??
-		newPoint second = ((newPoint) out.get(1));
-		newPoint last = ((newPoint) out.lastElement());
-		newPoint prelast = ((newPoint) out.get(ilast - 1));
+		newPoint second = out.get(1);
+		newPoint last = out.lastElement();
+		newPoint prelast = out.get(ilast - 1);
 
 		if (last.x == prelast.x && last.y == 0) {
 			out.remove(out.lastElement());

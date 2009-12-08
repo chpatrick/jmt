@@ -42,13 +42,13 @@ public class QueueNetAnimation extends JPanel implements Animation {
 	 */
 	private static final long serialVersionUID = 1L;
 	/**elements of this queue net animation*/
-	protected Vector stations = null;
+	protected Vector<StationAnimation> stations = null;
 	/**elements of this queue net animation*/
-	protected Vector edges = null;
+	protected Vector<EdgeAnimation> edges = null;
 	/**elements of this queue net animation*/
-	protected Vector jobs = null;
+	protected Vector<JobAnimation> jobs = null;
 	//hashmap containing links between stations and edges. Used by add job method to calculate a path
-	private HashMap links = new HashMap();
+	private HashMap<Animation, Object> links = new HashMap<Animation, Object>();
 
 	//background of the animation
 	private Image bgImage;
@@ -66,9 +66,9 @@ public class QueueNetAnimation extends JPanel implements Animation {
 	/**Creates a new instance of QueueNetAnimation with a customized toolkit for renderization
 	 * of the queuenet background.*/
 	public QueueNetAnimation(IconsToolkit toolkit) {
-		stations = new Vector();
-		edges = new Vector();
-		jobs = new Vector();
+		stations = new Vector<StationAnimation>();
+		edges = new Vector<EdgeAnimation>();
+		jobs = new Vector<JobAnimation>();
 		iconToolkit = toolkit;
 	}
 
@@ -88,13 +88,13 @@ public class QueueNetAnimation extends JPanel implements Animation {
 	public void refresh() {
 		for (int i = 0, j = 0, k = 0; i < edges.size() || j < stations.size() || k < jobs.size(); i++, j++, k++) {
 			if (i < edges.size()) {
-				((Animation) edges.get(i)).refresh();
+				edges.get(i).refresh();
 			}
 			if (j < stations.size()) {
-				((Animation) stations.get(j)).refresh();
+				stations.get(j).refresh();
 			}
 			if (k < jobs.size()) {
-				((Animation) jobs.get(k)).refresh();
+				jobs.get(k).refresh();
 			}
 		}
 		if (getGraphics() != null) {
@@ -105,6 +105,7 @@ public class QueueNetAnimation extends JPanel implements Animation {
 	/**Updates the image shown during animation, e.g. calls paint() method in every queue net
 	 * element's implementing class contained in this queue net.
 	 * @param g: Graphics object used to repaint image.*/
+	@Override
 	public void update(Graphics g) {
 		paint(g, this);
 	}
@@ -124,13 +125,13 @@ public class QueueNetAnimation extends JPanel implements Animation {
 		f.drawImage(bgImage, 0, 0, io);
 		//first paint all of the edges, then all of the stations
 		for (int i = 0; i < edges.size(); i++) {
-			((EdgeAnimation) edges.get(i)).paint(f, io);
+			edges.get(i).paint(f, io);
 		}
 		for (int i = 0; i < jobs.size(); i++) {
-			((JobAnimation) jobs.get(i)).paint(f, io);
+			jobs.get(i).paint(f, io);
 		}
 		for (int i = 0; i < stations.size(); i++) {
-			((StationAnimation) stations.get(i)).paint(f, io);
+			stations.get(i).paint(f, io);
 		}
 	}
 
@@ -157,7 +158,7 @@ public class QueueNetAnimation extends JPanel implements Animation {
 	 * @param target: target station for this edge.*/
 	public void addEdge(EdgeAnimation edge, StationAnimation source, StationAnimation target) {
 		edges.add(edge);
-		((Vector) links.get(source)).add(edge);
+		((Vector<EdgeAnimation>) links.get(source)).add(edge);
 		links.put(edge, target);
 	}
 
@@ -197,7 +198,7 @@ public class QueueNetAnimation extends JPanel implements Animation {
 	 * @return a possible path between start and end stations, or null if does not exist.*/
 	public JobPath getSinglePath(StationAnimation start, StationAnimation end) {
 		//prepare path exploration...
-		Vector pathVector = new Vector();
+		Vector<Object> pathVector = new Vector<Object>();
 		pathVector.add(start);
 		//recursively build path
 		pathVector = addElementToPath(pathVector, end);
@@ -207,7 +208,7 @@ public class QueueNetAnimation extends JPanel implements Animation {
 	}
 
 	//recursive method used to search for paths in this queue net.
-	private Vector addElementToPath(Vector coveredPath, StationAnimation pathEnd) {
+	private Vector<Object> addElementToPath(Vector<Object> coveredPath, StationAnimation pathEnd) {
 		Object lastElement = coveredPath.get(coveredPath.size() - 1);
 		//If destination is reached, start building path in reverse order...
 		if (lastElement.equals(pathEnd)) {
@@ -249,10 +250,10 @@ public class QueueNetAnimation extends JPanel implements Animation {
 					Object newNode = v.get(i);
 					//clone only when neccessary!
 					if (i != 0) {
-						coveredPath = new Vector(coveredPath);
+						coveredPath = new Vector<Object>(coveredPath);
 					}
 					coveredPath.add(newNode);
-					Vector returnValue = addElementToPath(coveredPath, pathEnd);
+					Vector<Object> returnValue = addElementToPath(coveredPath, pathEnd);
 					if (returnValue != null) {
 						return returnValue;
 					}

@@ -77,14 +77,14 @@ public class GraphStartScreen extends JMTFrame {
 	public static final String IMG_LOGOPOLI = "logo", IMG_JMODELICON = "JMODELIcon", IMG_JMVAICON = "JMVAIcon", IMG_JSIMICON = "JSIMIcon",
 			IMG_JABAICON = "JABAIcon", IMG_JMCHICON = "JMCHIcon", IMG_JWATICON = "JWATIcon", IMG_SUITEICON = "JMTIcon",
 			//names for URLS of documents to be shown as description of main applications
-			URL_JMT_INTRO_ITA = "IntroIta.html", 
-			URL_JMT_INTRO_ENG = "IntroEng.html",
-			URL_DOCUMENTATION_ONLINE="http://jmt.sourceforge.net/Documentation.html",
+			URL_JMT_INTRO_ITA = "IntroIta.html", URL_JMT_INTRO_ENG = "IntroEng.html",
+			URL_DOCUMENTATION_ONLINE = "http://jmt.sourceforge.net/Documentation.html",
 			// Content for logo panel
 			FONT_TYPE = "Arial", HTML_CONTENT_TITLE = "<html><body align=\"center\"><b>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + FONT_SIZE
-					+ "\">Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION) + "</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + (FONT_SIZE - 1)
-					+ "\">Performance Evaluation Lab</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + (FONT_SIZE - 1)
-					+ "\">Dipartimento di Elettronica e Informazione<br>" + "Politecnico di Milano - Italy</b><font size=\"0\"><br><br></font>"
+					+ "\">Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION) + "</font><br>" + "<font face=\"" + FONT_TYPE
+					+ "\" size=\"" + (FONT_SIZE - 1) + "\">Performance Evaluation Lab</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\""
+					+ (FONT_SIZE - 1) + "\">Dipartimento di Elettronica e Informazione<br>"
+					+ "Politecnico di Milano - Italy</b><font size=\"0\"><br><br></font>"
 					+ "Project Coordinator: prof. G.Serazzi</font></body></html>";
 	// Queue Animation
 	private SampleQNAnimation sampleQNAni;
@@ -232,8 +232,8 @@ public class GraphStartScreen extends JMTFrame {
 
 		// Add buttons taking them from buttonActions[]
 		JPanel buttonPanel = new JPanel(new GridLayout(buttonActions.length, 1, 2, 2));
-		for (int i = 0; i < buttonActions.length; i++) {
-			buttonPanel.add(createButton(buttonActions[i]));
+		for (AbstractAction buttonAction : buttonActions) {
+			buttonPanel.add(createButton(buttonAction));
 		}
 
 		mainPanel.add(buttonPanel, BorderLayout.EAST);
@@ -326,6 +326,7 @@ public class GraphStartScreen extends JMTFrame {
 	/* (non-Javadoc)
 	 * @see jmt.framework.gui.components.JMTFrame#doClose()
 	 */
+	@Override
 	protected void doClose() {
 		if (sampleQNAni != null) {
 			sampleQNAni.stop();
@@ -348,6 +349,7 @@ public class GraphStartScreen extends JMTFrame {
 		/**
 		 * Invoked when the mouse enters a component.
 		 */
+		@Override
 		public void mouseEntered(MouseEvent e) {
 			((Component) e.getSource()).setBackground(rollover);
 		}
@@ -355,6 +357,7 @@ public class GraphStartScreen extends JMTFrame {
 		/**
 		 * Invoked when the mouse exits a component.
 		 */
+		@Override
 		public void mouseExited(MouseEvent e) {
 			((Component) e.getSource()).setBackground(normal);
 		}

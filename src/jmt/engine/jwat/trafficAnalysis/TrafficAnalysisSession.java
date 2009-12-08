@@ -14,7 +14,7 @@ public class TrafficAnalysisSession extends JwatSession {
 
 	private BurstEngine engine = null;
 	private int epochs = -1;
-	private ArrayList setParameters = new ArrayList();
+	private ArrayList<OnSetParamtersListener> setParameters = new ArrayList<OnSetParamtersListener>();
 
 	public TrafficAnalysisSession() {
 		super(new ModelTrafficAnalysis());
@@ -44,7 +44,7 @@ public class TrafficAnalysisSession extends JwatSession {
 
 	private void notifySetParams() {
 		for (int i = 0; i < setParameters.size(); i++) {
-			((OnSetParamtersListener) setParameters.get(i)).ParamsSetted();
+			setParameters.get(i).ParamsSetted();
 		}
 	}
 
@@ -52,6 +52,7 @@ public class TrafficAnalysisSession extends JwatSession {
 		return engine;
 	}
 
+	@Override
 	public void resetSession() {
 		model.resetModel();
 	}
@@ -72,14 +73,17 @@ public class TrafficAnalysisSession extends JwatSession {
 		}
 	}
 
+	@Override
 	public void appendXMLResults(Document doc, Element root, ZipOutputStream zos) {
 
 	}
 
+	@Override
 	public void saveResultsFile(Document doc, Element root, ZipOutputStream zos) throws IOException {
 
 	}
 
+	@Override
 	public void copySession(JwatSession newSession) {
 		model.setMatrix(newSession.getDataModel().getMatrix());
 	}

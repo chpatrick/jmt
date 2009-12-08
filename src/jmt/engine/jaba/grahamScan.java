@@ -16,11 +16,11 @@ package jmt.engine.jaba;
 
 public class grahamScan {
 
-	java.util.Vector lines = new java.util.Vector(100, 100);
-	java.util.Stack stk = new java.util.Stack();
-	java.util.Vector s = new java.util.Vector(100, 100);
+	java.util.Vector<newPoint> lines = new java.util.Vector<newPoint>(100, 100);
+	java.util.Stack<newPoint> stk = new java.util.Stack<newPoint>();
+	java.util.Vector<newPoint> s = new java.util.Vector<newPoint>(100, 100);
 
-	public java.util.Vector doGraham(java.util.Vector q) {
+	public java.util.Vector<newPoint> doGraham(java.util.Vector<newPoint> q) {
 
 		int m = 0;
 		newPoint temp, temp2;
@@ -28,30 +28,28 @@ public class grahamScan {
 		int a, i;
 		if (n > 2) {
 			s.removeAllElements();
-			s = (java.util.Vector) q.clone();
+			s = (java.util.Vector<newPoint>) q.clone();
 			for (i = 1; i < n; i++) {
-				if (((newPoint) s.elementAt(i)).y < ((newPoint) s.elementAt(m)).y
-						|| ((((newPoint) s.elementAt(i)).y == ((newPoint) s.elementAt(m)).y) && (((newPoint) s.elementAt(i)).x < ((newPoint) s
-								.elementAt(m)).x))) {
+				if (s.elementAt(i).y < s.elementAt(m).y || ((s.elementAt(i).y == s.elementAt(m).y) && (s.elementAt(i).x < s.elementAt(m).x))) {
 					m = i;
 				}
 			}
-			temp = (newPoint) s.elementAt(0);
+			temp = s.elementAt(0);
 			s.setElementAt(s.elementAt(m), 0);
 			s.setElementAt(temp, m);
 
 			// stage 2
-			temp2 = (newPoint) s.elementAt(0);
+			temp2 = s.elementAt(0);
 			for (i = 2; i < n; i++) {
 				for (int j = n - 1; j >= i; j--) {
-					if (temp2.polarCmp((newPoint) s.elementAt(j - 1), (newPoint) s.elementAt(j)) == 1) {
-						temp = (newPoint) s.elementAt(j - 1);
+					if (temp2.polarCmp(s.elementAt(j - 1), s.elementAt(j)) == 1) {
+						temp = s.elementAt(j - 1);
 						s.setElementAt(s.elementAt(j), j - 1);
 						s.setElementAt(temp, j);
 					}
 				}
 			}
-			for (i = 1; i + 1 < s.size() && (((newPoint) s.elementAt(i + 1)).classify((newPoint) s.elementAt(0), (newPoint) s.elementAt(i)) == 3); i++) {
+			for (i = 1; i + 1 < s.size() && (s.elementAt(i + 1).classify(s.elementAt(0), s.elementAt(i)) == 3); i++) {
 				; //TODO quick fix by Bertoli Marco ( i+1 < s.size() )
 			}
 			stk.removeAllElements();
@@ -62,9 +60,9 @@ public class grahamScan {
 			for (i = i + 1; i < n; i++) {
 				blah = true;
 				while (blah) {
-					temp2 = (newPoint) stk.pop();
+					temp2 = stk.pop();
 					//TODO quick fix by Bertoli Marco ( stk.empty() )
-					if (stk.empty() || ((newPoint) s.elementAt(i)).classify((newPoint) stk.peek(), temp2) == 0) {
+					if (stk.empty() || s.elementAt(i).classify(stk.peek(), temp2) == 0) {
 						stk.push(temp2);
 						blah = false;
 					}

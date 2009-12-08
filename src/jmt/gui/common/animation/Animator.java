@@ -62,6 +62,7 @@ public class Animator extends Thread {
 	}
 
 	/**Starts the handled animation*/
+	@Override
 	public void start() {
 		super.start();
 		animation.init();
@@ -69,6 +70,7 @@ public class Animator extends Thread {
 	}
 
 	/**Performs update of the handled animation as far as terminate() method has not been called.*/
+	@Override
 	public void run() {
 		synchronized (mutex) {
 			while (isWorking) {

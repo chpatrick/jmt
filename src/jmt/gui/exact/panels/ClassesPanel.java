@@ -97,7 +97,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 	private double[] classData;
 	private int nameCounter = 1;
 
-	private List classOps;
+	private List<ListOp> classOps;
 	private boolean hasDeletes;
 	private boolean deleting = false;
 
@@ -163,7 +163,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 	public ClassesPanel(ExactWizard ew) {
 		this.ew = ew;
 		help = ew.getHelp();
-		classOps = new ArrayList();
+		classOps = new ArrayList<ListOp>();
 
 		sync();
 
@@ -338,24 +338,29 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 		return true;
 	}
 
+	@Override
 	public String getName() {
 		return "Classes";
 	}
 
+	@Override
 	public void lostFocus() {
 		commit();
 		//release();
 	}
 
+	@Override
 	public void gotFocus() {
 		sync();
 		classTable.update();
 	}
 
+	@Override
 	public boolean canFinish() {
 		return checkPop() && !areThereDuplicates();
 	}
 
+	@Override
 	public boolean canGoBack() {
 		checkPop();
 		if (areThereDuplicates()) {
@@ -364,6 +369,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 		return true; //so that the user can correct errors
 	}
 
+	@Override
 	public boolean canGoForward() {
 		checkPop();
 		if (areThereDuplicates()) {
@@ -438,11 +444,11 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			} else {
 				whatIfChanged |= data.resize(data.getStations(), classes); //otherwise a simple resize is ok
 			}
-			
+
 			data.setClassNames(classNames);
 			whatIfChanged |= data.setClassTypes(classTypes);
 			whatIfChanged |= data.setClassData(classData);
-			
+
 			if (whatIfChanged) {
 				data.recalculateWhatifValues();
 			}
@@ -493,7 +499,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 
 	private void playbackClassOps(ExactModel data) {
 		for (int i = 0; i < classOps.size(); i++) {
-			ListOp lo = (ListOp) classOps.get(i);
+			ListOp lo = classOps.get(i);
 			if (lo.isDeleteOp()) {
 				data.deleteClass(lo.getData());
 			}
@@ -504,6 +510,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 		}
 	}
 
+	@Override
 	public void help() {
 		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 
@@ -594,6 +601,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			deleteOneClass.setEnabled(classes > 1);
 			/*It seems the only way to implement row deletion...*/
 			this.addMouseListener(new MouseAdapter() {
+				@Override
 				public void mouseClicked(MouseEvent e) {
 					if ((columnAtPoint(e.getPoint()) == getColumnCount() - 1) && getRowCount() > 1) {
 						setRowSelectionInterval(rowAtPoint(e.getPoint()), rowAtPoint(e.getPoint()));
@@ -609,6 +617,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 
 		//new Federico Dall'Orso 8/3/2005
 
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			//if this is type column, i must render it as a combo box instead of a jtextfield
 			if (column == 1) {
@@ -622,12 +631,15 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 
 		//end Federico Dall'Orso 8/3/2005
 
+		@Override
 		protected void installKeyboard() {
 		}
 
+		@Override
 		protected void installMouse() {
 		}
 
+		@Override
 		protected JPopupMenu makeMouseMenu() {
 			JPopupMenu menu = new JPopupMenu();
 			menu.add(deleteClass);
@@ -638,6 +650,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 		 * Make sure the table reflects changes on editing end
 		 * Overridden to truncate decimals in data if current class is closed
 		 */
+		@Override
 		public void editingStopped(ChangeEvent ce) {
 			if (classTypes[editingRow] == CLASS_CLOSED) {
 				classData[editingRow] = (int) classData[editingRow];
@@ -658,6 +671,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 
 		//END Federico Dall'Orso 14/3/2005
 
+		@Override
 		protected void updateActions() {
 			boolean isEnabled = classes > 1 && getSelectedRowCount() > 0;
 			deleteClass.setEnabled(isEnabled);
@@ -677,6 +691,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 		private static final long serialVersionUID = 1L;
 		private Object[] prototypes = { "10000", new String(new char[12]), "closed+cbox", new Integer(1000), new String(new char[12]), "" };
 
+		@Override
 		public Object getPrototype(int columnIndex) {
 			return prototypes[columnIndex + 1];
 		}
@@ -685,6 +700,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			return classes;
 		}
 
+		@Override
 		public Class getColumnClass(int col) {
 			switch (col) {
 				case 1:
@@ -701,6 +717,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			return 5;
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			switch (index) {
 				case 0:
@@ -716,6 +733,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			}
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			switch (columnIndex) {
 				case 0://name
@@ -739,10 +757,12 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			}
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			return new Integer(rowIndex + 1);
 		}
 
+		@Override
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			switch (columnIndex) {
 				case 0: //name
@@ -780,6 +800,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			}
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			switch (columnIndex) {
 				case 0:

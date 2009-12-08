@@ -81,12 +81,14 @@ public class RSPLPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		if (rsPanel != null) {
 			rsPanel.gotFocus();
 		}
 	}
 
+	@Override
 	public void repaint() {
 		refreshComponents();
 		super.repaint();
@@ -98,6 +100,7 @@ public class RSPLPanel extends WizardPanel implements CommonConstants {
 		}
 	}
 
+	@Override
 	public String getName() {
 		return "Reference Stations";
 	}
@@ -105,6 +108,7 @@ public class RSPLPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		if (rsPanel != null) {
 			rsPanel.lostFocus();

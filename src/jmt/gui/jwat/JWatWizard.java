@@ -35,6 +35,7 @@ public class JWatWizard extends Wizard {
 	/**
 	 * @return the button panel
 	 */
+	@Override
 	protected JComponent makeButtons() {
 		help = new HoverHelp();
 		helpLabel = help.getHelpLabel();
@@ -82,10 +83,10 @@ public class JWatWizard extends Wizard {
 	}
 
 	public void setEnableButton(String button, boolean enabl) {
-		for (int i = 0; i < btnList.length; i++) {
+		for (JButton element : btnList) {
 			try {
-				if (btnList[i].getText().equals(button)) {
-					btnList[i].setEnabled(enabl);
+				if (element.getText().equals(button)) {
+					element.setEnabled(enabl);
 					break;
 				}
 			} catch (ClassCastException e) {
@@ -104,11 +105,11 @@ public class JWatWizard extends Wizard {
 	}
 
 	public void setActionButton(String button, AbstractAction a) {
-		for (int i = 0; i < btnList.length; i++) {
+		for (JButton element : btnList) {
 			try {
-				if (btnList[i].getText().equals(button)) {
+				if (element.getText().equals(button)) {
 					a.putValue(Action.NAME, button);
-					btnList[i].setAction(a);
+					element.setAction(a);
 					break;
 				}
 			} catch (ClassCastException e) {

@@ -246,6 +246,7 @@ public class ClassesPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		comboEditor.clearCache();
 	}
@@ -296,6 +297,7 @@ public class ClassesPanel extends WizardPanel implements CommonConstants {
 	}
 
 	//returns name to be displayed on the tab, when inserted in a wizard tabbed pane
+	@Override
 	public String getName() {
 		return "Classes";
 	}
@@ -419,6 +421,7 @@ public class ClassesPanel extends WizardPanel implements CommonConstants {
 		}
 
 		//returns a component to be contained inside a table column(or cell)
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (column == 1) {
 				return comboEditor.getRenderer();
@@ -440,6 +443,7 @@ public class ClassesPanel extends WizardPanel implements CommonConstants {
 		}
 
 		/*returns customized editor for table cells.*/
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 1) {
 				return comboEditor.getEditor(classTypes);
@@ -504,6 +508,7 @@ public class ClassesPanel extends WizardPanel implements CommonConstants {
 
 		/**Returns name for each column (given its index) to be displayed
 		 * inside table header*/
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < columnNames.length) {
 				return columnNames[columnIndex];
@@ -513,6 +518,7 @@ public class ClassesPanel extends WizardPanel implements CommonConstants {
 		}
 
 		/**Returns class describing data contained in specific column.*/
+		@Override
 		public Class getColumnClass(int columnIndex) {
 			if (columnIndex < colClasses.length) {
 				return colClasses[columnIndex];
@@ -524,6 +530,7 @@ public class ClassesPanel extends WizardPanel implements CommonConstants {
 		/**Tells wether data contained in a specific cell(given row and column index)
 		 * is editable or not. In this case distribution column is not editable, as
 		 * editing functionality is implemented via edit button*/
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			if (columnIndex == 3 && (getValueAt(rowIndex, 1).equals("Open"))) {
 				return false;
@@ -569,6 +576,7 @@ public class ClassesPanel extends WizardPanel implements CommonConstants {
 		}
 
 		/**Puts edited values to the underlying data structure for model implementation*/
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			Object key = data.getClassKeys().get(rowIndex);
 			switch (columnIndex) {
@@ -604,9 +612,9 @@ public class ClassesPanel extends WizardPanel implements CommonConstants {
 					}
 					break;
 				}/*case(5):{
-				                    data.setClassDistribution(aValue, key);
-				                    break;
-				                }*/
+					                   data.setClassDistribution(aValue, key);
+					                   break;
+					               }*/
 			}
 			/*if editing cell belongs to class type column, i must update population and
 			distribution cells*/
@@ -620,6 +628,7 @@ public class ClassesPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		// Aborts editing of table
 		TableCellEditor editor = classTable.getCellEditor();

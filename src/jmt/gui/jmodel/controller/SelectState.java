@@ -76,6 +76,7 @@ public class SelectState extends UIStateDefault {
 	 *
 	 * @param e press mouse event
 	 */
+	@Override
 	public void handlePress(MouseEvent e) {
 		ml.setHandler(null);
 
@@ -142,6 +143,7 @@ public class SelectState extends UIStateDefault {
 
 	}
 
+	@Override
 	public void handleMove(MouseEvent e) {
 
 		if (ml.getPreviousCursor() == null) {
@@ -164,6 +166,7 @@ public class SelectState extends UIStateDefault {
 		e.consume();
 	}
 
+	@Override
 	public void handleDrag(MouseEvent e) {
 
 		mediator.setIsReleased(false);
@@ -236,6 +239,7 @@ public class SelectState extends UIStateDefault {
 	}
 
 	//	Heavely modified by Giuseppe De Cicco & Fabio Granara
+	@Override
 	public void handleRelease(MouseEvent e) {
 		mediator.setIsReleased(true);
 
@@ -285,6 +289,7 @@ public class SelectState extends UIStateDefault {
 
 	}
 
+	@Override
 	public void handleEnter(MouseEvent e) {
 		mediator.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
 	}

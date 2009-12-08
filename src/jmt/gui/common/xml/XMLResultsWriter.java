@@ -167,7 +167,7 @@ public class XMLResultsWriter implements XMLResultsConstants {
 				elem.setAttribute(XML_A_MEASURE_TYPE, Integer.toString(measure.getMeasureType(i)));
 				elem.setAttribute(XML_A_MEASURE_CLASS, measure.getClassName(i));
 				elem.setAttribute(XML_A_MEASURE_STATION, measure.getStationName(i));
-				elem.setAttribute(XML_A_MEASURE_FINALVALUE, Double.toString(((MeasureValue) measure.getValues(i).lastElement()).getMeanValue()));
+				elem.setAttribute(XML_A_MEASURE_FINALVALUE, Double.toString((measure.getValues(i).lastElement()).getMeanValue()));
 				elem.setAttribute(XML_A_MEASURE_SAMPLES, Integer.toString(measure.getAnalizedSamples(i)));
 				elem.setAttribute(XML_A_MEASURE_STATE, Integer.toString(measure.getMeasureState(i)));
 				elem.setAttribute(XML_A_MEASURE_ALPHA, Double.toString(measure.getAlpha(i)));

@@ -68,6 +68,7 @@ public class EpochPanel extends WizardPanel implements JWATConstants {
 		this.add(epochOption, BorderLayout.NORTH);
 	}
 
+	@Override
 	public String getName() {
 		return "Epoch";
 	}
@@ -89,16 +90,19 @@ public class EpochPanel extends WizardPanel implements JWATConstants {
 
 	//	 TODO controllare validita dei dati forniti nel pannello e creazione e passaggio informazioni al modello per il prossimo panello
 	// Chiamata prima di passare al prossimo pannello
+	@Override
 	public boolean canGoForward() {
 		return canGoOn;
 	}
 
 	// TODO controllare con Fuma cosa fare
 	// Chiamata quando dal pannello si torna indietro
+	@Override
 	public boolean canGoBack() {
 		return true;
 	}
 
+	@Override
 	public void lostFocus() {
 		burstwizard.setLastPanel(TRAFFIC_EPOCH_PANEL);
 	}

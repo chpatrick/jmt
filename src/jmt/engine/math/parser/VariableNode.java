@@ -106,6 +106,7 @@ public class VariableNode implements ExpressionNode {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() {
 		VariableNode node = new VariableNode(name, error);
 		node.value = value;
@@ -115,6 +116,7 @@ public class VariableNode implements ExpressionNode {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return getSubtype();
 	}

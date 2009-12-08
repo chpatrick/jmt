@@ -33,10 +33,10 @@ public class FinalSect2D {
 	private double beta11;
 	private double beta2;
 	private double beta22;
-	private Vector stations = new Vector();
+	private Vector<Station2D> stations = new Vector<Station2D>();
 	private String[] classNames;
 
-	public FinalSect2D(Sector2D sect, Vector stats, String[] classNames) {
+	public FinalSect2D(Sector2D sect, Vector<Station2D> stats, String[] classNames) {
 		this.classNames = classNames;
 		beta1 = sect.getBeta1();
 		beta11 = sect.getBeta11();
@@ -44,19 +44,19 @@ public class FinalSect2D {
 		beta22 = sect.getBeta22();
 
 		for (int i = 0; i < stats.size(); i++) {
-			if ((((Station2D) stats.get(i)).getVert()).equals(sect.getP1()) || (((Station2D) stats.get(i)).getVert()).equals(sect.getP2())) {
+			if ((stats.get(i).getVert()).equals(sect.getP1()) || (stats.get(i).getVert()).equals(sect.getP2())) {
 				stations.addElement(stats.get(i));
 			}
 		}
 
 		if (sect.hasCollinear()) {
-			Vector coll = sect.getCollinear();
+			Vector<newPoint> coll = sect.getCollinear();
 
 			for (int c = 0; c < coll.size(); c++)
 
 			{
 				for (int i = 0; i < stats.size(); i++) {
-					if ((((Station2D) stats.get(i)).getVert()).equals(coll.get(c))) {
+					if ((stats.get(i).getVert()).equals(coll.get(c))) {
 						stations.addElement(stats.get(i));
 					}
 				}
@@ -80,7 +80,7 @@ public class FinalSect2D {
 		return beta22;
 	}
 
-	public Vector getstation() {
+	public Vector<Station2D> getstation() {
 		return stations;
 	}
 
@@ -88,12 +88,13 @@ public class FinalSect2D {
 		return stations.size();
 	}
 
+	@Override
 	public String toString() {
 		String out = "";
 		{
 			String statname = "";
 			for (int i = 0; i < stations.size(); i++) {
-				String temp = ((Station2D) stations.get(i)).toString();
+				String temp = stations.get(i).toString();
 				statname = statname.concat(temp + " ");
 			}
 			double dispbeta1 = beta1 * 1000;

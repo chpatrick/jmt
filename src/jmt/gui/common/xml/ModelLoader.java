@@ -391,7 +391,7 @@ public class ModelLoader {
 		//dialog.setFileFilter(defaultFilter);
 		dialog.setFileFilter(ALL);
 	}
-	
+
 	/**
 	 * Adds only compatible filters to current dialog
 	 */
@@ -476,6 +476,7 @@ public class ModelLoader {
 		/**
 		 * Overrides default method to provide a warning if saving over an existing file
 		 */
+		@Override
 		public void approveSelection() {
 			// Gets the choosed file name
 			String name = getSelectedFile().getName();
@@ -526,13 +527,14 @@ public class ModelLoader {
 		/**
 		 * Whether the given file is accepted by this filter.
 		 */
+		@Override
 		public boolean accept(File f) {
 			String name = f.getName().toLowerCase();
 			if (f.isDirectory()) {
 				return true;
 			}
-			for (int i = 0; i < extensions.length; i++) {
-				if (name.endsWith(extensions[i])) {
+			for (String extension : extensions) {
+				if (name.endsWith(extension)) {
 					return true;
 				}
 			}
@@ -562,6 +564,7 @@ public class ModelLoader {
 		 * The description of this filter
 		 * @see javax.swing.filechooser.FileView#getName
 		 */
+		@Override
 		public String getDescription() {
 			return description;
 		}

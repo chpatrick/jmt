@@ -43,6 +43,7 @@ public class SolverSingleClosedExactDyn extends jmt.analytical.SolverSingleClose
 
 	/** Solves the system
 	 */
+	@Override
 	public void solve() {
 		scalPrec = new double[customers + 1];
 		scalCorr = new double[customers + 1];
@@ -193,6 +194,7 @@ public class SolverSingleClosedExactDyn extends jmt.analytical.SolverSingleClose
 	 * "Computational Algorithms for closed Queueing Networks"<br>
 	 * 1980, Elsevier North Holland
 	 */
+	@Override
 	public void indexes() {
 		//TODO: da implementare??
 	}

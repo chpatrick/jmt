@@ -64,14 +64,14 @@ public class JmtGraphLayoutCache extends GraphLayoutCache {
 	 * Return all cells that intersect the given rectangle.
 	 */
 	public CellView[] getRoots(Rectangle clip) {
-		java.util.List result = new ArrayList();
+		java.util.List<CellView> result = new ArrayList<CellView>();
 		CellView[] views = getRoots();
 		Rectangle2D bounds;
-		for (int i = 0; i < views.length; i++) {
-			bounds = views[i].getBounds();
+		for (CellView view : views) {
+			bounds = view.getBounds();
 			if (bounds != null) {
 				if (bounds.intersects(clip)) {
-					result.add(views[i]);
+					result.add(view);
 				}
 			}
 		}

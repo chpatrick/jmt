@@ -79,7 +79,8 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 	protected ImagedComboBoxCellEditorFactory comboEditor;
 
 	//Enabled types of station for station editing
-	Object[] stationTypes = new Object[] { STATION_TYPE_DELAY, STATION_TYPE_SERVER, STATION_TYPE_FORK, STATION_TYPE_JOIN, STATION_TYPE_ROUTER, STATION_TYPE_LOGGER };
+	Object[] stationTypes = new Object[] { STATION_TYPE_DELAY, STATION_TYPE_SERVER, STATION_TYPE_FORK, STATION_TYPE_JOIN, STATION_TYPE_ROUTER,
+			STATION_TYPE_LOGGER };
 
 	//Component responsible of setting global number of classes at once
 	private JSpinner stationNumSpinner = new JSpinner() {
@@ -239,6 +240,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 	}
 
 	//returns name to be displayed on the tab, when inserted in a wizard tabbed pane
+	@Override
 	public String getName() {
 		return "Stations";
 	}
@@ -264,6 +266,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 		}
 	}
 
+	@Override
 	public void repaint() {
 		if (data != null) {
 			refreshComponents();
@@ -274,6 +277,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		comboEditor.clearCache();
 	}
@@ -282,6 +286,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 	 * Called when an other panel is selected. This method will set a default station as reference
 	 * station of any closed class without it.
 	 */
+	@Override
 	public void lostFocus() {
 		Vector classes = classData.getClassKeys();
 		// Perform check only if valids stations are created to be reference station
@@ -376,6 +381,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 		}
 
 		//returns a component to be contained inside a table column(or cell)
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (column == 1) {
 				return comboEditor.getRenderer();
@@ -391,6 +397,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 		}
 
 		/*returns customized editor for table cells.*/
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 1) {
 				return comboEditor.getEditor(stationTypes);
@@ -413,6 +420,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public boolean isCellEditable(int row, int column) {
 			// Avoid deletion of sources and sinks
 			String stationType = data.getStationType(data.getStationKeys().get(row));
@@ -459,6 +467,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 
 		/**Returns name for each column (given its index) to be displayed
 		 * inside table header*/
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < columnNames.length) {
 				return columnNames[columnIndex];
@@ -468,6 +477,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 		}
 
 		/**Returns class describing data contained in specific column.*/
+		@Override
 		public Class getColumnClass(int columnIndex) {
 			if (columnIndex < colClasses.length) {
 				return colClasses[columnIndex];
@@ -479,12 +489,13 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 		/**Tells wether data contained in a specific cell(given row and column index)
 		 * is editable or not. In this case distribution column is not editable, as
 		 * editing functionality is implemented via edit button*/
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			//can edit station type only if type is contained in combo box list
 			if (columnIndex == 1) {
 				String type = data.getStationType(data.getStationKeys().get(rowIndex));
-				for (int i = 0; i < stationTypes.length; i++) {
-					if (stationTypes[i].equals(type)) {
+				for (Object stationType : stationTypes) {
+					if (stationType.equals(type)) {
 						return true;
 					}
 				}
@@ -511,6 +522,7 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 		}
 
 		/**Puts edited values to the underlying data structure for model implementation*/
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			Object key = data.getStationKeys().get(rowIndex);
 			switch (columnIndex) {
@@ -525,9 +537,11 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public void addTableModelListener(TableModelListener l) {
 		}
 
+		@Override
 		public void removeTableModelListener(TableModelListener l) {
 		}
 

@@ -97,9 +97,9 @@ public class TestClassPriorityStrategy {
 
 		byte b = 0x01;
 
-		for (int i = 0; i < jobs.length; i++) {
+		for (Job job : jobs) {
 			try {
-				putStrategy.put(jobs[i], list, b, null, null);
+				putStrategy.put(job, list, b, null, null);
 			} catch (NetException ne) {
 				ne.printStackTrace();
 				return;

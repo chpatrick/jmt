@@ -28,6 +28,7 @@ public class Mapping implements Comparable {
 		return 0;
 	}
 
+	@Override
 	public boolean equals(Object arg0) {
 		Mapping t = (Mapping) arg0;
 		return t.conversion == this.conversion;

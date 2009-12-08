@@ -70,8 +70,8 @@ public class SampleQNAnimation extends QueueNetAnimation {
 						new Point(20 + x, 60 + y), new Point(30 + x, 60 + y) } };
 		ColoredStationAnimation[] stations = { new ColoredStationAnimation(new Point(120 + x, 40 + y), 500),
 				new ColoredStationAnimation(new Point(50 + x, 60 + y), 100), new ColoredStationAnimation(new Point(120 + x, 75 + y), 500) };
-		for (int i = 0; i < stations.length; i++) {
-			addStation(stations[i]);
+		for (ColoredStationAnimation station : stations) {
+			addStation(station);
 		}
 		EdgeAnimation[] links = new EdgeAnimation[linkPts.length];
 		for (int i = 0; i < linkPts.length; i++) {
@@ -114,6 +114,7 @@ class ColoredStationAnimation extends StationAnimation {
 		createOverlayImage();
 	}
 
+	@Override
 	public void paint(Graphics g, ImageObserver io) {
 		createQueue(g);
 		createCPU(g);
@@ -174,6 +175,7 @@ class SampleIconsToolkit extends DefaultIconsToolkit {
 	private static Color[] colors = { new Color(255, 0, 0, 150), new Color(255, 255, 0, 150), new Color(0, 0, 255, 150),
 			new Color(100, 100, 100, 150), new Color(0, 255, 0, 150) };
 
+	@Override
 	public Image getJobIcon(Rectangle bounds) {
 		BufferedImage bi = new BufferedImage(100, 100, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics jig = bi.getGraphics();
@@ -197,6 +199,7 @@ class SampleIconsToolkit extends DefaultIconsToolkit {
 		return (int) (rangeY * Math.pow((double) (x) / rangeX, 0.44));
 	}
 
+	@Override
 	public Image getBGTileIcon(Rectangle bounds) {
 		BufferedImage bi = new BufferedImage(bounds.width, bounds.height, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics g = bi.getGraphics();

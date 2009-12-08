@@ -58,6 +58,7 @@ public class ConnectState extends UIStateDefault {
 		this.ml = ml;
 	}
 
+	@Override
 	public void handlePress(MouseEvent e) {
 
 		if (!e.isConsumed()) {
@@ -75,17 +76,20 @@ public class ConnectState extends UIStateDefault {
 		pressed = true;
 	}
 
+	@Override
 	public void handleExit(MouseEvent e) {
 		//		super.handleExit(e);
 		mediator.setCursor(mediator.getOldCursor());
 	}
 
+	@Override
 	public void handleEnter(MouseEvent e) {
 
 		//		super.handleEnter(e);
 		mediator.setCursor(new Cursor(Cursor.CROSSHAIR_CURSOR));
 	}
 
+	@Override
 	public void handleDrag(MouseEvent e) {
 
 		if (firstPort != null) {
@@ -114,6 +118,7 @@ public class ConnectState extends UIStateDefault {
 	}
 
 	//	heavely modified by Giuseppe De Cicco & Fabio Granara
+	@Override
 	public void handleRelease(MouseEvent e) {
 
 		if (e != null && !e.isConsumed()) {

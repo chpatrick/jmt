@@ -436,8 +436,8 @@ public class BlockingRegion {
 	 * @return true if the specified node is contained in the region
 	 */
 	public boolean belongsToRegion(String nodeName) {
-		for (int i = 0; i < regionNodeNames.length; i++) {
-			if (regionNodeNames[i].equalsIgnoreCase(nodeName)) {
+		for (String regionNodeName : regionNodeNames) {
+			if (regionNodeName.equalsIgnoreCase(nodeName)) {
 				//the specified node is contained in the blocking region
 				return true;
 			}
@@ -458,8 +458,8 @@ public class BlockingRegion {
 			//nodes of ther region must be found, using their names
 			findRegionNodes();
 		}
-		for (int i = 0; i < regionNodes.length; i++) {
-			if (regionNodes[i] == node) {
+		for (NetNode regionNode : regionNodes) {
+			if (regionNode == node) {
 				//the specified node is contained in the blocking region
 				return true;
 			}

@@ -52,6 +52,7 @@ public final class ThroughputPanel extends SolutionPanel {
 	/**
 	 * gets status from data object
 	 */
+	@Override
 	protected void sync() {
 		super.sync();
 		throughput = data.getThroughput();
@@ -60,10 +61,12 @@ public final class ThroughputPanel extends SolutionPanel {
 		globalAggr = data.getGlobalX();
 	}
 
+	@Override
 	protected ExactTableModel getTableModel() {
 		return new TPTableModel();
 	}
 
+	@Override
 	protected String getDescriptionMessage() {
 		return ExactConstants.DESCRIPTION_THROUGHPUTS;
 	}
@@ -110,6 +113,7 @@ public final class ThroughputPanel extends SolutionPanel {
 			//end NEW
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			if (rowIndex == 0) {
 				return "<html><i>Aggregate</i></html>";
@@ -118,6 +122,7 @@ public final class ThroughputPanel extends SolutionPanel {
 			}
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			if (index == 0) {
 				return "<html><i>Aggregate</i></html>";
@@ -126,6 +131,7 @@ public final class ThroughputPanel extends SolutionPanel {
 			}
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			double d;
 			if (rowIndex == 0 && columnIndex == 0) {

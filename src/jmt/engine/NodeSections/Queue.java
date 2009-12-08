@@ -106,7 +106,7 @@ public class Queue extends InputSection {
 	//the JobInfoList of the owner NetNode (use to control the number of jobs in
 	//case of finite queue)
 	private JobInfoList nodeJobsList;
-	
+
 	/** This jobinfolist should be used instead of jobsList to support Processor Sharing */
 	private JobInfoList queueJobInfoList;
 
@@ -196,9 +196,6 @@ public class Queue extends InputSection {
 		this(size.intValue(), drop.booleanValue(), getStrategy, putStrategy);
 	}
 
-
-
-
 	/** Creates a new instance of finite redirecting Queue.
 	 * @param size Queue size (-1 = infinite queue).
 	 * @param getStrategy Queue get strategy: if null FCFS strategy is used.
@@ -228,7 +225,6 @@ public class Queue extends InputSection {
 	public Queue(Integer size, Boolean drop, QueueGetStrategy getStrategy, QueuePutStrategy putStrategy[], BlockingRegion myReg) {
 		this(size.intValue(), drop.booleanValue(), getStrategy, putStrategy, myReg);
 	}
-
 
 	/**
 	 * Creates a new instance of finite Queue. This is the newwst constructor that supports
@@ -360,8 +356,8 @@ public class Queue extends InputSection {
 		try {
 			if (getOwnerNode().getSection(SERVICE) instanceof PSServer) {
 				jobsList = new PSJobInfoList(getJobClasses().size(), true);
-				queueJobInfoList = ((PSJobInfoList)jobsList).getInternalList();
-			} 
+				queueJobInfoList = ((PSJobInfoList) jobsList).getInternalList();
+			}
 		} catch (NetException ex) {
 			logger.error(ex);
 		}

@@ -98,7 +98,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 	private int[] stationTypes;
 	private int nameCounter = 1;
 
-	private List stationOps;
+	private List<ListOp> stationOps;
 	private boolean hasDeletes;
 	private boolean deleting = false;
 
@@ -164,7 +164,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 		this.ew = ew;
 		help = ew.getHelp();
 
-		stationOps = new ArrayList();
+		stationOps = new ArrayList<ListOp>();
 		sync();
 		makeNames();
 		initComponents();
@@ -200,11 +200,13 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 		stationSpinner.setValue(new Integer(stations));
 	}
 
+	@Override
 	public void gotFocus() {
 		sync();
 		stationTable.update();
 	}
 
+	@Override
 	public void lostFocus() {
 		commit();
 		//release();
@@ -307,6 +309,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 
 	}
 
+	@Override
 	public String getName() {
 		return "Stations";
 	}
@@ -341,6 +344,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 
 	}
 
+	@Override
 	public boolean canFinish() {
 		return checkLD() && !areThereDuplicates();
 	}
@@ -384,7 +388,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 
 	private void playbackStationOps(JabaModel data) {
 		for (int i = 0; i < stationOps.size(); i++) {
-			ListOp lo = (ListOp) stationOps.get(i);
+			ListOp lo = stationOps.get(i);
 			if (lo.isDeleteOp()) {
 				data.deleteStation(lo.getData());
 			}
@@ -395,6 +399,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 		}
 	}
 
+	@Override
 	public boolean canGoBack() {
 		checkLD();
 		if (areThereDuplicates()) {
@@ -403,6 +408,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 		return true;
 	}
 
+	@Override
 	public boolean canGoForward() {
 		checkLD();
 		if (areThereDuplicates()) {
@@ -456,6 +462,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 		}
 	}
 
+	@Override
 	public void help() {
 		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 
@@ -557,6 +564,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 			deleteOneStation.setEnabled(stations > 1);
 			/*It seems the only way to implement row deletion...*/
 			this.addMouseListener(new MouseAdapter() {
+				@Override
 				public void mouseClicked(MouseEvent e) {
 					if ((columnAtPoint(e.getPoint()) == getColumnCount() - 1) && getRowCount() > 1) {
 						setRowSelectionInterval(rowAtPoint(e.getPoint()), rowAtPoint(e.getPoint()));
@@ -570,12 +578,15 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 
 		//END Federico Dall'Orso 14/3/2005
 
+		@Override
 		protected void installKeyboard() {
 		}
 
+		@Override
 		protected void installMouse() {
 		}
 
+		@Override
 		protected JPopupMenu makeMouseMenu() {
 			JPopupMenu menu = new JPopupMenu();
 			menu.add(deleteStation);
@@ -585,6 +596,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 		/**
 		 * Overridden to ensure proper handling of station type column
 		 */
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 1) { //station type
 				/* select the right editor */
@@ -603,6 +615,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 		//NEW
 		/**Returns combobox-styled cellrenderer if a multiple choice cell is to be rendered.
 		 * @return cell renderer*/
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			//if this is type column, I must render it as a combo box instead of a jtextfield
 			if (column == 1) {
@@ -631,6 +644,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 
 		//END Federico Dall'Orso 14/3/2005
 
+		@Override
 		protected void updateActions() {
 			deleteStation.setEnabled(stations > 1 && getSelectedRowCount() > 0);
 			deleteOneStation.setEnabled(stations > 1);
@@ -649,6 +663,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 		private static final long serialVersionUID = 1L;
 		private Object[] prototypes = { "10000", new String(new char[15]), new String(new char[15]), "" };
 
+		@Override
 		public Object getPrototype(int columnIndex) {
 			return prototypes[columnIndex + 1];
 		}
@@ -661,6 +676,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 			return 3;
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			switch (index) {
 				case 0:
@@ -672,10 +688,12 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 			}
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			return new Integer(rowIndex + 1);
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			switch (columnIndex) {
 				case 0://name
@@ -687,6 +705,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 			}
 		}
 
+		@Override
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			switch (columnIndex) {
 				case 0: //name
@@ -704,6 +723,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 			}
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			switch (columnIndex) {
 				case 0:

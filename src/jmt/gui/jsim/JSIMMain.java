@@ -30,7 +30,6 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 
 import javax.help.HelpSet;
 import javax.help.JHelp;
@@ -492,6 +491,7 @@ public class JSIMMain extends Wizard implements GuiInterface {
 	/**
 	 * Exits from JSIM
 	 */
+	@Override
 	public boolean cancel() {
 		if (checkForSave("<html>Save changes before closing?</html>")) {
 			return false;
@@ -715,8 +715,8 @@ public class JSIMMain extends Wizard implements GuiInterface {
 		//add panels
 		WizardPanel[] panels = new WizardPanel[] { classes, stations, connections, parameters, measures, rspl, blocking, simulation,
 				parametricAnalysis };
-		for (int i = 0; i < panels.length; i++) {
-			addPanel(panels[i]);
+		for (WizardPanel panel : panels) {
+			addPanel(panel);
 		}
 	}
 
@@ -764,6 +764,7 @@ public class JSIMMain extends Wizard implements GuiInterface {
 		}
 		// Adds a listener that will unselect Show results button upon results window closing
 		rsw.addWindowListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) {
 				SHOW_RESULTS.setSelected(false);
 			}
@@ -1043,6 +1044,7 @@ public class JSIMMain extends Wizard implements GuiInterface {
 	 * Overrides default Solve button pression...
 	 * @see Wizard
 	 */
+	@Override
 	protected void finish() {
 		SIM_START.actionPerformed(null);
 	}

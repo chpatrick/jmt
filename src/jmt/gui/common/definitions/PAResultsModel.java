@@ -40,7 +40,7 @@ import jmt.gui.common.xml.XMLConstantNames;
  */
 public class PAResultsModel implements MeasureDefinition {
 	private Vector<Measure> measures; // An array with all Measures
-	private Vector parameterValues;
+	private Vector<Number> parameterValues;
 	private Vector<Integer> queueLength = new Vector<Integer>(), queueTime = new Vector<Integer>(), residenceTime = new Vector<Integer>(),
 			responseTime = new Vector<Integer>(), utilization = new Vector<Integer>(), throughput = new Vector<Integer>(),
 			dropRate = new Vector<Integer>(), systemResponseTime = new Vector<Integer>(), systemThroughput = new Vector<Integer>(),
@@ -208,7 +208,7 @@ public class PAResultsModel implements MeasureDefinition {
 		requested.addSample(meanValue, upperBound, lowerBound, validity);
 	}
 
-	public Vector getParameterValues() {
+	public Vector<Number> getParameterValues() {
 		return parameterValues;
 	}
 

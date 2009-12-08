@@ -70,6 +70,7 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 	 * increased.
 	 * @return the key of the class whose number of jobs will be increased
 	 */
+	@Override
 	public Object getReferenceClass() {
 		return classKey;
 	}
@@ -107,6 +108,7 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 	 *
 	 * @return the type of parametric analysis
 	 */
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -123,6 +125,7 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 	 * Changes the model preparing it for the next step
 	 *
 	 */
+	@Override
 	public void changeModel(int step) {
 		if (step >= numberOfSteps) {
 			return;
@@ -141,6 +144,7 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 	 *
 	 * @return the maximum number of steps
 	 */
+	@Override
 	public int searchForAvaibleSteps() {
 		float diff = Math.abs((float) initialValue - (float) finalValue);
 		//diff = diff/100;
@@ -153,6 +157,7 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 	 * simulation may be iterated on.
 	 *
 	 */
+	@Override
 	public void createValuesSet() {
 		Vector classSet = classDef.getClosedClassKeys();
 		classSet.remove(classKey);
@@ -174,13 +179,14 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 		originalValues = new Vector(2);
 		int thisClassPop = classDef.getClassPopulation(classKey).intValue();
 		int otherClassPop = totalPop - thisClassPop;
-		((Vector) originalValues).add(new Integer(thisClassPop));
-		((Vector) originalValues).add(new Integer(otherClassPop));
+		((Vector<Integer>) originalValues).add(new Integer(thisClassPop));
+		((Vector<Integer>) originalValues).add(new Integer(otherClassPop));
 	}
 
 	/**
 	 * Restore the original values of population
 	 */
+	@Override
 	public void restoreOriginalValues() {
 		Vector vals = (Vector) originalValues;
 		int thisClassPop = ((Integer) vals.get(0)).intValue();
@@ -201,6 +207,7 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 	 *          1 - If the PA model is no more valid, but it will be corrected <br>
 	 *          2 - If the PA model can be no more used
 	 */
+	@Override
 	public int checkCorrectness(boolean autocorrect) {
 		int code = 0;
 		Vector closeClasses = classDef.getClosedClassKeys();
@@ -246,8 +253,9 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 	 *
 	 * @return a Vector containing the values assumed by the varying parameter
 	 */
-	public Vector getParameterValues() {
-		Vector assumedValues = new Vector(numberOfSteps);
+	@Override
+	public Vector<Number> getParameterValues() {
+		Vector<Number> assumedValues = new Vector<Number>(numberOfSteps);
 		for (int i = 0; i < numberOfSteps; i++) {
 			double tempThisClassPop = values.getValue(classKey, i);
 			double tempOtherClassPop = values.getValue(otherClassKey, i);
@@ -263,6 +271,7 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 	 *
 	 * @return the name of the class
 	 */
+	@Override
 	public String getReferenceClassName() {
 		return classDef.getClassName(classKey);
 	}
@@ -272,8 +281,9 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 	 * defined as constants inside this class.
 	 * @return a TreeMap containing the value for each property
 	 */
-	public Map getProperties() {
-		TreeMap properties = new TreeMap();
+	@Override
+	public Map<String, String> getProperties() {
+		TreeMap<String, String> properties = new TreeMap<String, String>();
 		properties.put(TYPE_PROPERTY, getType());
 		properties.put(FROM_PROPERTY, Double.toString(initialValue));
 		properties.put(TO_PROPERTY, Double.toString(finalValue));
@@ -292,6 +302,7 @@ public class PopulationMixParametricAnalysis extends ParametricAnalysisDefinitio
 	 * - REFERENCE_CLASS_PROPERTY
 	 * @param value the value to be set
 	 */
+	@Override
 	public void setProperty(String propertyName, String value) {
 		if (propertyName.equals(FROM_PROPERTY)) {
 			initialValue = Double.parseDouble(value);

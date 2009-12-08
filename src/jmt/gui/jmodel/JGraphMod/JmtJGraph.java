@@ -22,7 +22,6 @@ import java.awt.Graphics;
 
 import jmt.common.GlobalSettings;
 import jmt.gui.common.Defaults;
-import jmt.gui.common.startScreen.GraphStartScreen;
 import jmt.gui.jmodel.controller.Mediator;
 
 import org.freehep.graphics2d.VectorGraphics;
@@ -198,8 +197,7 @@ public class JmtJGraph extends JGraph {
 	 */
 	public JmtCell getVertexAt(int x, int y) {
 		CellView[] cellViews = getGraphLayoutCache().getAllViews();
-		for (int i = 0; i < cellViews.length; i++) {
-			CellView cellView = cellViews[i];
+		for (CellView cellView : cellViews) {
 			if (cellView.getCell() instanceof JmtCell) {
 				if (cellView.getBounds().contains(x, y)) {
 					return (JmtCell) cellView.getCell();
@@ -228,6 +226,7 @@ public class JmtJGraph extends JGraph {
 	 * @see javax.swing.JComponent#updateUI
 	 *
 	 */
+	@Override
 	public void updateUI() {
 		setUI(new jmt.gui.jmodel.controller.JmtGraphUI(mediator));
 		invalidate();
@@ -239,6 +238,7 @@ public class JmtJGraph extends JGraph {
 	/**
 	 * Overrides paintComponent method to add support for screenshots
 	 */
+	@Override
 	protected void paintComponent(Graphics g) {
 		if (g == null) {
 			return;

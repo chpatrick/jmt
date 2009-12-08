@@ -175,6 +175,7 @@ public class FunctionNode implements ExpressionNode {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() {
 		ExpressionNode n_child = (ExpressionNode) child.clone();
 		return new FunctionNode(n_child, function);
@@ -183,6 +184,7 @@ public class FunctionNode implements ExpressionNode {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		// Special case for negation function
 		if (function != 0) {

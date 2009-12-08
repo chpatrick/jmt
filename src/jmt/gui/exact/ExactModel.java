@@ -20,7 +20,6 @@ package jmt.gui.exact;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -741,7 +740,7 @@ public class ExactModel implements ExactConstants {
 			serviceTimes = ArrayUtils.resize3var(serviceTimes, stations, classes, calcSizes(), 0.0);
 			// Checks if visits are all one
 			calcUnitaryVisits();
-			
+
 			return true;
 		} else {
 			// Check if population was changed.
@@ -1227,7 +1226,7 @@ public class ExactModel implements ExactConstants {
 					classesresults_element.setAttribute("customerclass", classNames[j]);
 
 					Element Q_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
-					Q_element.setAttribute("measureType", "Number of Customers" );
+					Q_element.setAttribute("measureType", "Number of Customers");
 					Q_element.setAttribute("successful", "true");
 					Q_element.setAttribute("meanValue", Double.toString(this.queueLen[i][j][k]));
 
@@ -1575,11 +1574,11 @@ public class ExactModel implements ExactConstants {
 					measure = (Element) measure_list.item(m);
 					//Below IF clause is added for backward compatibility of the Perf Index : Number of customers
 					//as previously it was known as Queue Length.
-					if(res.equalsIgnoreCase("Number of Customers")){//This is the present name of Label
-						if(measure.getAttribute("measureType").equalsIgnoreCase("Queue length")){//Previously known as "Queue length" in old JMVA files.
+					if (res.equalsIgnoreCase("Number of Customers")) {//This is the present name of Label
+						if (measure.getAttribute("measureType").equalsIgnoreCase("Queue length")) {//Previously known as "Queue length" in old JMVA files.
 							res = "Queue length";
 						}
-					}					
+					}
 					if (measure.getAttribute("measureType").equalsIgnoreCase(res)) {
 						//it's the measure we are searching for
 						value = measure.getAttribute("meanValue");
@@ -1666,8 +1665,8 @@ public class ExactModel implements ExactConstants {
 				retVal[k] = Double.NaN;
 			} else {
 				if (aggs != null) {
-					for (int i = 0; i < aggs.length; i++) {
-						retVal[k] += aggs[i][k];
+					for (double[] agg : aggs) {
+						retVal[k] += agg[k];
 					}
 				} else {
 					retVal[k] = Double.NaN;
@@ -1689,8 +1688,8 @@ public class ExactModel implements ExactConstants {
 			for (int i = 0; i < retVal.length; i++) {
 				retVal[i][k] = 0;
 				//then rows
-				for (int j = 0; j < queueLen.length; j++) {
-					retVal[i][k] += queueLen[j][i][k];
+				for (double[][] element : queueLen) {
+					retVal[i][k] += element[i][k];
 				}
 			}
 		}
@@ -1725,8 +1724,8 @@ public class ExactModel implements ExactConstants {
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
 			if (aggs != null) {
-				for (int i = 0; i < aggs.length; i++) {
-					retVal[k] += aggs[i][k];
+				for (double[] agg : aggs) {
+					retVal[k] += agg[k];
 				}
 			} else {
 				retVal[k] = Double.NaN;
@@ -1745,8 +1744,8 @@ public class ExactModel implements ExactConstants {
 		for (int k = 0; k < iterations; k++) {
 			for (int i = 0; i < retVal.length; i++) {
 				retVal[i][k] = 0;
-				for (int j = 0; j < resTimes.length; j++) {
-					retVal[i][k] += resTimes[j][i][k];
+				for (double[][] resTime : resTimes) {
+					retVal[i][k] += resTime[i][k];
 				}
 			}
 		}
@@ -1868,44 +1867,44 @@ public class ExactModel implements ExactConstants {
 			return neg;
 		}
 	}
+
 	//Added by ASHANKA START
 	//System Power
 	//Unlike other performance indices we don't have station level
 	//aggregate and individual 
-	public double[][] getPerClassSP(){		
-		if(resTimes== null){
+	public double[][] getPerClassSP() {
+		if (resTimes == null) {
 			return null;
 		}
 		double[][] retVal = new double[classes][iterations];
-        // Scans for every iteration (what if analysis)
-        for (int k=0; k<iterations; k++) {
-            for(int i=0; i<retVal.length; i++){
-            	try{
-            		retVal[i][k] = getPerClassX()[i][k]/getPerClassR()[i][k];
-            	}
-            	catch(ArithmeticException ae){
-            		retVal[i][k]=0;
-            	}
-            }
-        }
-        return retVal;    	
+		// Scans for every iteration (what if analysis)
+		for (int k = 0; k < iterations; k++) {
+			for (int i = 0; i < retVal.length; i++) {
+				try {
+					retVal[i][k] = getPerClassX()[i][k] / getPerClassR()[i][k];
+				} catch (ArithmeticException ae) {
+					retVal[i][k] = 0;
+				}
+			}
+		}
+		return retVal;
 	}
-	
-	public double[] getGlobalSP(){
-		if(resTimes==null){
+
+	public double[] getGlobalSP() {
+		if (resTimes == null) {
 			return null;
 		}
 		double[] retVal = new double[iterations];
-    	for (int k=0; k<iterations; k++) {
-    		try{
-    			retVal[k] = getGlobalX()[k]/getGlobalR()[k];
-    		}
-    		catch (ArithmeticException e){
-    			retVal[k] =0;
-    		}
-    	}
-        return retVal;
+		for (int k = 0; k < iterations; k++) {
+			try {
+				retVal[k] = getGlobalX()[k] / getGlobalR()[k];
+			} catch (ArithmeticException e) {
+				retVal[k] = 0;
+			}
+		}
+		return retVal;
 	}
+
 	//Added by ASHANKA STOP
 	/**
 	 * This method tells if visits were set or are all unitary (or zero if
@@ -2244,8 +2243,8 @@ public class ExactModel implements ExactConstants {
 			return;
 		}
 
-		HashSet closedClasses = new HashSet();
-		HashSet openClasses = new HashSet();
+		HashSet<Integer> closedClasses = new HashSet<Integer>();
+		HashSet<Integer> openClasses = new HashSet<Integer>();
 
 		for (int i = 0; i < classTypes.length; i++) {
 			if (classTypes[i] == CLASS_OPEN) {
@@ -2291,8 +2290,8 @@ public class ExactModel implements ExactConstants {
 				} else if (WHAT_IF_MIX.equals(whatIfType)) {
 					// Check that no fractionary values are used
 					int class2 = -1;
-					for (Iterator it = closedClasses.iterator(); it.hasNext();) {
-						int idx = ((Integer) it.next()).intValue();
+					for (Integer integer : closedClasses) {
+						int idx = integer.intValue();
 						if (idx != whatIfClass) {
 							class2 = idx;
 							break;

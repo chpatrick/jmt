@@ -41,6 +41,10 @@ public abstract class AbstractJmodelAction extends AbstractJMTAction {
 	 action instead of yours (and you'll get a bad headache trying to understand why ;)
 	 */
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected Mediator mediator;
 
 	/**

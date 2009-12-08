@@ -117,6 +117,7 @@ public class OperatorNode implements ExpressionNode {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
+	@Override
 	public Object clone() {
 		ExpressionNode n_left = (ExpressionNode) left.clone();
 		ExpressionNode n_right = (ExpressionNode) right.clone();
@@ -126,6 +127,7 @@ public class OperatorNode implements ExpressionNode {
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		StringBuffer str = new StringBuffer();
 		if (needBrackets(left, true)) {

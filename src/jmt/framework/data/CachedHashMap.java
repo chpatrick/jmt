@@ -30,7 +30,7 @@ import java.util.HashMap;
  * for speed-up of data search operations, in particular the most recently requested
  * element is stored to assure a faster search.
  */
-public class CachedHashMap<E,F> extends HashMap<E,F> {
+public class CachedHashMap<E, F> extends HashMap<E, F> {
 
 	/**
 	 * 

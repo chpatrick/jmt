@@ -60,6 +60,7 @@ public class SmallQQPlot extends JPanel {
 		//Su panel grafico
 		addMouseListener(new MouseAdapter() {
 			// Creates new windows with enlarged graph
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					// Creates and sets up new window
@@ -67,10 +68,12 @@ public class SmallQQPlot extends JPanel {
 
 					JWatWorkloadManager.addJMTWindow(plotFrame);
 					plotFrame.addWindowListener(new WindowAdapter() {
+						@Override
 						public void windowClosing(WindowEvent e) {
 							JWatWorkloadManager.exit(plotFrame);
 						}
 
+						@Override
 						public void windowClosed(WindowEvent e) {
 							JWatWorkloadManager.exit(plotFrame);
 						}
@@ -92,6 +95,7 @@ public class SmallQQPlot extends JPanel {
 		});
 	}
 
+	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		g.setColor(Color.WHITE);

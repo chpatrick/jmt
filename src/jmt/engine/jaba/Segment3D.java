@@ -72,8 +72,8 @@ public class Segment3D {
 	 * @param tri
 	 * @return
 	 */
-	public Vector CreateLt(Vector tri) {
-		Vector out = new Vector();
+	public Vector<Object> CreateLt(Vector<Object> tri) {
+		Vector<Object> out = new Vector<Object>();
 
 		for (int i = 0; i < tri.size(); i++) {
 			double[] abetas = ((Sector3D) tri.get(i)).getBetas(0);
@@ -137,6 +137,7 @@ public class Segment3D {
 		return s2;
 	}
 
+	@Override
 	public String toString() {
 		return (s1 + "[" + beta11 + "," + beta12 + "]" + "-" + s2 + "[" + beta21 + "," + beta22 + "]");
 	}
@@ -148,7 +149,7 @@ public class Segment3D {
 	 * @param lt
 	 * @return
 	 */
-	public Vector FixLtFromJoin(Vector sett2staz, Vector lt) {
+	public Vector<Object> FixLtFromJoin(Vector<Object> sett2staz, Vector<Object> lt) {
 		//Vector ltout = new Vector();
 		for (int i = 0; i < sett2staz.size(); i++) {
 			for (int j = 0; j < lt.size(); j++) {
@@ -182,46 +183,44 @@ public class Segment3D {
 		return lt;
 	}
 
-	public Vector FixLtFrom2Dxy(Vector resxy) {
-		Vector out = new Vector();
+	public Vector<Object> FixLtFrom2Dxy(Vector<Sector2D> resxy) {
+		Vector<Object> out = new Vector<Object>();
 		for (int i = 0; i < resxy.size(); i++) {
-			Vertex st1 = new Vertex((((Sector2D) resxy.get(i)).getP1()).x, (((Sector2D) resxy.get(i)).getP1()).y,
+			Vertex st1 = new Vertex((resxy.get(i).getP1()).x, (resxy.get(i).getP1()).y,
 			// metto -1 per indicare che la coordinata originale si è persa
 					-1);
-			Vertex st2 = new Vertex((((Sector2D) resxy.get(i)).getP2()).x, (((Sector2D) resxy.get(i)).getP2()).y, -1);
-			out.addElement(new Segment3D(((Sector2D) resxy.get(i)).getBeta1(), ((Sector2D) resxy.get(i)).getBeta11(),
+			Vertex st2 = new Vertex((resxy.get(i).getP2()).x, (resxy.get(i).getP2()).y, -1);
+			out.addElement(new Segment3D(resxy.get(i).getBeta1(), resxy.get(i).getBeta11(),
 			// i punti che arrivano da xy hanno per definizione beta3=0
-					0, ((Sector2D) resxy.get(i)).getBeta2(), ((Sector2D) resxy.get(i)).getBeta22(), 0, st1, st2));
+					0, resxy.get(i).getBeta2(), resxy.get(i).getBeta22(), 0, st1, st2));
 		}
 		return out;
 	}
 
-	public Vector FixLtFrom2Dxz(Vector resxz) {
-		Vector out = new Vector();
+	public Vector<Object> FixLtFrom2Dxz(Vector<Sector2D> resxz) {
+		Vector<Object> out = new Vector<Object>();
 		for (int i = 0; i < resxz.size(); i++) {
-			Vertex st1 = new Vertex((((Sector2D) resxz.get(i)).getP1()).x,
+			Vertex st1 = new Vertex((resxz.get(i).getP1()).x,
 			// metto -1 per indicare che la coordinata originale si è persa
-					-1, (((Sector2D) resxz.get(i)).getP1()).y);
-			Vertex st2 = new Vertex((((Sector2D) resxz.get(i)).getP2()).x, -1, (((Sector2D) resxz.get(i)).getP2()).y);
-			out.addElement(new Segment3D(((Sector2D) resxz.get(i)).getBeta1(),
-					// i punti che arrivano da xz hanno per definizione beta2=0
-					0.0, ((Sector2D) resxz.get(i)).getBeta11(), ((Sector2D) resxz.get(i)).getBeta2(), 0.0, ((Sector2D) resxz.get(i)).getBeta22(),
-					st1, st2));
+					-1, (resxz.get(i).getP1()).y);
+			Vertex st2 = new Vertex((resxz.get(i).getP2()).x, -1, (resxz.get(i).getP2()).y);
+			out.addElement(new Segment3D(resxz.get(i).getBeta1(),
+			// i punti che arrivano da xz hanno per definizione beta2=0
+					0.0, resxz.get(i).getBeta11(), resxz.get(i).getBeta2(), 0.0, resxz.get(i).getBeta22(), st1, st2));
 		}
 		return out;
 	}
 
-	public Vector FixLtFrom2Dyz(Vector resyz) {
-		Vector out = new Vector();
+	public Vector<Object> FixLtFrom2Dyz(Vector<Sector2D> resyz) {
+		Vector<Object> out = new Vector<Object>();
 		for (int i = 0; i < resyz.size(); i++) {
 			Vertex st1 = new Vertex(
 			// metto -1 per indicare che la coordinata originale si è persa
-					-1, (((Sector2D) resyz.get(i)).getP1()).x, (((Sector2D) resyz.get(i)).getP1()).y);
-			Vertex st2 = new Vertex(-1, (((Sector2D) resyz.get(i)).getP2()).x, (((Sector2D) resyz.get(i)).getP2()).y);
+					-1, (resyz.get(i).getP1()).x, (resyz.get(i).getP1()).y);
+			Vertex st2 = new Vertex(-1, (resyz.get(i).getP2()).x, (resyz.get(i).getP2()).y);
 			out.addElement(new Segment3D(
-					// i punti che arrivano da yz hanno per definizione beta2=0
-					0.0, ((Sector2D) resyz.get(i)).getBeta1(), ((Sector2D) resyz.get(i)).getBeta11(), 0, ((Sector2D) resyz.get(i)).getBeta2(),
-					((Sector2D) resyz.get(i)).getBeta22(), st1, st2));
+			// i punti che arrivano da yz hanno per definizione beta2=0
+					0.0, resyz.get(i).getBeta1(), resyz.get(i).getBeta11(), 0, resyz.get(i).getBeta2(), resyz.get(i).getBeta22(), st1, st2));
 		}
 		return out;
 	}

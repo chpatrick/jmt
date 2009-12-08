@@ -75,6 +75,7 @@ public class ResultsTable extends ExactTable {
 	}
 
 	//NEW Federico Dall'Orso
+	@Override
 	public TableCellRenderer getCellRenderer(int row, int column) {
 		final TableCellRenderer cellRenderer = super.getCellRenderer(row, column);
 		return new TableCellRenderer() {
@@ -94,12 +95,14 @@ public class ResultsTable extends ExactTable {
 
 	//END
 
+	@Override
 	protected void installKeyboard() {
 		InputMap im = getInputMap();
 		ActionMap am = getActionMap();
 		installKeyboardAction(im, am, COPY_ACTION);
 	}
 
+	@Override
 	protected JPopupMenu makeMouseMenu() {
 		JPopupMenu menu = new JPopupMenu();
 		menu.add(COPY_ACTION);
@@ -109,6 +112,7 @@ public class ResultsTable extends ExactTable {
 	/**
 	 * @return false
 	 */
+	@Override
 	public boolean isCellEditable(int row, int column) {
 		return false;
 	}

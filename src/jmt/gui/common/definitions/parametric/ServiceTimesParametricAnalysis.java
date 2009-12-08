@@ -50,7 +50,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	private boolean singleClass;
 	private Object classKey;
 	private Object stationKey;
-	private Vector avaibleClasses;
+	private Vector<Object> avaibleClasses;
 
 	private Object values;
 
@@ -62,7 +62,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 		numberOfSteps = STEPS;
 		ParametricAnalysisChecker checker = new ParametricAnalysisChecker(cd, sd, simd);
 		stationKey = checker.checkForServiceTimesParametricAnalysisAvaibleStations().get(0);
-		Vector avaible = checker.checkForServiceTimesParametricSimulationAvaibleClasses(stationKey);
+		Vector<Object> avaible = checker.checkForServiceTimesParametricSimulationAvaibleClasses(stationKey);
 		if ((cd.getClassKeys().size() == 1) || (avaible.size() < cd.getClassKeys().size())) {
 			singleClass = true;
 			classKey = avaible.get(0);
@@ -133,6 +133,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	 * @return the key of the class whose number of jobs will be increased if the
 	 *         parametric analysis is single class, <code> null </code> otherwise.
 	 */
+	@Override
 	public Object getReferenceClass() {
 		if (singleClass) {
 			return classKey;
@@ -146,6 +147,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	 *
 	 * @return the name of the class
 	 */
+	@Override
 	public String getReferenceClassName() {
 		return classDef.getClassName(classKey);
 	}
@@ -155,8 +157,9 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	 * defined as constants inside this class.
 	 * @return a TreeMap containing the value for each property
 	 */
-	public Map getProperties() {
-		TreeMap properties = new TreeMap();
+	@Override
+	public Map<String, String> getProperties() {
+		TreeMap<String, String> properties = new TreeMap<String, String>();
 		properties.put(TYPE_PROPERTY, getType());
 		properties.put(TO_PROPERTY, Double.toString(finalValue));
 		properties.put(STEPS_PROPERTY, Integer.toString(numberOfSteps));
@@ -178,6 +181,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	 * @param propertyName the name of the property to be set
 	 * @param value the value to be set
 	 */
+	@Override
 	public void setProperty(String propertyName, String value) {
 		if (propertyName.equals(TO_PROPERTY)) {
 			finalValue = Double.parseDouble(value);
@@ -239,6 +243,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	 *
 	 * @return the type of parametric analysis
 	 */
+	@Override
 	public String getType() {
 		return type;
 	}
@@ -247,6 +252,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	 * Changes the model preparing it for the next step
 	 *
 	 */
+	@Override
 	public void changeModel(int step) {
 		if (step >= numberOfSteps) {
 			return;
@@ -273,6 +279,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	 *
 	 * @return the maximum number of steps
 	 */
+	@Override
 	public int searchForAvaibleSteps() {
 		return Integer.MAX_VALUE;
 	}
@@ -282,6 +289,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	 * simulation may be iterated on.
 	 *
 	 */
+	@Override
 	public void createValuesSet() {
 		double initialServiceTime;
 		if (singleClass) {
@@ -290,7 +298,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 			values = new Vector(numberOfSteps);
 			for (int i = 0; i < numberOfSteps; i++) {
 				double value = initialValue + sum;
-				((Vector) values).add(new Double(value));
+				((Vector<Double>) values).add(new Double(value));
 				sum += increment; //note that the increment may be < 0
 			}
 			originalValues = new Double(initialValue);
@@ -299,7 +307,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 			double increment = (finalValue - initialValue) / (100 * (double) (numberOfSteps - 1));
 			//find the set of avaible classes
 			Vector allClasses = classDef.getClassKeys();
-			avaibleClasses = new Vector(0, 1);
+			avaibleClasses = new Vector<Object>(0, 1);
 			for (int i = 0; i < allClasses.size(); i++) {
 				Object thisClass = allClasses.get(i);
 				Object temp = stationDef.getServiceTimeDistribution(stationKey, thisClass);
@@ -325,7 +333,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 			for (int i = 0; i < avaibleClasses.size(); i++) {
 				Object thisClass = avaibleClasses.get(i);
 				double thisServiceTime = ((Distribution) stationDef.getServiceTimeDistribution(stationKey, thisClass)).getMean();
-				((Vector) originalValues).add(new Double(thisServiceTime));
+				((Vector<Double>) originalValues).add(new Double(thisServiceTime));
 			}
 		}
 	}
@@ -333,6 +341,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	/**
 	 * Restore the original values of service times
 	 */
+	@Override
 	public void restoreOriginalValues() {
 		if (originalValues != null) {
 			if (singleClass) {
@@ -363,12 +372,13 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	 *         1 - If the PA model is no more valid, but it will be corrected <br>
 	 *         2 - If the PA model can be no more used
 	 */
+	@Override
 	public int checkCorrectness(boolean autocorrect) {
 		int code = 0;
 		Vector classes = classDef.getClassKeys();
 		ParametricAnalysisChecker checker = new ParametricAnalysisChecker(classDef, stationDef, simDef);
 		//Find the avaible stations
-		Vector avaibleStations = checker.checkForServiceTimesParametricAnalysisAvaibleStations();
+		Vector<Object> avaibleStations = checker.checkForServiceTimesParametricAnalysisAvaibleStations();
 		if (avaibleStations.isEmpty()) {
 			code = 2; // -> This type of PA is not avaible
 		} else {
@@ -382,7 +392,7 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 				}
 			}
 			//Find avaible classes for stationKey
-			Vector avaibleClasses = checker.checkForServiceTimesParametricSimulationAvaibleClasses(stationKey);
+			Vector<Object> avaibleClasses = checker.checkForServiceTimesParametricSimulationAvaibleClasses(stationKey);
 			//if is single class...
 			if (isSingleClass()) {
 				// ... and the selected close class is no more avaible
@@ -426,10 +436,11 @@ public class ServiceTimesParametricAnalysis extends ParametricAnalysisDefinition
 	 *
 	 * @return a Vector containing the values assumed by the varying parameter
 	 */
-	public Vector getParameterValues() {
-		Vector assumedValues = new Vector(numberOfSteps);
+	@Override
+	public Vector<Number> getParameterValues() {
+		Vector<Number> assumedValues = new Vector<Number>(numberOfSteps);
 		if (singleClass) {
-			return (Vector) values;
+			return (Vector<Number>) values;
 		} else {
 			ValuesTable temp = (ValuesTable) values;
 			double originalValue = ((Double) ((Vector) originalValues).get(0)).doubleValue();

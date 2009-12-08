@@ -40,7 +40,7 @@ public class BDMapImpl implements BDMap {
 	/**returns keyset along a single dimension.
 	 * @param coordName name of dimension.
 	 * @return set containig search keys for specified dimension.*/
-	public Set keySet(int coordName) {
+	public Set<Object> keySet(int coordName) {
 		if (coordName == X) {
 			return getSetFromArray(xKeys);
 		}
@@ -52,8 +52,8 @@ public class BDMapImpl implements BDMap {
 	}
 
 	//returns a set containing elements of an array
-	private Set getSetFromArray(Object[] array) {
-		Set s = new TreeSet();
+	private Set<Object> getSetFromArray(Object[] array) {
+		Set<Object> s = new TreeSet<Object>();
 		for (Object element : array) {
 			s.add(element);
 		}

@@ -122,18 +122,22 @@ public final class DescriptionPanel extends WizardPanel implements JabaConstants
 		ew.getData().setDescription(text);
 	}
 
+	@Override
 	public String getName() {
 		return "Comment";
 	}
 
+	@Override
 	public void gotFocus() {
 		sync();
 	}
 
+	@Override
 	public void lostFocus() {
 		commit();
 	}
 
+	@Override
 	public void help() {
 		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 	}

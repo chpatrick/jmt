@@ -51,6 +51,10 @@ import org.jgraph.graph.Port;
 
  */
 public abstract class JmtCell extends DefaultGraphCell {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Dimension imageDimension;
 	// Used to determine if parent of this cell has changed (to detect enter and exit from
 	// blocking regions)
@@ -157,9 +161,9 @@ public abstract class JmtCell extends DefaultGraphCell {
 	 * @param pt
 	 * @return created map
 	 */
-	public Hashtable setAttributes(Point2D pt, JGraph graph) {
+	public Hashtable<Object, Map> setAttributes(Point2D pt, JGraph graph) {
 		//contains attribute of the cell & ports
-		Hashtable nest = new Hashtable();
+		Hashtable<Object, Map> nest = new Hashtable<Object, Map>();
 
 		Dimension cellDimension = getSize(graph);
 		//contains attrib of cell
@@ -173,21 +177,21 @@ public abstract class JmtCell extends DefaultGraphCell {
 		ports = createPorts();
 		Icon icon = GraphConstants.getIcon(attr);
 		updatePortPositions(nest, icon, cellDimension);
-		for (int i = 0; i < ports.length; i++) {
-			add((DefaultPort) ports[i]);
+		for (Port port : ports) {
+			add((DefaultPort) port);
 		}
 		return nest;
 	}
 
-	public void updatePortPositions(Map nest, Icon icon, Dimension cellDimension) {
-		for (int i = 0; i < ports.length; i++) {
+	public void updatePortPositions(Map<Object, Map> nest, Icon icon, Dimension cellDimension) {
+		for (Port port : ports) {
 			Map attr = new Hashtable();
-			if (ports[i] instanceof InputPort && isLeftInputCell() || ports[i] instanceof OutputPort && !isLeftInputCell()) {
+			if (port instanceof InputPort && isLeftInputCell() || port instanceof OutputPort && !isLeftInputCell()) {
 				GraphConstants.setOffset(attr, getInPortOffset(icon, cellDimension));
 			} else {
 				GraphConstants.setOffset(attr, getOutPortoffset(icon, cellDimension));
 			}
-			nest.put(ports[i], attr);
+			nest.put(port, attr);
 		}
 	}
 

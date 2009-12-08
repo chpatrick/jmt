@@ -21,10 +21,10 @@ import jmt.engine.dataAnalysis.Measure;
 public class PSJobInfoList implements JobInfoList {
 	/** Wrapped JobInfoList */
 	private JobInfoList list;
-	
+
 	private int numberOfJobClasses;
 	private int size, sizePerClass[];
-	
+
 	//arrivals and completions
 	private int jobsIn, jobsOut, jobsInPerClass[], jobsOutPerClass[];
 
@@ -34,16 +34,16 @@ public class PSJobInfoList implements JobInfoList {
 
 	private Measure utilization, utilizationPerClass[], responseTime, responseTimePerClass[], residenceTime, residenceTimePerClass[], queueLength,
 			queueLengthPerClass[];
-	
+
 	private InverseMeasure throughput, throughputPerClass[];
 
 	/** The number of servers to estimate Utilization measure on multiserver environments. */
 	private int serverNumber = 1;
-	
+
 	public PSJobInfoList(int numberOfJobClasses, boolean save) {
 		this.numberOfJobClasses = numberOfJobClasses;
 		list = new LinkedJobInfoList(numberOfJobClasses, save);
-		
+
 		// Initialize all the arrays
 		sizePerClass = new int[numberOfJobClasses];
 		jobsInPerClass = new int[numberOfJobClasses];
@@ -52,7 +52,7 @@ public class PSJobInfoList implements JobInfoList {
 		lastJobInTimePerClass = new double[numberOfJobClasses];
 		lastJobOutTimePerClass = new double[numberOfJobClasses];
 	}
-	
+
 	public boolean add(JobInfo jobInfo) {
 		return list.add(jobInfo);
 	}
@@ -143,7 +143,7 @@ public class PSJobInfoList implements JobInfoList {
 			residenceTime = measurement;
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jmt.engine.QueueNet.JobInfoList#analyzeQueueLength(jmt.engine.QueueNet.JobClass, jmt.engine.dataAnalysis.Measure)
 	 */
@@ -226,10 +226,10 @@ public class PSJobInfoList implements JobInfoList {
 
 	public double getLastModifyTimePerClass(JobClass jobClass) {
 		if (lastJobOutTimePerClass[jobClass.getId()] >= lastJobInTimePerClass[jobClass.getId()]
-		   && lastJobOutTimePerClass[jobClass.getId()] >= list.getLastJobDropTimePerClass(jobClass)) {
+				&& lastJobOutTimePerClass[jobClass.getId()] >= list.getLastJobDropTimePerClass(jobClass)) {
 			return lastJobOutTimePerClass[jobClass.getId()];
 		} else if (lastJobInTimePerClass[jobClass.getId()] >= lastJobOutTimePerClass[jobClass.getId()]
-		   && lastJobInTimePerClass[jobClass.getId()] >= list.getLastJobDropTimePerClass(jobClass)) {
+				&& lastJobInTimePerClass[jobClass.getId()] >= list.getLastJobDropTimePerClass(jobClass)) {
 			return lastJobInTimePerClass[jobClass.getId()];
 		} else {
 			return list.getLastJobDropTimePerClass(jobClass);
@@ -282,7 +282,7 @@ public class PSJobInfoList implements JobInfoList {
 	public void setServerNumber(int serverNumber) {
 		this.serverNumber = serverNumber;
 	}
-	
+
 	public void psJobIn(JobClass jobClass, double time) {
 		size++;
 		sizePerClass[jobClass.getId()]++;
@@ -291,8 +291,8 @@ public class PSJobInfoList implements JobInfoList {
 		lastJobInTime = time;
 		lastJobInTimePerClass[jobClass.getId()] = time;
 	}
-	
-	public void psJobOut (JobClass jobClass, double time) {
+
+	public void psJobOut(JobClass jobClass, double time) {
 		size--;
 		sizePerClass[jobClass.getId()]--;
 		jobsOut++;
@@ -300,7 +300,7 @@ public class PSJobInfoList implements JobInfoList {
 		lastJobOutTime = time;
 		lastJobOutTimePerClass[jobClass.getId()] = time;
 	}
-	
+
 	public void psUpdateUtilization(JobClass jobClass, double multiplier, double time) {
 		double lastModify = Math.max(getLastJobInTime(), getLastJobOutTime());
 		double lastModifyPerClass = Math.max(getLastJobInTimePerClass(jobClass), getLastJobOutTimePerClass(jobClass));
@@ -311,7 +311,7 @@ public class PSJobInfoList implements JobInfoList {
 		update(queueLength, value * multiplier, time - lastModify);
 		update(queueLengthPerClass, jobClass, valuePerClass * multiplier, time - lastModifyPerClass);
 	}
-	
+
 	public void psUpdateBusyTimes(JobClass jobClass, double busyTime) {
 		int id = jobClass.getId();
 		update(residenceTime, busyTime, 1.0);
@@ -321,12 +321,12 @@ public class PSJobInfoList implements JobInfoList {
 		this.busyTime += busyTime;
 		busyTimePerClass[id] += busyTime;
 	}
-	
+
 	public void psUpdateThroughput(JobClass jobClass) {
 		update(throughput, NetSystem.getTime() - getLastJobOutTime(), 1.0);
 		update(throughputPerClass, jobClass, NetSystem.getTime() - getLastJobOutTimePerClass(jobClass), 1.0);
 	}
-	
+
 	/**
 	 * Updates a measure if it is not null
 	 * @param m the mesure, may be null
@@ -350,7 +350,7 @@ public class PSJobInfoList implements JobInfoList {
 			m[jobClass.getId()].update(value, weight);
 		}
 	}
-	
+
 	/**
 	 * @return the internal jobInfoList to be used by Queue class.
 	 */

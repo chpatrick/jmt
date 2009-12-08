@@ -32,6 +32,7 @@ import jmt.gui.jmodel.JGraphMod.JmtEdge;
 import jmt.gui.jmodel.definitions.JmodelStationDefinition;
 
 import org.jgraph.JGraph;
+import org.jgraph.graph.DefaultGraphCell;
 
 /**
  * <p>Title: Jmt Clipboard</p>
@@ -45,9 +46,9 @@ import org.jgraph.JGraph;
  */
 public class JmtClipboard {
 	protected Mediator mediator;
-	protected HashMap stations;
-	protected HashMap stationpositions;
-	protected Vector links;
+	protected HashMap<Object, Object> stations;
+	protected HashMap<Object, Point2D> stationpositions;
+	protected Vector<Connection> links;
 	protected Point2D zero;
 
 	/**
@@ -68,9 +69,9 @@ public class JmtClipboard {
 	 * user wants to flush clipboard
 	 */
 	public void flush() {
-		stations = new HashMap();
-		stationpositions = new HashMap();
-		links = new Vector();
+		stations = new HashMap<Object, Object>();
+		stationpositions = new HashMap<Object, Point2D>();
+		links = new Vector<Connection>();
 		zero = null;
 	}
 
@@ -89,9 +90,9 @@ public class JmtClipboard {
 		JmtCell celltmp;
 		Point2D location; // position of a station
 		// Saves into data structure selected stations (including position) and links
-		for (int i = 0; i < cells.length; i++) {
-			if (cells[i] instanceof JmtCell) {
-				celltmp = (JmtCell) cells[i];
+		for (Object cell : cells) {
+			if (cell instanceof JmtCell) {
+				celltmp = (JmtCell) cell;
 				key = ((CellComponent) celltmp.getUserObject()).getKey();
 				stations.put(key, sd.serializeStation(key));
 				location = mediator.getCellCoordinates(celltmp);
@@ -107,8 +108,8 @@ public class JmtClipboard {
 				if (zero.getY() > location.getY()) {
 					zero = new Point2D.Double(zero.getX(), location.getY());
 				}
-			} else if (cells[i] instanceof JmtEdge) {
-				edgetmp = (JmtEdge) cells[i];
+			} else if (cell instanceof JmtEdge) {
+				edgetmp = (JmtEdge) cell;
 				links.add(new Connection(edgetmp.getSourceKey(), edgetmp.getTargetKey()));
 			}
 		}
@@ -129,15 +130,15 @@ public class JmtClipboard {
 	 * @param where upper-left point of the region where pasted components will be put.
 	 */
 	public void paste(Point2D where) {
-		HashMap tempkey = new HashMap(); // Used as a translator from old key to new one to paste correct links
-		HashMap newstations = new HashMap(); // Used to store newly created stations
-		Vector select = new Vector(); // Elements to be selected after paste
+		HashMap<Object, Object> tempkey = new HashMap<Object, Object>(); // Used as a translator from old key to new one to paste correct links
+		HashMap<Object, JmtCell> newstations = new HashMap<Object, JmtCell>(); // Used to store newly created stations
+		Vector<DefaultGraphCell> select = new Vector<DefaultGraphCell>(); // Elements to be selected after paste
 		// Temp variables
 		JmtCell newcell; //New created cell
 		JmtEdge newEdge; //New created edge (link)
 		Object newkey; // New station key
 		Object oldkey; // Old station key
-		Iterator keys; // All keys in Hashmap stations
+		Iterator<Object> keys; // All keys in Hashmap stations
 		Point2D oldpos; // Old station position
 		Point2D newpos; // New station position
 		if (stations == null || stations.size() == 0) {
@@ -155,7 +156,7 @@ public class JmtClipboard {
 			newcell = mediator.getCellFactory().createCell(sd.getStationType(newkey) + "Cell", new CellComponent(newkey, sd));
 			tempkey.put(oldkey, newkey);
 			// Calculates where this station should be put
-			oldpos = (Point2D) stationpositions.get(oldkey);
+			oldpos = stationpositions.get(oldkey);
 			newpos = new Point2D.Double(where.getX() + oldpos.getX() - zero.getX(), where.getY() + oldpos.getY() - zero.getY());
 			// Insert created station into JGraph. Finds the first empty position going
 			// down and right with respect of original position
@@ -173,9 +174,9 @@ public class JmtClipboard {
 		// Creates new links and show them on graph
 		for (int i = 0; i < links.size(); i++) {
 			// Translates old key values in new ones
-			sourceKey = tempkey.get(((Connection) links.get(i)).sourceKey);
-			targetKey = tempkey.get(((Connection) links.get(i)).targetKey);
-			newEdge = mediator.connect((JmtCell) newstations.get(sourceKey), (JmtCell) newstations.get(targetKey));
+			sourceKey = tempkey.get(links.get(i).sourceKey);
+			targetKey = tempkey.get(links.get(i).targetKey);
+			newEdge = mediator.connect(newstations.get(sourceKey), newstations.get(targetKey));
 			if (newEdge != null) {
 				select.add(newEdge);
 			}
@@ -190,17 +191,17 @@ public class JmtClipboard {
 		while (keys.hasNext()) {
 			newkey = tempkey.get(keys.next());
 			classes = mediator.getClassDefinition().getClassKeys().toArray();
-			for (int i = 0; i < classes.length; i++) {
-				rs = (RoutingStrategy) mediator.getStationDefinition().getRoutingStrategy(newkey, classes[i]);
+			for (Object classe : classes) {
+				rs = (RoutingStrategy) mediator.getStationDefinition().getRoutingStrategy(newkey, classe);
 				if (rs instanceof ProbabilityRouting) {
 					oldRouting = rs.getValues();
 					newRouting = new HashMap();
 					// For each old destination, set new one if it was copied with
 					Object[] oldDest = oldRouting.keySet().toArray();
-					for (int j = 0; j < oldDest.length; j++) {
+					for (Object element : oldDest) {
 						// Now checks if target station was copied with source one and a link connecting them exists
-						if (tempkey.containsKey(oldDest[j]) && mediator.getStationDefinition().areConnected(newkey, tempkey.get(oldDest[j]))) {
-							newRouting.put(tempkey.get(oldDest[j]), oldRouting.get(oldDest[j]));
+						if (tempkey.containsKey(element) && mediator.getStationDefinition().areConnected(newkey, tempkey.get(element))) {
+							newRouting.put(tempkey.get(element), oldRouting.get(element));
 						}
 					}
 					rs.getValues().clear();

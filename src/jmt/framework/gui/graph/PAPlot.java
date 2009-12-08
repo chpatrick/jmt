@@ -50,7 +50,7 @@ public class PAPlot extends Plot {
 	boolean connected;
 	boolean[] status;
 
-	public PAPlot(Vector values, Vector parameterValues, String xLabel, String yLabel) {
+	public PAPlot(Vector values, Vector<Number> parameterValues, String xLabel, String yLabel) {
 		valuesNumber = values.size();
 		if (valuesNumber == 1) {
 			this.setMarksStyle("dots", VALUE);
@@ -69,7 +69,7 @@ public class PAPlot extends Plot {
 	 * @param xLabel the x axis label
 	 * @param yLabel the y axis label
 	 */
-	public void initialize(Vector values, Vector parameterValues, String xLabel, String yLabel) {
+	public void initialize(Vector values, Vector<Number> parameterValues, String xLabel, String yLabel) {
 		notValidBoundPointsStatus = new boolean[valuesNumber];
 		isolatedBoundPointsStatus = new boolean[valuesNumber];
 		this.values = new double[valuesNumber];

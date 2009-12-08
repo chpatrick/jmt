@@ -144,8 +144,8 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 				classNames[i] = cd.getClassName(classes.get(i));
 			}
 			classChooser.removeAllItems();
-			for (int i = 0; i < classNames.length; i++) {
-				classChooser.addItem(classNames[i]);
+			for (String className : classNames) {
+				classChooser.addItem(className);
 			}
 			classChooser.setEnabled(true);
 			classChooser.setSelectedItem(cd.getClassName(NCPA.getReferenceClass()));
@@ -256,6 +256,7 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 	    return text;
 	}*/
 
+	@Override
 	public void setEnabled(boolean enabled) {
 		if (cd.getClosedClassKeys().size() == 1) {
 			allClass.setEnabled(false);
@@ -302,6 +303,7 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 
 	private void setListeners() {
 		from.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
 					gui.showClassPanel();
@@ -321,8 +323,8 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 					for (int i = 0; i < classes.size(); i++) {
 						classNames[i] = cd.getClassName(classes.get(i));
 					}
-					for (int i = 0; i < classNames.length; i++) {
-						classChooser.addItem(classNames[i]);
+					for (String className : classNames) {
+						classChooser.addItem(className);
 					}
 					classChooser.addItemListener(listener);
 					if (!classes.contains(NCPA.getReferenceClass())) {
@@ -530,6 +532,7 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 		 * @param column the column of the cell
 		 * @return a the TableCellRenderer for the requested cell (row,column)
 		 */
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			dtcr.setHorizontalAlignment(SwingConstants.CENTER);
 			Component c;
@@ -571,6 +574,7 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 			rowHeaderPrototype = "XXX";
 		}
 
+		@Override
 		public Object getPrototype(int i) {
 			if (i == -1) {
 				return rowHeaderPrototype;
@@ -598,6 +602,7 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 		/**
 		 * @return the object at (rowIndex, columnIndex)
 		 */
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			String toReturn;
 			Object thisClass = cd.getClosedClassKeys().get(columnIndex);
@@ -620,6 +625,7 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 		/**
 		 * @return the header for row <code>rowIndex</code>
 		 */
+		@Override
 		protected Object getRowName(int rowIndex) {
 			if (rowIndex == 0) {
 				return "Ni";
@@ -633,6 +639,7 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 		 * @param index the index of the column to give the name
 		 * @return the column name
 		 */
+		@Override
 		public String getColumnName(int index) {
 			Object thisClass = cd.getClosedClassKeys().get(index);
 			return cd.getClassName(thisClass);

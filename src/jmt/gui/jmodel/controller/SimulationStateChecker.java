@@ -19,6 +19,7 @@
 package jmt.gui.jmodel.controller;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -55,11 +56,11 @@ public class SimulationStateChecker {
 	//It implements a mapping between the graphical representation (the CommonModel Key) and the
 	//represenatation at simulation engine level. The key of the HashMap is the Key of
 	//graphical representation
-	HashMap serverMap;
+	HashMap<Object, NetNode> serverMap;
 	//It implements a mapping between the graphical representation (the CommonModel Key) and the
 	//represenatation at simulation engine level. The key of the HashMap is the Key of
 	//graphical representation
-	HashMap classMap;
+	HashMap<Object, JobClass> classMap;
 	//Hashmap containing for each server (identified by the graphical Key) a
 	//singleServerContentQueues HashMap
 	ModelSnapshot serversContent;
@@ -67,9 +68,9 @@ public class SimulationStateChecker {
 	//singleServerContentUtilizations HashMap
 	ModelSnapshot serversUtilization;
 	//HashMap containing for each class the number of resident jobs
-	HashMap singleServerContentQueues;
+	HashMap<Object, Integer> singleServerContentQueues;
 	//HashMap containing for each class the value of utilization
-	HashMap singleServerContentUtilizations;
+	HashMap<Object, Double> singleServerContentUtilizations;
 	//used to draw the queue andutilization state
 	GraphicalQueueState graphicalRepresentation;
 
@@ -80,10 +81,10 @@ public class SimulationStateChecker {
 		initialized = false;
 		this.mediator = mediator;
 		this.dispatcher = dispatcher;
-		serverMap = new HashMap(0);
-		classMap = new HashMap(0);
-		singleServerContentQueues = new HashMap(0);
-		singleServerContentUtilizations = new HashMap(0);
+		serverMap = new HashMap<Object, NetNode>(0);
+		classMap = new HashMap<Object, JobClass>(0);
+		singleServerContentQueues = new HashMap<Object, Integer>(0);
+		singleServerContentUtilizations = new HashMap<Object, Double>(0);
 		classes = mediator.getClassDefinition().getClassKeys();
 		Vector stationsTemp = mediator.getStationDefinition().getStationKeysNoSourceSink();
 		servers = new Vector(0, 1);
@@ -147,7 +148,7 @@ public class SimulationStateChecker {
 		QueueNetwork net = dispatcher.getSimulation().getNetwork();
 		NodeList nodeList = net.getNodes();
 		JobClassList classList = net.getJobClasses();
-		TreeMap tm = new TreeMap();
+		TreeMap<String, Object> tm = new TreeMap<String, Object>();
 		//a TreeMap is used to speedup the following code
 		for (int j = 0; j < servers.size(); j++) {
 			Object thisKey = servers.get(j);
@@ -193,7 +194,7 @@ public class SimulationStateChecker {
 		for (int i = 0; i < servers.size(); i++) {
 			Object thisServerKey = servers.get(i);
 			// get the mapped NetNode ...
-			NetNode thisNode = (NetNode) serverMap.get(thisServerKey);
+			NetNode thisNode = serverMap.get(thisServerKey);
 			NodeSection thisQueue = null;
 			NodeSection thisServer = null;
 			// get the input section and the service section ...
@@ -209,8 +210,7 @@ public class SimulationStateChecker {
 					Object thisClassKey = classes.get(j);
 					if (thisQueue != null) {
 						// get the jobs of this class inside the queue
-						int jobsNumber = thisQueue
-								.getIntSectionProperty(NodeSection.PROPERTY_ID_RESIDENT_JOBS, (JobClass) classMap.get(thisClassKey));
+						int jobsNumber = thisQueue.getIntSectionProperty(NodeSection.PROPERTY_ID_RESIDENT_JOBS, classMap.get(thisClassKey));
 						//if the job number is greater than the maximum update it
 						if (jobsNumber > maxJobCount) {
 							maxJobCount = jobsNumber;
@@ -220,8 +220,7 @@ public class SimulationStateChecker {
 					}
 					if (thisServer != null) {
 						//get the utilization for this class
-						double utilization = thisServer.getDoubleSectionProperty(NodeSection.PROPERTY_ID_UTILIZATION, (JobClass) classMap
-								.get(thisClassKey));
+						double utilization = thisServer.getDoubleSectionProperty(NodeSection.PROPERTY_ID_UTILIZATION, classMap.get(thisClassKey));
 						//put the utilization this class inside the treemap
 						singleServerContentUtilizations.put(thisClassKey, new Double(utilization));
 					}
@@ -246,8 +245,8 @@ public class SimulationStateChecker {
 		for (int i = 0; i < servers.size(); i++) {
 			Object thisServerKey = servers.get(i);
 			String thisServerName = mediator.getStationDefinition().getStationName(thisServerKey);
-			HashMap perServerMapQueues = (HashMap) this.serversContent.get(thisServerKey);
-			HashMap perServerMapUtilizations = (HashMap) this.serversUtilization.get(thisServerKey);
+			Map perServerMapQueues = (Map) this.serversContent.get(thisServerKey);
+			Map perServerMapUtilizations = (Map) this.serversUtilization.get(thisServerKey);
 			//System.out.println("***********************************************");
 			System.out.println("    " + thisServerName + ":");
 			System.out.println("        Queues state:");

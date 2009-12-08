@@ -141,6 +141,7 @@ public class PADispatcherThread extends Thread implements AbortMeasure {
 	    start();
 	}*/
 
+	@Override
 	public void run() {
 		StoredResultsModel results = null;
 		File simulationFile = null;

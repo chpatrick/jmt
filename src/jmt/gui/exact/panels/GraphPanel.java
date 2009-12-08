@@ -89,9 +89,10 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 	private int[] stations;
 	// Aggregate special value
 	private static final String AGGREGATE = "<html><b><i>Aggregate</i></b></html>";
-	
+
 	//Added by ASHANKA START
 	private TableColumn stationColumn;
+
 	//Added by ASHANKA STOP
 
 	/**
@@ -124,8 +125,8 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		JLabel pIndex = new JLabel("Performance index: ");
 		index = new JComboBox(ExactConstants.INDICES_TYPES);
 		// Adds aggregate types
-		for (int i = 0; i < AGGREGATE_TYPES.length; i++) {
-			index.addItem(AGGREGATE_TYPES[i]);
+		for (String element : AGGREGATE_TYPES) {
+			index.addItem(element);
 		}
 		pIndex.setLabelFor(index);
 		indexPanel.add(pIndex);
@@ -261,19 +262,19 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		if (!current.equals(currentIndex)) {
 			currentIndex = current;
 			//Added by ASHANKA START
-			if(currentIndex.equals(ExactConstants.INDICES_TYPES[4])){
-				if(stationColumn ==null){
-					stationColumn = table.getColumnModel().getColumn(2);					
+			if (currentIndex.equals(ExactConstants.INDICES_TYPES[4])) {
+				if (stationColumn == null) {
+					stationColumn = table.getColumnModel().getColumn(2);
 				}
 				//If the System Power is selected then Need to remove the Stations Column if present
 				//If column count is less than 3 then do nothing as Stations Column is already removed.
-				if(table.getColumnCount()==3){
-					table.removeColumn(stationColumn);					
+				if (table.getColumnCount() == 3) {
+					table.removeColumn(stationColumn);
 				}
-			}else{
+			} else {
 				//If any thing other than System Power is clicked then 
 				//restore the Stations Column only if it is not present.
-				if(table.getColumnCount()<3){
+				if (table.getColumnCount() < 3) {
 					table.addColumn(stationColumn);
 				}
 			}
@@ -301,7 +302,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 			}
 			//Added by ASHANKA START
 			//For single Class TableScroll Pane is removed. 
-			else if (currentIndex.equals(ExactConstants.INDICES_TYPES[4])&& !model.isMultiClass()){
+			else if (currentIndex.equals(ExactConstants.INDICES_TYPES[4]) && !model.isMultiClass()) {
 				tableScrollPane.setVisible(false);
 				graph.clear(false);
 				graph.draw(0, model.getGlobalSP());
@@ -374,7 +375,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		graph.clear(rowNum);
 		int classNum = classes[rowNum];
 		int statNum = stations[rowNum];
-		
+
 		//Modified the below condition by ASHANKA for 
 		//System Power there is no Station Panel
 		//in fact the station panel is removed 
@@ -432,12 +433,12 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		}
 		//Added by ASHANKA START
 		//System Power
-		else if (currentIndex.equals(ExactConstants.INDICES_TYPES[4])){					
-			if (classNum >= 0) {				
-				graph.draw(rowNum, model.getPerClassSP()[classNum]);				
-			} else if (classNum == -1) {				
-				graph.draw(rowNum, model.getGlobalSP());				
-			}			
+		else if (currentIndex.equals(ExactConstants.INDICES_TYPES[4])) {
+			if (classNum >= 0) {
+				graph.draw(rowNum, model.getPerClassSP()[classNum]);
+			} else if (classNum == -1) {
+				graph.draw(rowNum, model.getGlobalSP());
+			}
 		}
 		//Added by ASHANKA STOP
 		// Resets view
@@ -463,6 +464,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Graphical Results";
 	}
@@ -536,6 +538,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		 *         this type of cell
 		 * @see javax.swing.DefaultCellEditor
 		 */
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 1) {
 				return classEditor;
@@ -568,6 +571,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		 * @see javax.swing.table.TableColumn#setCellRenderer
 		 * @see #setDefaultRenderer
 		 */
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (model.isMultiClass() || column != 1) {
 				return super.getCellRenderer(row, column);
@@ -601,6 +605,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 			 * Returns selected index - 2 (so -1 means all classes and -2 or -3
 			 * means no selection)
 			 */
+			@Override
 			public Object getCellEditorValue() {
 				int val = combo.getSelectedIndex();
 				return new Integer(val - 2);
@@ -624,6 +629,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		 * @param columnIndex the column being queried
 		 * @return the Object.class
 		 */
+		@Override
 		public Class getColumnClass(int columnIndex) {
 			switch (columnIndex) {
 				case 0:
@@ -657,6 +663,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		 * @param column the column being queried
 		 * @return a string containing the default name of <code>column</code>
 		 */
+		@Override
 		public String getColumnName(int column) {
 			switch (column) {
 				case 0:
@@ -725,6 +732,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		 * @param rowIndex    row of cell
 		 * @param columnIndex column of cell
 		 */
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			if (columnIndex == 2) {
 				if (currentIndex.equals(ExactConstants.INDICES_TYPES[3]) && ((Integer) aValue).intValue() < 0) {
@@ -746,6 +754,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		 * @param columnIndex the column being queried
 		 * @return false
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return columnIndex == 2 || (columnIndex == 1 && model.isMultiClass());
 		}

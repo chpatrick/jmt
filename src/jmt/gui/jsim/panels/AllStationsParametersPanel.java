@@ -94,6 +94,7 @@ public class AllStationsParametersPanel extends WizardPanel implements CommonCon
 		});
 	}
 
+	@Override
 	public String getName() {
 		return "Station Parameters";
 	}
@@ -152,6 +153,7 @@ public class AllStationsParametersPanel extends WizardPanel implements CommonCon
 	/**
 	 * Updates list of stations and selects last selected station
 	 */
+	@Override
 	public void gotFocus() {
 		if (stationsList != null) {
 			Vector stations = stationData.getStationKeys();
@@ -169,6 +171,7 @@ public class AllStationsParametersPanel extends WizardPanel implements CommonCon
 	/**
 	 * Stores previous selected station
 	 */
+	@Override
 	public void lostFocus() {
 		selectedKey = stationsList.getSelectedValue();
 	}

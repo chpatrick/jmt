@@ -290,6 +290,7 @@ public class EnlargePlotDistGraph extends Plot implements MouseListener {
 		/**
 		 * Overrides default method to provide a warning if saving over an existing file
 		 */
+		@Override
 		public void approveSelection() {
 			// Gets the choosed file name
 			String name = getSelectedFile().getName();
@@ -337,6 +338,7 @@ public class EnlargePlotDistGraph extends Plot implements MouseListener {
 		/**
 		 * Whether the given file is accepted by this filter.
 		 */
+		@Override
 		public boolean accept(File f) {
 			String name = f.getName().toLowerCase();
 			return name.endsWith(extension) || f.isDirectory();
@@ -346,6 +348,7 @@ public class EnlargePlotDistGraph extends Plot implements MouseListener {
 		 * The description of this filter
 		 * @see javax.swing.filechooser.FileView#getName
 		 */
+		@Override
 		public String getDescription() {
 			return description + " (*" + extension + ")";
 		}

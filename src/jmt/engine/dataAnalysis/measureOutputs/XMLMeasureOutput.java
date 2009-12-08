@@ -132,6 +132,7 @@ public class XMLMeasureOutput extends MeasureOutput {
 	/**
 	 * This method is called for every sample.
 	 */
+	@Override
 	public void write(double Sample, double Weight) {
 
 		Element sample = document.createElement("sample");
@@ -145,6 +146,7 @@ public class XMLMeasureOutput extends MeasureOutput {
 	/**
 	 * This method is called at the end of a measure.
 	 */
+	@Override
 	public void writeMeasure() {
 		if (measure.hasFinished()) {
 			//general info

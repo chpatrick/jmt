@@ -83,6 +83,7 @@ public class RefSourcePanel extends WizardPanel implements CommonConstants {
 		refreshComponents();
 	}
 
+	@Override
 	public void repaint() {
 		refreshComponents();
 		super.repaint();
@@ -116,6 +117,7 @@ public class RefSourcePanel extends WizardPanel implements CommonConstants {
 			setRowHeight(ROW_HEIGHT);
 		}
 
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 1) {
 				return combos.getEditor(stationData.getStationKeysNoSourceSink());
@@ -124,6 +126,7 @@ public class RefSourcePanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (column == 1) {
 				return combos.getRenderer();
@@ -147,6 +150,7 @@ public class RefSourcePanel extends WizardPanel implements CommonConstants {
 			return 2;
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex == 0) {
 				return "Class";
@@ -157,10 +161,12 @@ public class RefSourcePanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public Class getColumnClass(int columnIndex) {
 			return String.class;
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			if (columnIndex == 0) {
 				return false;
@@ -182,6 +188,7 @@ public class RefSourcePanel extends WizardPanel implements CommonConstants {
 			}
 		}
 
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			Object key = classData.getClassKeys().get(rowIndex);
 			if (columnIndex == 1 && aValue != null) {
@@ -194,6 +201,7 @@ public class RefSourcePanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		combos.clearCache();
 	}
@@ -201,6 +209,7 @@ public class RefSourcePanel extends WizardPanel implements CommonConstants {
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Reference station";
 	}
@@ -208,6 +217,7 @@ public class RefSourcePanel extends WizardPanel implements CommonConstants {
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		// Aborts editing of table
 		TableCellEditor editor = refSourceTable.getCellEditor();

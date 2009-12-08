@@ -262,8 +262,8 @@ public class SolverDispatcher {
 
 		//First of all controls that all classes have population or rate greater than 0.
 		//Otherwise throws a InputDataException
-		for (int c = 0; c < classData.length; c++) {
-			if (classData[c] <= 0) {
+		for (double element : classData) {
+			if (element <= 0) {
 				//error: population or rate not greater than 0.0
 				//prepare message according to model type (mixed, open or closed)
 
@@ -440,11 +440,11 @@ public class SolverDispatcher {
 		double[] values = model.getWhatIfValues();
 
 		// Backup class datas
-		double[] initials = (double[]) model.getClassData().clone();
+		double[] initials = model.getClassData().clone();
 
 		// Iterates for what-if executions
 		for (int i = 0; i < model.getWhatIfValues().length && !stopped; i++) {
-			double[] current = (double[]) initials.clone();
+			double[] current = initials.clone();
 			// If this is one class only
 			if (model.getWhatIfClass() >= 0) {
 				current[model.getWhatIfClass()] = values[i];
@@ -490,12 +490,12 @@ public class SolverDispatcher {
 		double[] values = model.getWhatIfValues();
 
 		// Backup class datas
-		double[] initials = (double[]) model.getClassData().clone();
+		double[] initials = model.getClassData().clone();
 
 		// Iterates for what-if executions
 		int i;
 		for (i = 0; i < model.getWhatIfValues().length && !stopped; i++) {
-			double[] current = (double[]) initials.clone();
+			double[] current = initials.clone();
 			// If this is one class only
 			if (model.getWhatIfClass() >= 0) {
 				current[model.getWhatIfClass()] = values[i];
@@ -625,7 +625,7 @@ public class SolverDispatcher {
 		double[] values = model.getWhatIfValues();
 
 		// Backup class datas
-		double[] initials = (double[]) model.getClassData().clone();
+		double[] initials = model.getClassData().clone();
 
 		// Value for total number of customer
 		double N = initials[class1] + initials[class2];
@@ -633,7 +633,7 @@ public class SolverDispatcher {
 		// Iterates for what-if executions
 		int i;
 		for (i = 0; i < model.getWhatIfValues().length && !stopped; i++) {
-			double[] current = (double[]) initials.clone();
+			double[] current = initials.clone();
 			current[class1] = values[i] * N;
 			current[class2] = (1 - values[i]) * N;
 			// Check for not integer values

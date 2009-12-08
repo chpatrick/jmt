@@ -8,7 +8,7 @@ import java.util.Vector;
 
 public class FormatFileWriter {
 
-	public FormatFileWriter(Vector names, Vector comments, Vector delimiters, Vector regExprs, int[] types, String name, Vector defualts,
+	public FormatFileWriter(Vector<Object> names, Vector comments, Vector delimiters, Vector regExprs, int[] types, String name, Vector defualts,
 			Vector replaces) {
 		File fileN = new File(name);
 		try {

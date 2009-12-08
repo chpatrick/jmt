@@ -158,6 +158,7 @@ public class PopulationMixPanel extends ParameterOptionPanel {
 		this.setBorder(new EmptyBorder(5, 0, 5, 0));
 	}
 
+	@Override
 	public void setEnabled(boolean enabled) {
 		fromLabel.setEnabled(enabled);
 		from.setEnabled(enabled);

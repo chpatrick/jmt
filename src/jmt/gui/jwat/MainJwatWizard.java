@@ -1,7 +1,6 @@
 package jmt.gui.jwat;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -76,7 +75,7 @@ public class MainJwatWizard extends JWatWizard {
 
 	private HoverHelp help = null;
 	// List of panels create for Workload Analysis tool
-	private ArrayList JWatPanels = new ArrayList();
+	private ArrayList<WizardPanel> JWatPanels = new ArrayList<WizardPanel>();
 	// First panel
 	private JWatMainPanel mainPanel = null;
 
@@ -561,7 +560,7 @@ public class MainJwatWizard extends JWatWizard {
 
 	public void resetScreen() {
 		for (int i = 0; i < JWatPanels.size(); i++) {
-			tabbedPane.remove((Component) JWatPanels.get(i));
+			tabbedPane.remove(JWatPanels.get(i));
 		}
 		JWatPanels.clear();
 		mainPanel.makeMenubar();
@@ -688,6 +687,11 @@ public class MainJwatWizard extends JWatWizard {
 	};
 
 	private AbstractAction TR_ABOUT = new AbstractAction("About Burstiness...") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		{
 			putValue(Action.SHORT_DESCRIPTION, "About Burstiness");
 			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage("helpIcon"));
@@ -700,6 +704,11 @@ public class MainJwatWizard extends JWatWizard {
 		}
 	};
 	private AbstractAction TR_ACTION_SOLVE = new AbstractAction("Solve") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		{
 			putValue(Action.SHORT_DESCRIPTION, "Solve model");
 			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage("Sim"));

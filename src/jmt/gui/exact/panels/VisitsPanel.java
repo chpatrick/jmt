@@ -127,6 +127,7 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 
 	}
 
+	@Override
 	public String getName() {
 		return "Visits";
 	}
@@ -143,16 +144,19 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 		}
 	}
 
+	@Override
 	public void gotFocus() {
 		sync();
 		visitTable.updateStructure();
 	}
 
+	@Override
 	public void lostFocus() {
 		commit();
 		//release();
 	}
 
+	@Override
 	public void help() {
 		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 	}
@@ -221,18 +225,22 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 			return classes;
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			return stationNames[rowIndex];
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			return classNames[index];
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			return new Double(visits[rowIndex][columnIndex]);
 		}
 
+		@Override
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			try {
 				double newVal = Double.parseDouble((String) value);
@@ -243,10 +251,12 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 			}
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return true;
 		}
 
+		@Override
 		public void clear(int row, int col) {
 			visits[row][col] = 0;
 		}
@@ -254,6 +264,7 @@ public final class VisitsPanel extends WizardPanel implements ExactConstants, Fo
 		/**
 		 * Copy the contents of a cell to an area. Works directly on the data set.
 		 */
+		@Override
 		public void copyCellToArea(int sourceRow, int sourceCol, int rowFrom, int rowTo, int colFrom, int colTo) {
 			double source = visits[sourceRow][sourceCol];
 

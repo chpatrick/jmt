@@ -34,6 +34,8 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import jmt.common.xml.resources.XSDSchemaLoader;
+import jmt.engine.log.JSimLogger;
+import jmt.engine.log.LoggerParameters;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.Defaults;
 import jmt.gui.common.definitions.CommonModel;
@@ -43,9 +45,6 @@ import jmt.gui.common.routingStrategies.ProbabilityRouting;
 import jmt.gui.common.routingStrategies.RoutingStrategy;
 import jmt.gui.common.serviceStrategies.LDStrategy;
 import jmt.gui.common.serviceStrategies.ZeroStrategy;
-import jmt.engine.NodeSections.PSServer;
-import jmt.engine.log.JSimLogger;
-import jmt.engine.log.LoggerParameters;
 
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
@@ -74,11 +73,11 @@ import org.xml.sax.SAXException;
  *       2. System Customer Number to System Number of Customers.
  */
 public class XMLReader implements XMLConstantNames, CommonConstants {
-	protected static TreeMap classes; // Data structure used to map between class name and its key
-	protected static TreeMap stations; // Data structure used to map between station name and its key
-	protected static TreeMap regions; // Data structure used to map between region name and its key
-	protected static HashMap refStations; // Data structure used to hold classes' reference stations
-	protected static HashMap empiricalRouting; // Data structure to save malformed empirical routing tuples
+	protected static TreeMap<String, Object> classes; // Data structure used to map between class name and its key
+	protected static TreeMap<String, Object> stations; // Data structure used to map between station name and its key
+	protected static TreeMap<String, Object> regions; // Data structure used to map between region name and its key
+	protected static HashMap<Object, String> refStations; // Data structure used to hold classes' reference stations
+	protected static HashMap<Object[], Map<String, Double>> empiricalRouting; // Data structure to save malformed empirical routing tuples
 
 	/*defines the default logger (used to report errors and information for debugging purposes)*/
 	private static final jmt.engine.log.JSimLogger debugLog = jmt.engine.log.JSimLogger.getLogger(JSimLogger.STD_LOGGER);
@@ -99,8 +98,8 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	};
 
 	// Variables used with caching purpose to improve reading speed
-	protected static Map engineToGuiDistr = null;
-	protected static Map engineToGuiRouting = null;
+	protected static Map<String, Distribution> engineToGuiDistr = null;
+	protected static Map<String, RoutingStrategy> engineToGuiRouting = null;
 
 	protected static final String queueGetFCFS = "jmt.engine.NetStrategies.QueueGetStrategies.FCFSstrategy";
 	protected static final String queueGetLCFS = "jmt.engine.NetStrategies.QueueGetStrategies.LCFSstrategy";
@@ -189,36 +188,31 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		 * Values here should correspond to SimLoader values (Ctrl+F for them) */
 		String logPath = root.getAttribute(XML_A_ROOT_LOGPATH);
 		if (logPath != null && logPath != "") {
-			model.setLoggingGlbParameter("path",logPath);
-		}
-		else {
-			model.setLoggingGlbParameter("path","");
+			model.setLoggingGlbParameter("path", logPath);
+		} else {
+			model.setLoggingGlbParameter("path", "");
 		}
 		String logReplaceMode = root.getAttribute(XML_A_ROOT_LOGREPLACE);
 		if (logReplaceMode != null && logReplaceMode != "") {
-			model.setLoggingGlbParameter("autoAppend",logReplaceMode);
-		}
-		else {
-			model.setLoggingGlbParameter("autoAppend",Defaults.get("loggerAutoAppend"));
+			model.setLoggingGlbParameter("autoAppend", logReplaceMode);
+		} else {
+			model.setLoggingGlbParameter("autoAppend", Defaults.get("loggerAutoAppend"));
 		}
 		String logDelimiter = root.getAttribute(XML_A_ROOT_LOGDELIM);
 		if (logDelimiter != null && logDelimiter != "") {
-			model.setLoggingGlbParameter("delim",logDelimiter);
-		}
-		else {
-			model.setLoggingGlbParameter("delim",Defaults.get("loggerDelimiter"));
+			model.setLoggingGlbParameter("delim", logDelimiter);
+		} else {
+			model.setLoggingGlbParameter("delim", Defaults.get("loggerDelimiter"));
 		}
 		String logDecimalSeparator = root.getAttribute(XML_A_ROOT_LOGDECIMALSEPARATOR);
 		if (logDecimalSeparator != null && logDecimalSeparator != "") {
-			model.setLoggingGlbParameter("decimalSeparator",logDecimalSeparator);
-		}
-		else {
-			model.setLoggingGlbParameter("decimalSeparator",".");
+			model.setLoggingGlbParameter("decimalSeparator", logDecimalSeparator);
+		} else {
+			model.setLoggingGlbParameter("decimalSeparator", ".");
 		}
 
-		
 		parseClasses(root, model);
-		empiricalRouting = new HashMap();
+		empiricalRouting = new HashMap<Object[], Map<String, Double>>();
 		parseStations(root, model);
 		parseConnections(root, model);
 		parseBlockingRegions(root, model);
@@ -226,21 +220,21 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		parsePreloading(root, model);
 		// Set reference station for each class
 		Object[] keys = refStations.keySet().toArray();
-		for (int i = 0; i < keys.length; i++) {
-			model.setClassRefStation(keys[i], stations.get(refStations.get(keys[i])));
+		for (Object key : keys) {
+			model.setClassRefStation(key, stations.get(refStations.get(key)));
 		}
 		// Sets correct station key into every empiricalRouting element
 		// Now each key is an Object[] where (0) is station key and (1) class key
 		keys = empiricalRouting.keySet().toArray();
-		for (int i = 0; i < keys.length; i++) {
-			Object[] dualkey = (Object[]) keys[i];
+		for (Object key : keys) {
+			Object[] dualkey = (Object[]) key;
 			RoutingStrategy rs = (RoutingStrategy) model.getRoutingStrategy(dualkey[0], dualkey[1]);
 			Map routing = rs.getValues();
-			Map values = (Map) empiricalRouting.get(keys[i]);
+			Map values = empiricalRouting.get(key);
 			Object[] names = values.keySet().toArray();
 			// Creates correct hashmap with station key --> probability mapping
-			for (int j = 0; j < names.length; j++) {
-				routing.put(stations.get(names[j]), values.get(names[j]));
+			for (Object name : names) {
+				routing.put(stations.get(name), values.get(name));
 			}
 		}
 	}
@@ -283,8 +277,8 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	 */
 	protected static void parseClasses(Element root, CommonModel model) {
 		// Initialize classes and refStations data structure
-		classes = new TreeMap();
-		refStations = new HashMap();
+		classes = new TreeMap<String, Object>();
+		refStations = new HashMap<Object, String>();
 		NodeList nodeclasses = root.getElementsByTagName(XML_E_CLASS);
 		// Now scans all elements
 		Element currclass;
@@ -330,7 +324,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	 */
 	protected static void parseStations(Element root, CommonModel model) {
 		// Initialize stations data structure
-		stations = new TreeMap();
+		stations = new TreeMap<String, Object>();
 		NodeList nodestations = root.getElementsByTagName(XML_E_STATION);
 		Object key;
 		Element station;
@@ -362,10 +356,10 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			} else if (type.equals(STATION_TYPE_FORK)) {
 				parseQueue((Element) sections.item(0), model, key);
 				parseFork((Element) sections.item(2), model, key);
-            }else if (type.equals(STATION_TYPE_LOGGER)) {
-            	parseLogger((Element)sections.item(1), model, key);
-            	parseRouter((Element)sections.item(2), model, key);
-            }
+			} else if (type.equals(STATION_TYPE_LOGGER)) {
+				parseLogger((Element) sections.item(1), model, key);
+				parseRouter((Element) sections.item(2), model, key);
+			}
 
 		}
 	}
@@ -384,16 +378,16 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	protected static void parseSource(Element section, CommonModel model, Object key, String stationName) {
 		Element parameter = (Element) section.getElementsByTagName(XML_E_PARAMETER).item(0);
 		// Now parses Service Distribution
-		Map distributions = parseParameterRefclassArray(parameter);
+		Map<String, Node> distributions = parseParameterRefclassArray(parameter);
 		// Assign distribution for a class only if current source is its reference station
 		Object[] classNames = distributions.keySet().toArray();
 		Object classkey;
-		for (int i = 0; i < classNames.length; i++) {
+		for (Object className : classNames) {
 			// If current class has this station as reference source and is open...
-			if (refStations.get(classes.get(classNames[i])) != null && refStations.get(classes.get(classNames[i])).equals(stationName)
-					&& model.getClassType(classes.get(classNames[i])) == CLASS_TYPE_OPEN) {
-				classkey = classes.get(classNames[i]);
-				model.setClassDistribution(parseServiceStrategy((Element) distributions.get(classNames[i])), classkey);
+			if (refStations.get(classes.get(className)) != null && refStations.get(classes.get(className)).equals(stationName)
+					&& model.getClassType(classes.get(className)) == CLASS_TYPE_OPEN) {
+				classkey = classes.get(className);
+				model.setClassDistribution(parseServiceStrategy((Element) distributions.get(className)), classkey);
 				model.setClassRefStation(classkey, key);
 				// Removes this class from refStations as it was already handled
 				refStations.remove(classkey);
@@ -413,8 +407,8 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		String name, classpath;
 		boolean fcfs = true;
 		boolean ps = false;
-		Map putStrategy = null;
-		Map dropRules = null;
+		Map<String, Node> putStrategy = null;
+		Map<String, Node> dropRules = null;
 		for (int i = 0; i < parameters.getLength(); i++) {
 			curr = (Element) parameters.item(i);
 			name = curr.getAttribute(XML_A_PARAMETER_NAME);
@@ -438,41 +432,41 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		if (putStrategy != null) {
 			Object[] classNames = putStrategy.keySet().toArray();
 			String strategy;
-			for (int i = 0; i < classNames.length; i++) {
-				strategy = ((Element) putStrategy.get(classNames[i])).getAttribute(XML_A_SUBPARAMETER_CLASSPATH);
+			for (Object className : classNames) {
+				strategy = ((Element) putStrategy.get(className)).getAttribute(XML_A_SUBPARAMETER_CLASSPATH);
 				// Takes away classpath from put strategy name
 				strategy = strategy.substring(strategy.lastIndexOf(".") + 1, strategy.length());
 				// Now sets correct queue strategy, given combination of queueget and queueput policies
 				if (ps) {
 					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_PS);
-					model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS);
+					model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_FCFS);
 				} else if (strategy.equals("HeadStrategy")) {
 					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_QUEUE);
 					if (fcfs) {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_LCFS);
+						model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_LCFS);
 					} else {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS);
+						model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_FCFS);
 					}
 				} else if (strategy.equals("HeadStrategyPriority")) {
 					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_QUEUE_PRIORITY);
 					if (fcfs) {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_LCFS);
+						model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_LCFS);
 					} else {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS);
+						model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_FCFS);
 					}
 				} else if (strategy.equals("TailStrategy")) {
 					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_QUEUE);
 					if (fcfs) {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS);
+						model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_FCFS);
 					} else {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_LCFS);
+						model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_LCFS);
 					}
 				} else if (strategy.equals("TailStrategyPriority")) {
 					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_QUEUE_PRIORITY);
 					if (fcfs) {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_FCFS);
+						model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_FCFS);
 					} else {
-						model.setQueueStrategy(key, classes.get(classNames[i]), QUEUE_STRATEGY_LCFS);
+						model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_LCFS);
 					}
 				}
 			}
@@ -481,9 +475,9 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		if (dropRules != null) {
 			Object[] classNames = dropRules.keySet().toArray();
 			String strategy;
-			for (int i = 0; i < classNames.length; i++) {
-				strategy = findText(((Element) dropRules.get(classNames[i])).getElementsByTagName(XML_E_PARAMETER_VALUE).item(0));
-				model.setDropRule(key, classes.get(classNames[i]), (String) dropRulesNamesMatchings.get(strategy));
+			for (Object className : classNames) {
+				strategy = findText(((Element) dropRules.get(className)).getElementsByTagName(XML_E_PARAMETER_VALUE).item(0));
+				model.setDropRule(key, classes.get(className), (String) dropRulesNamesMatchings.get(strategy));
 			}
 		}
 	}
@@ -497,11 +491,11 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	protected static void parseDelay(Element section, CommonModel model, Object key) {
 		Element parameter = (Element) section.getElementsByTagName(XML_E_PARAMETER).item(0);
 		// Retrives all distributions subParameters
-		Map distributions = parseParameterRefclassArray(parameter);
+		Map<String, Node> distributions = parseParameterRefclassArray(parameter);
 		Object[] classNames = distributions.keySet().toArray();
 		// Sets service time distributions
-		for (int i = 0; i < classNames.length; i++) {
-			model.setServiceTimeDistribution(key, classes.get(classNames[i]), parseServiceStrategy((Element) distributions.get(classNames[i])));
+		for (Object className : classNames) {
+			model.setServiceTimeDistribution(key, classes.get(className), parseServiceStrategy((Element) distributions.get(className)));
 		}
 	}
 
@@ -515,7 +509,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		String className = section.getAttribute(XML_A_STATION_SECTION_CLASSNAME);
 		if (CLASSNAME_PSSERVER.equals(className)) {
 			model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_PS);
-		} 
+		}
 		NodeList parameters = section.getElementsByTagName(XML_E_PARAMETER);
 		Element curr;
 		String name, classpath;
@@ -525,12 +519,11 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			classpath = curr.getAttribute(XML_A_PARAMETER_CLASSPATH);
 			if (classpath.equals(serviceStrategy)) {
 				// Retrives all distributions subParameters
-				Map distributions = parseParameterRefclassArray((Element) parameters.item(i));
+				Map<String, Node> distributions = parseParameterRefclassArray((Element) parameters.item(i));
 				Object[] classNames = distributions.keySet().toArray();
 				// Sets service time distributions
-				for (int j = 0; j < classNames.length; j++) {
-					model.setServiceTimeDistribution(key, classes.get(classNames[j]),
-							parseServiceStrategy((Element) distributions.get(classNames[j])));
+				for (Object className2 : classNames) {
+					model.setServiceTimeDistribution(key, classes.get(className2), parseServiceStrategy((Element) distributions.get(className2)));
 				}
 			} else if (name.equals("maxJobs")) {
 				// Sets number of servers
@@ -545,10 +538,10 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	 * @param parameterNode
 	 * @return a Map of ClassName -> subParameter
 	 */
-	protected static Map parseParameterRefclassArray(Element parameterNode) {
+	protected static Map<String, Node> parseParameterRefclassArray(Element parameterNode) {
 		// For some reasons getElementsByTagName returns only first service time strategy.
 		// So we need to look every children of parameterNode node.
-		TreeMap res = new TreeMap();
+		TreeMap<String, Node> res = new TreeMap<String, Node>();
 		Node child = parameterNode.getFirstChild();
 		String refClass;
 		// This manual parsing is a bit unclean but works well and it's really fast.
@@ -584,8 +577,8 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	 * @param parameterNode
 	 * @return Vector with found subParameters
 	 */
-	protected static Vector parseParameterArray(Element parameterNode) {
-		Vector ret = new Vector();
+	protected static Vector<Node> parseParameterArray(Element parameterNode) {
+		Vector<Node> ret = new Vector<Node>();
 		Node child = parameterNode.getFirstChild();
 
 		while (child != null) {
@@ -611,37 +604,37 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	 */
 	protected static void parseRouter(Element section, CommonModel model, Object key) {
 		Element parameter = (Element) section.getElementsByTagName(XML_E_PARAMETER).item(0);
-		Map routing = parseParameterRefclassArray(parameter);
+		Map<String, Node> routing = parseParameterRefclassArray(parameter);
 		Object[] classNames = routing.keySet().toArray();
 		String className;
 
 		// Creates a Map of Name --> Routing Strategy if needed
 		if (engineToGuiRouting == null) {
-			engineToGuiRouting = new TreeMap();
+			engineToGuiRouting = new TreeMap<String, RoutingStrategy>();
 			RoutingStrategy[] allRS = RoutingStrategy.findAll();
-			for (int i = 0; i < allRS.length; i++) {
-				engineToGuiRouting.put(allRS[i].getClass().getName(), allRS[i]);
+			for (RoutingStrategy element : allRS) {
+				engineToGuiRouting.put(element.getClass().getName(), element);
 			}
 		}
 
 		Object[] routStratKeys = engineToGuiRouting.keySet().toArray();
-		for (int i = 0; i < classNames.length; i++) {
-			className = ((Element) routing.get(classNames[i])).getAttribute(XML_A_SUBPARAMETER_CLASSPATH);
+		for (Object className2 : classNames) {
+			className = ((Element) routing.get(className2)).getAttribute(XML_A_SUBPARAMETER_CLASSPATH);
 			// Searches all available routing strategy to find the one saved
-			for (int j = 0; j < routStratKeys.length; j++) {
-				if (className.equals(((RoutingStrategy) engineToGuiRouting.get(routStratKeys[j])).getClassPath())) {
-					model.setRoutingStrategy(key, classes.get(classNames[i]), ((RoutingStrategy) engineToGuiRouting.get(routStratKeys[j])).clone());
+			for (Object routStratKey : routStratKeys) {
+				if (className.equals(engineToGuiRouting.get(routStratKey).getClassPath())) {
+					model.setRoutingStrategy(key, classes.get(className2), engineToGuiRouting.get(routStratKey).clone());
 				}
 			}
 
 			// Treat particular case of Empirical (Probabilities) Routing
-			RoutingStrategy rs = (RoutingStrategy) model.getRoutingStrategy(key, classes.get(classNames[i]));
+			RoutingStrategy rs = (RoutingStrategy) model.getRoutingStrategy(key, classes.get(className2));
 			if (rs instanceof ProbabilityRouting) {
 				// Creates a Vector of all empirical entris. Could not be done automaticly
 				// for the above problem with array (see parseParameterRefclassArray)
-				Vector entries = new Vector();
+				Vector<Node> entries = new Vector<Node>();
 				// Finds EntryArray node
-				Node entryArray = ((Node) routing.get(classNames[i])).getFirstChild();
+				Node entryArray = routing.get(className2).getFirstChild();
 				while (entryArray.getNodeType() != Node.ELEMENT_NODE || !entryArray.getNodeName().equals(XML_E_SUBPARAMETER)) {
 					entryArray = entryArray.getNextSibling();
 				}
@@ -665,71 +658,75 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 					// Now puts the tuple stationName -> probability into a Map, then adds it
 					// to empiricalRouting Map. This is needed as at this
 					// point we don't have all station's key so will be adjusted latelly
-					Map tmp = new TreeMap();
+					Map<String, Double> tmp = new TreeMap<String, Double>();
 					tmp.put(stationName, probability);
 					// Put into empiricalRouting a pair of station key and class key and map with
 					// station names instead of station key
-					empiricalRouting.put(new Object[] { key, classes.get(classNames[i]) }, tmp);
+					empiricalRouting.put(new Object[] { key, classes.get(className2) }, tmp);
 				}
 			}
 		}
 	}
 
-    /**
-     * Extract all parameters for a Logger section from the XML document.
-     * The information from parseLogger is passed to LogTunnel.
-     * 
-     * @param section input section of source station
-     * @param model link to data structure
-     * @param key key of search for this source station into data structure
-     * @author Michael Fercu (Bertoli Marco)
-     *		   Date: 08-aug-2008
-     * @see jmt.engine.log.LoggerParameters LoggerParameters
-     * @see jmt.gui.common.XMLWriter#writeLoggerSection XMLWriter.writeLoggerSection()
-     * @see jmt.gui.common.definitions.CommonModel#getLoggingParameters CommonModel.getLoggingParameters()
-     * @see jmt.gui.common.definitions.CommonModel#setLoggingParameters CommonModel.setLoggingParameters()
-     * @see jmt.engine.NodeSections.LogTunnel LogTunnel
-     */
-    protected static void parseLogger(Element section, CommonModel model, Object key) {
-        NodeList parameters = section.getElementsByTagName(XML_E_PARAMETER);
-        LoggerParameters logParams = new LoggerParameters();
+	/**
+	 * Extract all parameters for a Logger section from the XML document.
+	 * The information from parseLogger is passed to LogTunnel.
+	 * 
+	 * @param section input section of source station
+	 * @param model link to data structure
+	 * @param key key of search for this source station into data structure
+	 * @author Michael Fercu (Bertoli Marco)
+	 *		   Date: 08-aug-2008
+	 * @see jmt.engine.log.LoggerParameters LoggerParameters
+	 * @see jmt.gui.common.XMLWriter#writeLoggerSection XMLWriter.writeLoggerSection()
+	 * @see jmt.gui.common.definitions.CommonModel#getLoggingParameters CommonModel.getLoggingParameters()
+	 * @see jmt.gui.common.definitions.CommonModel#setLoggingParameters CommonModel.setLoggingParameters()
+	 * @see jmt.engine.NodeSections.LogTunnel LogTunnel
+	 */
+	protected static void parseLogger(Element section, CommonModel model, Object key) {
+		NodeList parameters = section.getElementsByTagName(XML_E_PARAMETER);
+		LoggerParameters logParams = new LoggerParameters();
 
-        for (int i=0; i<parameters.getLength(); i++) {
-            Element parameter = (Element)parameters.item(i);
-            String parameterName = parameter.getAttribute(XML_A_PARAMETER_NAME);
-            try {
-            // Get the parameters from the XML file
-            if (parameterName.equals(XML_LOG_FILENAME))
-            	logParams.name = new String(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
-            else if (parameterName.equals(XML_LOG_FILEPATH))
-            	try {
-            	logParams.path = new String(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
-            	} catch (Exception e) {logParams.path = "./";} // this should never happen
-            else if (parameterName.equals(XML_LOG_B_EXECTIMESTAMP))
-            	logParams.boolExecTimestamp = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
-            else if (parameterName.equals(XML_LOG_B_LOGGERNAME))
-            	logParams.boolLoggername = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
-            else if (parameterName.equals(XML_LOG_B_TIMESTAMP))
-            	logParams.boolTimeStamp = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
-            else if (parameterName.equals(XML_LOG_B_JOBID))
-            	logParams.boolJobID = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
-            else if (parameterName.equals(XML_LOG_B_JOBCLASS))
-            	logParams.boolJobClass = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
-            else if (parameterName.equals(XML_LOG_B_TIMESAMECLS))
-            	logParams.boolTimeSameClass = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
-            else if (parameterName.equals(XML_LOG_B_TIMEANYCLS))
-            	logParams.boolTimeAnyClass = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
-            else if (parameterName.equals("numClasses"))
-            	/* No parsing needed for these parameters:
-            	 * Only useful to (and has already been passed to) the simulator. */ ;
-            else
-            	debugLog.error("XMLReader.parseLogger() - Unknown parameter \"" + parameterName + "\".");
-            } catch (Exception e) {debugLog.error("XMLreader.parseLogger: " + e.toString());}
-            model.setLoggingParameters(key,logParams);
+		for (int i = 0; i < parameters.getLength(); i++) {
+			Element parameter = (Element) parameters.item(i);
+			String parameterName = parameter.getAttribute(XML_A_PARAMETER_NAME);
+			try {
+				// Get the parameters from the XML file
+				if (parameterName.equals(XML_LOG_FILENAME)) {
+					logParams.name = new String(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+				} else if (parameterName.equals(XML_LOG_FILEPATH)) {
+					try {
+						logParams.path = new String(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+					} catch (Exception e) {
+						logParams.path = "./";
+					} // this should never happen
+				} else if (parameterName.equals(XML_LOG_B_EXECTIMESTAMP)) {
+					logParams.boolExecTimestamp = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+				} else if (parameterName.equals(XML_LOG_B_LOGGERNAME)) {
+					logParams.boolLoggername = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+				} else if (parameterName.equals(XML_LOG_B_TIMESTAMP)) {
+					logParams.boolTimeStamp = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+				} else if (parameterName.equals(XML_LOG_B_JOBID)) {
+					logParams.boolJobID = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+				} else if (parameterName.equals(XML_LOG_B_JOBCLASS)) {
+					logParams.boolJobClass = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+				} else if (parameterName.equals(XML_LOG_B_TIMESAMECLS)) {
+					logParams.boolTimeSameClass = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+				} else if (parameterName.equals(XML_LOG_B_TIMEANYCLS)) {
+					logParams.boolTimeAnyClass = new Boolean(findText(parameter.getElementsByTagName(XML_E_PARAMETER_VALUE).item(0)));
+				} else if (parameterName.equals("numClasses")) {
+					/* No parsing needed for these parameters:
+					 * Only useful to (and has already been passed to) the simulator. */;
+				} else {
+					debugLog.error("XMLReader.parseLogger() - Unknown parameter \"" + parameterName + "\".");
+				}
+			} catch (Exception e) {
+				debugLog.error("XMLreader.parseLogger: " + e.toString());
+			}
+			model.setLoggingParameters(key, logParams);
 
-
-        }
-    }
+		}
+	}
 
 	/**
 	 * Extract all informations regarding Fork section.
@@ -761,9 +758,9 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		// Ccreates a map with distribution classpath --> Distribution if needed
 		if (engineToGuiDistr == null) {
 			Distribution[] allDistr = Distribution.findAll();
-			engineToGuiDistr = new TreeMap();
-			for (int i = 0; i < allDistr.length; i++) {
-				engineToGuiDistr.put(allDistr[i].getClassPath(), allDistr[i]);
+			engineToGuiDistr = new TreeMap<String, Distribution>();
+			for (Distribution element : allDistr) {
+				engineToGuiDistr.put(element.getClassPath(), element);
 			}
 		}
 
@@ -776,9 +773,9 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			Element LDParameterArray = (Element) serviceTimeStrategy.getElementsByTagName(XML_E_SUBPARAMETER).item(0);
 			LDStrategy strategy = new LDStrategy();
 			// Now parses LDStrategy ranges
-			Vector ranges = parseParameterArray(LDParameterArray);
+			Vector<Node> ranges = parseParameterArray(LDParameterArray);
 			for (int i = 0; i < ranges.size(); i++) {
-				Vector parameters = parseParameterArray((Element) ranges.get(i));
+				Vector<Node> parameters = parseParameterArray((Element) ranges.get(i));
 				int from = Integer.parseInt(findText(((Element) parameters.get(0)).getElementsByTagName(XML_E_SUBPARAMETER_VALUE).item(0)));
 				Distribution distr = parseDistribution((Element) parameters.get(1), (Element) parameters.get(2));
 				String mean = findText(((Element) parameters.get(3)).getElementsByTagName(XML_E_SUBPARAMETER_VALUE).item(0));
@@ -800,7 +797,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		} else {
 
 			//use the parseParameterArray function to return only DIRECT subparameters
-			Vector distribution = parseParameterArray(serviceTimeStrategy);
+			Vector<Node> distribution = parseParameterArray(serviceTimeStrategy);
 			if (distribution.size() == 0) {
 				return null;
 			}
@@ -818,12 +815,12 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		String classname = distr.getAttribute(XML_A_SUBPARAMETER_CLASSPATH);
 
 		//get the subparameter which are directly passed to the distribution
-		Vector distributionParameters = parseParameterArray(distr);
+		Vector<Node> distributionParameters = parseParameterArray(distr);
 		//add the subparameters which are passed to the distribution parameter
 		distributionParameters.addAll(parseParameterArray(distrPar));
 
 		// Gets correct instance of distribution
-		Distribution dist = (Distribution) ((Distribution) engineToGuiDistr.get(classname)).clone();
+		Distribution dist = engineToGuiDistr.get(classname).clone();
 		Element currpar;
 		String param_name;
 		for (int i = 0; i < distributionParameters.size(); i++) {
@@ -835,7 +832,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			if (currpar.getAttribute(XML_A_SUBPARAMETER_CLASSPATH).equals(distributionContainer)) {
 
 				//parse the currentparameter to get DIRECT subparameters
-				Vector nestedDistr = parseParameterArray(currpar);
+				Vector<Node> nestedDistr = parseParameterArray(currpar);
 				// If distribution is not set, returns null
 				Object param_value = null;
 				if (nestedDistr.size() == 0) {
@@ -924,7 +921,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 				classKey = null;
 			}
 			type = ((Element) measures.item(i)).getAttribute(XML_A_MEASURE_TYPE);
-			
+
 			//Begins all backward compatibility conditions for Changes of Labels of Perf Index.
 			// Supports old names
 			if ("Customer Number".equalsIgnoreCase(type) && "".equalsIgnoreCase(stationName)) {
@@ -933,7 +930,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			if ("System Customer Number".equalsIgnoreCase(type)) {
 				type = SimulationDefinition.MEASURE_S_CN;
 			}
-			if("Number of Customers".equalsIgnoreCase(type) && "".equalsIgnoreCase(stationName)){
+			if ("Number of Customers".equalsIgnoreCase(type) && "".equalsIgnoreCase(stationName)) {
 				type = SimulationDefinition.MEASURE_S_CN;
 			}
 			if ("Queue Length".equalsIgnoreCase(type)) {
@@ -1006,7 +1003,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 	 * @param model data structure where all properties have to be set
 	 */
 	protected static void parseBlockingRegions(Element root, CommonModel model) {
-		regions = new TreeMap();
+		regions = new TreeMap<String, Object>();
 		NodeList regionNodes = root.getElementsByTagName(XML_E_REGION);
 		// Creates each region into data structure
 		for (int i = 0; i < regionNodes.getLength(); i++) {

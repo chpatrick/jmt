@@ -53,11 +53,11 @@ public class VariableNumber implements JWATConstants {
 	/* Type of variable */
 	private short varType;
 	/* Univariate statistics object */
-	private ArrayList varUniStatsTransf = new ArrayList(); // UnivariateStatistics
+	private ArrayList<UnivariateStatistics> varUniStatsTransf = new ArrayList<UnivariateStatistics>(); // UnivariateStatistics
 	/* Current statistics info */
 	private short statsUniCurrentIndexTransf = 0;
 	/* List of transformations applied to variable */
-	private ArrayList listOfTransfs = new ArrayList(); //Integer
+	private ArrayList<Integer> listOfTransfs = new ArrayList<Integer>(); //Integer
 	/* Dimensions of intervals and intervals */
 	private final int intervalGraphSize = 1000;
 	private int[] intervalGraph = new int[intervalGraphSize + 1];
@@ -140,7 +140,7 @@ public class VariableNumber implements JWATConstants {
 	 * @return <code>univariateStatistics</code>
 	 */
 	public UnivariateStatistics getUniStats() {
-		return (UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf);
+		return varUniStatsTransf.get(statsUniCurrentIndexTransf);
 	}
 
 	/**
@@ -151,7 +151,7 @@ public class VariableNumber implements JWATConstants {
 	 */
 	public double getQuantile(int ind) {
 		double quant = 0;
-		int[] quantili = ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getQuantili();
+		int[] quantili = varUniStatsTransf.get(statsUniCurrentIndexTransf).getQuantili();
 
 		if (this.Size() % 2 == 0) {
 			quant = (obsValue[quantili[ind - 1]].getIndex(nVar) + obsValue[quantili[ind - 1] - 1].getIndex(nVar)) / 2;
@@ -197,8 +197,8 @@ public class VariableNumber implements JWATConstants {
 	private void calculateIntervals() {
 		intervalGraph[0] = 0;
 		int posIntG = 1;
-		double range = ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getRangeValue();
-		double min = ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getMinValue();
+		double range = varUniStatsTransf.get(statsUniCurrentIndexTransf).getRangeValue();
+		double min = varUniStatsTransf.get(statsUniCurrentIndexTransf).getMinValue();
 		int nInsG = 0;
 
 		for (int i = 0; i < numOss; i++) {
@@ -275,9 +275,8 @@ public class VariableNumber implements JWATConstants {
 	 */
 	private void setMaxMinTransformation() {
 		for (int i = 0; i < numOss; i++) {
-			obsValue[i].setIndex(nVar, (obsValue[i].getIndex(nVar) - ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf))
-					.getMinValue())
-					/ (((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getRangeValue()));
+			obsValue[i].setIndex(nVar, (obsValue[i].getIndex(nVar) - varUniStatsTransf.get(statsUniCurrentIndexTransf).getMinValue())
+					/ (varUniStatsTransf.get(statsUniCurrentIndexTransf).getRangeValue()));
 		}
 		addTrasf(MINMAX);
 	}
@@ -287,9 +286,8 @@ public class VariableNumber implements JWATConstants {
 	 */
 	private void setStandardTransformation() {
 		for (int i = 0; i < numOss; i++) {
-			obsValue[i].setIndex(nVar, (obsValue[i].getIndex(nVar) - ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf))
-					.getMean())
-					/ ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getDevStd());
+			obsValue[i].setIndex(nVar, (obsValue[i].getIndex(nVar) - varUniStatsTransf.get(statsUniCurrentIndexTransf).getMean())
+					/ varUniStatsTransf.get(statsUniCurrentIndexTransf).getDevStd());
 		}
 		addTrasf(STDEV);
 	}
@@ -311,7 +309,7 @@ public class VariableNumber implements JWATConstants {
 	 */
 	public boolean undoLastTrasf() {
 		if (listOfTransfs.size() > 0) {
-			switch (((Integer) listOfTransfs.get(listOfTransfs.size() - 1)).intValue()) {
+			switch (listOfTransfs.get(listOfTransfs.size() - 1).intValue()) {
 				case LOGARITHMIC:
 					undoLogTrasformation();
 					calculateIntervals();
@@ -352,8 +350,8 @@ public class VariableNumber implements JWATConstants {
 	 * Undo min/max transformation (value - minimum) / (maximum - minimum)
 	 */
 	private void undoMaxMinTransformation() {
-		double oldMin = ((UnivariateStatistics) varUniStatsTransf.get(varUniStatsTransf.size() - 2)).getMinValue();
-		double oldMax = ((UnivariateStatistics) varUniStatsTransf.get(varUniStatsTransf.size() - 2)).getMaxValue();
+		double oldMin = varUniStatsTransf.get(varUniStatsTransf.size() - 2).getMinValue();
+		double oldMax = varUniStatsTransf.get(varUniStatsTransf.size() - 2).getMaxValue();
 
 		for (int i = 0; i < numOss; i++) {
 			obsValue[i].setIndex(nVar, obsValue[i].getIndex(nVar) * (oldMax - oldMin) + oldMin);
@@ -368,8 +366,8 @@ public class VariableNumber implements JWATConstants {
 	 * Undo the following transformation (value - mean) / (standard deviation)
 	 */
 	private void undoStandardTransformation() {
-		double oldDevStd = ((UnivariateStatistics) varUniStatsTransf.get(varUniStatsTransf.size() - 2)).getDevStd();
-		double oldMean = ((UnivariateStatistics) varUniStatsTransf.get(varUniStatsTransf.size() - 2)).getMean();
+		double oldDevStd = varUniStatsTransf.get(varUniStatsTransf.size() - 2).getDevStd();
+		double oldMean = varUniStatsTransf.get(varUniStatsTransf.size() - 2).getMean();
 
 		for (int i = 0; i < numOss; i++) {
 			obsValue[i].setIndex(nVar, (obsValue[i].getIndex(nVar) * oldDevStd) + oldMean);
@@ -408,8 +406,8 @@ public class VariableNumber implements JWATConstants {
 		int i;
 
 		for (i = 0; i < listOfTransfs.size(); i++) {
-			if (((Integer) listOfTransfs.get(i)).intValue() != SAMPLING) {
-				ret += trasfName[((Integer) listOfTransfs.get(i)).intValue()] + "(";
+			if (listOfTransfs.get(i).intValue() != SAMPLING) {
+				ret += trasfName[listOfTransfs.get(i).intValue()] + "(";
 				j++; //D
 			}
 		}
@@ -431,7 +429,7 @@ public class VariableNumber implements JWATConstants {
 	private double maxV;
 
 	public double getDimInt() {
-		return ((UnivariateStatistics) varUniStatsTransf.get(statsUniCurrentIndexTransf)).getRangeValue() / 1000;
+		return varUniStatsTransf.get(statsUniCurrentIndexTransf).getRangeValue() / 1000;
 	}
 
 	public int getNumeroOssPerInt() {
@@ -588,7 +586,7 @@ public class VariableNumber implements JWATConstants {
 
 		sampled = true;
 		listOfTransfs.add(new Integer(SAMPLING));
-		ArrayList temp = new ArrayList(); //Observation
+		ArrayList<Observation> temp = new ArrayList<Observation>(); //Observation
 		for (int i = 0; i < obsValue.length; i++) {
 			if (filter.isMatching(obsValue[i], i)) {
 				temp.add(obsValue[i]);
@@ -620,9 +618,9 @@ public class VariableNumber implements JWATConstants {
 		int i = 0;
 		Observation[] temp = new Observation[size];
 		// obsValue = new Observation[size];
-		for (int j = 0; j < obsValue.length; j++) {
-			if (obsValue[j].isValid()) {
-				temp[i++] = obsValue[j];
+		for (Observation element : obsValue) {
+			if (element.isValid()) {
+				temp[i++] = element;
 			}
 		}
 		obsValue = temp;
@@ -648,7 +646,7 @@ public class VariableNumber implements JWATConstants {
 
 	public void resetSampling() {
 		sampled = false;
-		while (listOfTransfs.size() > 0 && ((Integer) listOfTransfs.get(listOfTransfs.size() - 1)).intValue() != SAMPLING) {
+		while (listOfTransfs.size() > 0 && listOfTransfs.get(listOfTransfs.size() - 1).intValue() != SAMPLING) {
 			undoLastTrasf();
 		}
 		obsValue = originalValue;
@@ -659,7 +657,7 @@ public class VariableNumber implements JWATConstants {
 		// Removes all others SAMPLING in array
 		int p = listOfTransfs.size() - 1;
 		for (int i = p; i >= 0; i--) {
-			if (((Integer) listOfTransfs.get(i)).intValue() == SAMPLING) {
+			if (listOfTransfs.get(i).intValue() == SAMPLING) {
 				listOfTransfs.remove(i);
 				varUniStatsTransf.remove(i + 1);
 				statsUniCurrentIndexTransf -= 1;
@@ -709,7 +707,7 @@ public class VariableNumber implements JWATConstants {
 	}
 
 	public void undoClueringTrasformation() {
-		switch (((Integer) listOfTransfs.get(listOfTransfs.size() - 1)).intValue()) {
+		switch (listOfTransfs.get(listOfTransfs.size() - 1).intValue()) {
 			case STDEV:
 				undoStandardTransformation();
 				break;

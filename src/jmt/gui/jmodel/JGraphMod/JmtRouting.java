@@ -47,8 +47,8 @@ public class JmtRouting implements Edge.Routing {
 	private int offset = 15;//offset per il source
 	private int offsetTo2 = -15; //offset per il target
 
-	public List route(EdgeView edgeView) {
-		List list = new ArrayList();
+	public List<Point2D> route(EdgeView edgeView) {
+		List<Point2D> list = new ArrayList<Point2D>();
 		int n = edgeView.getPointCount();
 		Point2D from = edgeView.getPoint(0);
 
@@ -249,8 +249,8 @@ public class JmtRouting implements Edge.Routing {
 			}
 			//Sets add points
 			list.add(from);
-			for (int i = 0; i < routed.length; i++) {
-				list.add(routed[i]);
+			for (Point2D element : routed) {
+				list.add(element);
 			}
 			list.add(to);
 		}

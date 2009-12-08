@@ -42,7 +42,7 @@ public class EdgeAnimation implements Animation, JobContainer {
 
 	/**vector containing all of the jobs that currently are running on this edge of the
 	queue net*/
-	protected Vector jobAnimations = new Vector();
+	protected Vector<JobAnimation> jobAnimations = new Vector<JobAnimation>();
 
 	//bounding box for this animation.
 	private Rectangle bounds;
@@ -97,30 +97,30 @@ public class EdgeAnimation implements Animation, JobContainer {
 	//calculates bounding box position and size from angle points coordinates.
 	private void calculateBounds(int margin) {
 		int maxX = -1, maxY = -1, minX = -1, minY = -1;
-		for (int i = 0; i < anglePoints.length; i++) {
+		for (Point anglePoint : anglePoints) {
 			if (maxX == -1) {
-				maxX = anglePoints[i].x;
+				maxX = anglePoint.x;
 			}
 			if (maxY == -1) {
-				maxY = anglePoints[i].y;
+				maxY = anglePoint.y;
 			}
 			if (minX == -1) {
-				minX = anglePoints[i].x;
+				minX = anglePoint.x;
 			}
 			if (minY == -1) {
-				minY = anglePoints[i].y;
+				minY = anglePoint.y;
 			}
-			if (anglePoints[i].x > maxX) {
-				maxX = anglePoints[i].x;
+			if (anglePoint.x > maxX) {
+				maxX = anglePoint.x;
 			}
-			if (anglePoints[i].y > maxY) {
-				maxY = anglePoints[i].y;
+			if (anglePoint.y > maxY) {
+				maxY = anglePoint.y;
 			}
-			if (anglePoints[i].x < minX) {
-				minX = anglePoints[i].x;
+			if (anglePoint.x < minX) {
+				minX = anglePoint.x;
 			}
-			if (anglePoints[i].y < minY) {
-				minY = anglePoints[i].y;
+			if (anglePoint.y < minY) {
+				minY = anglePoint.y;
 			}
 		}
 		maxX += margin;
@@ -210,7 +210,7 @@ public class EdgeAnimation implements Animation, JobContainer {
 	 * new positions.*/
 	public void refresh() {
 		for (int i = 0; i < jobAnimations.size(); i++) {
-			JobAnimation ja = (JobAnimation) jobAnimations.get(i);
+			JobAnimation ja = jobAnimations.get(i);
 			//update position as time*speed
 			ja.setPosition((System.currentTimeMillis() - ja.getTimeOfEntrance()) * ja.getSpeed());
 			Point p = convertPositionToCoord(ja.getPosition());

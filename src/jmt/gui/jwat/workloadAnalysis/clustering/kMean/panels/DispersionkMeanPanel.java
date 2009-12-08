@@ -57,6 +57,7 @@ public class DispersionkMeanPanel extends JPanel {
 			legenda = new BufferedImage(110, (SQUARE_L + LINE_H) * (clusters + 1), BufferedImage.TYPE_INT_RGB);
 		}
 
+		@Override
 		public void paint(Graphics g1) {
 			if (redraw) {
 				redraw = false;

@@ -90,6 +90,7 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants, JWATC
 		initGUI();
 	}
 
+	@Override
 	public String getName() {
 		return "Load Demo";
 	}
@@ -187,6 +188,7 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants, JWATC
 		}
 	}
 
+	@Override
 	public void lostFocus() {
 		parent.setLastPanel(WORKLOAD_INPUT_PANEL);
 	}
@@ -194,6 +196,7 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants, JWATC
 	/********** WIZARD MANAGEMENT FUNCTIONS **********/
 	// TODO controllare validita dei dati forniti nel pannello e creazione e passaggio informazioni al modello per il prossimo panello
 	// Chiamata prima di passare al prossimo pannello
+	@Override
 	public boolean canGoForward() {
 		return canGoOn;
 	}
@@ -204,6 +207,7 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants, JWATC
 
 	// TODO controllare con Fuma cosa fare
 	// Chiamata quando dal pannello si torna indietro
+	@Override
 	public boolean canGoBack() {
 		if (JOptionPane.showConfirmDialog(this, "Are you sure want to go back to start screen ?", "Back operation", JOptionPane.YES_NO_OPTION,
 				JOptionPane.WARNING_MESSAGE) == JOptionPane.NO_OPTION) {

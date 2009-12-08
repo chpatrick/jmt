@@ -31,17 +31,17 @@ import jmt.engine.jaba.Hull.Vertex;
  */
 public class OneDominator {
 
-	private Vector vertices; // = new Vector();
+	private Vector<Vertex> vertices; // = new Vector();
 	private Vertex dominator; // = new Vertex(-1,-1,-1);
 
 	public boolean IsOneDominator() {
 		boolean out = false;
 		for (int i = 0; i < vertices.size(); i++) {
 			int k = 0;
-			int[] coordi = ((Vertex) vertices.get(i)).getCoords();
+			int[] coordi = vertices.get(i).getCoords();
 			for (int j = 0; j < vertices.size(); j++) {
 
-				int[] coordj = ((Vertex) vertices.get(j)).getCoords();
+				int[] coordj = vertices.get(j).getCoords();
 				if (coordi[0] > coordj[0] && coordi[1] > coordj[1] && coordi[2] > coordj[2]) {
 					k++;
 				}
@@ -49,13 +49,13 @@ public class OneDominator {
 			}
 			if (k == (vertices.size() - 1)) {
 				out = true;
-				dominator = (Vertex) vertices.get(i);
+				dominator = vertices.get(i);
 			}
 		}
 		return out;
 	}
 
-	public void setVertices(Vector verts) {
+	public void setVertices(Vector<Vertex> verts) {
 		vertices = verts;
 	}
 

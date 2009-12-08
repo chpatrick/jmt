@@ -61,6 +61,7 @@ public class ServerCell extends JmtCell {
 	 *
 	 * @return array of ports
 	 */
+	@Override
 	public Port[] createPorts() {
 		Port[] ports = new Port[2];
 		ports[0] = new InputPort(this);
@@ -73,6 +74,7 @@ public class ServerCell extends JmtCell {
 	 *
 	 * @return the name of the icon of this cell
 	 */
+	@Override
 	public String getIcon() {
 		return ICON;
 	}

@@ -985,7 +985,7 @@ public class Mediator implements GuiInterface {
 		Point2D p = fromScreen(start);
 		Point2D p2 = fromScreen(current);
 		if (inPort != null && outPort != null) {
-			ArrayList list = new ArrayList();
+			ArrayList<Point2D> list = new ArrayList<Point2D>();
 			list.add(p);
 			list.add(p2);
 			Map map = new Hashtable();
@@ -1000,7 +1000,7 @@ public class Mediator implements GuiInterface {
 			GraphConstants.setLineEnd(map, GraphConstants.ARROW_CLASSIC);
 			// 24/09/03 - end
 			// /////////////////////////////////////////////////////
-			Map viewMap = new Hashtable();
+			Map<Object, Map> viewMap = new Hashtable<Object, Map>();
 			// ---- Adds connection into underlayng data structure -- BERTOLI
 			// MARCO
 			Object sourceKey = ((CellComponent) ((JmtCell) ((OutputPort) (outPort.getCell())).getUserObject()).getUserObject()).getKey();
@@ -1058,7 +1058,7 @@ public class Mediator implements GuiInterface {
 		GraphConstants.setRouting(map, JmtGraphConstants.ROUTING_JMT);
 		GraphConstants.setLineEnd(map, GraphConstants.ARROW_CLASSIC);
 		GraphConstants.setEndFill(map, true);
-		Map viewMap = new Hashtable();
+		Map<Object, Map> viewMap = new Hashtable<Object, Map>();
 		JmtEdge connection = new JmtEdge(sourceKey, targetKey, this);
 		viewMap.put(connection, map);
 		Object[] insert = new Object[] { connection };
@@ -1171,7 +1171,7 @@ public class Mediator implements GuiInterface {
 			dialogFactory.getDialog(stationPanel, "Editing " + jcell.getUserObject().toString() + " Properties...");
 
 			// Updates cell dimensions if name was changed too much...
-			Hashtable nest = new Hashtable();
+			Hashtable<Object, Map> nest = new Hashtable<Object, Map>();
 			Dimension cellDimension = jcell.getSize(graph);
 			Map attr = jcell.getAttributes();
 			Rectangle2D oldBounds = GraphConstants.getBounds(attr);
@@ -1248,12 +1248,12 @@ public class Mediator implements GuiInterface {
 		// If a cell is a blocking region avoid removing its edges and
 		// select its element at the end of the removal process
 		Set edges = new HashSet();
-		Set select = new HashSet();
+		Set<Object> select = new HashSet<Object>();
 
 		// Set with all regions that can be deleted as its child were removed
-		Set regions = new HashSet();
+		Set<Object> regions = new HashSet<Object>();
 		// Set with all JmtCells that we are removing
-		Set jmtCells = new HashSet();
+		Set<Object> jmtCells = new HashSet<Object>();
 
 		// Giuseppe De Cicco & Fabio Granara
 		// for(int k=0; k<cells.length; k++){
@@ -1290,9 +1290,9 @@ public class Mediator implements GuiInterface {
 			} else {
 				// Adds node for selection
 				Object[] nodes = graph.getDescendants(new Object[] { cells[i] });
-				for (int j = 0; j < nodes.length; j++) {
-					if (nodes[j] instanceof JmtCell || nodes[j] instanceof JmtEdge) {
-						select.add(nodes[j]);
+				for (Object node : nodes) {
+					if (node instanceof JmtCell || node instanceof JmtEdge) {
+						select.add(node);
 					}
 				}
 				// Removes blocking region from data structure
@@ -1307,7 +1307,7 @@ public class Mediator implements GuiInterface {
 		graphmodel.remove(cells);
 
 		// Checks if all children of a blocking region have been removed
-		Iterator it = regions.iterator();
+		Iterator<Object> it = regions.iterator();
 		while (it.hasNext()) {
 			jmtCells.add(null);
 			BlockingRegion region = (BlockingRegion) it.next();
@@ -1326,11 +1326,11 @@ public class Mediator implements GuiInterface {
 		}
 
 		// Removes cells from data structure
-		for (int i = 0; i < cells.length; i++) {
-			if (cells[i] instanceof JmtCell) {
-				model.deleteStation(((CellComponent) ((JmtCell) cells[i]).getUserObject()).getKey());
-			} else if (cells[i] instanceof JmtEdge) {
-				JmtEdge link = (JmtEdge) cells[i];
+		for (Object cell : cells) {
+			if (cell instanceof JmtCell) {
+				model.deleteStation(((CellComponent) ((JmtCell) cell).getUserObject()).getKey());
+			} else if (cell instanceof JmtEdge) {
+				JmtEdge link = (JmtEdge) cell;
 				model.setConnected(link.getSourceKey(), link.getTargetKey(), false);
 			}
 		}
@@ -1417,9 +1417,7 @@ public class Mediator implements GuiInterface {
 	public void updateStationPositions() {
 		Object key;
 		Object[] cells = graph.getDescendants(graph.getRoots());
-		for (int i = 0; i < cells.length; i++) {
-			// Gets the cell object
-			Object cell = cells[i];
+		for (Object cell : cells) {
 			if (cell instanceof JmtCell) {
 				JmtCell jcell = (JmtCell) cell;
 				key = ((CellComponent) jcell.getUserObject()).getKey();
@@ -1436,7 +1434,7 @@ public class Mediator implements GuiInterface {
 	 */
 	public void populateGraph() {
 		Object[] stations = model.getStationKeys().toArray();
-		HashMap cells = new HashMap();
+		HashMap<Object, JmtCell> cells = new HashMap<Object, JmtCell>();
 		JmtCell cell;
 
 		// Variables for auto-placement. Currently items are placed on a grid...
@@ -1449,9 +1447,9 @@ public class Mediator implements GuiInterface {
 		int colCount = (graph.getHeight() - 2 * Y0) / Y;
 		boolean containPosition = true;
 		// Shows stations
-		for (int i = 0; i < stations.length; i++) {
-			cell = cellFactory.createStationCell(stations[i]);
-			JMTPoint position = model.getStationPosition(stations[i]);
+		for (Object station : stations) {
+			cell = cellFactory.createStationCell(station);
+			JMTPoint position = model.getStationPosition(station);
 			// If position is not present, auto-position this station
 
 			while (position == null) {
@@ -1466,15 +1464,15 @@ public class Mediator implements GuiInterface {
 			if (position.isRotate()) {
 				rotateComponent(new Object[] { cell });
 			}
-			cells.put(stations[i], cell);
+			cells.put(station, cell);
 		}
 		Vector forwardConnections;
 		// Shows connections
-		for (int i = 0; i < stations.length; i++) {
-			forwardConnections = model.getForwardConnections(stations[i]);
+		for (Object station : stations) {
+			forwardConnections = model.getForwardConnections(station);
 			for (int j = 0; j < forwardConnections.size(); j++) {
 				// Forces connection as it's already present into data structure
-				connect((JmtCell) cells.get(stations[i]), (JmtCell) cells.get(forwardConnections.get(j)), true);
+				connect(cells.get(station), cells.get(forwardConnections.get(j)), true);
 			}
 
 		}
@@ -1482,7 +1480,7 @@ public class Mediator implements GuiInterface {
 		Vector regions = model.getRegionKeys();
 		for (int i = 0; i < regions.size(); i++) {
 			Object key = regions.get(i);
-			Set regionStation = new HashSet();
+			Set<JmtCell> regionStation = new HashSet<JmtCell>();
 			Iterator stationKeys = model.getBlockingRegionStations(key).iterator();
 			while (stationKeys.hasNext()) {
 				regionStation.add(cells.get(stationKeys.next()));
@@ -1632,10 +1630,10 @@ public class Mediator implements GuiInterface {
 				Object[] tmp = new Object[1];
 				tmp[0] = cells[i];
 				Object[] children = graph.getDescendants(tmp);
-				for (int j = 0; j < children.length; j++) {
-					if (children[j] instanceof JmtCell) {
+				for (Object element : children) {
+					if (element instanceof JmtCell) {
 
-						putCellInGoodPlace((JmtCell) children[j], -1, -1, false);
+						putCellInGoodPlace((JmtCell) element, -1, -1, false);
 
 					}
 				}
@@ -1790,8 +1788,8 @@ public class Mediator implements GuiInterface {
 										GraphConstants.getBounds(((SourceCell) cell).getAttributes()))) {
 							if (((JmtEdge) overlapping[j]).getSource() != cell.getChildAt(0)) {
 								// _______INIZIO_____
-								ArrayList intersectionPoints = ((JmtEdge) overlapping[j]).getIntersectionVertexPoint();
-								Point2D tmp = ((Point2D) (intersectionPoints.get(0)));
+								ArrayList<Point2D> intersectionPoints = ((JmtEdge) overlapping[j]).getIntersectionVertexPoint();
+								Point2D tmp = (intersectionPoints.get(0));
 								Rectangle2D cellBound = GraphConstants.getBounds(((SourceCell) cell).getAttributes());
 								double vertexMaxX = (int) cellBound.getMaxX();
 								double vertexMaxY = (int) cellBound.getMaxY();
@@ -1846,7 +1844,7 @@ public class Mediator implements GuiInterface {
 									bounds.setLocation(newPosition);
 								} else if (lowerSideIntersaction && rightSideIntersaction) {
 
-									Point2D tmp1 = ((Point2D) (intersectionPoints.get(1)));
+									Point2D tmp1 = (intersectionPoints.get(1));
 									Point newPosition = (this.overlapping).findFreePosition(((JmtEdge) overlapping[j]), cell, cellBound, tmp1, false,
 											false, false, true);
 									bounds.setLocation(newPosition);
@@ -1867,8 +1865,8 @@ public class Mediator implements GuiInterface {
 								if (((JmtEdge) overlapping[j]).intersects((EdgeView) (graph.getGraphLayoutCache()).getMapping(overlapping[j], false),
 										GraphConstants.getBounds(((SinkCell) cell).getAttributes()))) {
 
-									ArrayList intersectionPoints = ((JmtEdge) overlapping[j]).getIntersectionVertexPoint();
-									Point2D tmp = ((Point2D) (intersectionPoints.get(0)));
+									ArrayList<Point2D> intersectionPoints = ((JmtEdge) overlapping[j]).getIntersectionVertexPoint();
+									Point2D tmp = (intersectionPoints.get(0));
 									Rectangle2D cellBound = GraphConstants.getBounds(((SinkCell) cell).getAttributes());
 									double vertexMaxX = (int) cellBound.getMaxX();
 									double vertexMaxY = (int) cellBound.getMaxY();
@@ -1920,7 +1918,7 @@ public class Mediator implements GuiInterface {
 										bounds.setLocation(newPosition);
 									} else if (lowerSideIntersaction && rightSideIntersaction) {
 
-										Point2D tmp1 = ((Point2D) (intersectionPoints.get(1)));
+										Point2D tmp1 = (intersectionPoints.get(1));
 										Point newPosition = (this.overlapping).findFreePosition(((JmtEdge) overlapping[j]), cell, cellBound, tmp1,
 												false, false, false, true);
 										bounds.setLocation(newPosition);
@@ -1948,14 +1946,14 @@ public class Mediator implements GuiInterface {
 
 								access = access2 = false;
 
-								ArrayList intersectionPoints = ((JmtEdge) overlapping[j]).getIntersectionVertexPoint();
+								ArrayList<Point2D> intersectionPoints = ((JmtEdge) overlapping[j]).getIntersectionVertexPoint();
 								if ((intersectionPoints == null) || intersectionPoints.size() <= 0) {
 									bounds.setLocation(new Point(oldPointX, oldPointY));
 									GraphConstants.setBounds(cell.getAttributes(), bounds);
 									resetOverLapping = 0;
 									return;
 								} else {
-									Point2D tmp = ((Point2D) (intersectionPoints.get(0)));
+									Point2D tmp = (intersectionPoints.get(0));
 
 									Rectangle2D cellBound = GraphConstants.getBounds(cell.getAttributes());
 									double vertexMaxX = (int) cellBound.getMaxX();
@@ -2011,7 +2009,7 @@ public class Mediator implements GuiInterface {
 										bounds.setLocation(newPosition);
 									} else if (lowerSideIntersaction && rightSideIntersaction) {
 
-										Point2D tmp1 = ((Point2D) (intersectionPoints.get(1)));
+										Point2D tmp1 = (intersectionPoints.get(1));
 										Point newPosition = (this.overlapping).findFreePosition(((JmtEdge) overlapping[j]), cell, cellBound, tmp1,
 												false, false, false, true);
 										bounds.setLocation(newPosition);
@@ -2063,9 +2061,9 @@ public class Mediator implements GuiInterface {
 			Point2D zero = new Point(20, 0);
 			while (overlapping.length > 0) {
 				Point2D last = (Point2D) zero.clone();
-				for (int j = 0; j < overlapping.length; j++) {
-					if (overlapping[j] instanceof JmtCell && overlapping[j] != cell && inGroup) {
-						Rectangle2D b2 = GraphConstants.getBounds(((JmtCell) overlapping[j]).getAttributes());
+				for (Object element : overlapping) {
+					if (element instanceof JmtCell && element != cell && inGroup) {
+						Rectangle2D b2 = GraphConstants.getBounds(((JmtCell) element).getAttributes());
 						if (b2.intersects(bounds)) {
 							if (b2.getMaxX() > last.getX()) {
 								last.setLocation(b2.getMaxX(), last.getY());
@@ -2078,20 +2076,20 @@ public class Mediator implements GuiInterface {
 						}
 
 					}
-					if (!inGroup && overlapping[j] instanceof JmtCell && overlapping[j] != cell) {
+					if (!inGroup && element instanceof JmtCell && element != cell) {
 						last.setLocation(new Point((int) (last.getX() + .5), (int) (last.getY() + .5)));
 					}
 					int numberOfChild = cell.getChildCount();
-					if (isInGroup(overlapping[j]) && overlapping[j] instanceof JmtEdge) {
+					if (isInGroup(element) && element instanceof JmtEdge) {
 						if ((numberOfChild == 2)
-								&& ((JmtEdge) overlapping[j]).getSource() != cell.getChildAt(0)
-								&& ((JmtEdge) overlapping[j]).getSource() != cell.getChildAt(1)
-								&& ((JmtEdge) overlapping[j]).getTarget() != cell.getChildAt(0)
-								&& ((JmtEdge) overlapping[j]).getTarget() != cell.getChildAt(1)
-								&& ((JmtEdge) overlapping[j]).intersects((EdgeView) (graph.getGraphLayoutCache()).getMapping(overlapping[j], false),
-										GraphConstants.getBounds(cell.getAttributes()))) {
+								&& ((JmtEdge) element).getSource() != cell.getChildAt(0)
+								&& ((JmtEdge) element).getSource() != cell.getChildAt(1)
+								&& ((JmtEdge) element).getTarget() != cell.getChildAt(0)
+								&& ((JmtEdge) element).getTarget() != cell.getChildAt(1)
+								&& ((JmtEdge) element).intersects((EdgeView) (graph.getGraphLayoutCache()).getMapping(element, false), GraphConstants
+										.getBounds(cell.getAttributes()))) {
 						}
-						Rectangle2D b2 = GraphConstants.getBounds(((JmtEdge) overlapping[j]).getAttributes());
+						Rectangle2D b2 = GraphConstants.getBounds(((JmtEdge) element).getAttributes());
 						if (b2.intersects(bounds)) {
 							// ___
 						}
@@ -2137,9 +2135,9 @@ public class Mediator implements GuiInterface {
 
 		// Gets all cells that can overlap with given one
 		Object[] cells = graph.getDescendants(graph.getRoots(r));
-		for (int i = 0; i < cells.length; i++) {
+		for (Object cell2 : cells) {
 			// Gets the i-th cell
-			Object c = cells[i];
+			Object c = cell2;
 			if (c instanceof JmtCell) {
 				if (!c.equals(cell)) {
 					// Retrives the i-th cell attributes
@@ -2172,13 +2170,13 @@ public class Mediator implements GuiInterface {
 
 		boolean overlapCells = false;
 		Object[] cells = graph.getRoots(r);
-		for (int i = 0; i < cells.length; i++) {
-			if (cells[i] instanceof JmtEdge) {
-				if (((JmtEdge) cells[i]).intersects((EdgeView) (graph.getGraphLayoutCache()).getMapping(cells[i], false), r)) {
+		for (Object cell : cells) {
+			if (cell instanceof JmtEdge) {
+				if (((JmtEdge) cell).intersects((EdgeView) (graph.getGraphLayoutCache()).getMapping(cell, false), r)) {
 					overlapCells = true;
 				}
 			}
-			if (cells[i] instanceof JmtCell || cells[i] instanceof BlockingRegion || cells[i] instanceof SourceCell || cells[i] instanceof SinkCell) {
+			if (cell instanceof JmtCell || cell instanceof BlockingRegion || cell instanceof SourceCell || cell instanceof SinkCell) {
 				overlapCells = true;
 			}
 
@@ -2216,45 +2214,49 @@ public class Mediator implements GuiInterface {
 			String[] ln = model.getLoggerNameList();
 			String ln2 = "";
 			if (ln != null) {
-				if (model.getLoggingGlbParameter("autoAppend").equalsIgnoreCase(new Integer(jmt.engine.log.LoggerParameters.LOGGER_AR_ASK).toString()))
-				{
-				  if (ln.length > 0) {
-					// Cache the absolute log-path
-					String logabspath;
-					if (model.getLoggingGlbParameter("path").equalsIgnoreCase("") || (model.getLoggingGlbParameter("path").equalsIgnoreCase("."))) 
-						logabspath = new File("").getAbsolutePath() + File.separator;
-					else
-						logabspath = new File(model.getLoggingGlbParameter("path")).getAbsolutePath() + File.separator;
-					
-					// Find if the logfiles have data in them:
-					try {
-						for (int fn=0; fn<ln.length; fn++)
-						{
-							// if the files have data, print what will be overwritten
-							if (new File(logabspath + ln[fn]).length() > 0)
-									ln2 = ln2 + ln[fn] + ", ";
+				if (model.getLoggingGlbParameter("autoAppend")
+						.equalsIgnoreCase(new Integer(jmt.engine.log.LoggerParameters.LOGGER_AR_ASK).toString())) {
+					if (ln.length > 0) {
+						// Cache the absolute log-path
+						String logabspath;
+						if (model.getLoggingGlbParameter("path").equalsIgnoreCase("") || (model.getLoggingGlbParameter("path").equalsIgnoreCase("."))) {
+							logabspath = new File("").getAbsolutePath() + File.separator;
+						} else {
+							logabspath = new File(model.getLoggingGlbParameter("path")).getAbsolutePath() + File.separator;
 						}
-						// remove the trailing comma
-						if (ln2 != "")
-							ln2 = ln2.substring(0, ln2.length()-2);
-					} catch (Exception e) {e.printStackTrace();}
-	
-					if (ln2 != "") {
-						// Find frame to show dialog
-						Component parent = mainWindow;
-						if (resultsWindow != null && resultsWindow.isFocused()) {
-							parent = resultsWindow;
+
+						// Find if the logfiles have data in them:
+						try {
+							for (String element : ln) {
+								// if the files have data, print what will be overwritten
+								if (new File(logabspath + element).length() > 0) {
+									ln2 = ln2 + element + ", ";
+								}
+							}
+							// remove the trailing comma
+							if (ln2 != "") {
+								ln2 = ln2.substring(0, ln2.length() - 2);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
 						}
-		
-						int resultValue = JOptionPane.showConfirmDialog(parent, "This operation will modify the following logfile(s): " + ln2 + ".  " + "Continue anyway?",
-								"JMT - Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
-						if (resultValue == JOptionPane.NO_OPTION) {
-							return;
+
+						if (ln2 != "") {
+							// Find frame to show dialog
+							Component parent = mainWindow;
+							if (resultsWindow != null && resultsWindow.isFocused()) {
+								parent = resultsWindow;
+							}
+
+							int resultValue = JOptionPane.showConfirmDialog(parent, "This operation will modify the following logfile(s): " + ln2
+									+ ".  " + "Continue anyway?", "JMT - Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+							if (resultValue == JOptionPane.NO_OPTION) {
+								return;
+							}
 						}
+					} else {
+						System.out.println("Empty file");
 					}
-				  }
-				  else
-					  System.out.println("Empty file");
 				}
 			} // end confirmation if file exists
 			// Correct eventual problems on preloading for closed classes
@@ -2898,19 +2900,19 @@ public class Mediator implements GuiInterface {
 	public void addSelectionToNewBlockingRegion() {
 		Object[] cells = graph.getSelectionCells();
 		// Data structure to hold all selected stations and their search's key
-		HashMap stations = new HashMap();
+		HashMap<Object, Object> stations = new HashMap<Object, Object>();
 		boolean canBeAdded = true;
 		Object regionKey = model.addBlockingRegion();
-		for (int i = 0; i < cells.length; i++) {
-			if (cells[i] instanceof JmtCell) {
-				Object stationKey = ((CellComponent) ((JmtCell) cells[i]).getUserObject()).getKey();
+		for (Object cell : cells) {
+			if (cell instanceof JmtCell) {
+				Object stationKey = ((CellComponent) ((JmtCell) cell).getUserObject()).getKey();
 				if (!model.canRegionStationBeAdded(regionKey, stationKey)) {
 					canBeAdded = false;
 					break;
 				} else {
-					stations.put(cells[i], stationKey);
+					stations.put(cell, stationKey);
 				}
-			} else if (cells[i] instanceof BlockingRegion) {
+			} else if (cell instanceof BlockingRegion) {
 				// A blocking region cannot overlap another one
 				canBeAdded = false;
 				break;
@@ -2923,8 +2925,8 @@ public class Mediator implements GuiInterface {
 			Object[] stationCells = stations.keySet().toArray();
 			bl.addStations(stationCells);
 			// Adds stations to blocking region into data structure
-			for (int i = 0; i < stationCells.length; i++) {
-				model.addRegionStation(regionKey, stations.get(stationCells[i]));
+			for (Object stationCell : stationCells) {
+				model.addRegionStation(regionKey, stations.get(stationCell));
 			}
 		} else {
 			model.deleteBlockingRegion(regionKey);
@@ -2939,16 +2941,16 @@ public class Mediator implements GuiInterface {
 	public void handlesBlockingRegionDrag() {
 		Object[] cells = graph.getDescendants(graph.getSelectionCells());
 		// Put cells not in a blocking region to back
-		HashSet putBack = new HashSet();
-		for (int i = 0; i < cells.length; i++) {
-			if (cells[i] instanceof JmtCell && ((JmtCell) cells[i]).parentChanged()) {
+		HashSet<Object> putBack = new HashSet<Object>();
+		for (Object cell2 : cells) {
+			if (cell2 instanceof JmtCell && ((JmtCell) cell2).parentChanged()) {
 				// This cell was moved in, out or between blocking regions
-				JmtCell cell = (JmtCell) cells[i];
+				JmtCell cell = (JmtCell) cell2;
 				Object key = ((CellComponent) cell.getUserObject()).getKey();
 				Object oldRegionKey, newRegionKey;
 				if (!(cell.getParent() instanceof BlockingRegion)) {
 					// Object removed from blocking region
-					putBack.add(cells[i]);
+					putBack.add(cell2);
 					oldRegionKey = ((BlockingRegion) cell.getPrevParent()).getKey();
 					model.removeRegionStation(oldRegionKey, key);
 					// If region is empty, removes region too
@@ -2985,8 +2987,8 @@ public class Mediator implements GuiInterface {
 				cell.resetParent();
 			}
 			// Avoid insertion of a blocking region in an other
-			else if (cells[i] instanceof BlockingRegion) {
-				BlockingRegion region = (BlockingRegion) cells[i];
+			else if (cell2 instanceof BlockingRegion) {
+				BlockingRegion region = (BlockingRegion) cell2;
 				if (region.getParent() != null) {
 					region.removeFromParent();
 					graph.getModel().insert(new Object[] { region }, null, null, null, null);
@@ -3011,15 +3013,15 @@ public class Mediator implements GuiInterface {
 			cells = graph.getSelectionCells();
 		}
 
-		for (int i = 0; i < cells.length; i++) {
+		for (Object cell : cells) {
 
-			if ((cells[i] instanceof BlockingRegion) || cells[i] instanceof JmtEdge) {
+			if ((cell instanceof BlockingRegion) || cell instanceof JmtEdge) {
 				continue;
 			}
 
-			JmtCell current = (JmtCell) cells[i];
+			JmtCell current = (JmtCell) cell;
 
-			Map nested = new Hashtable();
+			Map<Object, Map> nested = new Hashtable<Object, Map>();
 			Map attributeMap = new Hashtable();
 			ImageIcon icon;
 			if (current.isLeftInputCell()) {
@@ -3029,7 +3031,7 @@ public class Mediator implements GuiInterface {
 			}
 			GraphConstants.setIcon(attributeMap, icon);
 
-			nested.put(cells[i], attributeMap);
+			nested.put(cell, attributeMap);
 			current.setLeftInputCell(!current.isLeftInputCell());
 			current.updatePortPositions(nested, icon, current.getSize(graph));
 			// _____DA INSERIRE QUI L AGGIORNAMENTO DELLA DECORAZIONE DELLA
@@ -3052,15 +3054,15 @@ public class Mediator implements GuiInterface {
 
 		cells = graph.getDescendants(graph.getRoots());
 		if (cells.length > 0) {
-			for (int i = 0; i < cells.length; i++) {
-				if (cells[i] instanceof BlockingRegion) {
+			for (Object cell2 : cells) {
+				if (cell2 instanceof BlockingRegion) {
 					celgru = new Object[1];
-					celgru[0] = cells[i];
+					celgru[0] = cell2;
 					// celle presenti nel blocking region incluse port e regione
 
 					celless = graph.getDescendants(celgru);
-					for (int j = 0; j < celless.length; j++) {
-						if (celless[j].equals(cell)) {
+					for (Object celles : celless) {
+						if (celles.equals(cell)) {
 							return true;
 						}
 					}
@@ -3098,8 +3100,8 @@ public class Mediator implements GuiInterface {
 		int inMin = 100;
 		int inMax = 0;
 
-		List min = new ArrayList();
-		List max = new ArrayList();
+		List<Object> min = new ArrayList<Object>();
+		List<Object> max = new ArrayList<Object>();
 
 		cells = graph.getDescendants(graph.getRoots());
 		for (int i = 0; i < cells.length; i++) {
@@ -3140,9 +3142,9 @@ public class Mediator implements GuiInterface {
 
 		}
 		boolean projectClose = true;
-		for (int i = 0; i < cells.length; i++) {
-			if (cells[i] instanceof JmtCell && !sourceIn) {
-				if (((JmtCell) cells[i]).in == 0) {
+		for (Object cell : cells) {
+			if (cell instanceof JmtCell && !sourceIn) {
+				if (((JmtCell) cell).in == 0) {
 					projectClose = false;
 				}
 			}
@@ -3168,16 +3170,16 @@ public class Mediator implements GuiInterface {
 
 			int tmpMax = 0;
 			JmtCell tmpCell = null;
-			for (int i = 0; i < cells.length; i++) {
-				if (cells[i] instanceof JmtCell) {
-					int tmpIn = (((JmtCell) cells[i]).in);
+			for (Object cell : cells) {
+				if (cell instanceof JmtCell) {
+					int tmpIn = (((JmtCell) cell).in);
 					if (tmpMax < tmpIn) {
 						tmpMax = tmpIn;
-						tmpCell = ((JmtCell) cells[i]);
+						tmpCell = ((JmtCell) cell);
 					}
 				}
 			}
-			min = new ArrayList();
+			min = new ArrayList<Object>();
 			min.add(tmpCell);
 
 		}
@@ -3204,7 +3206,7 @@ public class Mediator implements GuiInterface {
 		}
 
 		// controllo
-		min = new ArrayList();
+		min = new ArrayList<Object>();
 		for (int w2 = 0; w2 < cells.length; w2++) {
 			if (cells[w2] instanceof JmtCell) {
 				if (!((JmtCell) cells[w2]).seen) {
@@ -3247,7 +3249,7 @@ public class Mediator implements GuiInterface {
 		Rectangle boundspadre = GraphConstants.getBounds((prev).getAttributes()).getBounds();
 		Object[] listEdges = null;
 		GraphModel graphmodel = graph.getModel();
-		List next = new ArrayList();
+		List<Object> next = new ArrayList<Object>();
 
 		if (flag1 == false && prev.seen == false) {
 
@@ -3269,11 +3271,11 @@ public class Mediator implements GuiInterface {
 		// inserisco tutti gli archi uscenti e entranti di min.get(j) in
 		// listEdges
 		listEdges = DefaultGraphModel.getOutgoingEdges(graphmodel, prev);
-		Vector listEdgestmp = new Vector();
-		for (int q = 0; q < listEdges.length; q++) {
-			JmtCell qq = (JmtCell) (graphmodel.getParent(graphmodel.getTarget(listEdges[q])));
+		Vector<Object> listEdgestmp = new Vector<Object>();
+		for (Object listEdge : listEdges) {
+			JmtCell qq = (JmtCell) (graphmodel.getParent(graphmodel.getTarget(listEdge)));
 			if (!(qq).seen) {
-				listEdgestmp.add(listEdges[q]);
+				listEdgestmp.add(listEdge);
 			}
 		}
 		listEdges = listEdgestmp.toArray();
@@ -3319,7 +3321,7 @@ public class Mediator implements GuiInterface {
 	}
 
 	// Giuseppe De Cicco & Fabio Granara
-	private void repositionSons(JmtCell padre, List sons, int numero, int cont) {
+	private void repositionSons(JmtCell padre, List<Object> sons, int numero, int cont) {
 		inRepositionSons = true;
 		Object[] listEdges = null;
 		GraphModel graphmodel = graph.getModel();

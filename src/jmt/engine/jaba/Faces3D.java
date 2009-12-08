@@ -41,20 +41,20 @@ public class Faces3D {
 	 * @return
 	 * @throws ConvexHullException
 	 */
-	public Vector Hull3D(Vector vertices) throws ConvexHullException {
-		Vector newfaces = new Vector();
+	public Vector<newFace> Hull3D(Vector<Vertex> vertices) throws ConvexHullException {
+		Vector<newFace> newfaces = new Vector<newFace>();
 
 		// Lancio del metodo ConvexHull
 		ConvexHull hull = new ConvexHull(vertices);
 
 		// Recupero delle informazioni
-		Vector faces = new Vector(hull.getFaces());
+		Vector<Polygon> faces = new Vector<Polygon>(hull.getFaces());
 		Vector vertoffaces = new Vector();
-		Vector vertof0 = new Vector(vertoffaces);
+		Vector<Vertex> vertof0 = new Vector<Vertex>(vertoffaces);
 
 		for (int k = 0; k < faces.size(); k++) {
-			vertof0 = ((Polygon) faces.get(k)).getVertices();
-			newFace sect0 = new newFace((Vertex) vertof0.get(0), (Vertex) vertof0.get(1), (Vertex) vertof0.get(2), k);
+			vertof0 = faces.get(k).getVertices();
+			newFace sect0 = new newFace(vertof0.get(0), vertof0.get(1), vertof0.get(2), k);
 			newfaces.addElement(sect0);
 		}
 
@@ -64,9 +64,9 @@ public class Faces3D {
 		for (int i = 0; i < NSettori; i++) {
 			//TODO Meglio mettere j=i o j=0???
 			for (int j = i; j < NSettori; j++) {
-				if (((newFace) newfaces.get(i)).Complanar(((newFace) newfaces.get(i)), ((newFace) newfaces.get(j))) && i != j
-						&& ((newFace) newfaces.get(i)).confSect(((newFace) newfaces.get(i)), ((newFace) newfaces.get(j)))) {
-					((newFace) newfaces.get(j)).setContr(((newFace) newfaces.get(i)).getContr());
+				if (newfaces.get(i).Complanar(newfaces.get(i), newfaces.get(j)) && i != j
+						&& newfaces.get(i).confSect(newfaces.get(i), newfaces.get(j))) {
+					newfaces.get(j).setContr(newfaces.get(i).getContr());
 				}
 			}
 		}
@@ -84,16 +84,16 @@ public class Faces3D {
 	 * @param lin       Il vettore di vertici passato
 	 * @return          Un vettore di vertici contenente anche le proiezioni sugli assi
 	 */
-	public Vector LExplode3D(Vector lin) {
+	public Vector<Vertex> LExplode3D(Vector<Vertex> lin) {
 		// Creo un vettore L contenente le coordinate e le loro proiezioni sugli assi
-		Vector lout = new Vector();
+		Vector<Vertex> lout = new Vector<Vertex>();
 
 		// Cerco le coordinate di ogni vertice passato e creo le proiezioni
 		int[] coord = {};
 
 		for (int i = 0; i < lin.size(); i++) {
 
-			coord = ((Vertex) lin.get(i)).getCoords();
+			coord = lin.get(i).getCoords();
 
 			lout.addElement(new Vertex(coord[0], coord[1], coord[2])); //x,y,z
 			lout.addElement(new Vertex(coord[0], 0, 0)); //x,0,0
@@ -151,10 +151,10 @@ public class Faces3D {
 	 * @param vertices
 	 * @return      true se v è presente in vertices
 	 */
-	public boolean HasVertex(Vertex v, Vector vertices) {
+	public boolean HasVertex(Vertex v, Vector<Vertex> vertices) {
 		boolean out = false;
 		for (int i = 0; i < vertices.size(); i++) {
-			if (SameVertex(v, (Vertex) vertices.get(i))) {
+			if (SameVertex(v, vertices.get(i))) {
 				out = true;
 				break;
 			}
@@ -172,11 +172,10 @@ public class Faces3D {
 	 * @param ori
 	 * @return      un vettore con le facce rimaste
 	 */
-	public Vector RemoveP(Vector faces, Vector ori) {
-		Vector out2 = new Vector();
+	public Vector<newFace> RemoveP(Vector<newFace> faces, Vector<Vertex> ori) {
+		Vector<newFace> out2 = new Vector<newFace>();
 		for (int i = 0; i < faces.size(); i++) {
-			if ((HasVertex((((newFace) faces.get(i)).getV0()), ori)) && HasVertex((((newFace) faces.get(i)).getV1()), ori)
-					&& HasVertex((((newFace) faces.get(i)).getV2()), ori)) {
+			if ((HasVertex((faces.get(i).getV0()), ori)) && HasVertex((faces.get(i).getV1()), ori) && HasVertex((faces.get(i).getV2()), ori)) {
 				out2.addElement(faces.get(i));
 			}
 
@@ -189,33 +188,33 @@ public class Faces3D {
 	 * @param vertices
 	 * @return
 	 */
-	public Vector VertexRemoveZ(Vector vertices) {
-		Vector out = new Vector();
+	public Vector<newPoint> VertexRemoveZ(Vector<Vertex> vertices) {
+		Vector<newPoint> out = new Vector<newPoint>();
 
 		for (int i = 0; i < vertices.size(); i++) {
-			int[] coord = ((Vertex) vertices.get(i)).getCoords();
+			int[] coord = vertices.get(i).getCoords();
 			newPoint p = new newPoint(coord[0], coord[1]);
 			out.addElement(p);
 		}
 		return out;
 	}
 
-	public Vector VertexRemoveY(Vector vertices) {
-		Vector out = new Vector();
+	public Vector<newPoint> VertexRemoveY(Vector<Vertex> vertices) {
+		Vector<newPoint> out = new Vector<newPoint>();
 
 		for (int i = 0; i < vertices.size(); i++) {
-			int[] coord = ((Vertex) vertices.get(i)).getCoords();
+			int[] coord = vertices.get(i).getCoords();
 			newPoint p = new newPoint(coord[0], coord[2]);
 			out.addElement(p);
 		}
 		return out;
 	}
 
-	public Vector VertexRemoveX(Vector vertices) {
-		Vector out = new Vector();
+	public Vector<newPoint> VertexRemoveX(Vector<Vertex> vertices) {
+		Vector<newPoint> out = new Vector<newPoint>();
 
 		for (int i = 0; i < vertices.size(); i++) {
-			int[] coord = ((Vertex) vertices.get(i)).getCoords();
+			int[] coord = vertices.get(i).getCoords();
 			newPoint p = new newPoint(coord[1], coord[2]);
 			out.addElement(p);
 		}
@@ -227,7 +226,7 @@ public class Faces3D {
 	 * @param s
 	 * @return
 	 */
-	public boolean ExistsComplanar(Vector s) {
+	public boolean ExistsComplanar(Vector<newFace> s) {
 		boolean out = false;
 		if (s.size() < 2) {
 			return false;
@@ -235,7 +234,7 @@ public class Faces3D {
 			for (int i = 0; i < s.size(); i++) {
 				for (int j = i + 1; j < s.size(); j++) {
 					{
-						if (((newFace) s.get(i)).getContr() == ((newFace) s.get(j)).getContr()) {
+						if (s.get(i).getContr() == s.get(j).getContr()) {
 							out = true;
 						}
 					}

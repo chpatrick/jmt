@@ -27,7 +27,6 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import jmt.common.exception.NetException;
 import jmt.engine.NodeSections.BlockingQueue;
-import jmt.engine.NodeSections.Server;
 import jmt.engine.QueueNet.JobClass;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeSection;
@@ -493,7 +492,7 @@ public class Measure {
 		if (measureType == SimConstants.RESIDENCE_TIME) {
 			scaleMeasureWithVisitRatio();
 		}
-		
+
 		//end NEW
 		if (counter == fireEventSize) {
 			counter = 0;
@@ -602,8 +601,8 @@ public class Measure {
 		root.setAttribute("discarded", Integer.toString(getDiscardedSamples() / pointSize));
 
 		newValues = "";
-		for (int i = 0; i < samples.length; i++) {
-			newValues += Double.toString(samples[i]) + "/n";
+		for (double sample : samples) {
+			newValues += Double.toString(sample) + "/n";
 		}
 		root.setAttribute("data", newValues);
 		root.setAttribute("numData", Integer.toString(samples.length));

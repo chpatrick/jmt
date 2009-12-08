@@ -82,6 +82,7 @@ public class JWatUnivariateStatsTableModel extends AbstractTableModel implements
 	 * Returns name for each column (given its index) to be displayed inside
 	 * table header
 	 */
+	@Override
 	public String getColumnName(int columnIndex) {
 		if (columnIndex < columnNames.length) {
 			return columnNames[columnIndex];
@@ -95,10 +96,12 @@ public class JWatUnivariateStatsTableModel extends AbstractTableModel implements
 	 * index) is editable or not. In this case distribution column is not
 	 * editable, as editing functionality is implemented via edit button
 	 */
+	@Override
 	public boolean isCellEditable(int rowIndex, int columnIndex) {
 		return false;
 	}
 
+	@Override
 	public Class getColumnClass(int index) {
 		return String.class;
 	}

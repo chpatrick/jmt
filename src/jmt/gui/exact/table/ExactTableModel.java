@@ -35,6 +35,10 @@ import javax.swing.table.AbstractTableModel;
  */
 public abstract class ExactTableModel extends AbstractTableModel implements ModelHandlesRowHeader, PrototypedTableModel {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected Object prototype;
 	protected Object rowHeaderPrototype;
 

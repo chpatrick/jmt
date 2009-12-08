@@ -211,6 +211,7 @@ public class PAProgressWindow extends JMTDialog {
 	/* (non-Javadoc)
 	 * @see jmt.framework.gui.components.JMTDialog#canBeClosed()
 	 */
+	@Override
 	public boolean canBeClosed() {
 		return stopped;
 	}
@@ -218,6 +219,7 @@ public class PAProgressWindow extends JMTDialog {
 	/* (non-Javadoc)
 	 * @see jmt.framework.gui.components.JMTDialog#doClose()
 	 */
+	@Override
 	protected void doClose() {
 		stop.getAction().actionPerformed(null);
 	}
@@ -489,6 +491,7 @@ public class PAProgressWindow extends JMTDialog {
 			lastTime = timeInSec;
 		}
 
+		@Override
 		public void run() {
 			lastTime = ((double) System.currentTimeMillis()) / 1000 - globalStartTime;
 			while (!stopped) {

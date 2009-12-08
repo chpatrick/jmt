@@ -82,6 +82,7 @@ public class QuantileDataAnalyzer extends DynamicDataAnalyzerImpl {
 	 * @return true if the confidence interval is smaller than required by
 	 *          the user, or the data analyzed are too many
 	 */
+	@Override
 	public boolean addSample(double newSample, double Weight) {
 		if (initialized) {
 			data.add(newSample * Weight);
@@ -168,6 +169,7 @@ public class QuantileDataAnalyzer extends DynamicDataAnalyzerImpl {
 	 *
 	 * @return true if the precision requirement met. false if not.
 	 */
+	@Override
 	protected boolean HWtest() {
 		sort();
 		ordered = true;
@@ -179,6 +181,7 @@ public class QuantileDataAnalyzer extends DynamicDataAnalyzerImpl {
 	/**
 	 *updates the variance
 	 */
+	@Override
 	protected void calcVar() {
 		double[] C;
 		double[] tempBatch = new double[numBatch];

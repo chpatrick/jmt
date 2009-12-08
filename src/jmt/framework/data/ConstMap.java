@@ -29,8 +29,8 @@ import java.util.HashMap;
  * @author Bertoli Marco
  * @version 1.0
  */
-public abstract class ConstMap<E,F> {
-	private HashMap<E,F> map = new HashMap<E,F>();
+public abstract class ConstMap<E, F> {
+	private HashMap<E, F> map = new HashMap<E, F>();
 
 	/**
 	 * Fills this constant map with values. Call putConst method to fill.

@@ -25,6 +25,7 @@ public class JWatBivariateStatsTableModel extends AbstractTableModel implements 
 	 * Returns name for each column (given its index) to be displayed inside
 	 * table header
 	 */
+	@Override
 	public String getColumnName(int columnIndex) {
 		if (matrix != null) {
 			names = matrix.getVariableNames();
@@ -59,6 +60,7 @@ public class JWatBivariateStatsTableModel extends AbstractTableModel implements 
 		return null;
 	}
 
+	@Override
 	public Class getColumnClass(int index) {
 		return String.class;
 	}

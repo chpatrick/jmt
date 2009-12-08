@@ -76,6 +76,7 @@ class Thread1 extends Thread {
 
 	}
 
+	@Override
 	public void run() {
 
 		BatchTest.comboTest(1, 1, models, 1, 1);
@@ -92,6 +93,7 @@ class Thread2 extends Thread {
 
 	}
 
+	@Override
 	public void run() {
 
 		//boolean finished = false;
@@ -142,6 +144,7 @@ class Thread3 extends Thread {
 		this.disp = disp;
 	}
 
+	@Override
 	public void run() {
 
 		disp.solveModel();
@@ -158,6 +161,7 @@ class Thread4 extends Thread {
 		this.disp = disp;
 	}
 
+	@Override
 	public void run() {
 
 		double progress = 0.0;
@@ -195,6 +199,7 @@ class Thread5 extends Thread {
 		this.disp = disp;
 	}
 
+	@Override
 	public void run() {
 
 		double progress = 0.0;

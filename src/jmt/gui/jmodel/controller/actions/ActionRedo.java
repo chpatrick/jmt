@@ -59,6 +59,7 @@ public class ActionRedo extends AbstractUndoRedoAction {
 	/**
 	 * Update the state (name & enabled) of this instance
 	 */
+	@Override
 	public void update() {
 		setEnabled(um.canRedo());
 		putValue(SHORT_DESCRIPTION, um.getRedoPresentationName());

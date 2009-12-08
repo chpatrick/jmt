@@ -55,13 +55,15 @@ public class PSServer extends ServiceSection {
 	waitingAcks;
 
 	private ServiceStrategy serviceStrategy[];
-	
+
 	/** Tells which inner event we are processing */
-	private enum PSEvent {JOB_IN, JOB_OUT}
+	private enum PSEvent {
+		JOB_IN, JOB_OUT
+	}
 
 	/** The data structure holdings all the jobs */
 	private PriorityQueue<JobData> jobs;
-	
+
 	private PSJobInfoList queueList, serviceList;
 
 	// A token to preempt the last message sent when a new job arrives
@@ -118,7 +120,6 @@ public class PSServer extends ServiceSection {
 		}
 	}
 
-	
 	/* (non-Javadoc)
 	 * @see jmt.engine.QueueNet.NodeSection#getDoubleSectionProperty(int, jmt.engine.QueueNet.JobClass)
 	 */
@@ -172,7 +173,7 @@ public class PSServer extends ServiceSection {
 					// Estimate the job service time, puts it in the queue and sends a message to itself
 					// with the minimum service time of all the jobs to perform processing
 					double serviceTime = serviceStrategy[job.getJobClass().getId()].wait(this);
-					JobData data = new JobData(job, serviceTime); 
+					JobData data = new JobData(job, serviceTime);
 					handleJobInfoLists(data, PSEvent.JOB_IN);
 					jobs.add(data);
 
@@ -224,7 +225,7 @@ public class PSServer extends ServiceSection {
 			lastMessageSentTime = NetSystem.getTime();
 		}
 	}
-	
+
 	/**
 	 * Handles the manual update of measures for queue and service sections
 	 * @param jobData the jobData
@@ -236,22 +237,23 @@ public class PSServer extends ServiceSection {
 		if (queueList == null) {
 			queueList = (PSJobInfoList) getOwnerNode().getSection(NodeSection.INPUT).getObject(PROPERTY_ID_JOBINFOLIST);
 		}
-		
+
 		// Computes the percentage of jobs in service and in queue
 		double serviceWeigth, queueWeight;
 		if (jobs.size() < numberOfServers) {
+			// Everything is in service
 			serviceWeigth = 1.0;
 			queueWeight = 0.0;
 		} else {
-			serviceWeigth = (double)numberOfServers / jobs.size();
+			serviceWeigth = (double) numberOfServers / jobs.size();
 			queueWeight = jobs.size() - serviceWeigth;
 		}
-		
+
 		// Updates utilization measures
 		JobClass jobClass = jobData.getJob().getJobClass();
 		queueList.psUpdateUtilization(jobClass, queueWeight, NetSystem.getTime());
 		serviceList.psUpdateUtilization(jobClass, serviceWeigth, NetSystem.getTime());
-		
+
 		// Update busy time measures and throughputs
 		if (event == PSEvent.JOB_OUT) {
 			double queueTime = NetSystem.getTime() - jobData.getEnteringTime() - jobData.getServiceTime();
@@ -264,7 +266,7 @@ public class PSServer extends ServiceSection {
 			queueList.psUpdateThroughput(jobClass);
 			serviceList.psUpdateThroughput(jobClass);
 		}
-		
+
 		// Finally updates jobIn / jobOut counters
 		if (event == PSEvent.JOB_IN) {
 			queueList.psJobIn(jobClass, NetSystem.getTime());
@@ -346,14 +348,14 @@ public class PSServer extends ServiceSection {
 		public double getResidualServiceTime() {
 			return residualServiceTime;
 		}
-		
+
 		/**
 		 * @return the total service time that the job must receive.
 		 */
 		public double getServiceTime() {
 			return serviceTime;
 		}
-		
+
 		/**
 		 * @return the time in which the job entered the service section.
 		 */

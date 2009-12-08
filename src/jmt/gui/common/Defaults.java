@@ -83,11 +83,11 @@ public class Defaults implements CommonConstants {
 		// Not used parameter...
 		def.setProperty("blockingRegionType", "default");
 
-        // Logger Parameters (for global log)
-        def.setProperty("loggerDelimiter", ";");
-        def.setProperty("loggerDecimalSeparator", ".");
-        def.setProperty("loggerAutoAppend", ""+jmt.engine.log.LoggerParameters.LOGGER_AR_ASK);
-        def.setProperty("loggerFilePath", "");
+		// Logger Parameters (for global log)
+		def.setProperty("loggerDelimiter", ";");
+		def.setProperty("loggerDecimalSeparator", ".");
+		def.setProperty("loggerAutoAppend", "" + jmt.engine.log.LoggerParameters.LOGGER_AR_ASK);
+		def.setProperty("loggerFilePath", "");
 
 		//Simulation Defaults parameters
 		def.setProperty("measureAlpha", "0.9");

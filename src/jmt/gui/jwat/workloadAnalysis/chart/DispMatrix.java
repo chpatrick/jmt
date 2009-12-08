@@ -81,6 +81,7 @@ public class DispMatrix extends JScrollPane {
 		model.addOnChangeVariableValue(listener);
 	}
 
+	@Override
 	protected void paintComponent(Graphics g) {
 		if (g == null) {
 			return;
@@ -123,6 +124,7 @@ public class DispMatrix extends JScrollPane {
 				this.removeMouseListener(this.getMouseListeners()[0]);
 			}
 			this.addMouseListener(new MouseAdapter() {
+				@Override
 				public void mouseClicked(MouseEvent e) {
 					/* Visualizzazione dello scatter plot dettagliato */
 					if (e.getButton() == MouseEvent.BUTTON1 && e.getClickCount() == 2) {
@@ -133,10 +135,12 @@ public class DispMatrix extends JScrollPane {
 
 							JWatWorkloadManager.addJMTWindow(f);
 							f.addWindowListener(new WindowAdapter() {
+								@Override
 								public void windowClosing(WindowEvent e) {
 									JWatWorkloadManager.exit(f);
 								}
 
+								@Override
 								public void windowClosed(WindowEvent e) {
 									JWatWorkloadManager.exit(f);
 								}
@@ -170,6 +174,7 @@ public class DispMatrix extends JScrollPane {
 			});
 		}
 
+		@Override
 		public void paintComponent(Graphics g) {
 			if (g == null) {
 				return;
@@ -186,6 +191,7 @@ public class DispMatrix extends JScrollPane {
 				grap.drawImage(chart, 0, 0, null);
 				//SwingWorker worker = new SwingWorker()
 				TimeConsumingWorker worker = new TimeConsumingWorker(new ProgressMonitorShow(DispMatrix.this, "Plotting scatters...", 1)) {
+					@Override
 					public Object construct() {
 						//doWork();
 						Graphics g = chart.getGraphics();
@@ -256,6 +262,7 @@ public class DispMatrix extends JScrollPane {
 						return null;
 					}
 
+					@Override
 					public void finished() {
 						DispersionPanel.this.repaint();
 					}

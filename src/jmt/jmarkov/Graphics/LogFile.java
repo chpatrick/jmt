@@ -22,8 +22,6 @@
  */
 package jmt.jmarkov.Graphics;
 
-import jmt.jmarkov.utils.Formatter;
-
 import java.awt.Component;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -35,6 +33,7 @@ import java.util.LinkedList;
 
 import javax.swing.JOptionPane;
 
+import jmt.jmarkov.utils.Formatter;
 
 // this is using for saving log in to the csv file
 public class LogFile implements Notifier {
@@ -42,12 +41,10 @@ public class LogFile implements Notifier {
 	public final static int TABBED_DELIMITED = 0;
 	public final static int COMMA_DELIMITED = 1;
 	public final static int SEMI_COLON_DELIMITED = 2;
-	private LinkedList tempList = new LinkedList();
+	private LinkedList<Object> tempList = new LinkedList<Object>();
 	private int lastGeneratedRow = 0;
 
-
-	private static String columnNames[] = { "Cust. ID", "Arrival Time",
-			"Start Execution", "Server ID", "Exit System" };
+	private static String columnNames[] = { "Cust. ID", "Arrival Time", "Start Execution", "Server ID", "Exit System" };
 	private int delimiterType;
 	private Writer output;
 	private boolean logging = false;
@@ -70,24 +67,27 @@ public class LogFile implements Notifier {
 			tempList.add(null);
 		}
 
-		if (column == 0)
+		if (column == 0) {
 			return;
+		}
 
 		int i = 0;//searching the given id element in the list
-		while (((Integer) tempList.get(i * 5)).intValue() != row)
+		while (((Integer) tempList.get(i * 5)).intValue() != row) {
 			i++;
+		}
 		tempList.set(i * 5 + column, value);
 
 		while (tempList.size() > 0 && tempList.get(4) != null) {
 			try {
 				for (int k = 0; k < 5; k++) {
 					output.write(tempList.remove().toString());
-					if (delimiterType == TABBED_DELIMITED)
+					if (delimiterType == TABBED_DELIMITED) {
 						output.write("\t");
-					else if (delimiterType == COMMA_DELIMITED)
+					} else if (delimiterType == COMMA_DELIMITED) {
 						output.write(",");
-					else if (delimiterType == SEMI_COLON_DELIMITED)
+					} else if (delimiterType == SEMI_COLON_DELIMITED) {
 						output.write(";");
+					}
 				}
 				output.write(newline);
 			} catch (IOException e) {
@@ -97,8 +97,9 @@ public class LogFile implements Notifier {
 	}
 
 	private void setLogValue(int row, int column, Object value) {
-		if (logging)
+		if (logging) {
 			writeFile(row, column, value);
+		}
 	}
 
 	private void setLogValue(int row, int column, String value) {
@@ -106,15 +107,14 @@ public class LogFile implements Notifier {
 	}
 
 	private void setLogValue(int row, int column, int value) {
-		setLogValue(row, column, Formatter.formatNumber(value, 0,false));
+		setLogValue(row, column, Formatter.formatNumber(value, 0, false));
 	}
 
 	private void setLogValue(int row, int column, double value) {
-		setLogValue(row, column, Formatter.formatNumber(value, 2,false));
+		setLogValue(row, column, Formatter.formatNumber(value, 2, false));
 	}
 
-	public void enterProcessor(int jobId, int processorId, double time,
-			double executionTime) {
+	public void enterProcessor(int jobId, int processorId, double time, double executionTime) {
 		if (logging) {
 			setLogValue(jobId, 2, time / 1000);
 			setLogValue(jobId, 3, processorId);
@@ -137,8 +137,7 @@ public class LogFile implements Notifier {
 	public void exitQueue(int jobId, double time) {
 	}
 
-	public void exitSystem(int jobId, int processorId, double enterQueueTime,
-			double enterCpuTime, double exitSystemTime) {
+	public void exitSystem(int jobId, int processorId, double enterQueueTime, double enterCpuTime, double exitSystemTime) {
 	}
 
 	public void jobLost(int jobId, double time) {
@@ -158,15 +157,17 @@ public class LogFile implements Notifier {
 				try {
 					for (int k = 0; k < 5; k++) {
 						tempObj = tempList.remove();
-						if (tempObj != null)
+						if (tempObj != null) {
 							output.write(tempObj.toString());
+						}
 
-						if (delimiterType == TABBED_DELIMITED)
+						if (delimiterType == TABBED_DELIMITED) {
 							output.write("\t");
-						else if (delimiterType == COMMA_DELIMITED)
+						} else if (delimiterType == COMMA_DELIMITED) {
 							output.write(",");
-						else if (delimiterType == SEMI_COLON_DELIMITED)
+						} else if (delimiterType == SEMI_COLON_DELIMITED) {
 							output.write(";");
+						}
 					}
 					output.write(newline);
 				} catch (IOException e) {
@@ -187,32 +188,31 @@ public class LogFile implements Notifier {
 
 	}
 
-	public void updateProcessor(int jobId, int processorId,
-			double remainingTime, double time) {
+	public void updateProcessor(int jobId, int processorId, double remainingTime, double time) {
 	}
 
 	public void updateQueue(int jobId, double time) {
 	}
 
-	public void setLogFile(File file, int type,Component parentC) {
+	public void setLogFile(File file, int type, Component parentC) {
 		delimiterType = type;
 		try {
 			// use buffering
 			output = new BufferedWriter(new FileWriter(file));
-			for (int col = 0; col < columnNames.length; col++) {
-				output.write(columnNames[col]);
-				if (delimiterType == TABBED_DELIMITED)
+			for (String columnName : columnNames) {
+				output.write(columnName);
+				if (delimiterType == TABBED_DELIMITED) {
 					output.write("\t");
-				else if (delimiterType == COMMA_DELIMITED)
+				} else if (delimiterType == COMMA_DELIMITED) {
 					output.write(",");
-				else if (delimiterType == SEMI_COLON_DELIMITED)
+				} else if (delimiterType == SEMI_COLON_DELIMITED) {
 					output.write(";");
+				}
 			}
 			output.write(newline);
 
 		} catch (FileNotFoundException e) {
-			JOptionPane.showMessageDialog(parentC, e.getMessage(),
-					"File not found", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(parentC, e.getMessage(), "File not found", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -220,7 +220,7 @@ public class LogFile implements Notifier {
 	}
 
 	public void refresh() {
-		if (logging){
+		if (logging) {
 			try {
 				output.flush();
 			} catch (IOException e) {
@@ -236,7 +236,5 @@ public class LogFile implements Notifier {
 	public void setLogging(boolean logging) {
 		this.logging = logging;
 	}
-
-
 
 }

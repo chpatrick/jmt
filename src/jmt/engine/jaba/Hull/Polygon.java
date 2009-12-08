@@ -31,13 +31,13 @@ public class Polygon {
 	 * perimeter.  For planar polygons this should be clockwise with
 	 * respect to the outwards pointing normal.
 	 */
-	private Vector vertices; // Polygon vertices
+	private Vector<Vertex> vertices; // Polygon vertices
 
 	/**
 	 * Construct a polygon with no vertices.
 	 */
 	public Polygon() {
-		vertices = new Vector();
+		vertices = new Vector<Vertex>();
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class Polygon {
 	 *
 	 * @param v  the list of vertices
 	 */
-	public Polygon(Vector v) {
+	public Polygon(Vector<Vertex> v) {
 		vertices = v;
 	}
 
@@ -54,7 +54,7 @@ public class Polygon {
 	 */
 	public void reverse() {
 		/* Add vertices in reverse order */
-		Vector vertices = getVertices();
+		Vector<Vertex> vertices = getVertices();
 		int size = vertices.size();
 		for (int i = 1; i < size; i++) {
 			vertices.insertElementAt(vertices.elementAt(i), 0);
@@ -67,7 +67,7 @@ public class Polygon {
 	 *
 	 * @return Returns a vector p
 	 */
-	public Vector getVertices() {
+	public Vector<Vertex> getVertices() {
 		return vertices;
 	}
 
@@ -80,16 +80,17 @@ public class Polygon {
 	  */
 	public Vertex nextVertex(Vertex v) {
 		int ind = vertices.indexOf(v);
-		return (Vertex) (ind == -1 ? null : vertices.elementAt((ind + 1) % vertices.size()));
+		return (ind == -1 ? null : vertices.elementAt((ind + 1) % vertices.size()));
 	}
 
 	/**
 	 * Returns a string describing a polygon.
 	 */
+	@Override
 	public String toString() {
 		String s = new String();
 
-		for (Enumeration e = getVertices().elements(); e.hasMoreElements();) {
+		for (Enumeration<Vertex> e = getVertices().elements(); e.hasMoreElements();) {
 			s += e.nextElement();
 		}
 		return s;

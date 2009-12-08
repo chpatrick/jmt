@@ -17,8 +17,8 @@
   */
 package jmt.engine.jwat;
 
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import jmt.engine.jwat.filters.FilterOnVariable;
 import jmt.engine.jwat.input.VariableMapping;
@@ -99,7 +99,7 @@ public class MatrixOsservazioni {
 	 * @return object of bivariate statistics.
 	 */
 	public StatBivariate getBivStatObj() {
-		return (StatBivariate) listOfStatsBiv.get(listOfStatsBiv.size() - 1);
+		return listOfStatsBiv.get(listOfStatsBiv.size() - 1);
 	}
 
 	/**
@@ -159,7 +159,7 @@ public class MatrixOsservazioni {
 	//UPDATE 28/10/2006 + Spostamento operazioni di trasformazione da modelWorkloadAnalysis a MatrixOsservazioni
 	//					+ Inserimento array delle statistiche bivariate per non effettuare il ricalcolo in caso di undo
 
-	private ArrayList listOfStatsBiv = new ArrayList(); //<StatBivariate>
+	private ArrayList<StatBivariate> listOfStatsBiv = new ArrayList<StatBivariate>(); //<StatBivariate>
 
 	public void applyTransformation(int varSel, short type) throws TrasformException {
 		VectVar[varSel].doTransformation(type);

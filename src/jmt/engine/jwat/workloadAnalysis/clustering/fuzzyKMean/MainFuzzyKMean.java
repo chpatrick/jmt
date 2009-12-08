@@ -33,6 +33,7 @@ public class MainFuzzyKMean extends TimeConsumingWorker {
 		cluster = new FuzzyKMeanClusteringEngine(clustering, this);
 	}
 
+	@Override
 	public Object construct() {
 		boolean anti = false;
 		try {
@@ -45,15 +46,15 @@ public class MainFuzzyKMean extends TimeConsumingWorker {
 		}
 		//Applicazione trasformazione alle variabili coinvolte nel clustering
 		if (trasf != VariableNumber.NONE) {
-			for (int i = 0; i < varSel.length; i++) {
-				matrix.getVariables()[varSel[i]].doClusteringTrasformation(trasf);
+			for (int element : varSel) {
+				matrix.getVariables()[element].doClusteringTrasformation(trasf);
 			}
 		}
 		if (isCanceled()) {
 			msg = "CLUSTERING ABORTED BY USER";
 			if (trasf != VariableNumber.NONE) {
-				for (int i = 0; i < varSel.length; i++) {
-					matrix.getVariables()[varSel[i]].undoClueringTrasformation();
+				for (int element : varSel) {
+					matrix.getVariables()[element].undoClueringTrasformation();
 				}
 			}
 			return null;
@@ -64,8 +65,8 @@ public class MainFuzzyKMean extends TimeConsumingWorker {
 			if (isCanceled()) {
 				msg = "CLUSTERING ABORTED BY USER";
 				if (trasf != VariableNumber.NONE) {
-					for (int i = 0; i < varSel.length; i++) {
-						matrix.getVariables()[varSel[i]].undoClueringTrasformation();
+					for (int element : varSel) {
+						matrix.getVariables()[element].undoClueringTrasformation();
 					}
 				}
 				return null;
@@ -74,16 +75,16 @@ public class MainFuzzyKMean extends TimeConsumingWorker {
 			if (isCanceled()) {
 				msg = "CLUSTERING ABORTED BY USER";
 				if (trasf != VariableNumber.NONE) {
-					for (int i = 0; i < varSel.length; i++) {
-						matrix.getVariables()[varSel[i]].undoClueringTrasformation();
+					for (int element : varSel) {
+						matrix.getVariables()[element].undoClueringTrasformation();
 					}
 				}
 				return null;
 			}
 			if (trasf != VariableNumber.NONE) {
 				anti = true;
-				for (int i = 0; i < varSel.length; i++) {
-					matrix.getVariables()[varSel[i]].undoClueringTrasformation();
+				for (int element : varSel) {
+					matrix.getVariables()[element].undoClueringTrasformation();
 				}
 			}
 			updateInfos((maxIter * maxClust) + 2, "Saving Results", true);
@@ -96,8 +97,8 @@ public class MainFuzzyKMean extends TimeConsumingWorker {
 			updateInfos((maxIter * maxClust) + 3, "errore", false);
 			msg = "Out of Memory. Try with more memory (1Gb JMT Version)";
 			if (trasf != VariableNumber.NONE && !anti) {
-				for (int i = 0; i < varSel.length; i++) {
-					matrix.getVariables()[varSel[i]].undoClueringTrasformation();
+				for (int element : varSel) {
+					matrix.getVariables()[element].undoClueringTrasformation();
 				}
 			}
 			return null;
@@ -105,6 +106,7 @@ public class MainFuzzyKMean extends TimeConsumingWorker {
 		return clustering;
 	}
 
+	@Override
 	public void finished() {
 		if (this.get() != null) {
 			fireEventStatus(new EventClusteringDone(clustering));

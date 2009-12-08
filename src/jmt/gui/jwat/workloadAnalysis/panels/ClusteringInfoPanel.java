@@ -129,6 +129,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 		initPanel();
 	}
 
+	@Override
 	public String getName() {
 		return "Clustering Information";
 	}
@@ -206,6 +207,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 				setRowHeight(18);
 			}
 
+			@Override
 			public TableCellRenderer getCellRenderer(int row, int column) {
 				if (column == 2) {
 					return new ButtonCellEditor(delVar);
@@ -213,6 +215,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 				return getDefaultRenderer(String.class);
 			}
 
+			@Override
 			public TableCellEditor getCellEditor(int row, int column) {
 				if (column == 2) {
 					return new ButtonCellEditor(new JButton(deleteVar));
@@ -232,7 +235,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 					if (clusteringTable.getSelectedRow() >= 0) {
 						changedType = true;
 						//Selezionare il tipo do clustering corrente
-						switch (((Clustering) session.getListOfClustering().get(clusteringTable.getSelectedRow())).getClusteringType()) {
+						switch (session.getListOfClustering().get(clusteringTable.getSelectedRow()).getClusteringType()) {
 							case KMEANS:
 								resetPanels();
 								cluster.removeAll();
@@ -296,7 +299,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 	private DispersionFuzzyPanel panelDispF;
 
 	private JTable getClusterTable() {
-		if (((Clustering) session.getListOfClustering().get(clusteringTable.getSelectedRow())).getClusteringType() == KMEANS) {
+		if (session.getListOfClustering().get(clusteringTable.getSelectedRow()).getClusteringType() == KMEANS) {
 			clusterTable = new ClusterTableKMeans(new ClusterTableModelKMeans());
 			clusterTable.setFont(new Font(clusterTable.getFont().getName(), clusterTable.getFont().getStyle(), clusterTable.getFont().getSize() + 1));
 			clusterTable.setSelectionBackground(new Color(83, 126, 126));
@@ -314,7 +317,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 							if (changedType) {
 								matrixPanel.removeAll();
 							}
-							switch (((Clustering) session.getListOfClustering().get(clusteringTable.getSelectedRow())).getClusteringType()) {
+							switch (session.getListOfClustering().get(clusteringTable.getSelectedRow()).getClusteringType()) {
 								case KMEANS:
 									clusingP.add(new KMeansInfoClustering((ClusteringInfosKMean) ((KMean) session.getListOfClustering().get(
 											clusteringTable.getSelectedRow())).getClusteringInfos(clusterTable.getSelectedRow() + 1), clusterTable
@@ -349,7 +352,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 			});
 			return clusterTable;
 		}
-		if (((Clustering) session.getListOfClustering().get(clusteringTable.getSelectedRow())).getClusteringType() == FUZZYK) {
+		if (session.getListOfClustering().get(clusteringTable.getSelectedRow()).getClusteringType() == FUZZYK) {
 			clusterTable = new ClusterTableFuzzy(new ClusterTableModelFuzzy());
 			clusterTable.setFont(new Font(clusterTable.getFont().getName(), clusterTable.getFont().getStyle(), clusterTable.getFont().getSize() + 1));
 			clusterTable.setSelectionBackground(new Color(83, 126, 126));
@@ -367,7 +370,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 							if (changedType) {
 								matrixPanel.removeAll();
 							}
-							switch (((Clustering) session.getListOfClustering().get(clusteringTable.getSelectedRow())).getClusteringType()) {
+							switch (session.getListOfClustering().get(clusteringTable.getSelectedRow()).getClusteringType()) {
 								case FUZZYK:
 									ClusteringInfosFuzzy infos = ((ClusteringInfosFuzzy) ((FuzzyKMean) session.getListOfClustering().get(
 											clusteringTable.getSelectedRow())).getClusteringInfos(clusterTable.getSelectedRow()));
@@ -413,6 +416,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 		return null;
 	}
 
+	@Override
 	public void gotFocus() {
 		((ClusteringTableModel) clusteringTable.getModel()).setClustering(session.getListOfClustering());
 		if (clusteringTable.getRowCount() > 0) {
@@ -427,7 +431,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 		 */
 		private static final long serialVersionUID = 1L;
 		private String[] header = { "Clustering", "Cl.", "" };
-		private Vector clusterings = null;
+		private Vector<Clustering> clusterings = null;
 
 		public int getColumnCount() {
 			return header.length;
@@ -441,9 +445,9 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 			if (rowIndex < clusterings.size()) {
 				switch (columnIndex) {
 					case 0:
-						return "  " + ((Clustering) clusterings.get(rowIndex)).getName();
+						return "  " + clusterings.get(rowIndex).getName();
 					case 1:
-						return Integer.toString(((Clustering) clusterings.get(rowIndex)).getNumCluster());
+						return Integer.toString(clusterings.get(rowIndex).getNumCluster());
 					default:
 						return null;
 				}
@@ -451,10 +455,11 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 			return null;
 		}
 
-		public ClusteringTableModel(Vector cl) {
+		public ClusteringTableModel(Vector<Clustering> cl) {
 			clusterings = cl;
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < header.length) {
 				return header[columnIndex];
@@ -467,6 +472,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 		 * index) is editable or not. In this case distribution column is not
 		 * editable, as editing functionality is implemented via edit button
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			if (columnIndex == 2) {
 				return true;
@@ -474,6 +480,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 			return false;
 		}
 
+		@Override
 		public Class getColumnClass(int index) {
 			if (index == 2) {
 				return JButton.class;
@@ -481,7 +488,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 			return String.class;
 		}
 
-		public void setClustering(Vector cl) {
+		public void setClustering(Vector<Clustering> cl) {
 			clusterings = cl;
 			fireTableDataChanged();
 		}
@@ -544,6 +551,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 			entropy = new double[0];
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < header.length) {
 				return header[columnIndex];
@@ -556,10 +564,12 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 		 * index) is editable or not. In this case distribution column is not
 		 * editable, as editing functionality is implemented via edit button
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}
 
+		@Override
 		public Class getColumnClass(int index) {
 			if (index == 0) {
 				return Integer.class;
@@ -634,6 +644,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 			clusters = new ClusteringInfosKMean[0];
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < header.length) {
 				return header[columnIndex];
@@ -646,10 +657,12 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 		 * index) is editable or not. In this case distribution column is not
 		 * editable, as editing functionality is implemented via edit button
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}
 
+		@Override
 		public Class getColumnClass(int index) {
 			if (index == 0) {
 				return Integer.class;
@@ -671,10 +684,12 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 			+ "<LI>Cluster panel shows statistics and graphs of a single cluster.<br></LI>"
 			+ "<LI>Scatter plot matrix panel show every variable vs. variable graphs and can be enlarged<p>with double click.<br></LI>" + "</HTML>";
 
+	@Override
 	public void help() {
 		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 	}
 
+	@Override
 	public void lostFocus() {
 		parent.setLastPanel(WORKLOAD_INFOCLUSTERING_PANEL);
 	}

@@ -59,12 +59,14 @@ public class JmtEdgeView extends EdgeView {
 		this.mediator = factory;
 	}
 
+	@Override
 	public CellViewRenderer getRenderer() {
 
 		return renderer;
 	}
 
 	// Giuseppe De Cicco & Fabio Granara
+	@Override
 	public Shape getShape() {
 		//		System.out.println("chiamato");
 

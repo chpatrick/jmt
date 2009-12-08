@@ -64,10 +64,10 @@ public class JmtEdge extends DefaultEdge {
 	protected boolean pointSharedModified = false;
 	//    ______________________end____________________ 
 
-	protected ArrayList intersectionVertexPoint = null;
+	protected ArrayList<Point2D> intersectionVertexPoint = null;
 	protected Point2D intersectionPoint = null;
 	private Mediator mediator;
-	public ArrayList intersectionEdgePoint = new ArrayList();
+	public ArrayList<Point2D> intersectionEdgePoint = new ArrayList<Point2D>();
 
 	//    public ArrayList intersectionEdgePoint2=new ArrayList();
 
@@ -110,7 +110,7 @@ public class JmtEdge extends DefaultEdge {
 	}
 
 	//  Giuseppe De Cicco & Fabio Granara
-	public ArrayList getIntersectionVertexPoint() {
+	public ArrayList<Point2D> getIntersectionVertexPoint() {
 		return intersectionVertexPoint;
 	}
 
@@ -130,7 +130,7 @@ public class JmtEdge extends DefaultEdge {
 		upperSide = false;
 		rightSide = false;
 		lowerSide = false;
-		intersectionVertexPoint = new ArrayList();
+		intersectionVertexPoint = new ArrayList<Point2D>();
 		Point2D upperPoint = null;
 		Point2D leftPoint = null;
 		Point2D rightPoint = null;
@@ -393,7 +393,7 @@ public class JmtEdge extends DefaultEdge {
 		//		System.out.println("Valore di cells2_"+cells2.length);
 		//		System.out.println("Valore di cells: "+cells.length+", Valore di cells2: "+cells2.length);
 
-		this.intersectionEdgePoint = new ArrayList();
+		this.intersectionEdgePoint = new ArrayList<Point2D>();
 
 		for (int i = 0; i < cells.length; i++) {
 			if (cells[i] instanceof JmtEdge && !(cells[i].equals(cell))) {
@@ -487,9 +487,9 @@ public class JmtEdge extends DefaultEdge {
 
 				listEdgesIn = DefaultGraphModel.getEdges(graphmodel, targetOfEdge1, true);
 
-				for (int i = 0; i < listEdgesIn.length; i++) {
+				for (Object element : listEdgesIn) {
 
-					JmtEdgeView edgeView1 = (JmtEdgeView) (mediator.getGraph().getGraphLayoutCache()).getMapping(listEdgesIn[i], false);
+					JmtEdgeView edgeView1 = (JmtEdgeView) (mediator.getGraph().getGraphLayoutCache()).getMapping(element, false);
 					int controlPoint3 = edgeView1.getPointCount();
 
 					Point2D[] controlPoints3 = new Point2D[controlPoint3];
@@ -528,8 +528,8 @@ public class JmtEdge extends DefaultEdge {
 
 				listEdgesOut = DefaultGraphModel.getEdges(graphmodel, sourceOfEdge1, false);
 
-				for (int i = 0; i < listEdgesOut.length; i++) {
-					JmtEdgeView edgeView1 = (JmtEdgeView) (mediator.getGraph().getGraphLayoutCache()).getMapping(listEdgesOut[i], false);
+				for (Object element : listEdgesOut) {
+					JmtEdgeView edgeView1 = (JmtEdgeView) (mediator.getGraph().getGraphLayoutCache()).getMapping(element, false);
 					int controlPoint3 = edgeView1.getPointCount();
 					Point2D[] controlPoints3 = new Point2D[controlPoint3];
 					for (int x = 0; x < controlPoint3; x++) {
@@ -706,7 +706,7 @@ public class JmtEdge extends DefaultEdge {
 	}
 
 	//  Giuseppe De Cicco & Fabio Granara
-	public ArrayList getIntersactionEdgePoint() {
+	public ArrayList<Point2D> getIntersactionEdgePoint() {
 		return intersectionEdgePoint;
 	}
 
@@ -751,10 +751,10 @@ public class JmtEdge extends DefaultEdge {
 		//		System.out.println("Padre: "+targetOfEdge);
 		Object[] fathers = (DefaultGraphModel.getIncomingEdges(graphmodel, targetOfEdge));
 		int max = (int) boundsSource.getMaxX();
-		for (int i = 0; i < fathers.length; i++) {
+		for (Object father : fathers) {
 			//			System.out.println("Dentro il for");
-			if (fathers[i] instanceof JmtEdge) {
-				JmtCell sourceOfEdge2 = (JmtCell) ((DefaultPort) ((JmtEdge) fathers[i]).getSource()).getParent();
+			if (father instanceof JmtEdge) {
+				JmtCell sourceOfEdge2 = (JmtCell) ((DefaultPort) ((JmtEdge) father).getSource()).getParent();
 				Rectangle boundsSource2 = GraphConstants.getBounds(sourceOfEdge2.getAttributes()).getBounds();
 				if (sourceOfEdge != sourceOfEdge2 && boundsSource.getMaxX() < boundsTarget.getMinX() - 5
 						&& boundsSource2.getMaxX() < boundsTarget.getMinX() - 5) {

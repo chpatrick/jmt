@@ -126,7 +126,7 @@ public class JabaModel implements JabaConstants {
 	 */
 	private double[][] util;
 
-	private Vector res;
+	private Vector<Object> res;
 
 	/*****************************************************************/
 	//parameters for randomization
@@ -195,14 +195,14 @@ public class JabaModel implements JabaConstants {
 	/**
 	 * sets all the result data for this model.
 	 */
-	public void setResults(Vector res) {
+	public void setResults(Vector<Object> res) {
 		this.res = res;
 		hasResults = true;
 		resultsOK = true;
 		changed = true;
 	}
 
-	public Vector getResults() {
+	public Vector<Object> getResults() {
 		return res;
 	}
 
@@ -1427,8 +1427,8 @@ public class JabaModel implements JabaConstants {
 			double retVal = 0;
 			double[] aggs = getPerClassX();
 			if (aggs != null) {
-				for (int i = 0; i < aggs.length; i++) {
-					retVal += aggs[i];
+				for (double agg : aggs) {
+					retVal += agg;
 				}
 				return retVal;
 			} else {
@@ -1447,8 +1447,8 @@ public class JabaModel implements JabaConstants {
 			for (int i = 0; i < retVal.length; i++) {
 				retVal[i] = 0;
 				//then rows
-				for (int j = 0; j < queueLen.length; j++) {
-					retVal[i] += queueLen[j][i];
+				for (double[] element : queueLen) {
+					retVal[i] += element[i];
 				}
 			}
 			return retVal;
@@ -1479,8 +1479,8 @@ public class JabaModel implements JabaConstants {
 			double retVal = 0;
 			double[] aggs = getPerClassQ();
 			if (aggs != null) {
-				for (int i = 0; i < aggs.length; i++) {
-					retVal += aggs[i];
+				for (double agg : aggs) {
+					retVal += agg;
 				}
 				return retVal;
 			} else {
@@ -1497,8 +1497,8 @@ public class JabaModel implements JabaConstants {
 			double[] retVal = new double[classes];
 			for (int i = 0; i < retVal.length; i++) {
 				retVal[i] = 0;
-				for (int j = 0; j < resTimes.length; j++) {
-					retVal[i] += resTimes[j][i];
+				for (double[] resTime : resTimes) {
+					retVal[i] += resTime[i];
 				}
 			}
 			return retVal;
@@ -1540,8 +1540,8 @@ public class JabaModel implements JabaConstants {
 			double retVal = 0;
 			double[] aggs = getPerStationR();
 			if (aggs != null) {
-				for (int i = 0; i < aggs.length; i++) {
-					retVal += aggs[i];
+				for (double agg : aggs) {
+					retVal += agg;
 				}
 				return retVal;
 			} else {
@@ -1558,8 +1558,8 @@ public class JabaModel implements JabaConstants {
 			double[] retVal = new double[classes];
 			for (int i = 0; i < retVal.length; i++) {
 				retVal[i] = 0;
-				for (int j = 0; j < util.length; j++) {
-					retVal[i] += util[j][i];
+				for (double[] element : util) {
+					retVal[i] += element[i];
 				}
 			}
 			return retVal;
@@ -1588,8 +1588,8 @@ public class JabaModel implements JabaConstants {
 			double retVal = 0;
 			double[] aggs = getPerStationU();
 			if (aggs != null) {
-				for (int i = 0; i < aggs.length; i++) {
-					retVal += aggs[i];
+				for (double agg : aggs) {
+					retVal += agg;
 				}
 				return retVal;
 			} else {

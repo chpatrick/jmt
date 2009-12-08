@@ -32,10 +32,10 @@ public class Sector3D {
 
 	private int type; // 3=triangolo
 
-	private Vector points = new Vector();
-	private Vector stations = new Vector();
-	private Vector xycoord = new Vector();
-	private Vector statname = new Vector();
+	private Vector<BetaVertex> points = new Vector<BetaVertex>();
+	private Vector<Vertex> stations = new Vector<Vertex>();
+	private Vector<double[]> xycoord = new Vector<double[]>();
+	private Vector<String> statname = new Vector<String>();
 	private String sname;
 	private String[] classNames;
 
@@ -90,14 +90,14 @@ public class Sector3D {
 		stations.addElement(vv2);
 	}
 
-	public Sector3D(Vector points, int thistype, Vertex vv1, Vertex vv2) {
+	public Sector3D(Vector<BetaVertex> points, int thistype, Vertex vv1, Vertex vv2) {
 		this.points = points;
 		type = thistype;
 		stations.addElement(vv1);
 		stations.addElement(vv2);
 	}
 
-	public Sector3D(Vector points, int thistype, Vertex vv1, Vertex vv2, Vertex vv3, Vertex vv4) {
+	public Sector3D(Vector<BetaVertex> points, int thistype, Vertex vv1, Vertex vv2, Vertex vv3, Vertex vv4) {
 		this.points = points;
 		type = thistype;
 		stations.addElement(vv1);
@@ -107,7 +107,7 @@ public class Sector3D {
 	}
 
 	// COSTRUTTORE GENERICO CON VETTORI
-	public Sector3D(Vector points, int thistype, Vector stations) {
+	public Sector3D(Vector<BetaVertex> points, int thistype, Vector<Vertex> stations) {
 		this.points = points;
 		type = thistype;
 		this.stations = stations;
@@ -122,11 +122,11 @@ public class Sector3D {
 	public double getBeta(int vertex, String coord) {
 		double beta = -1;
 		if (coord == "x" || coord == "X") {
-			beta = ((BetaVertex) points.get(vertex)).getX();
+			beta = points.get(vertex).getX();
 		} else if (coord == "y" || coord == "Y") {
-			beta = ((BetaVertex) points.get(vertex)).getY();
+			beta = points.get(vertex).getY();
 		} else if (coord == "z" || coord == "Z") {
-			beta = ((BetaVertex) points.get(vertex)).getZ();
+			beta = points.get(vertex).getZ();
 		}
 		return beta;
 	}
@@ -134,13 +134,13 @@ public class Sector3D {
 	public double getBeta(int vertex, int coord) {
 		double beta = -1;
 		if (coord == 1) {
-			beta = Math.rint((((BetaVertex) points.get(vertex)).getX()) * 1000);
+			beta = Math.rint((points.get(vertex).getX()) * 1000);
 			beta = beta / 1000;
 		} else if (coord == 2) {
-			beta = Math.rint((((BetaVertex) points.get(vertex)).getY()) * 1000);
+			beta = Math.rint((points.get(vertex).getY()) * 1000);
 			beta = beta / 1000;
 		} else if (coord == 3) {
-			beta = Math.rint((((BetaVertex) points.get(vertex)).getZ()) * 1000);
+			beta = Math.rint((points.get(vertex).getZ()) * 1000);
 			beta = beta / 1000;
 		}
 		return beta;
@@ -154,26 +154,26 @@ public class Sector3D {
 	 */
 	public double[] getBetas(int vertex) {
 		double[] beta = new double[3];
-		beta[0] = ((BetaVertex) points.get(vertex)).getX();
-		beta[1] = ((BetaVertex) points.get(vertex)).getY();
-		beta[2] = ((BetaVertex) points.get(vertex)).getZ();
+		beta[0] = points.get(vertex).getX();
+		beta[1] = points.get(vertex).getY();
+		beta[2] = points.get(vertex).getZ();
 		return beta;
 	}
 
 	public BetaVertex getV0() {
-		return (BetaVertex) points.get(0);
+		return points.get(0);
 	}
 
 	public BetaVertex getV1() {
-		return (BetaVertex) points.get(1);
+		return points.get(1);
 	}
 
 	public BetaVertex getV2() {
-		return (BetaVertex) points.get(2);
+		return points.get(2);
 	}
 
 	public BetaVertex getV(int i) {
-		return (BetaVertex) points.get(i);
+		return points.get(i);
 	}
 
 	public int CountPoint() {
@@ -182,22 +182,22 @@ public class Sector3D {
 
 	// Metodi per ritornare le stazioni di un settore
 	public Vertex getS0() {
-		return (Vertex) stations.get(0);
+		return stations.get(0);
 	}
 
 	public Vertex getS1() {
-		return (Vertex) stations.get(1);
+		return stations.get(1);
 	}
 
 	public Vertex getS2() {
-		return (Vertex) stations.get(2);
+		return stations.get(2);
 	}
 
 	public Vertex getS(int i) {
-		return (Vertex) stations.get(i);
+		return stations.get(i);
 	}
 
-	public Vector getS() {
+	public Vector<Vertex> getS() {
 		return stations;
 	}
 
@@ -281,16 +281,16 @@ public class Sector3D {
 	////////////////////// GESTIONE DELLE COORDINATE PROIETTATE SUL PIANO XY ////////////////////
 
 	public double[] getxycoord(int point) {
-		return (double[]) xycoord.get(point);
+		return xycoord.get(point);
 	}
 
 	public double getx(int point) {
-		double[] xy = (double[]) xycoord.get(point);
+		double[] xy = xycoord.get(point);
 		return xy[0];
 	}
 
 	public double gety(int point) {
-		double[] xy = (double[]) xycoord.get(point);
+		double[] xy = xycoord.get(point);
 		return xy[1];
 	}
 
@@ -321,17 +321,17 @@ public class Sector3D {
 
 	/////////////////////// GESTIONE DEI NOMI DELLE STAZIONI ////////////////////////////////////
 
-	public void givename(Vector oristations) {
+	public void givename(Vector<Station3D> oristations) {
 		for (int i = 0; i < stations.size(); i++) {
 			for (int j = 0; j < oristations.size(); j++) {
 				//Controllo se due vertici sono uguali
-				int[] v1 = ((Vertex) stations.get(i)).getCoords();
-				int[] v2 = ((Station3D) oristations.get(j)).getV3D().getCoords();
+				int[] v1 = stations.get(i).getCoords();
+				int[] v2 = oristations.get(j).getV3D().getCoords();
 				if ((Math.abs(v1[0] - v2[0]) < 0.001 && Math.abs(v1[1] - v2[1]) < 0.001 && Math.abs(v1[2] - v2[2]) < 0.001)
 						|| (Math.abs(v1[0] - v2[0]) < 0.001 && Math.abs(v1[1] - v2[1]) < 0.001 && (v1[2] == -1 || v2[2] == -1))
 						|| (Math.abs(v1[0] - v2[0]) < 0.001 && Math.abs(v1[2] - v2[2]) < 0.001 && (v1[1] == -1 || v2[1] == -1))
 						|| (Math.abs(v1[2] - v2[2]) < 0.001 && Math.abs(v1[1] - v2[1]) < 0.001 && (v1[0] == -1 || v2[0] == -1))) {
-					statname.addElement(((Station3D) oristations.get(j)).getName());
+					statname.addElement(oristations.get(j).getName());
 					//System.out.println("Nome: "+((Station3D)oristations.get(j)).getName());
 					break;
 				} else {
@@ -351,16 +351,16 @@ public class Sector3D {
 
 			{
 				//controllo sulla ripetizione del nome
-				arname[i] = (String) statname.get(i);
+				arname[i] = statname.get(i);
 				int k = 0;
-				for (int j = 0; j < arname.length; j++) {
-					if (arname[i] != arname[j]) {
+				for (String element : arname) {
+					if (arname[i] != element) {
 						k++;
 					}
 				}
 				//se il nome non è già stato usato lo si aggiunge
 				if (k == arname.length - 1) {
-					name = name.concat((String) statname.get(i) + " ");
+					name = name.concat(statname.get(i) + " ");
 				}
 			}
 		}
@@ -375,10 +375,10 @@ public class Sector3D {
 		String name = "";
 		String[] arname = new String[statname.size()];
 		for (int i = 0; i < statname.size(); i++) {
-			arname[i] = (String) statname.get(i);
+			arname[i] = statname.get(i);
 			int k = 0;
-			for (int j = 0; j < arname.length; j++) {
-				if (arname[i] != arname[j]) {
+			for (String element : arname) {
+				if (arname[i] != element) {
 					k++;
 				}
 			}
@@ -386,6 +386,7 @@ public class Sector3D {
 		return arname;
 	}
 
+	@Override
 	public String toString() {
 		String out = "";
 		{
@@ -402,24 +403,24 @@ public class Sector3D {
 
 				{
 					//controllo sulla ripetizione del nome
-					arname[i] = (String) statname.get(i);
+					arname[i] = statname.get(i);
 					int k = 0;
-					for (int j = 0; j < arname.length; j++) {
-						if (arname[i] != arname[j]) {
+					for (String element : arname) {
+						if (arname[i] != element) {
 							k++;
 						}
 					}
 					//se il nome non è già stato usato lo si aggiunge
 					if (k == arname.length - 1) {
-						name = name.concat((String) statname.get(i) + " ");
+						name = name.concat(statname.get(i) + " ");
 					}
 				}
 			}
 			String betas = "";
 			for (int i = 0; i < points.size(); i++) {
-				double b1 = Math.round(((BetaVertex) points.get(i)).getX() * 1000);
-				double b2 = Math.round(((BetaVertex) points.get(i)).getY() * 1000);
-				double b3 = Math.round(((BetaVertex) points.get(i)).getZ() * 1000);
+				double b1 = Math.round(points.get(i).getX() * 1000);
+				double b2 = Math.round(points.get(i).getY() * 1000);
+				double b3 = Math.round(points.get(i).getZ() * 1000);
 
 				betas = betas.concat("<br>" + classNames[0] + ":  " + b1 / 1000 + "   " + classNames[1] + ":  " + b2 / 1000 + "   " + classNames[2]
 						+ ":  " + b3 / 1000);

@@ -243,8 +243,8 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			// Adds panel with measures
 			JPanel scroll = new JPanel(new GridLayout(indexes.length, 1, 1, 1));
 			// Adds all measures to this panel
-			for (int i = 0; i < indexes.length; i++) {
-				scroll.add(new PAMeasurePanel(results, indexes[i]));//,thisMeasureValues));
+			for (int indexe : indexes) {
+				scroll.add(new PAMeasurePanel(results, indexe));//,thisMeasureValues));
 			}
 			mainpanel.add(new JScrollPane(scroll), BorderLayout.CENTER);
 
@@ -370,7 +370,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			field.setMaximumSize(new Dimension(field.getMaximumSize().width, field.getMinimumSize().height));
 			label.setLabelFor(field);
 			field.setText(rm.getStationName(measureIndex));
-			field.setToolTipText("Name of the station: "+field.getText());
+			field.setToolTipText("Name of the station: " + field.getText());
 			mainPanel.add(label);
 			mainPanel.add(field);
 			// Class name
@@ -380,7 +380,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			field.setMaximumSize(new Dimension(field.getMaximumSize().width, field.getMinimumSize().height));
 			label.setLabelFor(field);
 			field.setText(rm.getClassName(measureIndex));
-			field.setToolTipText("Name of the class: "+field.getText());
+			field.setToolTipText("Name of the class: " + field.getText());
 			mainPanel.add(label);
 			mainPanel.add(field);
 			// Alpha/Precision
@@ -390,7 +390,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			field.setMaximumSize(new Dimension(field.getMaximumSize().width, field.getMinimumSize().height));
 			label.setLabelFor(field);
 			field.setText(rm.getAlpha(measureIndex) + " / " + rm.getPrecision(measureIndex)); // AnalyzedSamples
-			field.setToolTipText("Confidence Interval and Maximum Relative Error requested for this measure: "+field.getText());
+			field.setToolTipText("Confidence Interval and Maximum Relative Error requested for this measure: " + field.getText());
 			mainPanel.add(label);
 			mainPanel.add(field);
 			//Samples
@@ -400,7 +400,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			samples.setMaximumSize(new Dimension(samples.getMaximumSize().width, samples.getMinimumSize().height));
 			label.setLabelFor(samples);
 			samples.setText("" + values.size());
-			samples.setToolTipText("Number of samples: "+samples.getText());
+			samples.setToolTipText("Number of samples: " + samples.getText());
 			mainPanel.add(label);
 			mainPanel.add(samples);
 			//xMin
@@ -784,7 +784,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		int measureIndex;
 		Vector values;
 		//Vector validities;
-		Vector parameterValues;
+		Vector<Number> parameterValues;
 		protected JCheckBox boundsEnabler;
 		protected JSpinner xMin;
 		protected JSpinner xMax;
@@ -796,7 +796,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		protected double YMIN;
 		protected double YMAX;
 
-		public ZoomedFrame(MeasureDefinition md, int measureIndex, Vector values, Vector parameterValues) {
+		public ZoomedFrame(MeasureDefinition md, int measureIndex, Vector values, Vector<Number> parameterValues) {
 			super(md.getName(measureIndex));
 			this.measureIndex = measureIndex;
 			this.values = values;
@@ -1408,7 +1408,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			//if single class return the value, else return the percentage
 			if (pad.getType().equals(PA_TYPE_ARRIVAL_RATE)) {
 				ArrivalRateParametricAnalysis arpa = (ArrivalRateParametricAnalysis) pad;
-				Vector assumedValues = arpa.getParameterValues();
+				Vector<Number> assumedValues = arpa.getParameterValues();
 				if (arpa.isSingleClass()) {
 					Object temp = assumedValues.get(index);
 					double val = ((Double) temp).doubleValue();
@@ -1422,7 +1422,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			//if single class return the value, else return the percentage
 			else if (pad.getType().equals(PA_TYPE_SERVICE_TIMES)) {
 				ServiceTimesParametricAnalysis stpa = (ServiceTimesParametricAnalysis) pad;
-				Vector assumedValues = stpa.getParameterValues();
+				Vector<Number> assumedValues = stpa.getParameterValues();
 				if (stpa.isSingleClass()) {
 					Object temp = assumedValues.get(index);
 					double val = ((Double) temp).doubleValue();
@@ -1435,13 +1435,13 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 			}
 			//for "number of customers" return the number of customers
 			else if (pad.getType().equals(PA_TYPE_NUMBER_OF_CUSTOMERS)) {
-				Vector assumedValues = pad.getParameterValues();
+				Vector<Number> assumedValues = pad.getParameterValues();
 				int val = ((Double) (assumedValues.get(index))).intValue();
 				columnName = "N = " + Integer.toString(val);
 			}
 			//for population mix parametric analysis return the value of ß
 			else if (pad.getType().equals(PA_TYPE_POPULATION_MIX)) {
-				Vector assumedValues = pad.getParameterValues();
+				Vector<Number> assumedValues = pad.getParameterValues();
 				DecimalFormat threeDec = new DecimalFormat("0.000");
 				double value = ((Double) assumedValues.get(index)).doubleValue();
 				columnName = "ß = " + threeDec.format(value);

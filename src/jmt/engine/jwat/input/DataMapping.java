@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DataMapping extends VariableMapping {
+	@Override
 	public double convertToDouble(String val) {
 		Date d;
 		try {
@@ -17,10 +18,12 @@ public class DataMapping extends VariableMapping {
 		return d.getTime();
 	}
 
+	@Override
 	public Object getValue(double number) {
 		return new Date((long) number);
 	}
 
+	@Override
 	public double addNewValue(String value) {
 		return convertToDouble(value);
 	}

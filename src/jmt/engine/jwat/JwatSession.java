@@ -162,9 +162,9 @@ public abstract class JwatSession {
 		Mapping[] map = var.getMapping().getMappingValue();
 
 		dos.write(map.length);
-		for (int i = 0; i < map.length; i++) {
-			dos.writeDouble(map[i].getConversion());
-			dos.writeUTF(map[i].getValue().toString());
+		for (Mapping element : map) {
+			dos.writeDouble(element.getConversion());
+			dos.writeUTF(element.getValue().toString());
 		}
 		dos.flush();
 		zos.closeEntry();

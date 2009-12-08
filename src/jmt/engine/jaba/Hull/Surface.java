@@ -17,7 +17,6 @@ package jmt.engine.jaba.Hull;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Enumeration;
 import java.util.Vector;
 
 /**
@@ -30,13 +29,13 @@ public class Surface {
 	/**
 	 * The list of polygonal faces defining the surface.
 	 */
-	private Vector faces;
+	private Vector<Polygon> faces;
 
 	/**
 	 * Construct a surface containing no faces.
 	 */
 	public Surface() {
-		faces = new Vector();
+		faces = new Vector<Polygon>();
 	}
 
 	/**
@@ -44,7 +43,7 @@ public class Surface {
 	 *
 	 * @param f  the list of faces
 	 */
-	public Surface(Vector f) {
+	public Surface(Vector<Polygon> f) {
 		faces = f;
 	}
 
@@ -53,14 +52,14 @@ public class Surface {
 	 *
 	 * @return The vector of polygons that make up the surface.
 	 */
-	public Vector getFaces() {
+	public Vector<Polygon> getFaces() {
 		return faces;
 	}
 
 	/**
 	 * Set the faces of a surfaces.
 	 */
-	public void setFaces(Vector f) {
+	public void setFaces(Vector<Polygon> f) {
 		faces = f;
 	}
 
@@ -69,14 +68,13 @@ public class Surface {
 	 *
 	 * @return The vector of vertices that make up a surface.
 	 */
-	public Vector getVertices() {
-		Vector vertices = new Vector();
+	public Vector<Vertex> getVertices() {
+		Vector<Vertex> vertices = new Vector<Vertex>();
 
 		// Get the vertices of each face
-		for (Enumeration e = faces.elements(); e.hasMoreElements();) {
-			Vector face_verts = ((Polygon) e.nextElement()).getVertices();
-			for (Enumeration f = face_verts.elements(); f.hasMoreElements();) {
-				Vertex vertex = (Vertex) f.nextElement();
+		for (Polygon polygon : faces) {
+			Vector<Vertex> face_verts = polygon.getVertices();
+			for (Vertex vertex : face_verts) {
 				if (vertices.indexOf(vertex) == -1) {
 					vertices.addElement(vertex);
 				}
@@ -94,21 +92,21 @@ public class Surface {
 	public void writeOFF(PrintWriter pw) throws IOException {
 		/* Write header */
 		pw.println("OFF");
-		Vector vertices = getVertices();
+		Vector<Vertex> vertices = getVertices();
 		pw.println(vertices.size() + " " + " " + faces.size() + " " + (3 * faces.size()));
 
 		/* Write vertex list */
-		for (Enumeration v = vertices.elements(); v.hasMoreElements();) {
-			int[] c = ((Vertex) v.nextElement()).getCoords();
+		for (Vertex vertex : vertices) {
+			int[] c = vertex.getCoords();
 			pw.println(c[0] + " " + c[1] + " " + c[2]);
 		}
 
 		/* Write polygon list */
-		for (Enumeration f = faces.elements(); f.hasMoreElements();) {
-			Vector pV = ((Polygon) f.nextElement()).getVertices();
+		for (Polygon polygon : faces) {
+			Vector<Vertex> pV = polygon.getVertices();
 			pw.print(pV.size());
-			for (Enumeration v = pV.elements(); v.hasMoreElements();) {
-				pw.print(" " + vertices.indexOf(v.nextElement()));
+			for (Vertex vertex : pV) {
+				pw.print(" " + vertices.indexOf(vertex));
 			}
 			pw.println();
 		}
@@ -117,11 +115,12 @@ public class Surface {
 	/**
 	 * Returns a string describing a surface.
 	 */
+	@Override
 	public String toString() {
 		String s = new String();
 
-		for (Enumeration e = faces.elements(); e.hasMoreElements();) {
-			s += e.nextElement() + "\n";
+		for (Polygon polygon : faces) {
+			s += polygon + "\n";
 		}
 		return s;
 	}

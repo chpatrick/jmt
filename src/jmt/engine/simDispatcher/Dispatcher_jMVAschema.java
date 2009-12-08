@@ -1043,7 +1043,7 @@ public class Dispatcher_jMVAschema {
 				if (input.getVisits()[i][j] == 0
 						|| (input.getServiceTimes()[i][j][0] == 0 && input.getStationTypes()[i] != ExactConstants.STATION_LD)) {
 					// Create a null measure for each measure type
-					for (String element : ExactModel.INDICES_TYPES) {
+					for (String element : ExactConstants.INDICES_TYPES) {
 						Element measure = output.createElement("measure");
 						measure.setAttribute("measureType", element);
 						measure.setAttribute("meanValue", "0.0");

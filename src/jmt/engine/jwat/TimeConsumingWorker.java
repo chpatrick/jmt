@@ -19,7 +19,7 @@ import jmt.gui.jwat.SwingWorker;
 public abstract class TimeConsumingWorker extends SwingWorker {
 
 	private ProgressShow viewer;
-	private ArrayList statusListener = null; //<ProgressStatusListener>
+	private ArrayList<ProgressStatusListener> statusListener = null; //<ProgressStatusListener>
 
 	/**
 	 * 
@@ -27,7 +27,7 @@ public abstract class TimeConsumingWorker extends SwingWorker {
 	public TimeConsumingWorker(ProgressShow prg) {
 		super();
 		viewer = prg;
-		statusListener = new ArrayList();
+		statusListener = new ArrayList<ProgressStatusListener>();
 	}
 
 	public int getStep() {
@@ -40,7 +40,7 @@ public abstract class TimeConsumingWorker extends SwingWorker {
 
 	public void fireEventStatus(EventStatus e) {
 		for (int i = 0; i < statusListener.size(); i++) {
-			((ProgressStatusListener) statusListener.get(i)).statusEvent(e);
+			statusListener.get(i).statusEvent(e);
 		}
 	}
 
@@ -91,10 +91,12 @@ public abstract class TimeConsumingWorker extends SwingWorker {
 	/* (non-Javadoc)
 	 * @see jmt.jwat.Utility.SwingWorker#construct()
 	 */
+	@Override
 	public abstract Object construct();
 
 	/* (non-Javadoc)
 	 * @see jmt.jwat.Utility.SwingWorker#finished()
 	 */
+	@Override
 	public abstract void finished();
 }

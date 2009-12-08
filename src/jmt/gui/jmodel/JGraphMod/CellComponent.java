@@ -48,6 +48,7 @@ public class CellComponent {
 	 * Returns name of this station
 	 * @return Name of this station
 	 */
+	@Override
 	public String toString() {
 		return sd.getStationName(key);
 	}

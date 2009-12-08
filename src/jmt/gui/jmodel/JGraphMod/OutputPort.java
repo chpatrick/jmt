@@ -46,6 +46,7 @@ public class OutputPort extends DefaultPort {
 	/**
 	 * Adds <code>edge</code> to the list of ports.
 	 */
+	@Override
 	public boolean addEdge(Object edge) {
 		if (((Edge) edge).getSource() == this.getParent()) {
 			return false;

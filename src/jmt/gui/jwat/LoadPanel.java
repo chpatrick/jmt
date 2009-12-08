@@ -35,6 +35,7 @@ public class LoadPanel extends SwingWorker {
 		max = MAX;
 	}
 
+	@Override
 	public Object construct() {
 
 		ProgressMonitor pm = new ProgressMonitor(own, msg, "", 0, max);

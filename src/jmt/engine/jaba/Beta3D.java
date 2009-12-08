@@ -69,11 +69,11 @@ public class Beta3D {
 		return out;
 	}
 
-	public Vector BetaTriangles(Vector faces) {
-		Vector triangles = new Vector();
+	public Vector<Object> BetaTriangles(Vector<newFace> faces) {
+		Vector<Object> triangles = new Vector<Object>();
 		Sector3D s3d = new Sector3D();
 		for (int i = 0; i < faces.size(); i++) {
-			s3d = BetaTriangle((newFace) faces.get(i));
+			s3d = BetaTriangle(faces.get(i));
 			// Controllo: se una classe è sempre nulla non la inserisco xè non
 			// è un triangolo ma sta sul lato.
 			if ((Math.abs(s3d.getBeta(0, 1) - 0) > EPSYLON && Math.abs(s3d.getBeta(0, 2) - 0) > EPSYLON && Math.abs(s3d.getBeta(0, 3) - 0) > EPSYLON)
@@ -228,8 +228,8 @@ public class Beta3D {
 	 * @return
 	 */
 	public Sector3D JoinTriangle(Sector3D s1, Sector3D s2) {
-		Vector vtemp = new Vector();
-		Vector stemp = new Vector();
+		Vector<BetaVertex> vtemp = new Vector<BetaVertex>();
+		Vector<Vertex> stemp = new Vector<Vertex>();
 
 		//Sector3D out = new Sector3D();
 		{
@@ -255,8 +255,8 @@ public class Beta3D {
 	 * @param triangles
 	 * @return
 	 */
-	public Vector JoinTriangles(Vector triangles) {
-		Vector sett2staz = new Vector();
+	public Vector<Object> JoinTriangles(Vector<Object> triangles) {
+		Vector<Object> sett2staz = new Vector<Object>();
 		for (int i = 0; i < triangles.size(); i++) {
 			//if (i+1>=triangles.size())
 			for (int j = i + 1; j < triangles.size(); j++) {
@@ -268,8 +268,8 @@ public class Beta3D {
 		return sett2staz;
 	}
 
-	public Vector Join2Statxy(Vector latixy, Vector lati, Vector sett2staz) {
-		Vector out = new Vector();
+	public Vector<Vector<Object>> Join2Statxy(Vector<Object> latixy, Vector<Object> lati, Vector<Object> sett2staz) {
+		Vector<Vector<Object>> out = new Vector<Vector<Object>>();
 		int[] p1 = new int[3];
 		for (int i = 0; i < lati.size(); i++) {
 			for (int j = 0; j < latixy.size(); j++) {
@@ -282,7 +282,7 @@ public class Beta3D {
 				// Questo può accadere in 2 modi: se A1-A2 e B1-B2 sono gli estremi
 				// dei segmenti A e B, si può avere A1=B1 e A2=B2
 				if ((p1[0] == pxy1[0] && p1[1] == pxy1[1] && p2[0] == pxy2[0] && p2[1] == pxy2[1])) {
-					Vector betav = new Vector();
+					Vector<BetaVertex> betav = new Vector<BetaVertex>();
 					betav.addElement((((Segment3D) latixy.get(j)).getBeta(0)));
 					betav.addElement((((Segment3D) latixy.get(j)).getBeta(1)));
 					betav.addElement((((Segment3D) lati.get(i)).getBeta(0)));
@@ -298,7 +298,7 @@ public class Beta3D {
 					//i--;
 					//j--;
 				} else if ((p1[0] == pxy2[0] && p1[1] == pxy2[1] && p2[0] == pxy1[0] && p2[1] == pxy1[1])) {
-					Vector betav = new Vector();
+					Vector<BetaVertex> betav = new Vector<BetaVertex>();
 					betav.addElement((((Segment3D) latixy.get(j)).getBeta(0)));
 					betav.addElement((((Segment3D) latixy.get(j)).getBeta(1)));
 					betav.addElement((((Segment3D) lati.get(i)).getBeta(0)));
@@ -322,8 +322,8 @@ public class Beta3D {
 		return out;
 	}
 
-	public Vector Join2Statxz(Vector latixz, Vector lati, Vector sett2staz) {
-		Vector out = new Vector();
+	public Vector<Vector<Object>> Join2Statxz(Vector<Object> latixz, Vector<Object> lati, Vector<Object> sett2staz) {
+		Vector<Vector<Object>> out = new Vector<Vector<Object>>();
 		int[] p1 = new int[3];
 		for (int i = 0; i < lati.size(); i++) {
 			for (int j = 0; j < latixz.size(); j++) {
@@ -336,7 +336,7 @@ public class Beta3D {
 				// Questo può accadere in 2 modi: se A1-A2 e B1-B2 sono gli estremi
 				// dei segmenti A e B, si può avere A1=B1 e A2=B2
 				if ((p1[0] == pxz1[0] && pxz1[1] == -1 && p1[2] == pxz1[2] && p2[0] == pxz2[0] && pxz2[1] == -1 && p2[2] == pxz2[2])) {
-					Vector betav = new Vector();
+					Vector<BetaVertex> betav = new Vector<BetaVertex>();
 					betav.addElement((((Segment3D) latixz.get(j)).getBeta(0)));
 					betav.addElement((((Segment3D) latixz.get(j)).getBeta(1)));
 					betav.addElement((((Segment3D) lati.get(i)).getBeta(0)));
@@ -355,7 +355,7 @@ public class Beta3D {
 					//i--;
 					//j--;
 				} else if ((p1[0] == pxz2[0] && pxz1[1] == -1 && p1[2] == pxz2[2] && p2[0] == pxz1[0] && pxz2[1] == -1 && p2[2] == pxz1[2])) {
-					Vector betav = new Vector();
+					Vector<BetaVertex> betav = new Vector<BetaVertex>();
 					betav.addElement((((Segment3D) latixz.get(j)).getBeta(0)));
 					betav.addElement((((Segment3D) latixz.get(j)).getBeta(1)));
 					betav.addElement((((Segment3D) lati.get(i)).getBeta(0)));
@@ -379,8 +379,8 @@ public class Beta3D {
 		return out;
 	}
 
-	public Vector Join2Statyz(Vector latiyz, Vector lati, Vector sett2staz) {
-		Vector out = new Vector();
+	public Vector<Vector<Object>> Join2Statyz(Vector<Object> latiyz, Vector<Object> lati, Vector<Object> sett2staz) {
+		Vector<Vector<Object>> out = new Vector<Vector<Object>>();
 		int[] p1 = new int[3];
 		for (int i = 0; i < lati.size(); i++) {
 			for (int j = 0; j < latiyz.size(); j++) {
@@ -394,7 +394,7 @@ public class Beta3D {
 
 				// si può avere A1=B1 e A2=B2
 				if ((p1[2] == pyz1[2] && p1[1] == pyz1[1] && p2[2] == pyz2[2] && p2[1] == pyz2[1])) {
-					Vector betav = new Vector();
+					Vector<BetaVertex> betav = new Vector<BetaVertex>();
 					betav.addElement((((Segment3D) latiyz.get(j)).getBeta(0)));
 					betav.addElement((((Segment3D) latiyz.get(j)).getBeta(1)));
 					betav.addElement((((Segment3D) lati.get(i)).getBeta(0)));
@@ -420,17 +420,17 @@ public class Beta3D {
 				}
 				// oppure si può avere A1=B2 e A2=B1
 				else if ((p1[2] == pyz2[2] && p1[1] == pyz2[1] && p2[2] == pyz1[2] && p2[1] == pyz1[1])) {
-					Vector betav = new Vector();
-					betav.addElement(((BetaVertex) ((Segment3D) latiyz.get(j)).getBeta(0)));
-					betav.addElement(((BetaVertex) ((Segment3D) latiyz.get(j)).getBeta(1)));
-					betav.addElement(((BetaVertex) ((Segment3D) lati.get(i)).getBeta(0)));
-					betav.addElement(((BetaVertex) ((Segment3D) lati.get(i)).getBeta(1)));
-					lati.addElement(new Segment3D(((BetaVertex) ((Segment3D) latiyz.get(j)).getBeta(1)), ((BetaVertex) ((Segment3D) lati.get(i))
-							.getBeta(0)), ((Vertex) ((Segment3D) lati.get(i)).getS1()), ((Vertex) ((Segment3D) lati.get(i)).getS1())));
-					lati.addElement(new Segment3D(((BetaVertex) ((Segment3D) latiyz.get(j)).getBeta(0)), ((BetaVertex) ((Segment3D) lati.get(i))
-							.getBeta(1)), ((Vertex) ((Segment3D) lati.get(i)).getS2()), ((Vertex) ((Segment3D) lati.get(i)).getS2())));
-					sett2staz.addElement(new Sector3D(betav, 2, ((Vertex) ((Segment3D) lati.get(i)).getS1()), ((Vertex) ((Segment3D) lati.get(i))
-							.getS1()), ((Vertex) ((Segment3D) lati.get(i)).getS2()), ((Vertex) ((Segment3D) lati.get(i)).getS2())));
+					Vector<BetaVertex> betav = new Vector<BetaVertex>();
+					betav.addElement((((Segment3D) latiyz.get(j)).getBeta(0)));
+					betav.addElement((((Segment3D) latiyz.get(j)).getBeta(1)));
+					betav.addElement((((Segment3D) lati.get(i)).getBeta(0)));
+					betav.addElement((((Segment3D) lati.get(i)).getBeta(1)));
+					lati.addElement(new Segment3D((((Segment3D) latiyz.get(j)).getBeta(1)), (((Segment3D) lati.get(i)).getBeta(0)),
+							(((Segment3D) lati.get(i)).getS1()), (((Segment3D) lati.get(i)).getS1())));
+					lati.addElement(new Segment3D((((Segment3D) latiyz.get(j)).getBeta(0)), (((Segment3D) lati.get(i)).getBeta(1)),
+							(((Segment3D) lati.get(i)).getS2()), (((Segment3D) lati.get(i)).getS2())));
+					sett2staz.addElement(new Sector3D(betav, 2, (((Segment3D) lati.get(i)).getS1()), (((Segment3D) lati.get(i)).getS1()),
+							(((Segment3D) lati.get(i)).getS2()), (((Segment3D) lati.get(i)).getS2())));
 					lati.removeElementAt(i);
 					latiyz.removeElementAt(j);
 					//i--;
@@ -444,56 +444,56 @@ public class Beta3D {
 		return out;
 	}
 
-	public Vector Join1Staz(Vector latixy, Vector latixz, Vector latiyz, Vector lati, Vector sett1staz) {
+	public Vector<Object> Join1Staz(Vector<Object> latixy, Vector<Object> latixz, Vector<Object> latiyz, Vector<Object> lati, Vector<Object> sett1staz) {
 		//Vector out = new Vector();
 
 		for (int i = 0; i < lati.size(); i++) {
 			//Vector stemp = new Vector();    // Conterrà i segmenti selezionati
-			Vector ptemp = new Vector(); // Conterrà i punti dei segmenti
-			Vector statp = new Vector(); // Conterrà le stazioni a cui sono associati i punti dei segmenti
+			Vector<BetaVertex> ptemp = new Vector<BetaVertex>(); // Conterrà i punti dei segmenti
+			Vector<Vertex> statp = new Vector<Vertex>(); // Conterrà le stazioni a cui sono associati i punti dei segmenti
 
 			// Creo un array con le coordinate dei primi punti dei lati
-			int[] clato = (((Vertex) ((Segment3D) lati.get(i)).getS1()).getCoords());
+			int[] clato = ((((Segment3D) lati.get(i)).getS1()).getCoords());
 
 			// Controllo necessario per i casi particolari in cui vengono collegati come sett2staz
 			// due lati del triangolo
-			if ((((Vertex) ((Segment3D) lati.get(i)).getS1())) == (((Vertex) ((Segment3D) lati.get(i)).getS2()))) {
+			if (((((Segment3D) lati.get(i)).getS1())) == ((((Segment3D) lati.get(i)).getS2()))) {
 
 				// Cerco tra i segmenti sul lato con beta3=0
 				for (int j = 0; j < latixy.size(); j++) {
-					int[] cxy = (((Vertex) ((Segment3D) latixy.get(j)).getS1()).getCoords());
+					int[] cxy = ((((Segment3D) latixy.get(j)).getS1()).getCoords());
 					if (clato[0] == cxy[0] && clato[1] == cxy[1]) {
 						//stemp.addElement(((Segment3D)latixy.get(j)));
-						ptemp.addElement((BetaVertex) ((Segment3D) latixy.get(j)).getBeta(0));
-						statp.addElement(((Vertex) ((Segment3D) lati.get(i)).getS1()));
-						ptemp.addElement((BetaVertex) ((Segment3D) latixy.get(j)).getBeta(1));
-						statp.addElement(((Vertex) ((Segment3D) lati.get(i)).getS2()));
+						ptemp.addElement(((Segment3D) latixy.get(j)).getBeta(0));
+						statp.addElement((((Segment3D) lati.get(i)).getS1()));
+						ptemp.addElement(((Segment3D) latixy.get(j)).getBeta(1));
+						statp.addElement((((Segment3D) lati.get(i)).getS2()));
 						latixy.removeElementAt(j);
 						j--;
 					}
 				}
 				// Cerco tra i segmenti sul lato con beta2=0
 				for (int k = 0; k < latixz.size(); k++) {
-					int[] cxz = (((Vertex) ((Segment3D) latixz.get(k)).getS1()).getCoords());
+					int[] cxz = ((((Segment3D) latixz.get(k)).getS1()).getCoords());
 					if (clato[0] == cxz[0] && clato[2] == cxz[2]) {
 						//stemp.addElement(((Segment3D)latixz.get(k)));
-						ptemp.addElement((BetaVertex) ((Segment3D) latixz.get(k)).getBeta(0));
-						statp.addElement(((Vertex) ((Segment3D) lati.get(i)).getS1()));
-						ptemp.addElement((BetaVertex) ((Segment3D) latixz.get(k)).getBeta(1));
-						statp.addElement(((Vertex) ((Segment3D) lati.get(i)).getS1()));
+						ptemp.addElement(((Segment3D) latixz.get(k)).getBeta(0));
+						statp.addElement((((Segment3D) lati.get(i)).getS1()));
+						ptemp.addElement(((Segment3D) latixz.get(k)).getBeta(1));
+						statp.addElement((((Segment3D) lati.get(i)).getS1()));
 						latixz.removeElementAt(k);
 						k--;
 					}
 				}
 				// Cerco tra i segmenti sul lato con beta1=0
 				for (int h = 0; h < latiyz.size(); h++) {
-					int[] cyz = (((Vertex) ((Segment3D) latiyz.get(h)).getS1()).getCoords());
+					int[] cyz = ((((Segment3D) latiyz.get(h)).getS1()).getCoords());
 					if (clato[1] == cyz[1] && clato[2] == cyz[2]) {
 						//stemp.addElement(((Segment3D)latiyz.get(h)));
-						ptemp.addElement((BetaVertex) ((Segment3D) latiyz.get(h)).getBeta(0));
-						statp.addElement(((Vertex) ((Segment3D) lati.get(i)).getS1()));
-						ptemp.addElement((BetaVertex) ((Segment3D) latiyz.get(h)).getBeta(1));
-						statp.addElement(((Vertex) ((Segment3D) lati.get(i)).getS1()));
+						ptemp.addElement(((Segment3D) latiyz.get(h)).getBeta(0));
+						statp.addElement((((Segment3D) lati.get(i)).getS1()));
+						ptemp.addElement(((Segment3D) latiyz.get(h)).getBeta(1));
+						statp.addElement((((Segment3D) lati.get(i)).getS1()));
 						latiyz.removeElementAt(h);
 						h--;
 					}
@@ -502,14 +502,14 @@ public class Beta3D {
 				// Cerco tra i segmenti del gruppo lati
 				for (int l = 0; l < lati.size(); l++) {
 
-					int[] clat = (((Vertex) ((Segment3D) lati.get(l)).getS1()).getCoords());
+					int[] clat = ((((Segment3D) lati.get(l)).getS1()).getCoords());
 					if (clato[0] == clat[0] && clato[1] == clat[1] && clato[2] == clat[2]) {
-						ptemp.addElement((BetaVertex) ((Segment3D) lati.get(l)).getBeta(0));
+						ptemp.addElement(((Segment3D) lati.get(l)).getBeta(0));
 						//cambiato .get(i) in .get(j)
-						statp.addElement(((Vertex) ((Segment3D) lati.get(l)).getS1()));
-						ptemp.addElement((BetaVertex) ((Segment3D) lati.get(l)).getBeta(1));
+						statp.addElement((((Segment3D) lati.get(l)).getS1()));
+						ptemp.addElement(((Segment3D) lati.get(l)).getBeta(1));
 						//cambiato .get(i) in .get(j)
-						statp.addElement(((Vertex) ((Segment3D) lati.get(l)).getS1()));
+						statp.addElement((((Segment3D) lati.get(l)).getS1()));
 						lati.removeElementAt(l);
 						l--;
 					}
@@ -520,9 +520,8 @@ public class Beta3D {
 				for (int k = 0; k < ptemp.size(); k++) {
 					for (int j = k + 1; j < ptemp.size(); j++) {
 						{
-							if (((BetaVertex) ptemp.get(k)).getX() == ((BetaVertex) ptemp.get(j)).getX()
-									&& ((BetaVertex) ptemp.get(k)).getY() == ((BetaVertex) ptemp.get(j)).getY()
-									&& ((BetaVertex) ptemp.get(k)).getZ() == ((BetaVertex) ptemp.get(j)).getZ()) {
+							if (ptemp.get(k).getX() == ptemp.get(j).getX() && ptemp.get(k).getY() == ptemp.get(j).getY()
+									&& ptemp.get(k).getZ() == ptemp.get(j).getZ()) {
 								ptemp.removeElementAt(j);
 								statp.removeElementAt(j);
 								j--;
@@ -547,10 +546,11 @@ public class Beta3D {
 	 * @param sett2staz
 	 * @return sett2staz
 	 */
-	public Vector Join2StazN3(Vector latixy, Vector latixz, Vector latiyz, Vector sett1staz, Vector sett2staz) {
-		Vector out = new Vector();
+	public Vector<Vector<Object>> Join2StazN3(Vector<Object> latixy, Vector<Object> latixz, Vector<Object> latiyz, Vector<Object> sett1staz,
+			Vector<Object> sett2staz) {
+		Vector<Vector<Object>> out = new Vector<Vector<Object>>();
 
-		Vector lati = new Vector();
+		Vector<Object> lati = new Vector<Object>();
 
 		if (latixy.size() > 1 && latixz.size() > 1) {
 			for (int i = 0; i < latixy.size(); i++) {
@@ -558,10 +558,10 @@ public class Beta3D {
 
 				// confronto xy-xz
 				for (int j = 0; j < latixz.size(); j++) {
-					p1xy = ((Vertex) ((Segment3D) latixy.get(i)).getS1()).getCoords();
-					int[] p2xy = ((Vertex) ((Segment3D) latixy.get(i)).getS2()).getCoords();
-					int[] pxz1 = ((Vertex) ((Segment3D) latixz.get(j)).getS1()).getCoords();
-					int[] pxz2 = ((Vertex) ((Segment3D) latixz.get(j)).getS2()).getCoords();
+					p1xy = (((Segment3D) latixy.get(i)).getS1()).getCoords();
+					int[] p2xy = (((Segment3D) latixy.get(i)).getS2()).getCoords();
+					int[] pxz1 = (((Segment3D) latixz.get(j)).getS1()).getCoords();
+					int[] pxz2 = (((Segment3D) latixz.get(j)).getS2()).getCoords();
 
 					// 2 segmenti possono essere uniti se hanno gli stessi estremi.
 					if ((p1xy[0] == pxz1[0] && p2xy[0] == pxz2[0] && p1xy[0] != p2xy[0] && //assicura che non sia la stessa stazione
@@ -570,20 +570,18 @@ public class Beta3D {
 							|| (p2xy[0] == pxz1[0] && p1xy[0] == pxz2[0] && p1xy[0] != p2xy[0] && p2xy[0] != -1))
 
 					{
-						Vector betav = new Vector();
-						betav.addElement(((BetaVertex) ((Segment3D) latixz.get(j)).getBeta(0)));
-						betav.addElement(((BetaVertex) ((Segment3D) latixz.get(j)).getBeta(1)));
-						betav.addElement(((BetaVertex) ((Segment3D) latixy.get(i)).getBeta(0)));
-						betav.addElement(((BetaVertex) ((Segment3D) latixy.get(i)).getBeta(1)));
+						Vector<BetaVertex> betav = new Vector<BetaVertex>();
+						betav.addElement((((Segment3D) latixz.get(j)).getBeta(0)));
+						betav.addElement((((Segment3D) latixz.get(j)).getBeta(1)));
+						betav.addElement((((Segment3D) latixy.get(i)).getBeta(0)));
+						betav.addElement((((Segment3D) latixy.get(i)).getBeta(1)));
 
-						lati.addElement(new Segment3D(((BetaVertex) ((Segment3D) latixz.get(j)).getBeta(0)),
-								((BetaVertex) ((Segment3D) latixy.get(i)).getBeta(0)), ((Vertex) ((Segment3D) latixy.get(i)).getS1()),
-								((Vertex) ((Segment3D) latixy.get(i)).getS1())));
-						lati.addElement(new Segment3D(((BetaVertex) ((Segment3D) latixz.get(j)).getBeta(1)),
-								((BetaVertex) ((Segment3D) latixy.get(i)).getBeta(1)), ((Vertex) ((Segment3D) latixy.get(i)).getS2()),
-								((Vertex) ((Segment3D) latixy.get(i)).getS2())));
-						sett2staz.addElement(new Sector3D(betav, 2, ((Vertex) ((Segment3D) latixy.get(i)).getS1()), ((Vertex) ((Segment3D) latixy
-								.get(i)).getS1()), ((Vertex) ((Segment3D) latixy.get(i)).getS2()), ((Vertex) ((Segment3D) latixy.get(i)).getS2())));
+						lati.addElement(new Segment3D((((Segment3D) latixz.get(j)).getBeta(0)), (((Segment3D) latixy.get(i)).getBeta(0)),
+								(((Segment3D) latixy.get(i)).getS1()), (((Segment3D) latixy.get(i)).getS1())));
+						lati.addElement(new Segment3D((((Segment3D) latixz.get(j)).getBeta(1)), (((Segment3D) latixy.get(i)).getBeta(1)),
+								(((Segment3D) latixy.get(i)).getS2()), (((Segment3D) latixy.get(i)).getS2())));
+						sett2staz.addElement(new Sector3D(betav, 2, (((Segment3D) latixy.get(i)).getS1()), (((Segment3D) latixy.get(i)).getS1()),
+								(((Segment3D) latixy.get(i)).getS2()), (((Segment3D) latixy.get(i)).getS2())));
 						latixy.removeElementAt(i);
 						latixz.removeElementAt(j);
 					}
@@ -598,29 +596,25 @@ public class Beta3D {
 				// confronto xy-yz
 				if (latiyz.size() > 0) {
 					for (int j = 0; j < latiyz.size(); j++) {
-						p1xy = ((Vertex) ((Segment3D) latixy.get(i)).getS1()).getCoords();
-						int[] p2xy = ((Vertex) ((Segment3D) latixy.get(i)).getS2()).getCoords();
-						int[] pyz1 = ((Vertex) ((Segment3D) latiyz.get(j)).getS1()).getCoords();
-						int[] pyz2 = ((Vertex) ((Segment3D) latiyz.get(j)).getS2()).getCoords();
+						p1xy = (((Segment3D) latixy.get(i)).getS1()).getCoords();
+						int[] p2xy = (((Segment3D) latixy.get(i)).getS2()).getCoords();
+						int[] pyz1 = (((Segment3D) latiyz.get(j)).getS1()).getCoords();
+						int[] pyz2 = (((Segment3D) latiyz.get(j)).getS2()).getCoords();
 
 						if ((p1xy[1] == pyz1[1] && p2xy[1] == pyz2[1] && p1xy[1] != p2xy[1] && p2xy[1] != -1)
 								|| (p2xy[1] == pyz1[1] && p1xy[1] == pyz2[1] && p1xy[1] != p2xy[1] && p2xy[1] != -1)) {
-							Vector betav = new Vector();
-							betav.addElement(((BetaVertex) ((Segment3D) latiyz.get(j)).getBeta(0)));
-							betav.addElement(((BetaVertex) ((Segment3D) latiyz.get(j)).getBeta(1)));
-							betav.addElement(((BetaVertex) ((Segment3D) latixy.get(i)).getBeta(0)));
-							betav.addElement(((BetaVertex) ((Segment3D) latixy.get(i)).getBeta(1)));
+							Vector<BetaVertex> betav = new Vector<BetaVertex>();
+							betav.addElement((((Segment3D) latiyz.get(j)).getBeta(0)));
+							betav.addElement((((Segment3D) latiyz.get(j)).getBeta(1)));
+							betav.addElement((((Segment3D) latixy.get(i)).getBeta(0)));
+							betav.addElement((((Segment3D) latixy.get(i)).getBeta(1)));
 
-							lati.addElement(new Segment3D(((BetaVertex) ((Segment3D) latiyz.get(j)).getBeta(0)), ((BetaVertex) ((Segment3D) latixy
-									.get(i)).getBeta(0)), ((Vertex) ((Segment3D) latixy.get(i)).getS1()), ((Vertex) ((Segment3D) latixy.get(i))
-									.getS1())));
-							lati.addElement(new Segment3D(((BetaVertex) ((Segment3D) latiyz.get(j)).getBeta(1)), ((BetaVertex) ((Segment3D) latixy
-									.get(i)).getBeta(1)), ((Vertex) ((Segment3D) latixy.get(i)).getS2()), ((Vertex) ((Segment3D) latixy.get(i))
-									.getS2())));
-							sett2staz
-									.addElement(new Sector3D(betav, 2, ((Vertex) ((Segment3D) latixy.get(i)).getS1()), ((Vertex) ((Segment3D) latixy
-											.get(i)).getS1()), ((Vertex) ((Segment3D) latixy.get(i)).getS2()), ((Vertex) ((Segment3D) latixy.get(i))
-											.getS2())));
+							lati.addElement(new Segment3D((((Segment3D) latiyz.get(j)).getBeta(0)), (((Segment3D) latixy.get(i)).getBeta(0)),
+									(((Segment3D) latixy.get(i)).getS1()), (((Segment3D) latixy.get(i)).getS1())));
+							lati.addElement(new Segment3D((((Segment3D) latiyz.get(j)).getBeta(1)), (((Segment3D) latixy.get(i)).getBeta(1)),
+									(((Segment3D) latixy.get(i)).getS2()), (((Segment3D) latixy.get(i)).getS2())));
+							sett2staz.addElement(new Sector3D(betav, 2, (((Segment3D) latixy.get(i)).getS1()), (((Segment3D) latixy.get(i)).getS1()),
+									(((Segment3D) latixy.get(i)).getS2()), (((Segment3D) latixy.get(i)).getS2())));
 							latixy.removeElementAt(i);
 							latiyz.removeElementAt(j);
 						}
@@ -633,30 +627,28 @@ public class Beta3D {
 
 		if (latiyz.size() > 1 && latixz.size() > 1) {
 			for (int i = 0; i < latiyz.size(); i++) {
-				int[] p1yz = ((Vertex) ((Segment3D) latiyz.get(i)).getS1()).getCoords();
-				int[] p2yz = ((Vertex) ((Segment3D) latiyz.get(i)).getS2()).getCoords();
+				int[] p1yz = (((Segment3D) latiyz.get(i)).getS1()).getCoords();
+				int[] p2yz = (((Segment3D) latiyz.get(i)).getS2()).getCoords();
 
 				for (int j = 0; j < latixz.size(); j++) {
-					int[] pxz1 = ((Vertex) ((Segment3D) latixz.get(j)).getS1()).getCoords();
-					int[] pxz2 = ((Vertex) ((Segment3D) latixz.get(j)).getS2()).getCoords();
+					int[] pxz1 = (((Segment3D) latixz.get(j)).getS1()).getCoords();
+					int[] pxz2 = (((Segment3D) latixz.get(j)).getS2()).getCoords();
 
 					// 2 segmenti possono essere uniti se hanno gli stessi estremi.
 					if ((p1yz[2] == pxz1[2] && p2yz[2] == pxz2[2] && p1yz[2] != p2yz[2] && p2yz[2] != -1)
 							|| (p2yz[2] == pxz1[2] && p1yz[2] == pxz2[2] && p1yz[2] != p2yz[2] && p2yz[2] != -1)) {
-						Vector betav = new Vector();
-						betav.addElement(((BetaVertex) ((Segment3D) latixz.get(j)).getBeta(0)));
-						betav.addElement(((BetaVertex) ((Segment3D) latixz.get(j)).getBeta(1)));
-						betav.addElement(((BetaVertex) ((Segment3D) latiyz.get(i)).getBeta(0)));
-						betav.addElement(((BetaVertex) ((Segment3D) latiyz.get(i)).getBeta(1)));
+						Vector<BetaVertex> betav = new Vector<BetaVertex>();
+						betav.addElement((((Segment3D) latixz.get(j)).getBeta(0)));
+						betav.addElement((((Segment3D) latixz.get(j)).getBeta(1)));
+						betav.addElement((((Segment3D) latiyz.get(i)).getBeta(0)));
+						betav.addElement((((Segment3D) latiyz.get(i)).getBeta(1)));
 
-						lati.addElement(new Segment3D(((BetaVertex) ((Segment3D) latixz.get(j)).getBeta(0)),
-								((BetaVertex) ((Segment3D) latiyz.get(i)).getBeta(0)), ((Vertex) ((Segment3D) latiyz.get(i)).getS1()),
-								((Vertex) ((Segment3D) latiyz.get(i)).getS1())));
-						lati.addElement(new Segment3D(((BetaVertex) ((Segment3D) latixz.get(j)).getBeta(1)),
-								((BetaVertex) ((Segment3D) latiyz.get(i)).getBeta(1)), ((Vertex) ((Segment3D) latiyz.get(i)).getS2()),
-								((Vertex) ((Segment3D) latiyz.get(i)).getS2())));
-						sett2staz.addElement(new Sector3D(betav, 2, ((Vertex) ((Segment3D) latiyz.get(i)).getS1()), ((Vertex) ((Segment3D) latiyz
-								.get(i)).getS1()), ((Vertex) ((Segment3D) latiyz.get(i)).getS2()), ((Vertex) ((Segment3D) latiyz.get(i)).getS2())));
+						lati.addElement(new Segment3D((((Segment3D) latixz.get(j)).getBeta(0)), (((Segment3D) latiyz.get(i)).getBeta(0)),
+								(((Segment3D) latiyz.get(i)).getS1()), (((Segment3D) latiyz.get(i)).getS1())));
+						lati.addElement(new Segment3D((((Segment3D) latixz.get(j)).getBeta(1)), (((Segment3D) latiyz.get(i)).getBeta(1)),
+								(((Segment3D) latiyz.get(i)).getS2()), (((Segment3D) latiyz.get(i)).getS2())));
+						sett2staz.addElement(new Sector3D(betav, 2, (((Segment3D) latiyz.get(i)).getS1()), (((Segment3D) latiyz.get(i)).getS1()),
+								(((Segment3D) latiyz.get(i)).getS2()), (((Segment3D) latiyz.get(i)).getS2())));
 						latiyz.removeElementAt(i);
 						latixz.removeElementAt(j);
 					}
@@ -678,11 +670,11 @@ public class Beta3D {
 	 * @param triangles è un vettore contenente i settori a triangolo dove saturano 3 stazioni contemporaneamente
 	 * @return un vettore con i settori uniti
 	 */
-	public Vector JoinComplanars(Vector triangles) {
-		Vector out = new Vector();
+	public Vector<Object> JoinComplanars(Vector<Object> triangles) {
+		Vector<Object> out = new Vector<Object>();
 		for (int i = 0; i < triangles.size(); i++) {
 			for (int j = i + 1; j < triangles.size(); j++) {
-				Vector bi = new Vector();
+				Vector<BetaVertex> bi = new Vector<BetaVertex>();
 				int c = 0;
 				for (int h = 0; h < ((Sector3D) triangles.get(i)).CountPoint(); h++) {
 					bi.addElement(((Sector3D) triangles.get(i)).getV(h));
@@ -692,14 +684,14 @@ public class Beta3D {
 					int[] d = { -1, -1 };
 					int k = 0;
 
-					Vector bj = new Vector();
+					Vector<BetaVertex> bj = new Vector<BetaVertex>();
 					for (int h = 0; h < ((Sector3D) triangles.get(j)).CountPoint(); h++) {
 						bj.addElement(((Sector3D) triangles.get(j)).getV(h));
 					}
 
 					for (int a = 0; a < bi.size(); a++) {
 						for (int b = 0; b < bj.size(); b++) {
-							if (((BetaVertex) bj.get(b)).CircaEquals(((BetaVertex) bi.get(a)))) {
+							if (bj.get(b).CircaEquals(bi.get(a))) {
 								c++;
 								d[k] = a;
 								k++;
@@ -744,7 +736,7 @@ public class Beta3D {
 	 * @param s3d
 	 * @return
 	 */
-	public Vector DeleteFake(Vector s3d) {
+	public Vector<Object> DeleteFake(Vector<Object> s3d) {
 		for (int i = 0; i < s3d.size(); i++) {
 
 			if (Math.abs(((Sector3D) s3d.get(i)).getBeta(0, 0) - ((Sector3D) s3d.get(i)).getBeta(1, 0)) < EPSYLON
@@ -765,16 +757,16 @@ public class Beta3D {
 	 * @param v la stazione
 	 * @return il settore
 	 */
-	public Vector OneDominator(Vertex v) {
-		Vector out = new Vector();
+	public Vector<Object> OneDominator(Vertex v) {
+		Vector<Object> out = new Vector<Object>();
 
-		Vector points = new Vector();
+		Vector<BetaVertex> points = new Vector<BetaVertex>();
 
 		points.addElement(new BetaVertex(1, 0, 0));
 		points.addElement(new BetaVertex(0, 1, 0));
 		points.addElement(new BetaVertex(0, 0, 1));
 
-		Vector stations = new Vector();
+		Vector<Vertex> stations = new Vector<Vertex>();
 		stations.addElement(v);
 
 		Sector3D s3d = new Sector3D(points, 1, stations);

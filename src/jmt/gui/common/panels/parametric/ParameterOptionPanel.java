@@ -37,6 +37,10 @@ import jmt.gui.common.definitions.StationDefinition;
  */
 
 public abstract class ParameterOptionPanel extends JSplitPane {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	Color DEFAULT_TITLE_COLOR = new TitledBorder("").getTitleColor();
 	TitledBorder title = new TitledBorder("Parameter options");
 	String DESCRIPTION;
@@ -44,6 +48,7 @@ public abstract class ParameterOptionPanel extends JSplitPane {
 	protected StationDefinition sd;
 	protected SimulationDefinition simd;
 
+	@Override
 	public void setEnabled(boolean enabled) {
 		if (enabled) {
 			title.setTitleColor(DEFAULT_TITLE_COLOR);

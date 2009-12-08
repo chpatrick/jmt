@@ -104,6 +104,7 @@ public class JWatVariableInputTable extends JTable implements CommonConstants, J
 		}
 	}
 
+	@Override
 	public TableCellRenderer getCellRenderer(int row, int column) {
 		/*if (column == 5)
 			return new ComboBoxCell(regularExpr);*/
@@ -123,6 +124,7 @@ public class JWatVariableInputTable extends JTable implements CommonConstants, J
 	}
 
 	/* returns customized editor for table cells. */
+	@Override
 	public TableCellEditor getCellEditor(int row, int column) {
 		/*	if (column == 5) {
 				return new DefaultCellEditor(regCombo);
@@ -138,7 +140,7 @@ public class JWatVariableInputTable extends JTable implements CommonConstants, J
 
 	//Update 19/10/2006
 	protected MouseHandler mouseHandler;
-	private Vector deleteLisener = new Vector(); //<RowDeleteListener>
+	private Vector<RowDeleteListener> deleteLisener = new Vector<RowDeleteListener>(); //<RowDeleteListener>
 
 	public void addDeleteRowListener(RowDeleteListener r) {
 		if (!deleteLisener.contains(r)) {
@@ -148,7 +150,7 @@ public class JWatVariableInputTable extends JTable implements CommonConstants, J
 
 	private void fireDeleteEvent() {
 		for (int i = 0; i < deleteLisener.size(); i++) {
-			((RowDeleteListener) deleteLisener.get(i)).rowsDeletedEvent();
+			deleteLisener.get(i).rowsDeletedEvent();
 		}
 	}
 
@@ -322,10 +324,12 @@ public class JWatVariableInputTable extends JTable implements CommonConstants, J
 			}
 		}
 
+		@Override
 		public void mousePressed(MouseEvent e) {
 			processME(e);
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent e) {
 			processME(e);
 		}

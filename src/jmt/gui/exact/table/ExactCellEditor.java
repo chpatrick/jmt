@@ -51,6 +51,7 @@ public class ExactCellEditor extends DefaultCellEditor {
 	/**
 	 * calls JTextField.selectAll() before returning it
 	 */
+	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 		JTextField c = (JTextField) super.getTableCellEditorComponent(table, value, isSelected, row, column);
 		c.selectAll();

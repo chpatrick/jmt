@@ -94,6 +94,7 @@ public class RowHeader extends JTable {
 		}
 	}
 
+	@Override
 	public void createDefaultColumnsFromModel() {
 		TableModel m = getModel();
 		if (m != null) {
@@ -109,6 +110,7 @@ public class RowHeader extends JTable {
 		}
 	}
 
+	@Override
 	public TableCellRenderer getCellRenderer(int row, int column) {
 		return cellRenderer;
 	}
@@ -134,6 +136,7 @@ public class RowHeader extends JTable {
 			private static final long serialVersionUID = 1L;
 
 			/* keeps the #@£$*& thing from growing */
+			@Override
 			public Dimension getPreferredSize() {
 				Dimension d = super.getPreferredSize();
 				d.width = width;
@@ -201,15 +204,18 @@ public class RowHeader extends JTable {
 		resizeAndRepaint();
 	}
 
+	@Override
 	public int getWidth() {
 		return width;
 	}
 
+	@Override
 	public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
 		Object value = dataModel.getValueAt(row, -1);
 		return renderer.getTableCellRendererComponent(this, value, false, false, row, column);
 	}
 
+	@Override
 	public boolean isCellEditable(int row, int col) {
 		return false;
 	}
@@ -239,6 +245,7 @@ public class RowHeader extends JTable {
 			return 0;
 		}
 
+		@Override
 		public String getColumnName(int column) {
 			return " ";
 		}
@@ -260,6 +267,7 @@ public class RowHeader extends JTable {
 	private class MouseRowSelector extends MouseAdapter implements MouseMotionListener {
 		private int row0 = -1;
 
+		@Override
 		public void mousePressed(MouseEvent e) {
 			stopEditing(table);
 			row0 = rowAtPoint(e.getPoint());
@@ -276,6 +284,7 @@ public class RowHeader extends JTable {
 			}
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent e) {
 			row0 = -1;
 		}

@@ -148,6 +148,7 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 					getTableHeader().addMouseMotionListener(tips);
 				}
 
+				@Override
 				public TableCellRenderer getCellRenderer(int row, int column) {
 					if (column == 0) {
 						return getDefaultRenderer(Boolean.class);
@@ -230,8 +231,8 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 				}
 				if (columnIndex == 0) {
 					int[] sel = ((KMean) session.getListOfClustering().get(clustering)).getVarClust();
-					for (int i = 0; i < sel.length; i++) {
-						if (sel[i] == rowIndex) {
+					for (int element : sel) {
+						if (element == rowIndex) {
 							return Boolean.TRUE;
 						}
 					}
@@ -253,6 +254,7 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 			return null;
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < header.length) {
 				return header[columnIndex];
@@ -265,10 +267,12 @@ public class KMeansInfoCluster extends JPanel implements CommonConstants, JWATCo
 		 * index) is editable or not. In this case distribution column is not
 		 * editable, as editing functionality is implemented via edit button
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return false;
 		}
 
+		@Override
 		public Class getColumnClass(int index) {
 			return String.class;
 		}

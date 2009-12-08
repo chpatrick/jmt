@@ -55,6 +55,7 @@ public final class UtilizationPanel extends SolutionPanel {
 	/**
 	 * gets status from data object
 	 */
+	@Override
 	protected void sync() {
 		super.sync();
 		util = data.getUtilization();
@@ -65,10 +66,12 @@ public final class UtilizationPanel extends SolutionPanel {
 		//END
 	}
 
+	@Override
 	protected ExactTableModel getTableModel() {
 		return new UTableModel();
 	}
 
+	@Override
 	protected String getDescriptionMessage() {
 		return ExactConstants.DESCRIPTION_UTILIZATIONS;
 	}
@@ -117,6 +120,7 @@ public final class UtilizationPanel extends SolutionPanel {
 			//end NEW
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			if (rowIndex == 0) {
 				return "<html>-</html>";
@@ -124,6 +128,7 @@ public final class UtilizationPanel extends SolutionPanel {
 			return stationNames[rowIndex - 1];
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			if (index == 0) {
 				return "<html><i>Aggregate</i></html>";
@@ -131,6 +136,7 @@ public final class UtilizationPanel extends SolutionPanel {
 			return classNames[index - 1];
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			double d = 0;
 			//OLD

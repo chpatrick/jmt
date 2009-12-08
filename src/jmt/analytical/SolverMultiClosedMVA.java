@@ -282,6 +282,7 @@ public class SolverMultiClosedMVA extends SolverMulti {
 	 *
 	 *
 	 */
+	@Override
 	public boolean hasSufficientProcessingCapacity() {
 		//only closed class: no saturation
 		return true;
@@ -295,6 +296,7 @@ public class SolverMultiClosedMVA extends SolverMulti {
 	 * "input(...)" method must have been called before solving the model!!<br><br>
 	 *
 	 */
+	@Override
 	public void solve() {
 		//tests if all the resources, stations, are load independent
 		boolean loadIndep = true;
@@ -707,6 +709,7 @@ public class SolverMultiClosedMVA extends SolverMulti {
 	 * @return the string
 	 */
 
+	@Override
 	public String toString() {
 		if (!intermediate_results) {
 			//if intermediate results haven't been saved, don't write them!

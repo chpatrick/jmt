@@ -171,7 +171,7 @@ public abstract class Distribution implements ServiceStrategy {
 	 * @return a clone of this distribution
 	 */
 	@Override
-	public Object clone() {
+	public Distribution clone() {
 		// Gets subtype of this class to instantiate new object through reflection
 		Class<? extends Distribution> instance = this.getClass();
 		Distribution tmp = null;
@@ -284,7 +284,7 @@ public abstract class Distribution implements ServiceStrategy {
 		try {
 			for (Field field : fields) {
 				if (field.getName().startsWith("DISTRIBUTION_")) {
-					tmp.add((Distribution)Class.forName(path + (String) field.get(null)).newInstance());
+					tmp.add((Distribution) Class.forName(path + (String) field.get(null)).newInstance());
 				}
 			}
 		} catch (IllegalAccessException ex) {

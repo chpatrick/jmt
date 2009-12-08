@@ -35,6 +35,7 @@ public class InverseMeasure extends jmt.engine.dataAnalysis.Measure {
 	/** Gets a measure value, calculated as the inverse of measure mean.
 	 * @return measure value.
 	 */
+	@Override
 	public double getMeanValue() {
 		if (receivedNoSamples()) {
 			//no samples have been collected -> throughput is zero
@@ -53,6 +54,7 @@ public class InverseMeasure extends jmt.engine.dataAnalysis.Measure {
 	/** Gets lower limit of the inverse measure.
 	 * @return Lower limit.
 	 */
+	@Override
 	public double getLowerLimit() {
 		if (receivedNoSamples()) {
 			//no samples have been collected -> throughput is zero
@@ -65,6 +67,7 @@ public class InverseMeasure extends jmt.engine.dataAnalysis.Measure {
 	/** Gets upper limit of the inverse measure.
 	 * @return Lower limit.
 	 */
+	@Override
 	public double getUpperLimit() {
 		if (receivedNoSamples()) {
 			//no samples have been collected -> throughput is zero
@@ -78,6 +81,7 @@ public class InverseMeasure extends jmt.engine.dataAnalysis.Measure {
 	 * reached, it is returned the value extimated up to that moment.
 	 * @return measure value.
 	 */
+	@Override
 	public double getExtimatedMeanValue() {
 		if (analyzer.extimatedMean() > 0) {
 			return 1 / analyzer.extimatedMean();

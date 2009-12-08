@@ -68,6 +68,7 @@ public class SolverMultiMixed extends SolverMulti {
 		return false;
 	}
 
+	@Override
 	public void solve() {
 		//tests if all the resources, stations, are load independent
 		boolean loadIndep = true;
@@ -377,6 +378,7 @@ public class SolverMultiMixed extends SolverMulti {
 	 * WARNING: This method should be called before solving the system.
 	 * @return true if sufficient capacity exists for the given workload, false otherwise
 	 */
+	@Override
 	public boolean hasSufficientProcessingCapacity() {
 
 		//the maximum aggregate utilization between all the stations must be < 1

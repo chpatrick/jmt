@@ -1406,7 +1406,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	private void addNewStationConnections(Object stationKey) {
 		//first add all of the forward connections
 		//picking all possible targets
-		Vector keys = new Vector(connectionsBDM.keySet(BDMap.X));
+		Vector<Object> keys = new Vector<Object>(connectionsBDM.keySet(BDMap.X));
 		int size = keys.size();
 		Map<Object, Connection> conns = new HashMap<Object, Connection>();
 		//building set of forward connections
@@ -1418,7 +1418,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		connectionsBDM.put(stationKey, BDMap.Y, conns);
 		//reset all data structures for bw connections addition
 		//picking all possible sources
-		keys = new Vector(connectionsBDM.keySet(BDMap.Y));
+		keys = new Vector<Object>(connectionsBDM.keySet(BDMap.Y));
 		size = keys.size();
 		conns = new HashMap<Object, Connection>();
 		//building set of backward connections

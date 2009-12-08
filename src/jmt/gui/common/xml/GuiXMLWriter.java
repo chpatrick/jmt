@@ -231,12 +231,12 @@ public class GuiXMLWriter implements GuiXMLConstants {
 				}
 			}
 			//save parametric analysis configuration
-			Map properties = pad.getProperties();
-			Set keys = properties.keySet();
+			Map<String, String> properties = pad.getProperties();
+			Set<String> keys = properties.keySet();
 			parametric = doc.createElement(XML_E_PARAMETRIC);
 			parametric.setAttribute(XML_A_PARAMETRIC_ENABLED, Boolean.toString(model.isParametricAnalysisEnabled()));
 			parametric.setAttribute(XML_A_PARAMETRIC_CLASSPATH, pad.getClass().toString().replaceFirst("class ", ""));
-			Iterator it = keys.iterator();
+			Iterator<String> it = keys.iterator();
 			while (it.hasNext()) {
 				Object thisParam = it.next();
 				Element field = doc.createElement(XML_E_FIELD);

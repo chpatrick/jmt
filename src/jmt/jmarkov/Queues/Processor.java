@@ -24,10 +24,9 @@
  */
 package jmt.jmarkov.Queues;
 
-import jmt.jmarkov.Graphics.Notifier;
 import jmt.jmarkov.Job;
-import jmt.jmarkov.MMQueues;
 import jmt.jmarkov.Simulator;
+import jmt.jmarkov.Graphics.Notifier;
 
 /**
  * It represent the "Processor" (Server). This calculates how much time 
@@ -46,12 +45,11 @@ public final class Processor {
 	public Simulator sim;
 
 	private boolean processing;// this show if this processor is doing a job or not
-	
+
 	private int processerId;
-	
+
 	private Job processingJob;
 
-	
 	public void process(double currentTime) {
 		try {
 			if (!this.isProcessing()) {
@@ -72,12 +70,8 @@ public final class Processor {
 		}
 
 	}
-	
 
-
-
-
-	public Processor(QueueLogic ql, JobQueue q, Notifier n[],int processorId/*, int jobsToDo*/) {
+	public Processor(QueueLogic ql, JobQueue q, Notifier n[], int processorId/*, int jobsToDo*/) {
 		this.ql = ql;
 		this.q = q;
 		this.n = n;
@@ -86,7 +80,6 @@ public final class Processor {
 		setProcesserId(processorId);
 	}
 
-	
 	private double getExecutionTime() {
 		return ql.getRunTime();
 	}
@@ -95,47 +88,45 @@ public final class Processor {
 	 * Notify the changes to the user interface
 	 * 
 	 */
-	private void notifyGraphics(String gi, int jobId,double time,double executionTime) {
+	private void notifyGraphics(String gi, int jobId, double time, double executionTime) {
 		int processorId = this.getProcesserId();
 		if (gi == "enterCpu") {
-			for (int i = 0; i < n.length; i++) {
-				n[i].exitQueue(jobId,time);
-				n[i].enterProcessor(jobId, processorId,time,executionTime);
+			for (Notifier element : n) {
+				element.exitQueue(jobId, time);
+				element.enterProcessor(jobId, processorId, time, executionTime);
 			}
-		} 
-		else if (gi == "exitProcessor") {
-			for (int i = 0; i < n.length; i++) {
-				n[i].exitProcessor(jobId, processorId,time);
+		} else if (gi == "exitProcessor") {
+			for (Notifier element : n) {
+				element.exitProcessor(jobId, processorId, time);
 			}
-		}
-		else if (gi == "animate") {
-			for (int i = 0; i < n.length; i++) {
-				n[i].updateProcessor(jobId, this.getProcesserId(),processingJob.getSystemExitTime()-time, time);
+		} else if (gi == "animate") {
+			for (Notifier element : n) {
+				element.updateProcessor(jobId, this.getProcesserId(), processingJob.getSystemExitTime() - time, time);
 			}
 		}
-		
-		
+
 	}
-	
+
 	public void animate(double time) {
-		if(processingJob!=null)
-			notifyGraphics("animate", processingJob.getJobId(),time,0);
+		if (processingJob != null) {
+			notifyGraphics("animate", processingJob.getJobId(), time, 0);
+		}
 
 	}
-
-
 
 	public boolean isProcessing() {
 		return processing;
 	}
 
 	private void setProcessing(boolean running) {
-		if(!running) processingJob = null; 
+		if (!running) {
+			processingJob = null;
+		}
 		this.processing = running;
 	}
 
 	public void endProcessing(double time) {
-		notifyGraphics("exitProcessor", this.processingJob.getJobId(), time,0);
+		notifyGraphics("exitProcessor", this.processingJob.getJobId(), time, 0);
 		setProcessing(false);
 	}
 

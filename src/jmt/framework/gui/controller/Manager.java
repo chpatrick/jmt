@@ -54,7 +54,7 @@ public class Manager {
 	 * this method will do 'dispose()' too.
 	 */
 	public static void exit(Window application) {
-		synchronized(windows) {
+		synchronized (windows) {
 			// Disposes application window if user didn't do it.
 			if (application.isDisplayable()) {
 				application.dispose();

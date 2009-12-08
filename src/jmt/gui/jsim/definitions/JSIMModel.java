@@ -37,6 +37,7 @@ public class JSIMModel extends CommonModel {
 	Object src, snk; // Pointer to source and sink reference
 
 	//intercept each call for addition of a new class
+	@Override
 	public Object addClass(String name, int type, int priority, Integer population, Object distribution) {
 		if (type == CLASS_TYPE_OPEN) {
 			if (openClasses == 0) {
@@ -57,6 +58,7 @@ public class JSIMModel extends CommonModel {
 	 * @param type: string representing station type. It's value is contained in
 	 * <code>JSIMConstants</code> interface.
 	 * @return : key of search for this class*/
+	@Override
 	public Object addStation(String name, String type) {
 		if (type.equals(STATION_TYPE_SOURCE)) {
 			if (src == null) {
@@ -74,6 +76,7 @@ public class JSIMModel extends CommonModel {
 	}
 
 	//intercept each call for change of class type
+	@Override
 	public void setClassType(int type, Object classKey) {
 		if (getClassType(classKey) != type) {
 			if (type == CLASS_TYPE_OPEN) {
@@ -93,6 +96,7 @@ public class JSIMModel extends CommonModel {
 	}
 
 	//Intercept each call to the deletion of a class
+	@Override
 	public void deleteClass(Object classKey) {
 		if (getClassType(classKey) == CLASS_TYPE_OPEN) {
 			if (openClasses == 1) {
@@ -104,6 +108,7 @@ public class JSIMModel extends CommonModel {
 	}
 
 	//intercept also calls to station deletion to avoid sink and source deletion
+	@Override
 	public void deleteStation(Object stationKey) {
 		String type = getStationType(stationKey);
 		if (STATION_TYPE_SOURCE.equals(type) || STATION_TYPE_SINK.equals(type)) {
@@ -113,6 +118,7 @@ public class JSIMModel extends CommonModel {
 	}
 
 	//intercept calls to station type modification as well
+	@Override
 	public void setStationType(String type, Object stationKey) {
 		String currentType = getStationType(stationKey);
 		if (STATION_TYPE_SOURCE.equals(currentType) || STATION_TYPE_SINK.equals(currentType)) {

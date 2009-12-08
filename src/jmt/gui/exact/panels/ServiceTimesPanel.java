@@ -163,6 +163,7 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 
 	}
 
+	@Override
 	public String getName() {
 		return "Service Times";
 	}
@@ -179,11 +180,13 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 		}
 	}
 
+	@Override
 	public void gotFocus() {
 		sync();
 		stTable.updateStructure();
 	}
 
+	@Override
 	public void lostFocus() {
 		commit();
 		//release();
@@ -192,6 +195,7 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 	/**
 	 * Make sure we can't finish if we are editing LD data
 	 */
+	@Override
 	public boolean canFinish() {
 		return !stTable.isLDEditing();
 	}
@@ -199,6 +203,7 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 	/**
 	 * Make sure we can't switch tabs if we are editing LD data
 	 */
+	@Override
 	public boolean canGoBack() {
 		return !stTable.isLDEditing();
 	}
@@ -206,10 +211,12 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 	/**
 	 * Make sure we can't switch tabs if we are editing LD data
 	 */
+	@Override
 	public boolean canGoForward() {
 		return !stTable.isLDEditing();
 	}
 
+	@Override
 	public void help() {
 		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
 
@@ -277,6 +284,7 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 			return (cellEditor instanceof LDEditor);
 		}
 
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (stationTypes[row] == STATION_LD) {
 				return ldRenderer;
@@ -289,6 +297,7 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 		 * Overridden to obtain a different editor for LD stations.
 		 * Cannot choose editor via standard JTable mechanism because cell type is not column-dependant
 		 */
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (stationTypes[row] == STATION_LD) {
 				return getLDEditor();
@@ -300,6 +309,7 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 		/**
 		 * the LDEditor needs to be treated in a special way.
 		 */
+		@Override
 		public Component prepareEditor(TableCellEditor editor, int row, int column) {
 
 			if (editor instanceof LDEditor) {
@@ -317,6 +327,7 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 		 * If the request is to edit ld times in a system with zero customers, shows a warning messages and returns false.
 		 * Otherwise passes request to superclass method
 		 */
+		@Override
 		public boolean editCellAt(int row, int col, EventObject e) {
 			if (zeroLD && (stationTypes[row] == STATION_LD)) {
 				JOptionPane.showMessageDialog(ServiceTimesPanel.this,
@@ -364,10 +375,12 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 			return classes;
 		}
 
+		@Override
 		public String getColumnName(int index) {
 			return classNames[index];
 		}
 
+		@Override
 		protected Object getValueAtImpl(int rowIndex, int columnIndex) {
 			switch (stationTypes[rowIndex]) {
 				case STATION_LI:
@@ -380,10 +393,12 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 			}
 		}
 
+		@Override
 		protected Object getRowName(int rowIndex) {
 			return stationNames[rowIndex];
 		}
 
+		@Override
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			if (value instanceof String) { //coming from the defaultEditor
 				//if ("LD".equals((String)value)) return;
@@ -399,10 +414,12 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 			}
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return true;
 		}
 
+		@Override
 		public void clear(int row, int col) {
 			if (stationTypes[row] == STATION_LD) {
 				return;
@@ -414,6 +431,7 @@ public final class ServiceTimesPanel extends WizardPanel implements ExactConstan
 		 * Copy the contents of a cell to an area. Works directly on the data set.<br>
 		 * Does nothing if the source cell is in an LD row; LD rows are skipped
 		 */
+		@Override
 		public void copyCellToArea(int sourceRow, int sourceCol, int rowFrom, int rowTo, int colFrom, int colTo) {
 
 			if (stationTypes[sourceRow] == STATION_LD) {

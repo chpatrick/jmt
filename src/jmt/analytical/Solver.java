@@ -157,6 +157,7 @@ public abstract class Solver {
 	 * @return the string
 	 */
 
+	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		buf.append("\n------------------------------------");

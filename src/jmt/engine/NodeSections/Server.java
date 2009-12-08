@@ -120,7 +120,7 @@ public class Server extends ServiceSection {
 				return super.getIntSectionProperty(id, jobClass);
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see jmt.engine.QueueNet.NodeSection#getDoubleSectionProperty(int, jmt.engine.QueueNet.JobClass)
 	 */
@@ -146,7 +146,6 @@ public class Server extends ServiceSection {
 			return super.getDoubleSectionProperty(id);
 		}
 	}
-
 
 	@Override
 	public Object getObject(int id, JobClass jobClass) throws jmt.common.exception.NetException {
@@ -250,5 +249,5 @@ public class Server extends ServiceSection {
 		}
 		return MSG_PROCESSED;
 	}
-	
+
 }

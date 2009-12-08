@@ -29,6 +29,7 @@ import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -67,7 +68,7 @@ public class PanelConvex2D extends JPanel implements MouseListener, MouseMotionL
 	private DPoint lineP1;
 	private DPoint lineP2;
 
-	private Vector s3d;
+	private Vector<Object> s3d;
 
 	private double[][][] serviceDemands;
 
@@ -86,7 +87,7 @@ public class PanelConvex2D extends JPanel implements MouseListener, MouseMotionL
 
 		serviceDemands = ArrayUtils.copy3per2(data.getServiceTimes(), data.getVisits());
 
-		Vector v = new Vector();
+		Vector<Point2D> v = new Vector<Point2D>();
 		for (int k = 0; k < stationNames.length; k++) {
 			v.add(new DPoint(serviceDemands[k][0][0], serviceDemands[k][1][0], stationNames[k]));
 		}
@@ -110,6 +111,7 @@ public class PanelConvex2D extends JPanel implements MouseListener, MouseMotionL
 	/**
 	 * This function in used every time that the window have to be repiainted
 	 */
+	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 
@@ -181,7 +183,7 @@ public class PanelConvex2D extends JPanel implements MouseListener, MouseMotionL
 		DPoint p;
 		if (e.getButton() == 1) {
 			//Select the dominant
-			Vector dominants = engine.getDominants();
+			Vector<Point2D> dominants = engine.getDominants();
 			for (int i = 0; i < dominants.size(); i++) {
 				p = (DPoint) dominants.get(i);
 				p.setSelect(false);
@@ -194,7 +196,7 @@ public class PanelConvex2D extends JPanel implements MouseListener, MouseMotionL
 			}
 
 			//If the point is Dominated the Dominants are selected
-			Vector dominates = engine.getDominates();
+			Vector<Point2D> dominates = engine.getDominates();
 			DPoint p2;
 			for (int i = 0; i < dominates.size(); i++) {
 				p = (DPoint) dominates.get(i);
@@ -252,7 +254,7 @@ public class PanelConvex2D extends JPanel implements MouseListener, MouseMotionL
 		{
 			if (mouseButtonPress == 1) {
 
-				Vector allPoint = engine.getAllPoints();
+				Vector<Point2D> allPoint = engine.getAllPoints();
 				for (int k = 0; k < allPoint.size(); k++) {
 					if (((DPoint) allPoint.get(k)).equals(selDPoint)) {
 						setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -357,7 +359,7 @@ public class PanelConvex2D extends JPanel implements MouseListener, MouseMotionL
 	 * @param point The point may be on the line
 	 */
 	private void selectLine(Point point) {
-		Vector convex = engine.getAllConvex();
+		Vector<Point2D> convex = engine.getAllConvex();
 		for (int k = 0; k < convex.size() - 1; k++) {
 			if (painter.selectLine((DPoint) convex.get(k), (DPoint) convex.get(k + 1), point)) {
 				lineP1 = (DPoint) convex.get(k);
@@ -389,7 +391,7 @@ public class PanelConvex2D extends JPanel implements MouseListener, MouseMotionL
 		selPoint = false;
 		dragPoint = e.getPoint();
 
-		Vector point = engine.getDominants();
+		Vector<Point2D> point = engine.getDominants();
 		DPoint p;
 
 		//If the mouse pass over a point, the mouse change
@@ -413,7 +415,7 @@ public class PanelConvex2D extends JPanel implements MouseListener, MouseMotionL
 		}
 
 		//If the cursor pass over a saturation sector the mouse change
-		Vector convex = engine.getAllConvex();
+		Vector<Point2D> convex = engine.getAllConvex();
 		for (int k = 0; k < convex.size() - 1; k++) {
 			if (painter.selectLine((DPoint) convex.get(k), (DPoint) convex.get(k + 1), e.getPoint())) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));

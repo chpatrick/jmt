@@ -15,7 +15,7 @@
   * along with this program; if not, write to the Free Software
   * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
   */
-  
+
 /*
  * Created on 11-mar-2004
  *
@@ -37,47 +37,46 @@ import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
  * 
  */
 public interface QueueLogic {
-	
+
 	//methods:
-	
+
 	/**
 	 * Calculates the probability of each status. 
 	 * @return the probability of the status
 	 * @param number of elements in the status
 	 */
 	public double getStatusProbability(int status) throws NonErgodicException;
-	
+
 	/**
 	 * Calculates the service time of the job.(ms) 
 	 * @return service time
 	 */
 	public double getRunTime();
-	
+
 	/**
 	 * Calculates the arrival of the next job.(ms)
 	 * @return interarrival time
 	 */
 	public double getArrivalTime() throws NoJobsException;
-	
+
 	/**
 	 * 
 	 * Returns the maximum number of the jobs in the queue(only buffer)
 	 * @return 0 if the buffer is ideal(infinite), a positive number,  otherwise
 	 */
 	public int getMaxStates() throws InfiniteBufferException;
-	
-	
+
 	/**
 	 * Calculates the average number of the jobs in the queue(Q)
 	 * 
 	 */
 	public double mediaJobs() throws NonErgodicException;
-	
+
 	/**
 	 * Calculates the average utilization of the queue(U)
 	 */
 	public double utilization() throws NonErgodicException;
-	
+
 	/**
 	 * Calculates the average  throughput(X) 
 	 *  
@@ -89,12 +88,11 @@ public interface QueueLogic {
 	 * 
 	 */
 	public double responseTime() throws NonErgodicException;
-	
-	
+
 	/**
 	 * Returns the number of the servers.  
 	 * 
-	 */	
+	 */
 	public int getNumberServer();
-	
+
 }

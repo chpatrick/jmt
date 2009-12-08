@@ -60,6 +60,7 @@ public class SolverMultiOpen extends SolverMulti {
 	/**
 	* Solves the model, using an appropriate technique (LI or LD model).
 	*/
+	@Override
 	public void solve() {
 		//tests if all the resources, stations, are load independent
 		boolean loadIndep = true;
@@ -156,6 +157,7 @@ public class SolverMultiOpen extends SolverMulti {
 	 * WARNING: This method should be called before solving the system.
 	 * @return true if sufficient capacity exists for the given workload, false otherwise
 	 */
+	@Override
 	public boolean hasSufficientProcessingCapacity() {
 
 		//the maximum aggregate utilization between all the stations must be < 1

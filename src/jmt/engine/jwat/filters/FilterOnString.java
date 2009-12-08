@@ -17,8 +17,8 @@ public class FilterOnString implements FilterOnVariable {
 	}
 
 	public boolean isMatching(Observation o, int pos) {
-		for (int i = 0; i < varIndex.length; i++) {
-			if (o.getIndex(index) == varIndex[i]) {
+		for (int element : varIndex) {
+			if (o.getIndex(index) == element) {
 				return true;
 			}
 		}

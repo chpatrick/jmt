@@ -65,6 +65,7 @@ public class Edge {
 	/**
 	 * Produce a string describing an edge.
 	 */
+	@Override
 	public String toString() {
 		return "[" + end1 + ", " + end2 + "]";
 	}

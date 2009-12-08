@@ -171,6 +171,7 @@ public class BetaVertex {
 	/**
 	 * Returns a string that describes a vertex.
 	 */
+	@Override
 	public String toString() {
 		return ("(" + x + ", " + y + ", " + z + ")");
 	}

@@ -613,9 +613,10 @@ public class NetNode extends SimEntity {
 		//TODO: vedi analogo problema per receive
 		//Look if message is a job message and if job is leaving this node
 
-		if (outputSection != null && outputSection.automaticUpdateNodeJobinfolist() &&
-				(Event == NetEvent.EVENT_JOB) && ((Destination != this) || ((Destination == this) 
-				&& (SourceSection == NodeSection.OUTPUT) && (DestinationSection == NodeSection.INPUT)))) {
+		if (outputSection != null
+				&& outputSection.automaticUpdateNodeJobinfolist()
+				&& (Event == NetEvent.EVENT_JOB)
+				&& ((Destination != this) || ((Destination == this) && (SourceSection == NodeSection.OUTPUT) && (DestinationSection == NodeSection.INPUT)))) {
 			Job job = (Job) Data;
 			JobInfo JobInfo = jobsList.lookFor(job);
 			if (JobInfo != null) {
@@ -749,8 +750,9 @@ public class NetNode extends SimEntity {
 		int Tag;
 
 		//Look if message is a job message and if job is leaving this node
-		if (outputSection != null && outputSection.automaticUpdateNodeJobinfolist() &&
-				(Event == NetEvent.EVENT_JOB)
+		if (outputSection != null
+				&& outputSection.automaticUpdateNodeJobinfolist()
+				&& (Event == NetEvent.EVENT_JOB)
 				&& ((Destination != this) || ((Destination == this) && (SourceSection == NodeSection.OUTPUT) && (DestinationSection == NodeSection.INPUT)))) {
 			Job job = (Job) Data;
 			JobInfo JobInfo = jobsList.lookFor(job);
@@ -859,7 +861,7 @@ public class NetNode extends SimEntity {
 	public void setSimParameters(SimParameters simParameters) {
 		this.simParameters = simParameters;
 	}
-	
+
 	/**
 	 * This method is called after all the sections are added
 	 */

@@ -93,7 +93,7 @@ public class BlockingStationPanel extends WizardPanel implements CommonConstants
 
 	/** Vector used to store stations in a given region. This is needed as
 	 * data structure uses a set which is sorted */
-	protected Vector stations;
+	protected Vector<Object> stations;
 
 	/** Used for station selection renderers */
 	protected ImagedComboBoxCellEditorFactory comboFactory;
@@ -101,6 +101,7 @@ public class BlockingStationPanel extends WizardPanel implements CommonConstants
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Blocking Region Station Definition";
 	}
@@ -108,6 +109,7 @@ public class BlockingStationPanel extends WizardPanel implements CommonConstants
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		if (blockingPanel != null) {
 			blockingPanel.lostFocus();
@@ -123,6 +125,7 @@ public class BlockingStationPanel extends WizardPanel implements CommonConstants
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		if (blockingPanel != null) {
 			blockingPanel.gotFocus();
@@ -143,7 +146,7 @@ public class BlockingStationPanel extends WizardPanel implements CommonConstants
 		this.bd = brd;
 		this.sd = sd;
 		this.regionKey = key;
-		stations = new Vector();
+		stations = new Vector<Object>();
 		comboFactory = new ImagedComboBoxCellEditorFactory(sd);
 		initComponent();
 		addActions();
@@ -320,12 +323,13 @@ public class BlockingStationPanel extends WizardPanel implements CommonConstants
 		 *         this type of cell
 		 * @see javax.swing.DefaultCellEditor
 		 */
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 1) {
 				return new ButtonCellEditor(delete);
 			} else {
 				// Builds an ordered array with station keys that can be added and current one
-				SortedSet tmp = new TreeSet(bd.getBlockableStationKeys());
+				SortedSet<Object> tmp = new TreeSet<Object>(bd.getBlockableStationKeys());
 				tmp.add(stations.get(row));
 				return comboFactory.getEditor(tmp.toArray());
 			}
@@ -353,6 +357,7 @@ public class BlockingStationPanel extends WizardPanel implements CommonConstants
 		 * @see javax.swing.table.TableColumn#setCellRenderer
 		 * @see #setDefaultRenderer
 		 */
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			if (column == 1) {
 				return deleteRenderer;
@@ -433,6 +438,7 @@ public class BlockingStationPanel extends WizardPanel implements CommonConstants
 		 * @return true if the cell is editable
 		 * @see #setValueAt
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return columnIndex == 1 || bd.getBlockableStationKeys().size() > 0;
 		}
@@ -461,6 +467,7 @@ public class BlockingStationPanel extends WizardPanel implements CommonConstants
 		 * @param    rowIndex     the row whose value is to be changed
 		 * @param    columnIndex the column whose value is to be changed
 		 */
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			if (columnIndex == 0) {
 				// If value changed
@@ -480,6 +487,7 @@ public class BlockingStationPanel extends WizardPanel implements CommonConstants
 		 * @return the name of the column
 		 * @param    columnIndex    the index of the column
 		 */
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex == 0) {
 				return "Station name";

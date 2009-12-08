@@ -29,13 +29,13 @@ import java.util.Vector;
  */
 public class JabaResults {
 
-	private Vector results = new Vector();
+	private Vector<Object> results = new Vector<Object>();
 
-	public void setResults(Vector results) {
+	public void setResults(Vector<Object> results) {
 		this.results = results;
 	}
 
-	public Vector getResults() {
+	public Vector<Object> getResults() {
 		return results;
 	}
 

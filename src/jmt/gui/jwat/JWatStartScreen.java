@@ -160,8 +160,8 @@ public class JWatStartScreen extends JFrame {
 		eastPanel.add(Box.createVerticalStrut(5), BorderLayout.NORTH);
 		JPanel buttonPanel = new JPanel(new GridLayout(buttonAction.length, 1, 2, 2));
 		eastPanel.add(buttonPanel, BorderLayout.CENTER);
-		for (int i = 0; i < buttonAction.length; i++) {
-			buttonPanel.add(createButton(buttonAction[i]));
+		for (AbstractAction element : buttonAction) {
+			buttonPanel.add(createButton(element));
 		}
 		JLabel imageLabel = new JLabel();
 		imageLabel.setBorder(BorderFactory.createEmptyBorder(BUTTONSIZE - 5, 1, 0, 0));
@@ -181,6 +181,7 @@ public class JWatStartScreen extends JFrame {
 			/**
 			 * Invoked when a window is in the process of being closed.
 			 */
+			@Override
 			public void windowClosing(WindowEvent e) {
 				Manager.exit(JWatStartScreen.this);
 			}
@@ -188,6 +189,7 @@ public class JWatStartScreen extends JFrame {
 			/**
 			 * Invoked when a window has been closed.
 			 */
+			@Override
 			public void windowClosed(WindowEvent e) {
 				Manager.exit(JWatStartScreen.this);
 			}
@@ -233,6 +235,7 @@ public class JWatStartScreen extends JFrame {
 		/**
 		 * Invoked when the mouse enters a component.
 		 */
+		@Override
 		public void mouseEntered(MouseEvent e) {
 			((Component) e.getSource()).setBackground(rollover);
 		}
@@ -240,6 +243,7 @@ public class JWatStartScreen extends JFrame {
 		/**
 		 * Invoked when the mouse exits a component.
 		 */
+		@Override
 		public void mouseExited(MouseEvent e) {
 			((Component) e.getSource()).setBackground(normal);
 		}

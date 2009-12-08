@@ -72,10 +72,12 @@ public abstract class WorkerLoader extends SwingWorker {
 	/* (non-Javadoc)
 	 * @see jmt.jwat.Utility.SwingWorker#construct()
 	 */
+	@Override
 	public abstract Object construct();
 
 	/* (non-Javadoc)
 	 * @see jmt.jwat.Utility.SwingWorker#finished()
 	 */
+	@Override
 	public abstract void finished();
 }

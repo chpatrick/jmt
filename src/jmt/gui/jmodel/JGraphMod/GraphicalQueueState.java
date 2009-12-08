@@ -49,16 +49,15 @@ import jmt.gui.jmodel.controller.ModelSnapshot;
  */
 public class GraphicalQueueState {
 	private Mediator mediator;
-	private HashMap tm; // Used to map station keys to their cells
+	private HashMap<Object, JmtCell> tm; // Used to map station keys to their cells
 
 	public GraphicalQueueState(Mediator m) {
 		mediator = m;
-		tm = new HashMap();
+		tm = new HashMap<Object, JmtCell>();
 		// Initialize mapping between station keys and their cell components
 		// All cells (included blocking regions children)
 		Object[] cells = m.getGraph().getDescendants(m.getGraph().getRoots());
-		for (int i = 0; i < cells.length; i++) {
-			Object tempCell = cells[i];
+		for (Object tempCell : cells) {
 			if (tempCell instanceof JmtCell) {
 				JmtCell cell = (JmtCell) tempCell;
 				Object key = ((CellComponent) cell.getUserObject()).getKey();
@@ -105,9 +104,9 @@ public class GraphicalQueueState {
 		Vector openClasses = mediator.getClassDefinition().getOpenClassKeys();
 		Vector sources = mediator.getStationDefinition().getStationKeysSource();
 		for (int i = 0; i < sources.size(); i++) {
-			Vector refClasses = new Vector(0, 1);
+			Vector<Object> refClasses = new Vector<Object>(0, 1);
 			Object thisSource = sources.get(i);
-			JmtCell cell = (JmtCell) tm.get(thisSource);
+			JmtCell cell = tm.get(thisSource);
 			int classCount = 0;
 			for (int k = 0; k < openClasses.size(); k++) {
 				Object thisClass = openClasses.get(k);
@@ -138,8 +137,8 @@ public class GraphicalQueueState {
 			//else..
 			else {
 				int classSpace;
-				Vector classesReplication = (Vector) refClasses.clone();
-				Vector classesToBeDrawn = new Vector(0, 1);
+				Vector<Object> classesReplication = (Vector<Object>) refClasses.clone();
+				Vector<Object> classesToBeDrawn = new Vector<Object>(0, 1);
 				double min;
 				double mean;
 				//... find the first MAX_NUMBER_OF_CLASSES_QUEUE with the smallest mean value
@@ -203,7 +202,7 @@ public class GraphicalQueueState {
 
 		//for each server ...
 		for (int i = 0; i < servers.size(); i++) {
-			JmtCell cell = (JmtCell) tm.get(servers.get(i));
+			JmtCell cell = tm.get(servers.get(i));
 			// Skips blocking region special nodes - Bertoli Marco
 			if (cell == null) {
 				continue;

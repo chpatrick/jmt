@@ -78,7 +78,7 @@ public class JModelProblemsWindow extends JDialog {
 	JLabel title;
 	JList problemsList;
 	ModelChecker mc;
-	Vector problems;
+	Vector<ProblemElement> problems;
 
 	GridBagLayout gblayout;
 	GridBagConstraints gbconstants;
@@ -92,7 +92,7 @@ public class JModelProblemsWindow extends JDialog {
 	public JModelProblemsWindow(Frame owner, ModelChecker checker, GuiInterface gi) {
 		super(owner, true);
 		this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		problems = new Vector(0, 1);
+		problems = new Vector<ProblemElement>(0, 1);
 		mc = checker;
 		isToJMVAConversion = mc.isToJMVA();
 		this.gi = gi;
@@ -120,6 +120,7 @@ public class JModelProblemsWindow extends JDialog {
 		problemsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		problemsList.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		problemsList.addMouseListener(new MouseAdapter() {
+			@Override
 			public void mouseClicked(MouseEvent e) {
 				setVisible(false);
 				ProblemElement temp = (ProblemElement) problemsList.getSelectedValue();

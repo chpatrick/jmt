@@ -34,17 +34,17 @@ public class Calc {
 	// Istanzio la classe ViewResults per stampare a video i risultati
 	//ViewResults vres = new ViewResults();
 	// Inizializzo il vettore che sarà poi passato dalla funzione faces3d
-	Vector faces = new Vector();
+	Vector<newFace> faces = new Vector<newFace>();
 	// Inizializzo il vettore dei lati da unire per il calcolo
-	Vector lati = new Vector();
+	Vector<Object> lati = new Vector<Object>();
 	// Inizializzo il vettore contenente i settori dove saturano 3 stazioni contemporaneamente
-	Vector triangles = new Vector();
+	Vector<Object> triangles = new Vector<Object>();
 	// Inizializzo il vettore contenente i settori dove saturano 2 stazioni contemporaneamente
-	Vector sett2staz = new Vector();
+	Vector<Object> sett2staz = new Vector<Object>();
 	// Inizializzo il vettore contenente i settori dove satura 1 stazione
-	Vector sett1staz = new Vector();
+	Vector<Object> sett1staz = new Vector<Object>();
 	// Duplico il vettore dei vertici per fare dei controlli finali
-	Vector original3D = new Vector();
+	Vector<Vertex> original3D = new Vector<Vertex>();
 
 	/**
 	 * Passando un vettore di newPoint contenente le D di due classi il metodo restituisce
@@ -54,17 +54,17 @@ public class Calc {
 	 * @param vertices2D
 	 * @return un Vector di Sector2D
 	 */
-	public Vector Calc2D(Vector vertices2D) {
-		Vector original2D = new Vector(vertices2D);
+	public Vector<Sector2D> Calc2D(Vector<newPoint> vertices2D) {
+		Vector<newPoint> original2D = new Vector<newPoint>(vertices2D);
 		Util2d util = new Util2d();
 
 		// Aggiungo le proiezioni
 		vertices2D = util.LExplode2D(vertices2D);
 
 		//Elimino i punti ridondanti (ALTRIMENTI GRAHAMSCAN CRASHA!!!)
-		Vector verticesnew = new Vector();
+		Vector<newPoint> verticesnew = new Vector<newPoint>();
 		for (int i = 0; i < vertices2D.size(); i++) {
-			if (util.VPresent((newPoint) vertices2D.get(i), verticesnew) == false) {
+			if (util.VPresent(vertices2D.get(i), verticesnew) == false) {
 				verticesnew.addElement(vertices2D.get(i));
 			}
 		}
@@ -85,9 +85,9 @@ public class Calc {
 		//todo controllare meglio le proiezioni: caso (10,4) - (10,0)
 		// bisogna fare in modo che un punto venga cmq scartato se è collineare
 		//Elimino le proiezioni v1.5
-		Vector verticesnp = new Vector();
+		Vector<newPoint> verticesnp = new Vector<newPoint>();
 		for (int i = 0; i < vertices2D.size(); i++) {
-			if (util.VPresent(((newPoint) vertices2D.get(i)), original2D)) {
+			if (util.VPresent(vertices2D.get(i), original2D)) {
 				verticesnp.addElement(vertices2D.get(i));
 
 			}
@@ -100,7 +100,7 @@ public class Calc {
 
 		//Faccio il mapping sui punti rimasti
 		Beta2D b2d = new Beta2D();
-		Vector sector = new Vector(); // è il vettore con le Beta
+		Vector<Sector2D> sector = new Vector<Sector2D>(); // è il vettore con le Beta
 		sector = b2d.BetaVector(verticesnp);
 
 		//System.out.println(sector.size());
@@ -132,7 +132,7 @@ public class Calc {
 		}
 		*/
 
-		Vector res = new Vector();
+		Vector<Sector2D> res = new Vector<Sector2D>();
 
 		if (verticesnp.size() > 1) {
 			// Associo ai settori le stazioni
@@ -149,16 +149,16 @@ public class Calc {
 				for (int j = 0; j < original2D.size(); j++) //per tutti i punti originali
 				{
 					// Collineare Orizzontale Iniziale
-					if (i == 0 && (((Sector2D) res.get(i)).getP1()).getX() != 0) {
-						((Sector2D) res.get(i)).addCollinearFirst((Sector2D) res.get(i), (newPoint) original2D.get(j));
+					if (i == 0 && (res.get(i).getP1()).getX() != 0) {
+						res.get(i).addCollinearFirst(res.get(i), original2D.get(j));
 					}
 
 					// Collieari Diagonali
-					((Sector2D) res.get(i)).addCollinear((Sector2D) res.get(i), (newPoint) original2D.get(j));
+					res.get(i).addCollinear(res.get(i), original2D.get(j));
 
 					// Collineare sul lato verticale
-					if (i == res.size() - 1 && (((Sector2D) res.get(i)).getP1()).getY() != 0) {
-						((Sector2D) res.get(i)).addCollinearLast((Sector2D) res.get(i), (newPoint) original2D.get(j));
+					if (i == res.size() - 1 && (res.get(i).getP1()).getY() != 0) {
+						res.get(i).addCollinearLast(res.get(i), original2D.get(j));
 					}
 
 				}
@@ -166,29 +166,29 @@ public class Calc {
 		} else
 		// Se satura soltanto una stazione
 		{
-			res.addElement(new Sector2D(1, 0, 0, 1, (newPoint) verticesnp.get(0)));
+			res.addElement(new Sector2D(1, 0, 0, 1, verticesnp.get(0)));
 		}
 
 		return res;
 	}
 
-	public Vector Calc2D(Vector vertices2D, String[] stationNames, String[] classNames) {
-		Vector original2D = new Vector(vertices2D);
+	public Vector<Object> Calc2D(Vector<newPoint> vertices2D, String[] stationNames, String[] classNames) {
+		Vector<newPoint> original2D = new Vector<newPoint>(vertices2D);
 		Util2d util = new Util2d();
 
 		//creo il vettore con le stazioni, serve per associare nome a coordinate
-		Vector stations = new Vector();
+		Vector<Station2D> stations = new Vector<Station2D>();
 		for (int i = 0; i < vertices2D.size(); i++) {
-			Station2D stat = new Station2D(((newPoint) vertices2D.get(i)), stationNames[i]);
+			Station2D stat = new Station2D(vertices2D.get(i), stationNames[i]);
 			stations.addElement(stat);
 		}
 		// Aggiungo le proiezioni
 		vertices2D = util.LExplode2D(vertices2D);
 
 		//Elimino i punti ridondanti (ALTRIMENTI GRAHAMSCAN CRASHA!!!)
-		Vector verticesnew = new Vector();
+		Vector<newPoint> verticesnew = new Vector<newPoint>();
 		for (int i = 0; i < vertices2D.size(); i++) {
-			if (util.VPresent((newPoint) vertices2D.get(i), verticesnew) == false) {
+			if (util.VPresent(vertices2D.get(i), verticesnew) == false) {
 				verticesnew.addElement(vertices2D.get(i));
 			}
 		}
@@ -216,9 +216,9 @@ public class Calc {
 		//todo controllare meglio le proiezioni: caso (10,4) - (10,0)
 		// bisogna fare in modo che un punto venga cmq scartato se è collineare
 		//Elimino le proiezioni v1.5
-		Vector verticesnp = new Vector();
+		Vector<newPoint> verticesnp = new Vector<newPoint>();
 		for (int i = 0; i < vertices2D.size(); i++) {
-			if (util.VPresent(((newPoint) vertices2D.get(i)), original2D)) {
+			if (util.VPresent(vertices2D.get(i), original2D)) {
 				verticesnp.addElement(vertices2D.get(i));
 
 			}
@@ -231,7 +231,7 @@ public class Calc {
 
 		//Faccio il mapping sui punti rimasti
 		Beta2D b2d = new Beta2D();
-		Vector sector = new Vector(); // è il vettore con le Beta
+		Vector<Sector2D> sector = new Vector<Sector2D>(); // è il vettore con le Beta
 		sector = b2d.BetaVector(verticesnp);
 
 		//System.out.println(sector.size());
@@ -263,7 +263,7 @@ public class Calc {
 		}
 		*/
 
-		Vector res = new Vector();
+		Vector<Sector2D> res = new Vector<Sector2D>();
 
 		if (verticesnp.size() > 1) {
 			// Associo ai settori le stazioni
@@ -280,16 +280,16 @@ public class Calc {
 				for (int j = 0; j < original2D.size(); j++) //per tutti i punti originali
 				{
 					// Collineare Orizzontale Iniziale
-					if (i == 0 && (((Sector2D) res.get(i)).getP1()).getX() != 0) {
-						((Sector2D) res.get(i)).addCollinearFirst((Sector2D) res.get(i), (newPoint) original2D.get(j));
+					if (i == 0 && (res.get(i).getP1()).getX() != 0) {
+						res.get(i).addCollinearFirst(res.get(i), original2D.get(j));
 					}
 
 					// Collieari Diagonali
-					((Sector2D) res.get(i)).addCollinear((Sector2D) res.get(i), (newPoint) original2D.get(j));
+					res.get(i).addCollinear(res.get(i), original2D.get(j));
 
 					// Collineare sul lato verticale
-					if (i == res.size() - 1 && (((Sector2D) res.get(i)).getP1()).getY() != 0) {
-						((Sector2D) res.get(i)).addCollinearLast((Sector2D) res.get(i), (newPoint) original2D.get(j));
+					if (i == res.size() - 1 && (res.get(i).getP1()).getY() != 0) {
+						res.get(i).addCollinearLast(res.get(i), original2D.get(j));
 					}
 
 				}
@@ -297,13 +297,13 @@ public class Calc {
 		} else
 		// Se satura soltanto una stazione
 		{
-			res.addElement(new Sector2D(1, 0, 0, 1, (newPoint) verticesnp.get(0)));
+			res.addElement(new Sector2D(1, 0, 0, 1, verticesnp.get(0)));
 		}
 
-		Vector finalres = new Vector();
+		Vector<Object> finalres = new Vector<Object>();
 
 		for (int i = 0; i < res.size(); i++) {
-			FinalSect2D fs = new FinalSect2D((Sector2D) res.get(i), stations, classNames);
+			FinalSect2D fs = new FinalSect2D(res.get(i), stations, classNames);
 			finalres.addElement(fs);
 		}
 
@@ -314,8 +314,8 @@ public class Calc {
 	 * CASO 3 CLASSI
 	 *
 	 */
-	public Vector Calc3D(Vector vertices) throws ConvexHullException {
-		Vector out = new Vector();
+	public Vector<Object> Calc3D(Vector<Vertex> vertices) throws ConvexHullException {
+		Vector<Object> out = new Vector<Object>();
 		// I vertici sono contentuti in vertices(si modifica coi calcoli) e original
 		// Le facce del CHull sono in faces
 		// I settori triangolari in cui saturano 3 stazioni sono in triangles
@@ -323,9 +323,9 @@ public class Calc {
 
 		original3D = vertices;
 
-		Vector vertices2Dxy = new Vector();
-		Vector vertices2Dxz = new Vector();
-		Vector vertices2Dyz = new Vector();
+		Vector<newPoint> vertices2Dxy = new Vector<newPoint>();
+		Vector<newPoint> vertices2Dxz = new Vector<newPoint>();
+		Vector<newPoint> vertices2Dyz = new Vector<newPoint>();
 
 		Faces3D faces3d = new Faces3D();
 
@@ -359,7 +359,7 @@ public class Calc {
 		}
 
 		if (vertices.size() == 1) {
-			sett1staz = b3d.OneDominator((Vertex) vertices.get(0));
+			sett1staz = b3d.OneDominator(vertices.get(0));
 
 			out.addElement(faces);
 			out.addElement(original3D);
@@ -412,9 +412,9 @@ public class Calc {
 		vertices2Dxz = faces3d.VertexRemoveY(original3D);
 		vertices2Dyz = faces3d.VertexRemoveX(original3D);
 
-		Vector resxy = new Vector();
-		Vector resxz = new Vector();
-		Vector resyz = new Vector();
+		Vector<Sector2D> resxy = new Vector<Sector2D>();
+		Vector<Sector2D> resxz = new Vector<Sector2D>();
+		Vector<Sector2D> resyz = new Vector<Sector2D>();
 
 		Calc calcolo2d = new Calc();
 
@@ -431,35 +431,35 @@ public class Calc {
 		// dal quale partire per unire i segmenti a lato del triangolo o meno.
 
 		//LATI XY
-		Vector newresxy = new Vector();
-		Vector latixy = new Vector();
+		Vector<Vector<Object>> newresxy = new Vector<Vector<Object>>();
+		Vector<Object> latixy = new Vector<Object>();
 		latixy = seg.FixLtFrom2Dxy(resxy);
 
 		//LATI XZ
-		Vector newresxz = new Vector();
-		Vector latixz = new Vector();
+		Vector<Vector<Object>> newresxz = new Vector<Vector<Object>>();
+		Vector<Object> latixz = new Vector<Object>();
 		latixz = seg.FixLtFrom2Dxz(resxz);
 
 		//LATI YZ
-		Vector newresyz = new Vector();
-		Vector latiyz = new Vector();
+		Vector<Vector<Object>> newresyz = new Vector<Vector<Object>>();
+		Vector<Object> latiyz = new Vector<Object>();
 		latiyz = seg.FixLtFrom2Dyz(resyz);
 
 		if (faces.size() > 0) {
 			newresxy = b3d.Join2Statxy(latixy, lati, sett2staz);
-			sett2staz = (Vector) newresxy.get(0);
-			lati = (Vector) newresxy.get(1);
-			latixy = (Vector) newresxy.get(2);
+			sett2staz = newresxy.get(0);
+			lati = newresxy.get(1);
+			latixy = newresxy.get(2);
 
 			newresxz = b3d.Join2Statxz(latixz, lati, sett2staz);
-			sett2staz = (Vector) newresxz.get(0);
-			lati = (Vector) newresxz.get(1);
-			latixz = (Vector) newresxz.get(2);
+			sett2staz = newresxz.get(0);
+			lati = newresxz.get(1);
+			latixz = newresxz.get(2);
 
 			newresyz = b3d.Join2Statyz(latiyz, lati, sett2staz);
-			sett2staz = (Vector) newresyz.get(0);
-			lati = (Vector) newresyz.get(1);
-			latiyz = (Vector) newresyz.get(2);
+			sett2staz = newresyz.get(0);
+			lati = newresyz.get(1);
+			latiyz = newresyz.get(2);
 
 			/*
 			// Stampa dei settori in cui saturano 2 stazioni
@@ -490,7 +490,7 @@ public class Calc {
 
 		else //(if faces.size==0)
 		{
-			Vector resN31 = new Vector();
+			Vector<Vector<Object>> resN31 = new Vector<Vector<Object>>();
 			//System.out.println("Non ci sono facce");
 
 			// Ricerca dei settori in cui saturano 2 stazioni
@@ -498,12 +498,12 @@ public class Calc {
 
 			//System.out.println("resN31.size(): "+resN31.size());
 
-			lati = (Vector) resN31.get(0);
-			latixy = (Vector) resN31.get(1);
-			latixz = (Vector) resN31.get(2);
-			latiyz = (Vector) resN31.get(3);
-			sett1staz = (Vector) resN31.get(4);
-			sett2staz = (Vector) resN31.get(5);
+			lati = resN31.get(0);
+			latixy = resN31.get(1);
+			latixz = resN31.get(2);
+			latiyz = resN31.get(3);
+			sett1staz = resN31.get(4);
+			sett2staz = resN31.get(5);
 
 			sett1staz = b3d.Join1Staz(latixy, latixz, latiyz, lati, sett1staz);
 			sett1staz = b3d.Join1Staz(latixy, latixz, latiyz, lati, sett1staz);
@@ -525,7 +525,7 @@ public class Calc {
 		map.RemapAllSectors(sett2staz);
 		map.RemapAllSectors(sett1staz);
 
-		Vector allres = new Vector();
+		Vector<Object> allres = new Vector<Object>();
 		for (int i = 0; i < sett1staz.size(); i++) {
 			allres.addElement(sett1staz.get(i));
 		}
@@ -540,25 +540,25 @@ public class Calc {
 		//return out;
 	}
 
-	public Vector Calc3D(Vector vertices, String[] stationNames, String[] classNames) throws ConvexHullException {
-		Vector out = new Vector();
+	public Vector<Object> Calc3D(Vector<Vertex> vertices, String[] stationNames, String[] classNames) throws ConvexHullException {
+		Vector<Object> out = new Vector<Object>();
 		// I vertici sono contentuti in vertices(si modifica coi calcoli) e original
 		// Le facce del CHull sono in faces
 		// I settori triangolari in cui saturano 3 stazioni sono in triangles
 		// I settori quadrangolari in cui saturano 2 stazioni sono in sett2staz
 
-		Vector stations = new Vector();
+		Vector<Station3D> stations = new Vector<Station3D>();
 
 		// Creo un vettore con le stazioni associate ai loro nomi
 		for (int i = 0; i < vertices.size(); i++) {
-			stations.add(new Station3D(stationNames[i], (Vertex) vertices.get(i)));
+			stations.add(new Station3D(stationNames[i], vertices.get(i)));
 		}
 
 		original3D = vertices;
 
-		Vector vertices2Dxy = new Vector();
-		Vector vertices2Dxz = new Vector();
-		Vector vertices2Dyz = new Vector();
+		Vector<newPoint> vertices2Dxy = new Vector<newPoint>();
+		Vector<newPoint> vertices2Dxz = new Vector<newPoint>();
+		Vector<newPoint> vertices2Dyz = new Vector<newPoint>();
 
 		Faces3D faces3d = new Faces3D();
 
@@ -592,16 +592,16 @@ public class Calc {
 			//map.RemapAllSectors(sett2staz);
 			map.RemapAllSectors(sett1staz);
 
-			Vector allres = new Vector();
+			Vector<Object> allres = new Vector<Object>();
 			for (int i = 0; i < sett1staz.size(); i++) {
 				allres.addElement(sett1staz.get(i));
 			}/*
-			            for (int i = 0; i<sett2staz.size();i++){
-			                allres.addElement((Sector3D)sett2staz.get(i));
-			            }
-			            for (int i = 0; i<triangles.size();i++){
-			                allres.addElement((Sector3D)triangles.get(i));
-			            }*/
+				           for (int i = 0; i<sett2staz.size();i++){
+				               allres.addElement((Sector3D)sett2staz.get(i));
+				           }
+				           for (int i = 0; i<triangles.size();i++){
+				               allres.addElement((Sector3D)triangles.get(i));
+				           }*/
 
 			//System.out.println("allres.size() = "+allres.size());
 			for (int i = 0; i < allres.size(); i++) {
@@ -615,7 +615,7 @@ public class Calc {
 		}
 
 		if (vertices.size() == 1) {
-			sett1staz = b3d.OneDominator((Vertex) vertices.get(0));
+			sett1staz = b3d.OneDominator(vertices.get(0));
 
 			out.addElement(faces);
 			out.addElement(original3D);
@@ -668,9 +668,9 @@ public class Calc {
 		vertices2Dxz = faces3d.VertexRemoveY(original3D);
 		vertices2Dyz = faces3d.VertexRemoveX(original3D);
 
-		Vector resxy = new Vector();
-		Vector resxz = new Vector();
-		Vector resyz = new Vector();
+		Vector<Sector2D> resxy = new Vector<Sector2D>();
+		Vector<Sector2D> resxz = new Vector<Sector2D>();
+		Vector<Sector2D> resyz = new Vector<Sector2D>();
 
 		Calc calcolo2d = new Calc();
 
@@ -687,35 +687,35 @@ public class Calc {
 		// dal quale partire per unire i segmenti a lato del triangolo o meno.
 
 		//LATI XY
-		Vector newresxy = new Vector();
-		Vector latixy = new Vector();
+		Vector<Vector<Object>> newresxy = new Vector<Vector<Object>>();
+		Vector<Object> latixy = new Vector<Object>();
 		latixy = seg.FixLtFrom2Dxy(resxy);
 
 		//LATI XZ
-		Vector newresxz = new Vector();
-		Vector latixz = new Vector();
+		Vector<Vector<Object>> newresxz = new Vector<Vector<Object>>();
+		Vector<Object> latixz = new Vector<Object>();
 		latixz = seg.FixLtFrom2Dxz(resxz);
 
 		//LATI YZ
-		Vector newresyz = new Vector();
-		Vector latiyz = new Vector();
+		Vector<Vector<Object>> newresyz = new Vector<Vector<Object>>();
+		Vector<Object> latiyz = new Vector<Object>();
 		latiyz = seg.FixLtFrom2Dyz(resyz);
 
 		if (faces.size() > 0) {
 			newresxy = b3d.Join2Statxy(latixy, lati, sett2staz);
-			sett2staz = (Vector) newresxy.get(0);
-			lati = (Vector) newresxy.get(1);
-			latixy = (Vector) newresxy.get(2);
+			sett2staz = newresxy.get(0);
+			lati = newresxy.get(1);
+			latixy = newresxy.get(2);
 
 			newresxz = b3d.Join2Statxz(latixz, lati, sett2staz);
-			sett2staz = (Vector) newresxz.get(0);
-			lati = (Vector) newresxz.get(1);
-			latixz = (Vector) newresxz.get(2);
+			sett2staz = newresxz.get(0);
+			lati = newresxz.get(1);
+			latixz = newresxz.get(2);
 
 			newresyz = b3d.Join2Statyz(latiyz, lati, sett2staz);
-			sett2staz = (Vector) newresyz.get(0);
-			lati = (Vector) newresyz.get(1);
-			latiyz = (Vector) newresyz.get(2);
+			sett2staz = newresyz.get(0);
+			lati = newresyz.get(1);
+			latiyz = newresyz.get(2);
 
 			/*
 			// Stampa dei settori in cui saturano 2 stazioni
@@ -746,7 +746,7 @@ public class Calc {
 
 		else //(if faces.size==0)
 		{
-			Vector resN31 = new Vector();
+			Vector<Vector<Object>> resN31 = new Vector<Vector<Object>>();
 			//System.out.println("Non ci sono facce");
 
 			// Ricerca dei settori in cui saturano 2 stazioni
@@ -754,12 +754,12 @@ public class Calc {
 
 			//System.out.println("resN31.size(): "+resN31.size());
 
-			lati = (Vector) resN31.get(0);
-			latixy = (Vector) resN31.get(1);
-			latixz = (Vector) resN31.get(2);
-			latiyz = (Vector) resN31.get(3);
-			sett1staz = (Vector) resN31.get(4);
-			sett2staz = (Vector) resN31.get(5);
+			lati = resN31.get(0);
+			latixy = resN31.get(1);
+			latixz = resN31.get(2);
+			latiyz = resN31.get(3);
+			sett1staz = resN31.get(4);
+			sett2staz = resN31.get(5);
 
 			sett1staz = b3d.Join1Staz(latixy, latixz, latiyz, lati, sett1staz);
 			sett1staz = b3d.Join1Staz(latixy, latixz, latiyz, lati, sett1staz);
@@ -775,7 +775,7 @@ public class Calc {
 		map.RemapAllSectors(sett2staz);
 		map.RemapAllSectors(sett1staz);
 
-		Vector allres = new Vector();
+		Vector<Object> allres = new Vector<Object>();
 		for (int i = 0; i < sett1staz.size(); i++) {
 			allres.addElement(sett1staz.get(i));
 		}
@@ -799,19 +799,19 @@ public class Calc {
 	}
 
 	// Metodi per avere i risultati
-	public Vector getFaces() {
+	public Vector<newFace> getFaces() {
 		return faces;
 	}
 
-	public Vector gettriangles() {
+	public Vector<Object> gettriangles() {
 		return triangles;
 	}
 
-	public Vector getsett1staz() {
+	public Vector<Object> getsett1staz() {
 		return sett1staz;
 	}
 
-	public Vector getsett2staz() {
+	public Vector<Object> getsett2staz() {
 		return sett2staz;
 	}
 

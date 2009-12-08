@@ -78,7 +78,7 @@ public class Sectors3DPanel extends JPanel {
 	// Used to format numbers
 	private static final DecimalFormat formatter = new DecimalFormat("0.000");
 	// Resulta data and class names
-	private Vector s3d;
+	private Vector<Object> s3d;
 	private String[] classNames;
 
 	// Used to immagazine traslation coordinates
@@ -97,7 +97,7 @@ public class Sectors3DPanel extends JPanel {
 	 * @param s3d results vector
 	 * @param classNames array with class names
 	 */
-	public Sectors3DPanel(Vector s3d, String[] classNames) {
+	public Sectors3DPanel(Vector<Object> s3d, String[] classNames) {
 		super(new BorderLayout());
 		this.s3d = s3d;
 		this.classNames = classNames;
@@ -117,6 +117,7 @@ public class Sectors3DPanel extends JPanel {
 
 		// Adds a mouseListener to show graph coordinates
 		this.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
 			public void mouseMoved(MouseEvent e) {
 				if (isShown) {
 					String coord = getCoordinates(e.getX(), e.getY());
@@ -138,6 +139,7 @@ public class Sectors3DPanel extends JPanel {
 	 * Overrides default paint method to draw graph
 	 * @param g graphic object. <b>Must</b> be an instance of Graphics2D
 	 */
+	@Override
 	public void paint(Graphics g) {
 		isShown = false;
 		// This is the height of the graph
@@ -188,7 +190,7 @@ public class Sectors3DPanel extends JPanel {
 
 		if (s3d != null) {
 			// Used to sort label ascendingly by position
-			TreeSet labels = new TreeSet();
+			TreeSet<Caption> labels = new TreeSet<Caption>();
 
 			// per ogni settore
 			for (int i = 0; i < s3d.size(); i++) {
@@ -198,7 +200,7 @@ public class Sectors3DPanel extends JPanel {
 				int[] xxp = new int[sector.CountPoint()];
 				int[] yyp = new int[sector.CountPoint()];
 
-				Vector points = new Vector();
+				Vector<newPoint> points = new Vector<newPoint>();
 
 				// per ogni punto di un settore
 				for (int j = 0; j < sector.CountPoint(); j++) {
@@ -225,11 +227,11 @@ public class Sectors3DPanel extends JPanel {
 				}
 
 				grahamScan gr = new grahamScan();
-				Vector ordpoint = gr.doGraham(points);
+				Vector<newPoint> ordpoint = gr.doGraham(points);
 
 				for (int j = 0; j < ordpoint.size(); j++) {
-					xxp[j] = ((newPoint) ordpoint.get(j)).x;
-					yyp[j] = -((newPoint) ordpoint.get(j)).y;
+					xxp[j] = ordpoint.get(j).x;
+					yyp[j] = -ordpoint.get(j).y;
 				}
 
 				// Disegna i settori di saturazione
@@ -247,7 +249,7 @@ public class Sectors3DPanel extends JPanel {
 			}//per ogni settore
 
 			// Now draws captions and link them to the corresponding sector
-			Iterator i = labels.iterator();
+			Iterator<Caption> i = labels.iterator();
 			// Stores prevoius y value to avoid collision
 			float previousy = Float.NEGATIVE_INFINITY;
 			// Value where label should be placed
@@ -256,14 +258,14 @@ public class Sectors3DPanel extends JPanel {
 			boolean skipSingle = false, skipDouble = false;
 
 			// Skips single and double sector labels if they are too many
-			Caption first = (Caption) labels.first();
+			Caption first = labels.first();
 			float textHeight = (float) g2.getFontMetrics().getStringBounds(first.getLabel(), g2).getHeight();
 			if (first.getY() * height + textHeight * labels.size() > getHeight()) {
 				skipSingle = true;
 				// now checks if double have to be skipped too
 				int count = 0;
 				while (i.hasNext()) {
-					if (((Caption) i.next()).getStatN() > 1) {
+					if (i.next().getStatN() > 1) {
 						count++;
 					}
 				}
@@ -276,7 +278,7 @@ public class Sectors3DPanel extends JPanel {
 			}
 
 			while (i.hasNext()) {
-				Caption c = (Caption) i.next();
+				Caption c = i.next();
 				// Performs skipping if needed
 				if (skipSingle && c.getStatN() == 1) {
 					continue;

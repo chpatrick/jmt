@@ -88,6 +88,7 @@ public class AllBlockingRegionsPanel extends WizardPanel implements CommonConsta
 	/**
 	 * called by the Wizard before when switching to another panel
 	 */
+	@Override
 	public void lostFocus() {
 		// Aborts editing of table
 		TableCellEditor editor = regions.getCellEditor();
@@ -102,6 +103,7 @@ public class AllBlockingRegionsPanel extends WizardPanel implements CommonConsta
 	/**
 	 * called by the Wizard when the panel becomes active
 	 */
+	@Override
 	public void gotFocus() {
 		if (blockingPanel != null) {
 			blockingPanel.gotFocus();
@@ -115,6 +117,7 @@ public class AllBlockingRegionsPanel extends WizardPanel implements CommonConsta
 	/**
 	 * @return the panel's name
 	 */
+	@Override
 	public String getName() {
 		return "Finite Capacity Regions";
 	}
@@ -390,6 +393,7 @@ public class AllBlockingRegionsPanel extends WizardPanel implements CommonConsta
 		 *         returns the default renderer
 		 *         for this type of object
 		 */
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			switch (column) {
 				case 0:
@@ -420,6 +424,7 @@ public class AllBlockingRegionsPanel extends WizardPanel implements CommonConsta
 		 *         if <code>null</code> return the default editor for
 		 *         this type of cell
 		 */
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			switch (column) {
 				case 0:
@@ -463,6 +468,7 @@ public class AllBlockingRegionsPanel extends WizardPanel implements CommonConsta
 		 * @param column the column being queried
 		 * @return a string containing the default name of <code>column</code>
 		 */
+		@Override
 		public String getColumnName(int column) {
 			switch (column) {
 				case 0:
@@ -530,6 +536,7 @@ public class AllBlockingRegionsPanel extends WizardPanel implements CommonConsta
 		 * @param rowIndex    row of cell
 		 * @param columnIndex column of cell
 		 */
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			Integer value;
 			Object key = bd.getRegionKeys().get(rowIndex);
@@ -567,6 +574,7 @@ public class AllBlockingRegionsPanel extends WizardPanel implements CommonConsta
 		 * @param columnIndex the column being queried
 		 * @return false
 		 */
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return columnIndex != 1 || getValueAt(rowIndex, 2).equals(Boolean.FALSE);
 		}
@@ -656,6 +664,7 @@ public class AllBlockingRegionsPanel extends WizardPanel implements CommonConsta
 		 * @param    column the column of the cell being edited
 		 * @return the component for editing
 		 */
+		@Override
 		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 			field = (JTextField) super.getTableCellEditorComponent(table, value, isSelected, row, column);
 			key = value;
@@ -668,6 +677,7 @@ public class AllBlockingRegionsPanel extends WizardPanel implements CommonConsta
 		 *
 		 * @return the value contained in the editor
 		 */
+		@Override
 		public Object getCellEditorValue() {
 			if (!field.getText().equals("")) {
 				bd.setRegionName(key, field.getText());

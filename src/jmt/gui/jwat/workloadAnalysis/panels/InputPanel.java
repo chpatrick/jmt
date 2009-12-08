@@ -173,6 +173,7 @@ public class InputPanel extends WizardPanel implements CommonConstants, JWATCons
 		{
 			setAcceptAllFileFilterUsed(false);
 			setFileFilter(new FileFilter() {
+				@Override
 				public boolean accept(File f) {
 					if (f.isDirectory()) {
 						return true;
@@ -183,6 +184,7 @@ public class InputPanel extends WizardPanel implements CommonConstants, JWATCons
 					return false;
 				}
 
+				@Override
 				public String getDescription() {
 					return "Workload analysis format file";
 				}
@@ -679,6 +681,7 @@ public class InputPanel extends WizardPanel implements CommonConstants, JWATCons
 
 		{
 			setFileFilter(new FileFilter() {
+				@Override
 				public boolean accept(File f) {
 					if (f.isDirectory()) {
 						return true;
@@ -689,6 +692,7 @@ public class InputPanel extends WizardPanel implements CommonConstants, JWATCons
 					return false;
 				}
 
+				@Override
 				public String getDescription() {
 					return "Workload analysis format file";
 				}
