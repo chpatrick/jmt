@@ -2492,7 +2492,7 @@ public class Mediator implements GuiInterface {
 			// try {
 			// New Converter by Bertoli Marco
 			ExactModel output = new ExactModel();
-			Vector res = ModelConverter.convertJSIMtoJMVA(model, output);
+			List res = ModelConverter.convertJSIMtoJMVA(model, output);
 			ExactWizard jmva = new ExactWizard(output);
 			// If problems are found, shows warnings
 			if (res.size() > 0) {

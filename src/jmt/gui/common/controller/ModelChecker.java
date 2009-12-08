@@ -20,6 +20,7 @@ package jmt.gui.common.controller;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
@@ -1206,7 +1207,7 @@ public class ModelChecker implements CommonConstants {
 				}
 			}
 			if (!problemsPerClass.isEmpty()) {
-				routingErrors.put(thisClassKey, (Vector<Object>)problemsPerClass.clone());
+				routingErrors.put(thisClassKey, (Vector<Object>) problemsPerClass.clone());
 				errors[ROUTING_ERROR] = true;
 			}
 		}
@@ -1494,7 +1495,7 @@ public class ModelChecker implements CommonConstants {
 				if (station_def.getStationType(thisForwardStation).equals(STATION_TYPE_SINK)) {
 					// ... if the routing strategy is the Probability Routing ...
 					if (strategy instanceof ProbabilityRouting) {
-						HashMap probabilities = strategy.getValues();
+						Map probabilities = strategy.getValues();
 						// ... get the routing probability toward thisForwardStation ...
 						double p = ((Double) probabilities.get(thisForwardStation)).doubleValue();
 						// ... if p = 1 there is an error, put startingStationKey into the
@@ -1509,7 +1510,7 @@ public class ModelChecker implements CommonConstants {
 					Vector<Object> temp;
 					// ... if the routing policy is ProbabilityRouting ...
 					if (strategy instanceof ProbabilityRouting) {
-						HashMap probabilities = strategy.getValues();
+						Map probabilities = strategy.getValues();
 						// ... get the routing probability toward thisForwardStation ...
 						double p = ((Double) probabilities.get(thisForwardStation)).doubleValue();
 						// ... if p != 0 start exploring from thisForwardStation and collect
@@ -1579,7 +1580,7 @@ public class ModelChecker implements CommonConstants {
 						// ... get the routing strategy for the class in the starting station ...
 						RoutingStrategy strategy = (RoutingStrategy) station_def.getRoutingStrategy(startingStationKey, classKey);
 						if (strategy instanceof ProbabilityRouting) {
-							HashMap probabilities = strategy.getValues();
+							Map probabilities = strategy.getValues();
 							// ... get the routing probability toward thisForwardStation ...
 							double p = ((Double) probabilities.get(thisForwardStation)).doubleValue();
 							// ... if p != 0 start exploring from thisForwardStation and collect

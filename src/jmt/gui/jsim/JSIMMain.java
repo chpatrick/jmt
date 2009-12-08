@@ -28,6 +28,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -530,7 +531,7 @@ public class JSIMMain extends Wizard implements GuiInterface {
 	public void launchToJMVA() {
 		// New Converter by Bertoli Marco
 		ExactModel output = new ExactModel();
-		Vector res = ModelConverter.convertJSIMtoJMVA(model, output);
+		List res = ModelConverter.convertJSIMtoJMVA(model, output);
 		ExactWizard jmva = new ExactWizard(output);
 		// If problems are found, shows warnings
 		if (res.size() > 0) {

@@ -24,7 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Vector;
+import java.util.List;
 
 import jmt.common.exception.LoadException;
 import jmt.common.exception.NetException;
@@ -41,6 +41,7 @@ import jmt.gui.common.definitions.ModelConverter;
 import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.xml.XMLConstantNames;
 import jmt.gui.common.xml.XMLWriter;
+import jmt.gui.exact.ExactConstants;
 import jmt.gui.exact.ExactModel;
 
 import org.w3c.dom.Document;
@@ -99,9 +100,6 @@ public class Dispatcher_jMVAschema {
 
 	//used to store temp measures info
 	private TempMeasure[] tempMeasures = null;
-
-	//Transformation to be applied to throughputs
-	private double[][] transform;
 
 	/**
 	 * This constructor receives the absolute path of the xml file containing
@@ -240,7 +238,7 @@ public class Dispatcher_jMVAschema {
 
 			//stop time
 			stop = System.currentTimeMillis();
-			elapsed = ((double) (stop - start)) / 1000.0;
+			elapsed = ((stop - start)) / 1000.0;
 
 			simFinished = true;
 
@@ -394,13 +392,11 @@ public class Dispatcher_jMVAschema {
 		}
 		logger.debug("Input model opened correctly...");
 		CommonModel simModel = new CommonModel();
-		Vector warnings = ModelConverter.convertJMVAtoJSIM(exact, simModel, true);
+		List<String> warnings = ModelConverter.convertJMVAtoJSIM(exact, simModel);
 		// Last element of warning is transform matrix
-		for (int i = 0; i < warnings.size() - 1; i++) {
+		for (int i = 0; i < warnings.size(); i++) {
 			logger.warn("Warning during conversion: " + warnings.get(i));
 		}
-		transform = (double[][]) warnings.lastElement();
-
 		// Removes all measures from classes with null service demands
 		removeNullMeasures(exact, simModel);
 		logger.debug("Removed null measures from simulator model");
@@ -520,7 +516,7 @@ public class Dispatcher_jMVAschema {
 
 			//stop time
 			stop = System.currentTimeMillis();
-			elapsed = ((double) (stop - start)) / 1000.0;
+			elapsed = ((stop - start)) / 1000.0;
 
 			simFinished = true;
 
@@ -717,8 +713,8 @@ public class Dispatcher_jMVAschema {
 			} else {
 				//temp measures have already been retrieved
 				//only refresh temp values
-				for (int m = 0; m < tempMeasures.length; m++) {
-					tempMeasures[m].refreshMeasure();
+				for (TempMeasure tempMeasure : tempMeasures) {
+					tempMeasure.refreshMeasure();
 				}
 			}
 
@@ -785,8 +781,7 @@ public class Dispatcher_jMVAschema {
 
 		if (pauseSim()) {
 			if (tempMeasures != null) {
-				for (int m = 0; m < tempMeasures.length; m++) {
-					TempMeasure temp = tempMeasures[m];
+				for (TempMeasure temp : tempMeasures) {
 					if (temp.isFinished()) {
 						continue;
 					} else {
@@ -1002,7 +997,8 @@ public class Dispatcher_jMVAschema {
 		// Search for null elements and remove them
 		for (int i = 0; i < input.getStations(); i++) {
 			for (int j = 0; j < input.getClasses(); j++) {
-				if (input.getVisits()[i][j] == 0 || (input.getServiceTimes()[i][j][0] == 0 && input.getStationTypes()[i] != ExactModel.STATION_LD)) {
+				if (input.getVisits()[i][j] == 0
+						|| (input.getServiceTimes()[i][j][0] == 0 && input.getStationTypes()[i] != ExactConstants.STATION_LD)) {
 					// Removes all measures from station i for class j
 					Iterator it = output.getMeasureKeys().iterator();
 					while (it.hasNext()) {
@@ -1044,33 +1040,19 @@ public class Dispatcher_jMVAschema {
 						break;
 					}
 				}
-				if (input.getVisits()[i][j] == 0 || (input.getServiceTimes()[i][j][0] == 0 && input.getStationTypes()[i] != ExactModel.STATION_LD)) {
+				if (input.getVisits()[i][j] == 0
+						|| (input.getServiceTimes()[i][j][0] == 0 && input.getStationTypes()[i] != ExactConstants.STATION_LD)) {
 					// Create a null measure for each measure type
-					for (int k = 0; k < ExactModel.INDICES_TYPES.length; k++) {
+					for (String element : ExactModel.INDICES_TYPES) {
 						Element measure = output.createElement("measure");
-						measure.setAttribute("measureType", ExactModel.INDICES_TYPES[k]);
+						measure.setAttribute("measureType", element);
 						measure.setAttribute("meanValue", "0.0");
 						measure.setAttribute("successful", "true");
 						measure.setAttribute("lowerLimit", "0.0");
 						measure.setAttribute("upperLimit", "0.0");
 						customerclass.appendChild(measure);
 					}
-				} else if (transform[i][j] != 1) {
-					// Correct throughputs
-					NodeList measures = customerclass.getElementsByTagName("measure");
-					for (int k = 0; k < measures.getLength(); k++) {
-						Element measure = (Element) measures.item(k);
-						if (measure.getAttribute("measureType").equalsIgnoreCase("Throughput")) {
-							double val = Double.parseDouble(measure.getAttribute("meanValue"));
-							val *= transform[i][j];
-							measure.setAttribute("meanValue", Double.toString(val));
-							logger.debug("Scaled throughput by " + transform[i][j] + " factor");
-							break;
-						}
-
-					}
 				}
-
 			}
 		}
 	}
@@ -1080,6 +1062,7 @@ public class Dispatcher_jMVAschema {
 		disp.setValidate(false);
 		//disp.getTransformedModel("c:\\test\\test.xml", "c:\\test\\test1.xml");
 		new Thread() {
+			@Override
 			public void run() {
 				try {
 					sleep(60 * 1000);

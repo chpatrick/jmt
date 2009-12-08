@@ -58,7 +58,7 @@ public class ImagedComboBoxCellEditorFactory {
 	/** Tells if modify strings with images */
 	protected boolean isString;
 	/** Cache for components */
-	protected HashMap cache = new HashMap();
+	protected HashMap<Object, LabelRenderer> cache = new HashMap<Object, LabelRenderer>();
 	/** Renderer instance */
 	protected TableCellRenderer renderer;
 	/** Editor instance */
@@ -212,7 +212,7 @@ public class ImagedComboBoxCellEditorFactory {
 		}
 
 		if (cache.containsKey(key)) {
-			label = (LabelRenderer) cache.get(key);
+			label = cache.get(key);
 		} else {
 			label = new LabelRenderer(key);
 			cache.put(key, label);
@@ -244,7 +244,7 @@ public class ImagedComboBoxCellEditorFactory {
 				// This is only a string
 				if (isStation) {
 					// If this is a station type string, resolves label names
-					setText((String)CommonConstants.STATION_NAMES.get(key));
+					setText((String) CommonConstants.STATION_NAMES.get(key));
 				} else {
 					setText((String) key);
 				}
@@ -423,8 +423,8 @@ public class ImagedComboBoxCellEditorFactory {
 		 */
 		public void setData(LabelRenderer[] data) {
 			combo.removeAllItems();
-			for (int i = 0; i < data.length; i++) {
-				combo.addItem(data[i]);
+			for (LabelRenderer element : data) {
+				combo.addItem(element);
 			}
 		}
 
@@ -453,6 +453,7 @@ public class ImagedComboBoxCellEditorFactory {
 		 * @param    column the column of the cell being edited
 		 * @return the component for editing
 		 */
+		@Override
 		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
 			combo.setBackground(table.getBackground());
 			combo.setForeground(table.getForeground());
@@ -465,6 +466,7 @@ public class ImagedComboBoxCellEditorFactory {
 		 *
 		 * @return the value contained in the editor
 		 */
+		@Override
 		public Object getCellEditorValue() {
 			if (combo.getSelectedItem() != null) {
 				return ((LabelRenderer) combo.getSelectedItem()).getKey();

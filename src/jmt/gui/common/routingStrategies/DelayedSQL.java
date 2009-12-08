@@ -18,7 +18,7 @@
 
 package jmt.gui.common.routingStrategies;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,18 +34,22 @@ public class DelayedSQL extends RoutingStrategy {
 		description = "Jobs are routed to the station which has the smallest " + "queue length.";
 	}
 
+	@Override
 	public String getName() {
 		return "Delayed SQL";
 	}
 
-	public HashMap getValues() {
+	@Override
+	public Map<Object, Double> getValues() {
 		return null;
 	}
 
-	public Object clone() {
+	@Override
+	public DelayedSQL clone() {
 		return new DelayedSQL();
 	}
 
+	@Override
 	public String getClassPath() {
 		return "jmt.engine.NetStrategies.RoutingStrategies.DelayedShortestQLength";
 	}
@@ -56,6 +60,7 @@ public class DelayedSQL extends RoutingStrategy {
 	 * @return  true if the routing strategy is dependent from the state of
 	 * the model
 	 */
+	@Override
 	public boolean isModelStateDependent() {
 		return true;
 	}

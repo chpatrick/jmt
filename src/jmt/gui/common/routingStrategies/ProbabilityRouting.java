@@ -19,6 +19,7 @@
 package jmt.gui.common.routingStrategies;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -42,12 +43,12 @@ public class ProbabilityRouting extends RoutingStrategy {
 	}
 
 	@Override
-	public HashMap<Object, Double> getValues() {
+	public Map<Object, Double> getValues() {
 		return probabilities;
 	}
 
 	@Override
-	public Object clone() {
+	public ProbabilityRouting clone() {
 		ProbabilityRouting pr = new ProbabilityRouting();
 		pr.probabilities = new HashMap<Object, Double>(probabilities);
 		return pr;

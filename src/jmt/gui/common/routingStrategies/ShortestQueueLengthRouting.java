@@ -18,7 +18,7 @@
 
 package jmt.gui.common.routingStrategies;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,18 +34,22 @@ public class ShortestQueueLengthRouting extends RoutingStrategy {
 		description = "Jobs are routed to the station with the smallest " + "queue length (number of jobs, current value).";
 	}
 
+	@Override
 	public String getName() {
 		return "Join the Shortest Queue (JSQ)";
 	}
 
-	public HashMap getValues() {
+	@Override
+	public Map<Object, Double> getValues() {
 		return null;
 	}
 
-	public Object clone() {
+	@Override
+	public ShortestQueueLengthRouting clone() {
 		return new ShortestQueueLengthRouting();
 	}
 
+	@Override
 	public String getClassPath() {
 		return "jmt.engine.NetStrategies.RoutingStrategies.ShortestQueueLengthRoutingStrategy";
 	}
@@ -58,6 +62,7 @@ public class ShortestQueueLengthRouting extends RoutingStrategy {
 	 *
 	 * Author: Francesco D'Aquino
 	 */
+	@Override
 	public boolean isModelStateDependent() {
 		return true;
 	}

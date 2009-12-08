@@ -18,7 +18,7 @@
 
 package jmt.gui.common.routingStrategies;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,18 +33,22 @@ public class RoundRobinRouting extends RoutingStrategy {
 		description = "Jobs are routed to the stations connected to the current one " + "according to a cyclic algorithm.";
 	}
 
+	@Override
 	public String getName() {
 		return "Round Robin";
 	}
 
-	public HashMap getValues() {
+	@Override
+	public Map<Object, Double> getValues() {
 		return null;
 	}
 
-	public Object clone() {
+	@Override
+	public RoundRobinRouting clone() {
 		return new RoundRobinRouting();
 	}
 
+	@Override
 	public String getClassPath() {
 		return "jmt.engine.NetStrategies.RoutingStrategies.RoundRobinStrategy";
 	}
@@ -57,6 +61,7 @@ public class RoundRobinRouting extends RoutingStrategy {
 	 *
 	 * Author: Francesco D'Aquino
 	 */
+	@Override
 	public boolean isModelStateDependent() {
 		return false;
 	}

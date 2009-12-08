@@ -96,9 +96,9 @@ public class DistributionsEditor extends JMTDialog {
 	 * This variable will be initialized only once.
 	 * It will contains every distribution that can be inserted
 	 */
-	protected static HashMap distributions;
+	protected static HashMap<String, Class<? extends Distribution>> distributions;
 
-	protected static HashMap allowedNestedDistributions;
+	protected static HashMap<String, Class<? extends Distribution>> allowedNestedDistributions;
 
 	// Constants
 	protected static final int BORDERSIZE = 20;
@@ -161,11 +161,11 @@ public class DistributionsEditor extends JMTDialog {
 	 * value is the Class of found distribution
 	 * @return found distributions
 	 */
-	protected static HashMap findDistributions() {
+	protected static HashMap<String, Class<? extends Distribution>> findDistributions() {
 		Distribution[] all = Distribution.findAll();
-		HashMap tmp = new HashMap();
-		for (int i = 0; i < all.length; i++) {
-			tmp.put(all[i].getName(), all[i].getClass());
+		HashMap<String, Class<? extends Distribution>> tmp = new HashMap<String, Class<? extends Distribution>>();
+		for (Distribution element : all) {
+			tmp.put(element.getName(), element.getClass());
 		}
 		return tmp;
 	}
@@ -176,11 +176,11 @@ public class DistributionsEditor extends JMTDialog {
 	 * value is the Class of found distribution
 	 * @return found nestable distributions
 	 */
-	protected static HashMap findNestedDistributions() {
+	protected static HashMap<String, Class<? extends Distribution>> findNestedDistributions() {
 		Distribution[] all = Distribution.findNestableDistributions();
-		HashMap tmp = new HashMap();
-		for (int i = 0; i < all.length; i++) {
-			tmp.put(all[i].getName(), all[i].getClass());
+		HashMap<String, Class<? extends Distribution>> tmp = new HashMap<String, Class<? extends Distribution>>();
+		for (Distribution element : all) {
+			tmp.put(element.getName(), element.getClass());
 		}
 		return tmp;
 	}
@@ -274,6 +274,7 @@ public class DistributionsEditor extends JMTDialog {
 		/* (non-Javadoc)
 		 * @see jmt.framework.gui.listeners.KeyFocusAdapter#updateValues(java.awt.event.ComponentEvent)
 		 */
+		@Override
 		protected void updateValues(ComponentEvent e) {
 			// Finds parameter number
 			JTextField sourcefield = (JTextField) e.getSource();
@@ -291,6 +292,7 @@ public class DistributionsEditor extends JMTDialog {
 		/* (non-Javadoc)
 		 * @see jmt.framework.gui.listeners.KeyFocusAdapter#updateValues(java.awt.event.ComponentEvent)
 		 */
+		@Override
 		protected void updateValues(ComponentEvent e) {
 			// Finds parameter number
 			JTextField sourcefield = (JTextField) e.getSource();
@@ -314,9 +316,9 @@ public class DistributionsEditor extends JMTDialog {
 		public void itemStateChanged(ItemEvent e) {
 			try {
 				if (recursive) {
-					current = (Distribution) ((Class) allowedNestedDistributions.get(e.getItem())).newInstance();
+					current = allowedNestedDistributions.get(e.getItem()).newInstance();
 				} else {
-					current = (Distribution) ((Class) distributions.get(e.getItem())).newInstance();
+					current = distributions.get(e.getItem()).newInstance();
 				}
 				refreshView();
 			} catch (InstantiationException ex) {
@@ -335,7 +337,7 @@ public class DistributionsEditor extends JMTDialog {
 	 */
 	protected class RoundRobinAdapter implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-	        // Get the checkbox and its value
+			// Get the checkbox and its value
 			JCheckBox sourcefield = (JCheckBox) e.getSource();
 			Boolean isRoundRobinChecked = new Boolean(sourcefield.isSelected());
 			// Set the Round-Robin parameter
@@ -350,6 +352,7 @@ public class DistributionsEditor extends JMTDialog {
 	 * Parameters are set when one of the parameter JTextField loses focus or ENTER key is pressed.
 	 */
 	protected class ProbabilityAdapter extends KeyFocusAdapter {
+		@Override
 		protected void updateValues(ComponentEvent e) {
 			//			Get the textfield
 			JTextField sourcefield = (JTextField) e.getSource();
@@ -490,7 +493,7 @@ public class DistributionsEditor extends JMTDialog {
 		// Adds distribution chooser
 		distr_panel.add(new JLabel("Selected Distribution: "), BorderLayout.WEST);
 
-		Set distributionNameSet;
+		Set<String> distributionNameSet;
 		if (recursive) {
 			distributionNameSet = allowedNestedDistributions.keySet();
 		} else {
@@ -546,7 +549,7 @@ public class DistributionsEditor extends JMTDialog {
 				intervalPanels[0] = new JPanel();
 				intervalPanels[1] = new JPanel();
 				intervalPanels[2] = new JPanel();
-				
+
 				BurstRenderer rend = new BurstRenderer();
 
 				rend.addInterval(ROUND_ROBIN, intervalPanels[0]);
@@ -567,7 +570,7 @@ public class DistributionsEditor extends JMTDialog {
 				// distributions need two rows instead of one
 				GridLayout layoutManager = (GridLayout) scrolledPanel.getLayout();
 				layoutManager.setRows(2);
-				
+
 				// Maximum width (used to line up elements of both panels)
 				int maxwidth = new JLabel("mean:", SwingConstants.TRAILING).getMinimumSize().width;
 
@@ -652,49 +655,44 @@ public class DistributionsEditor extends JMTDialog {
 		}
 	}
 
-
 	/**
 	 * Helper method to extract the probability components the dialog's components.
 	 * These components are the probability labels and the probability TextFields.
 	 * @return a Vector of probability related components
 	 * @author Federico Dal Castello
 	 */
-	private Vector getProbabilityComponents() {
-		Vector probabilityComponents = new Vector();
+	private Vector<Component> getProbabilityComponents() {
+		Vector<Component> probabilityComponents = new Vector<Component>();
 
-		Vector components = new Vector();
+		Vector<Component> components = new Vector<Component>();
 		components.addAll(Arrays.asList(intervalPanels[1].getComponents()));
 		components.addAll(Arrays.asList(intervalPanels[2].getComponents()));
 
-		Iterator it = components.iterator();
+		Iterator<Component> it = components.iterator();
 
 		while (it.hasNext()) {
-			Component comp = (Component) it.next();
+			Component comp = it.next();
 
 			if (comp instanceof JTextField) {
-				if (comp.getName().equals(PROBABILITY_INTERVAL_A) ||
-					comp.getName().equals(PROBABILITY_INTERVAL_B)) {
+				if (comp.getName().equals(PROBABILITY_INTERVAL_A) || comp.getName().equals(PROBABILITY_INTERVAL_B)) {
 					probabilityComponents.add(comp);
 				}
 			}
-			
-			if(comp instanceof JLabel &&
-			   ((JLabel) comp).getText().equals(PROBABILITY)) {
+
+			if (comp instanceof JLabel && ((JLabel) comp).getText().equals(PROBABILITY)) {
 				probabilityComponents.add(comp);
 			}
 		}
 
 		return probabilityComponents;
 	}
-	
-	
 
 	protected void refreshValues() {
 
 		DecimalFormat df = new DecimalFormat("#.############");
 		df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ENGLISH));
 
-		Vector components = new Vector();
+		Vector<Component> components = new Vector<Component>();
 
 		if (intervalPanels != null) {
 			components.addAll(Arrays.asList(intervalPanels[0].getComponents()));
@@ -704,10 +702,10 @@ public class DistributionsEditor extends JMTDialog {
 			components.addAll(Arrays.asList(param_panel.getComponents()));
 		}
 
-		Iterator it = components.iterator();
+		Iterator<Component> it = components.iterator();
 
 		while (it.hasNext()) {
-			Component comp = (Component) it.next();
+			Component comp = it.next();
 
 			if (comp instanceof JTextField) {
 				Object value = null;
@@ -730,29 +728,29 @@ public class DistributionsEditor extends JMTDialog {
 				}
 			}
 
-			if(comp instanceof JCheckBox) {
+			if (comp instanceof JCheckBox) {
 				// enables or disables the probability components
 				if (comp.getName().equals(ROUND_ROBIN)) {
-					
+
 					Boolean isRoundRobinChecked = new Boolean(((JCheckBox) comp).isSelected());
 					// if checked, disable; if not checked, enable
 					boolean enableComponent = !isRoundRobinChecked.booleanValue();
-					
-					Vector probabilityComponents = getProbabilityComponents();	
-					Iterator probIt = probabilityComponents.iterator();
-					
+
+					Vector<Component> probabilityComponents = getProbabilityComponents();
+					Iterator<Component> probIt = probabilityComponents.iterator();
+
 					while (probIt.hasNext()) {
-						Component probComp = (Component) probIt.next();
-						
+						Component probComp = probIt.next();
+
 						probComp.setEnabled(enableComponent);
-						
-						if(probComp instanceof JTextField) {							
+
+						if (probComp instanceof JTextField) {
 							// reset the probability value only if the component is disabled
-							if(enableComponent == false) {
+							if (enableComponent == false) {
 								current.getParameter(0).setValue(new Double(0.5));
 							}
 							// fully disables the probability text field
-							((JTextField) probComp).setEditable(enableComponent);	
+							((JTextField) probComp).setEditable(enableComponent);
 						}
 					}
 				}
@@ -761,12 +759,12 @@ public class DistributionsEditor extends JMTDialog {
 
 		// refresh all values into mean_c_panel
 		Component[] componentArray = mean_c_panel.getComponents();
-		for (int i = 0; i < componentArray.length; i++) {
+		for (Component element : componentArray) {
 			// Shows only first 10 decimal digits
-			if (componentArray[i] instanceof JTextField && componentArray[i].getName().equals("mean")) {
-				((JTextField) componentArray[i]).setText(df.format(current.getMean()));
-			} else if (componentArray[i] instanceof JTextField && componentArray[i].getName().equals("c")) {
-				((JTextField) componentArray[i]).setText(df.format(current.getC()));
+			if (element instanceof JTextField && element.getName().equals("mean")) {
+				((JTextField) element).setText(df.format(current.getMean()));
+			} else if (element instanceof JTextField && element.getName().equals("c")) {
+				((JTextField) element).setText(df.format(current.getC()));
 			}
 		}
 
@@ -784,7 +782,7 @@ public class DistributionsEditor extends JMTDialog {
 	protected class BurstRenderer {
 
 		JPanel burstContentPanel = new JPanel();
-		
+
 		public BurstRenderer() {
 			// added elements will be appended to the bottom row (vertically)
 			BoxLayout verticalBoxLayout = new BoxLayout(burstContentPanel, BoxLayout.Y_AXIS);
@@ -837,7 +835,7 @@ public class DistributionsEditor extends JMTDialog {
 			//Specifies the button size to maintain its width in the case that probability text fields are hidden
 			//TODO check if the specified values are compatible with all graphical systems
 			but.setPreferredSize(new Dimension(65, 24));
-			
+
 			c.insets = new Insets(0, 0, 0, 0); //No space between Name of distribution and Edit button
 			// don't finish row because also the label for the distribution has to be added
 			c.gridwidth = GridBagConstraints.RELATIVE;
@@ -911,14 +909,14 @@ public class DistributionsEditor extends JMTDialog {
 		 * @author Federico Dal Castello
 		 */
 		protected void addRoundRobin(Container intervalPanel) {
-			
+
 			JCheckBox roundRobinCheckBox = new JCheckBox();
 			roundRobinCheckBox.setText(ROUND_ROBIN + " (A-B-A-B-A-B-A-B...)");
 			roundRobinCheckBox.setName(ROUND_ROBIN);
-			
+
 			Boolean isChecked = (Boolean) current.getParameter(5).getValue();
 			roundRobinCheckBox.setSelected(isChecked.booleanValue());
-			
+
 			roundRobinCheckBox.addActionListener(new RoundRobinAdapter());
 
 			//the checkbox will be aligned to the left
@@ -926,7 +924,7 @@ public class DistributionsEditor extends JMTDialog {
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.weightx = 1.0;
 			c.weighty = 0.0;
-			
+
 			//Add the distribution
 			intervalPanel.add(roundRobinCheckBox, c);
 		}

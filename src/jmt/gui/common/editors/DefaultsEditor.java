@@ -76,7 +76,7 @@ import jmt.gui.common.routingStrategies.RoutingStrategy;
  *         Date: 12-lug-2005
  *         Time: 16.18.35
  */
-public class DefaultsEditor extends JDialog implements CommonConstants{
+public class DefaultsEditor extends JDialog implements CommonConstants {
 	/**
 	 * 
 	 */
@@ -191,7 +191,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 			// Unregister all stringListener to avoid strange random things
 			JTextField tmp;
 			while (!registeredStringListener.isEmpty()) {
-				tmp = (JTextField) registeredStringListener.remove(0);
+				tmp = registeredStringListener.remove(0);
 				tmp.removeFocusListener(stringListener);
 				tmp.removeKeyListener(stringListener);
 			}
@@ -240,7 +240,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 	// Vector that contains every compoent in which a StringListener has been registered
 	// It is used as the focus listener can do "random" things while reverting values
 	// to original ones
-	protected Vector registeredStringListener = new Vector();
+	protected Vector<JTextField> registeredStringListener = new Vector<JTextField>();
 
 	// -------------------------------------------------------------------------------------------------
 
@@ -260,6 +260,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 		this.setBounds((scrDim.width - width) / 2, (scrDim.height - height) / 2, width, height);
 		// If user closes this window, act as cancel and reloads saved parameters
 		this.addWindowStateListener(new WindowAdapter() {
+			@Override
 			public void windowClosing(WindowEvent e) {
 				Defaults.reload();
 			}
@@ -298,7 +299,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 		JPanel param_panel = new JPanel(new GridLayout(1, 4));
 		mainpanel.add(new JScrollPane(param_panel), BorderLayout.CENTER);
 
-		Map tmpMap;
+		Map<String, String> tmpMap;
 
 		// Class Parameters
 		JPanel class_panel = new JPanel(new SpringLayout());
@@ -310,7 +311,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 		classpanelnum++;
 
 		// Type
-		tmpMap = new TreeMap();
+		tmpMap = new TreeMap<String, String>();
 		tmpMap.put("" + CommonConstants.CLASS_TYPE_CLOSED, "Closed");
 		tmpMap.put("" + CommonConstants.CLASS_TYPE_OPEN, "Open");
 		addInputCombo("Type", "classType", class_panel, tmpMap);
@@ -346,7 +347,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 
 		// Station type (JSIM only)
 		if (target == JSIM) {
-			tmpMap = new TreeMap();
+			tmpMap = new TreeMap<String, String>();
 			tmpMap.put(STATION_TYPE_SERVER, STATION_NAMES.get(STATION_TYPE_SERVER));
 			tmpMap.put(STATION_TYPE_DELAY, STATION_NAMES.get(STATION_TYPE_DELAY));
 			tmpMap.put(STATION_TYPE_ROUTER, STATION_NAMES.get(STATION_TYPE_ROUTER));
@@ -493,7 +494,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 	 * @param cont container where input field must be added
 	 * @param values Map with internal value <-> showed value relations
 	 */
-	protected void addInputCombo(String text, final String property, Container cont, final Map values) {
+	protected void addInputCombo(String text, final String property, Container cont, final Map<String, String> values) {
 		JLabel label = new JLabel(text + ":");
 		JComboBox combo = new JComboBox(values.values().toArray());
 		combo.setName(property);
@@ -506,9 +507,9 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 				// As Map does not allows reverse mapping, scans the entire keyset to
 				// find the key corresponding to a given object
 				Object[] keys = values.keySet().toArray();
-				for (int i = 0; i < keys.length; i++) {
-					if (values.get(keys[i]) == e.getItem()) {
-						Defaults.set(property, (String) keys[i]);
+				for (Object key : keys) {
+					if (values.get(key) == e.getItem()) {
+						Defaults.set(property, (String) key);
 					}
 				}
 			}
@@ -617,10 +618,10 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 	protected void addInputDistribution(String text, final String property, Container cont) {
 		// Creates a Map with Distributions Names, then delegates addInputCombo to create graphical
 		// components
-		Map distributions = new TreeMap();
+		Map<String, String> distributions = new TreeMap<String, String>();
 		Distribution[] all = Distribution.findAll();
-		for (int i = 0; i < all.length; i++) {
-			distributions.put(all[i].getClass().getName(), all[i].getName());
+		for (Distribution element : all) {
+			distributions.put(element.getClass().getName(), element.getName());
 		}
 		addInputCombo(text, property, cont, distributions);
 	}
@@ -635,10 +636,10 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 	protected void addInputRouting(String text, final String property, Container cont) {
 		// Creates a Map with Routing Strategies Names, then delegates addInputCombo to create
 		// graphical components
-		Map distributions = new TreeMap();
+		Map<String, String> distributions = new TreeMap<String, String>();
 		RoutingStrategy[] all = RoutingStrategy.findAll();
-		for (int i = 0; i < all.length; i++) {
-			distributions.put(all[i].getClass().getName(), all[i].toString());
+		for (RoutingStrategy element : all) {
+			distributions.put(element.getClass().getName(), element.toString());
 		}
 		addInputCombo(text, property, cont, distributions);
 	}
@@ -653,7 +654,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 	protected void addInputQueueStrategy(String text, final String property, Container cont) {
 		// Creates a Map with Queue Strategies Names, then delegates addInputCombo to create
 		// graphical components
-		Map distributions = new TreeMap();
+		Map<String, String> distributions = new TreeMap<String, String>();
 		distributions.put(CommonConstants.QUEUE_STRATEGY_FCFS, CommonConstants.QUEUE_STRATEGY_FCFS);
 		distributions.put(CommonConstants.QUEUE_STRATEGY_LCFS, CommonConstants.QUEUE_STRATEGY_LCFS);
 		addInputCombo(text, property, cont, distributions);
@@ -669,12 +670,12 @@ public class DefaultsEditor extends JDialog implements CommonConstants{
 	protected void addInputDropRule(String text, final String property, Container cont) {
 		// Creates a Map with Queue Strategies Names, then delegates addInputCombo to create
 		// graphical components
-		Map distributions = new TreeMap();
+		Map<String, String> distributions = new TreeMap<String, String>();
 		Field[] fields = jmt.gui.jmodel.JMODELConstants.class.getFields();
 		try {
-			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].getName().startsWith("FINITE_")) {
-					distributions.put(fields[i].get(null).toString(), fields[i].get(null).toString());
+			for (Field field : fields) {
+				if (field.getName().startsWith("FINITE_")) {
+					distributions.put(field.get(null).toString(), field.get(null).toString());
 				}
 			}
 		} catch (IllegalAccessException ex) {

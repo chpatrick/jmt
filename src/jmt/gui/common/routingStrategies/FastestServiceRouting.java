@@ -18,7 +18,7 @@
 
 package jmt.gui.common.routingStrategies;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,18 +33,22 @@ public class FastestServiceRouting extends RoutingStrategy {
 		description = "Jobs are routed to the station with the " + "shortest average service time (for the jobs of the same class).";
 	}
 
+	@Override
 	public String getName() {
 		return "Fastest Service";
 	}
 
-	public HashMap getValues() {
+	@Override
+	public Map<Object, Double> getValues() {
 		return null;
 	}
 
-	public Object clone() {
+	@Override
+	public FastestServiceRouting clone() {
 		return new FastestServiceRouting();
 	}
 
+	@Override
 	public String getClassPath() {
 		return "jmt.engine.NetStrategies.RoutingStrategies.FastestServiceRoutingStrategy";
 	}
@@ -57,6 +61,7 @@ public class FastestServiceRouting extends RoutingStrategy {
 	 *
 	 * Author: Francesco D'Aquino
 	 */
+	@Override
 	public boolean isModelStateDependent() {
 		return true;
 	}

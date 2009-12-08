@@ -29,7 +29,7 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
-import java.util.Vector;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -56,7 +56,7 @@ import jmt.gui.common.resources.JMTImageLoader;
  */
 public class WarningWindow {
 	private JDialog dialog;
-	private Vector warnings;
+	private List<String> warnings;
 	private JLabel header;
 
 	private static final int BORDER = 20;
@@ -67,7 +67,7 @@ public class WarningWindow {
 	 * @param owner owner of the shown dialog. If it's not a Dialog nor a Frame, created
 	 * window will not be modal.
 	 */
-	public WarningWindow(Vector warnings, Window owner, String from, String to) {
+	public WarningWindow(List<String> warnings, Window owner, String from, String to) {
 		if (owner instanceof Dialog) {
 			dialog = new JDialog((Dialog) owner, true);
 		} else if (owner instanceof Frame) {
@@ -105,9 +105,9 @@ public class WarningWindow {
 		// Creates a box to show warnings
 		ScrollablePanel box = new ScrollablePanel();
 		box.setLayout(new BoxLayout(box, BoxLayout.Y_AXIS));
-		Iterator i = warnings.iterator();
+		Iterator<String> i = warnings.iterator();
 		while (i.hasNext()) {
-			box.add(getEntry((String) i.next()));
+			box.add(getEntry(i.next()));
 		}
 
 		box.setBackground(Color.white);

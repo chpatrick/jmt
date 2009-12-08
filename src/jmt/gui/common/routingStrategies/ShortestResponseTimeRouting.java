@@ -18,7 +18,7 @@
 
 package jmt.gui.common.routingStrategies;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,18 +34,22 @@ public class ShortestResponseTimeRouting extends RoutingStrategy {
 		description = "Jobs are routed to the station with the smallest " + "average response time, for this customer class.";
 	}
 
+	@Override
 	public String getName() {
 		return "Shortest R Time";
 	}
 
-	public HashMap getValues() {
+	@Override
+	public Map<Object, Double> getValues() {
 		return null;
 	}
 
-	public Object clone() {
+	@Override
+	public ShortestResponseTimeRouting clone() {
 		return new ShortestResponseTimeRouting();
 	}
 
+	@Override
 	public String getClassPath() {
 		return "jmt.engine.NetStrategies.RoutingStrategies.ShortestResponseTimeRoutingStrategy";
 	}
@@ -58,6 +62,7 @@ public class ShortestResponseTimeRouting extends RoutingStrategy {
 	 *
 	 * Author: Francesco D'Aquino
 	 */
+	@Override
 	public boolean isModelStateDependent() {
 		return true;
 	}

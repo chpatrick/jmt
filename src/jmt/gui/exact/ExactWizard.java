@@ -25,6 +25,7 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
 
@@ -520,7 +521,7 @@ public class ExactWizard extends Wizard {
 	protected void switchToSimulator() {
 		JSIMModel output = new JSIMModel();
 		// New Converter by Bertoli Marco
-		Vector res = ModelConverter.convertJMVAtoJSIM(data, output);
+		List res = ModelConverter.convertJMVAtoJSIM(data, output);
 		JSIMMain jsim = new JSIMMain(output);
 		jsim.show();
 		// If problems are found, shows warnings

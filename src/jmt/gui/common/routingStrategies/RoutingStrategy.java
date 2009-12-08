@@ -19,8 +19,8 @@
 package jmt.gui.common.routingStrategies;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -44,14 +44,17 @@ public abstract class RoutingStrategy {
 		return description;
 	}
 
-	public abstract HashMap getValues();
+	public abstract Map<Object, Double> getValues();
 
+	@Override
 	public String toString() {
 		return getName();
 	}
 
-	public abstract Object clone();
+	@Override
+	public abstract RoutingStrategy clone();
 
+	@Override
 	public boolean equals(Object o) {
 		if (o instanceof RoutingStrategy) {
 			return this.getName().equals(((RoutingStrategy) o).getName());
@@ -75,12 +78,12 @@ public abstract class RoutingStrategy {
 		if (all != null) {
 			return all;
 		}
-		Vector strategies = new Vector();
+		ArrayList<RoutingStrategy> strategies = new ArrayList<RoutingStrategy>();
 		Field[] fields = jmt.gui.jmodel.JMODELConstants.class.getFields();
 		try {
-			for (int i = 0; i < fields.length; i++) {
-				if (fields[i].getName().startsWith("ROUTING_")) {
-					strategies.add(fields[i].get(null));
+			for (Field field : fields) {
+				if (field.getName().startsWith("ROUTING_")) {
+					strategies.add((RoutingStrategy) field.get(null));
 				}
 			}
 		} catch (IllegalAccessException ex) {
@@ -89,7 +92,7 @@ public abstract class RoutingStrategy {
 		}
 		RoutingStrategy[] ret = new RoutingStrategy[strategies.size()];
 		for (int i = 0; i < strategies.size(); i++) {
-			ret[i] = (RoutingStrategy) strategies.get(i);
+			ret[i] = strategies.get(i);
 		}
 		all = ret;
 		return ret;

@@ -19,6 +19,7 @@
 package jmt.gui.common.editors;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.JScrollPane;
@@ -48,7 +49,7 @@ public class RoutingProbabilitiesEditor extends JSplitPane implements CommonCons
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private HashMap routingProbs;
+	private Map<Object, Double> routingProbs;
 	private StationDefinition stations;
 	private Object stationKey, classKey;
 
@@ -128,7 +129,7 @@ public class RoutingProbabilitiesEditor extends JSplitPane implements CommonCons
 		//fetching output-connected stations list
 		Vector output = stations.getForwardConnections(stationKey);
 		//saving all entries of routing strategy in a temporary data structure
-		HashMap temp = new HashMap(routingProbs);
+		HashMap<Object, Double> temp = new HashMap<Object, Double>(routingProbs);
 		routingProbs.clear();
 		for (int i = 0; i < output.size(); i++) {
 			//add old entries to map only if they are still in the current connection set
@@ -193,14 +194,17 @@ public class RoutingProbabilitiesEditor extends JSplitPane implements CommonCons
 			return columnNames.length;
 		}
 
+		@Override
 		public String getColumnName(int columnIndex) {
 			return columnNames[columnIndex];
 		}
 
-		public Class getColumnClass(int columnIndex) {
+		@Override
+		public Class<Object> getColumnClass(int columnIndex) {
 			return columnClasses[columnIndex];
 		}
 
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			return columnIndex == 1;
 		}
@@ -218,6 +222,7 @@ public class RoutingProbabilitiesEditor extends JSplitPane implements CommonCons
 			}
 		}
 
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			if (columnIndex == 1) {
 				try {

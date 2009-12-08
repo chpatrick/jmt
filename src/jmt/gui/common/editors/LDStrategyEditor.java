@@ -74,7 +74,7 @@ public class LDStrategyEditor extends JMTDialog implements CommonConstants {
 	protected static final int BORDERSIZE = 20;
 	protected static final int MAXRANGES = 1000;
 	public static final String HELPFILE = "ParserHelp.html";
-	protected static HashMap distributions;
+	protected static HashMap<String, Distribution> distributions;
 	protected LDStrategy strategy;
 	protected JTable rangesTable;
 
@@ -105,11 +105,11 @@ public class LDStrategyEditor extends JMTDialog implements CommonConstants {
 	 * Class of found distribution
 	 * @return found distributions
 	 */
-	protected static HashMap findDistributions() {
+	protected static HashMap<String, Distribution> findDistributions() {
 		Distribution[] all = Distribution.findAllWithMean();
-		HashMap tmp = new HashMap();
-		for (int i = 0; i < all.length; i++) {
-			tmp.put(all[i].getName(), all[i]);
+		HashMap<String, Distribution> tmp = new HashMap<String, Distribution>();
+		for (Distribution element : all) {
+			tmp.put(element.getName(), element);
 		}
 		return tmp;
 	}
@@ -415,6 +415,7 @@ public class LDStrategyEditor extends JMTDialog implements CommonConstants {
 		}
 
 		//returns a component to be contained inside a table column(or cell)
+		@Override
 		public TableCellRenderer getCellRenderer(int row, int column) {
 			// Delete buttons
 			if (column == 5 && row > 0) {
@@ -429,6 +430,7 @@ public class LDStrategyEditor extends JMTDialog implements CommonConstants {
 		}
 
 		/*returns customized editor for table cells.*/
+		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 2) {
 				return distributionEditor;
@@ -485,6 +487,7 @@ public class LDStrategyEditor extends JMTDialog implements CommonConstants {
 
 		/**Returns name for each column (given its index) to be displayed
 		 * inside table header*/
+		@Override
 		public String getColumnName(int columnIndex) {
 			if (columnIndex < columnNames.length) {
 				return columnNames[columnIndex];
@@ -494,7 +497,8 @@ public class LDStrategyEditor extends JMTDialog implements CommonConstants {
 		}
 
 		/**Returns class describing data contained in specific column.*/
-		public Class getColumnClass(int columnIndex) {
+		@Override
+		public Class<Object> getColumnClass(int columnIndex) {
 			if (columnIndex < colClasses.length) {
 				return colClasses[columnIndex];
 			} else {
@@ -505,13 +509,14 @@ public class LDStrategyEditor extends JMTDialog implements CommonConstants {
 		/**Tells wether data contained in a specific cell(given row and column index)
 		 * is editable or not. In this case distribution column is not editable, as
 		 * editing functionality is implemented via edit button*/
+		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
 			if (rowIndex == 0 && (columnIndex == 0 || columnIndex == 5)) {
 				return false;
 			}
 			if (columnIndex == 1) {
 				return false;
-			} else if (columnIndex == 4 && !((Distribution) distributions.get(getValueAt(rowIndex, 2))).hasC()) {
+			} else if (columnIndex == 4 && !distributions.get(getValueAt(rowIndex, 2)).hasC()) {
 				return false;
 			}
 			return true;
@@ -553,6 +558,7 @@ public class LDStrategyEditor extends JMTDialog implements CommonConstants {
 		}
 
 		/**Puts edited values to the underlying data structure for model implementation*/
+		@Override
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			Object key = strategy.getAllRanges()[rowIndex];
 			switch (columnIndex) {
@@ -563,7 +569,7 @@ public class LDStrategyEditor extends JMTDialog implements CommonConstants {
 					}
 					break;
 				case (2):
-					strategy.setRangeDistribution(key, (Distribution) distributions.get(aValue));
+					strategy.setRangeDistribution(key, distributions.get(aValue));
 					break;
 				case (3):
 					strategy.setRangeDistributionMean(key, (String) aValue);

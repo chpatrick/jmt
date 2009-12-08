@@ -18,8 +18,9 @@
 
 package jmt.gui.common.definitions;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -61,79 +62,22 @@ public class ModelConverter {
 	 * the Router.
 	 * @param input JMVA model (read only access)
 	 * @param output target JSIM or JMODEL model. This is expected to be empty
-	 * @return a Vector with all found warnings during conversion (in String format)
+	 * @return a List with all found warnings during conversion (in String format).
 	 */
-	public static Vector<double[][]> convertJMVAtoJSIM(ExactModel input, CommonModel output) {
-		return convertJMVAtoJSIM(input, output, false);
-	}
-
-	/**
-	 * Converts a JMVA model to JSIM. Conversion is performed by equalling service times in every
-	 * LI station (adjusting visits) and creating FCFS queues with exponential service time distribution.
-	 * <br>
-	 * Visits are converted with routing probability, to mantain correctness of computated response time values
-	 * a "virtual" node called  RefStation is added as a reference station for closed classes and
-	 * routed when (in terms of mean values) a single visit is performed in the system. (as visits values are scaled to
-	 * compute probability distribution).
-	 * <br>
-	 * Note that a single router node, called "Router" is used to route jobs through the
-	 * entire network, simplyfing its thopology. Stations (LI, LD and Delays) are connected in a parallel form with
-	 * the Router.
-	 * @param input JMVA model (read only access)
-	 * @param output target JSIM or JMODEL model. This is expected to be empty
-	 * @param visitTransform if true last element of returned vector is a matrix with visit transformation
-	 * to be applied to throughput
-	 * @return a Vector with all found warnings during conversion (in String format). Last element (if selected)
-	 * is visit matrix to be applied
-	 */
-	public static Vector convertJMVAtoJSIM(ExactModel input, CommonModel output, boolean visitTransform) {
+	public static List<String> convertJMVAtoJSIM(ExactModel input, CommonModel output) {
 		// Changes default values, then restores default back at the end of method
 		String defaultRouting = Defaults.get("stationRoutingStrategy");
 		String defaultQueue = Defaults.get("stationQueueStrategy");
 		Defaults.set("stationRoutingStrategy", RandomRouting.class.getName());
 		Defaults.set("stationQueueStrategy", CommonConstants.QUEUE_STRATEGY_FCFS);
 
-		Vector res = new Vector();
+		ArrayList<String> res = new ArrayList<String>();
 		// Keys for unique items
 		Object sourceKey = null, sinkKey = null, routerKey, refRouterKey = null;
 		// Sums visit for each class
 		double[] visitSum = new double[input.getClasses()];
 		// Visits matrix (row: stations, column: classes)
-		double[][] visits = new double[input.getStations()][input.getClasses()];
-		// Original visits vector
-		double[][] origVisits = input.getVisits();
-		// New service times vector
-		double[] servTimes = new double[input.getStations()];
-
-		// Now converts service times to be all equals by adjusting visit ratio
-		// This is needed as we will create FCFS exponential servers
-		for (int i = 0; i < input.getStations(); i++) {
-			// Change only LI stations
-			if (!(input.getStationTypes()[i] == ExactConstants.STATION_LI)) {
-				System.arraycopy(origVisits[i], 0, visits[i], 0, origVisits[i].length);
-				continue;
-			}
-
-			// Finds the service time of first non-zero service demand
-			double sTime = input.getServiceTimes()[i][0][0];
-			int pos = 0;
-			while (Math.abs(origVisits[i][pos] * sTime) < 1e-10 && pos < input.getClasses() - 1) {
-				pos++;
-				sTime = input.getServiceTimes()[i][pos][0];
-			}
-			// All service demand are zero
-			if (Math.abs(origVisits[i][pos] * sTime) < 1e-10) {
-				Arrays.fill(visits[i], 0.0);
-			}
-			// Normal case
-			else {
-				for (int j = 0; j < input.getClasses(); j++) {
-					visits[i][j] = origVisits[i][j] * input.getServiceTimes()[i][j][0] / sTime;
-				}
-			}
-			// Unique service time
-			servTimes[i] = sTime;
-		}
+		double[][] visits = input.getVisits();
 
 		// Convert classes
 		Object[] classKeys = new Object[input.getClasses()];
@@ -207,11 +151,12 @@ public class ModelConverter {
 					// Load independent
 					key = output.addStation(name, CommonConstants.STATION_TYPE_SERVER);
 					output.setStationNumberOfServers(new Integer(servers), key);
+					output.setStationQueueStrategy(key, CommonConstants.QUEUE_STRATEGY_STATION_PS);
 					// Sets distribution for each class
-					for (Object classKey : classKeys) {
+					for (int j = 0; j < classKeys.length; j++) {
 						Exponential ex = new Exponential();
-						ex.setMean(servTimes[i]);
-						output.setServiceTimeDistribution(key, classKey, ex);
+						ex.setMean(serviceTimes[j][0]);
+						output.setServiceTimeDistribution(key, classKeys[j], ex);
 					}
 					break;
 				case ExactConstants.STATION_LD:
@@ -219,6 +164,7 @@ public class ModelConverter {
 					// we support multiclass too (future extensions).
 					key = output.addStation(name, CommonConstants.STATION_TYPE_SERVER);
 					output.setStationNumberOfServers(new Integer(servers), key);
+					output.setStationQueueStrategy(key, CommonConstants.QUEUE_STRATEGY_STATION_PS);
 					// Sets distribution for each class
 					for (int j = 0; j < classKeys.length; j++) {
 						LDStrategy lds = new LDStrategy();
@@ -290,22 +236,6 @@ public class ModelConverter {
 		// Manage preloading
 		output.manageJobs();
 
-		// Calculate visit transformation to be applied to throughputs: origVisits ./ visits
-		double[][] transform = new double[visits.length][visits[0].length];
-		if (visitTransform) {
-			for (int i = 0; i < visits.length; i++) {
-				for (int j = 0; j < visits[i].length; j++) {
-					if (visits[i][j] != 0) {
-						transform[i][j] = origVisits[i][j] / visits[i][j];
-					} else {
-						transform[i][j] = 1;
-					}
-				}
-			}
-			// Adds created matrix to results Vector
-			res.add(transform);
-		}
-
 		// Return warnings
 		return res;
 	}
@@ -325,12 +255,12 @@ public class ModelConverter {
 	 * @param output empty JMVA model (write)
 	 * @return a vector that enumerates all conversion warnings and how they have been fixed
 	 */
-	public static Vector<String> convertJSIMtoJMVA(CommonModel input, ExactModel output) {
+	public static List<String> convertJSIMtoJMVA(CommonModel input, ExactModel output) {
 		// Normalize probability routing
 		input.manageProbabilities();
 
 		// Used to store warnings
-		Vector<String> res = new Vector<String>();
+		ArrayList<String> res = new ArrayList<String>();
 		int classNum, stationNum;
 		// Used to iterate on lists
 		Iterator<Object> it;
@@ -402,8 +332,7 @@ public class ModelConverter {
 				stationServers[st] = serverNum.intValue();
 			} else {
 				stationServers[st] = 1;
-			}//FIXME settare servers...
-
+			}
 			if (input.getStationType(key).equals(CommonConstants.STATION_TYPE_DELAY)) {
 				stationTypes[st] = ExactConstants.STATION_DELAY;
 			} else {
@@ -549,8 +478,7 @@ public class ModelConverter {
 	 * @param warnings vector Vector to store warnings found during computation
 	 * @return an array with probability to reach each other station starting from given station
 	 */
-	private static double[] getRoutingProbability(Object stationKey, Object classKey, CommonModel model, Vector<Object> stations,
-			Vector<String> warnings) {
+	private static double[] getRoutingProbability(Object stationKey, Object classKey, CommonModel model, List<Object> stations, List<String> warnings) {
 		double[] p = new double[stations.size()];
 		RoutingStrategy strategy = (RoutingStrategy) model.getRoutingStrategy(stationKey, classKey);
 		if (strategy instanceof ProbabilityRouting && !model.getStationType(stationKey).equals(CommonConstants.STATION_TYPE_FORK)) {
@@ -600,7 +528,7 @@ public class ModelConverter {
 	 * @param warnings Vector where computation warnings must be put
 	 * @return computated routing probability matrix
 	 */
-	private static double[][] buildProbabilityMatrix(Vector<Object> stations, CommonModel model, Object classKey, Vector<String> warnings) {
+	private static double[][] buildProbabilityMatrix(List<Object> stations, CommonModel model, Object classKey, List<String> warnings) {
 		double[][] matrix = new double[stations.size()][stations.size()];
 		double[] tmp;
 		for (int i = 0; i < stations.size(); i++) {

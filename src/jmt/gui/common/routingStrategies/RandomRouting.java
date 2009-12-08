@@ -18,7 +18,7 @@
 
 package jmt.gui.common.routingStrategies;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -34,18 +34,22 @@ public class RandomRouting extends RoutingStrategy {
 				+ "have the same probability to be selected.";
 	}
 
+	@Override
 	public String getName() {
 		return "Random";
 	}
 
-	public HashMap getValues() {
+	@Override
+	public Map<Object, Double> getValues() {
 		return null;
 	}
 
-	public Object clone() {
+	@Override
+	public RandomRouting clone() {
 		return new RandomRouting();
 	}
 
+	@Override
 	public String getClassPath() {
 		return "jmt.engine.NetStrategies.RoutingStrategies.RandomStrategy";
 	}
@@ -58,6 +62,7 @@ public class RandomRouting extends RoutingStrategy {
 	 *
 	 * Author: Francesco D'Aquino
 	 */
+	@Override
 	public boolean isModelStateDependent() {
 		return false;
 	}

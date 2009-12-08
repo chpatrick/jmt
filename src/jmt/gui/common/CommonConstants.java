@@ -56,7 +56,9 @@ public interface CommonConstants {
 	public final static String STATION_TYPE_LOGGER = "Logger";
 
 	/** A map that decodes from station type to station name for the GUI */
-	public static final ConstMap STATION_NAMES = new ConstMap() {
+
+	public static final ConstMap<String, String> STATION_NAMES = new ConstMap<String, String>() {
+		@Override
 		protected void fill() {
 			putConst(STATION_TYPE_SOURCE, STATION_TYPE_SOURCE);
 			putConst(STATION_TYPE_SINK, STATION_TYPE_SINK);
@@ -91,7 +93,7 @@ public interface CommonConstants {
 	public final static String DISTRIBUTION_HYPEREXPONENTIAL = "Hyperexponential";
 	public final static String DISTRIBUTION_BURST = "Burst";
 	//public final static String DISTRIBUTION_MAP= "MAP";
-	public final static String DISTRIBUTION_MMPP2= "MMPP2";
+	public final static String DISTRIBUTION_MMPP2 = "MMPP2";
 	public final static String DISTRIBUTION_GAMMA = "Gamma";
 	public final static String DISTRIBUTION_UNIFORM = "Uniform";
 	public final static String DISTRIBUTION_STUDENTT = "StudentT";

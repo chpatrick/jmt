@@ -18,7 +18,7 @@
 
 package jmt.gui.common.routingStrategies;
 
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by IntelliJ IDEA.
@@ -33,18 +33,22 @@ public class LeastUtilizationRouting extends RoutingStrategy {
 		description = "Jobs are routed to the station with " + "the smallest average utilization.";
 	}
 
+	@Override
 	public String getName() {
 		return "Least Utilization";
 	}
 
-	public HashMap getValues() {
+	@Override
+	public Map<Object, Double> getValues() {
 		return null;
 	}
 
-	public Object clone() {
+	@Override
+	public LeastUtilizationRouting clone() {
 		return new LeastUtilizationRouting();
 	}
 
+	@Override
 	public String getClassPath() {
 		return "jmt.engine.NetStrategies.RoutingStrategies.LeastUtilizationRoutingStrategy";
 	}
@@ -57,6 +61,7 @@ public class LeastUtilizationRouting extends RoutingStrategy {
 	 *
 	 * Author: Francesco D'Aquino
 	 */
+	@Override
 	public boolean isModelStateDependent() {
 		return true;
 	}

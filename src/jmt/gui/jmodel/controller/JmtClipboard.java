@@ -21,6 +21,7 @@ package jmt.gui.jmodel.controller;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
@@ -184,7 +185,7 @@ public class JmtClipboard {
 		keys = tempkey.keySet().iterator();
 		Object[] classes;
 		RoutingStrategy rs;
-		HashMap oldRouting, newRouting;
+		Map oldRouting, newRouting;
 		// Search in every new inserted station
 		while (keys.hasNext()) {
 			newkey = tempkey.get(keys.next());
