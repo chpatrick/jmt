@@ -19,8 +19,6 @@
 package jmt.engine.NodeSections;
 
 import jmt.engine.NetStrategies.RoutingStrategy;
-import jmt.engine.NetStrategies.ServiceStrategy;
-import jmt.engine.NetStrategies.ServiceStrategies.ZeroServiceTimeStrategy;
 import jmt.engine.QueueNet.BlockingRegion;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
@@ -74,13 +72,6 @@ public class Router extends OutputSection {
 	private NetNode regionInputStation;
 
 	/*---------------------------------------------------------------*/
-
-	//-------------------ZERO SERVICE TIME PROPERTIES------------------------------//
-	//for each class, true if that class has a service time equal to zero and therefore
-	//must be "tunnelled"
-	private boolean hasZeroServiceTime[] = null;
-
-	//-------------------end ZERO SERVICE TIME PROPERTIES--------------------------//
 
 	/** Creates a new instance of Router.
 	 * @param routingStrategies Routing strategies, one for each class.
@@ -157,44 +148,6 @@ public class Router extends OutputSection {
 
 				Job job = message.getJob();
 
-				//TODO: this part should be placed in the overridden version of NodeLinked
-				//at the first execution checks which classes have service time always equal to zero
-				if (hasZeroServiceTime == null) {
-					int numberOfClasses = this.getJobClasses().size();
-					hasZeroServiceTime = new boolean[numberOfClasses];
-
-					NodeSection serviceSect = this.getOwnerNode().getSection(NodeSection.SERVICE);
-					if (serviceSect instanceof ServiceTunnel) {
-						//case #1: service tunnel
-						//nothing to control, every job has service time zero
-						//it's useless to force the tunnel behaviour
-						for (int c = 0; c < numberOfClasses; c++) {
-							hasZeroServiceTime[c] = false;
-						}
-					} else {
-						//case #2: server
-						//check if there are classes with zero service time distribution
-						if (serviceSect instanceof Server) {
-							for (int c = 0; c < this.getJobClasses().size(); c++) {
-								ServiceStrategy[] servStrat = (ServiceStrategy[]) ((Server) serviceSect)
-										.getObject(Server.PROPERTY_ID_SERVICE_STRATEGY);
-
-								if (servStrat[c] instanceof ZeroServiceTimeStrategy) {
-									hasZeroServiceTime[c] = true;
-								} else {
-									hasZeroServiceTime[c] = false;
-								}
-							}
-						} else {
-							//case #3: serviceSect is nor a service tunnel neither a server
-							//use default behaviour
-							for (int c = 0; c < this.getJobClasses().size(); c++) {
-								hasZeroServiceTime[c] = false;
-							}
-						}
-					}
-				}
-
 				//EVENT_JOB
 				//if the router is not busy, an output node is chosen using
 				//the routing strategy and a message containing the job is sent to it.
@@ -243,15 +196,6 @@ public class Router extends OutputSection {
 				//
 				//An ack is sent back to the service section.
 				//
-
-				//first controls if the ack is relative to a tunnelled job
-				int jobClassIndex = message.getJob().getJobClass().getId();
-
-				if (hasZeroServiceTime[jobClassIndex]) {
-					//ok, this job had been tunnelled
-					//no acks must be sent backward for tunnelled jobs
-					return MSG_PROCESSED;
-				}
 
 				sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
 				break;
