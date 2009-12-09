@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2009, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 package jmt.engine.NodeSections;
 
 import jmt.common.exception.NetException;
-import jmt.engine.QueueNet.BlockingRegion;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
@@ -30,43 +29,21 @@ import jmt.engine.QueueNet.NetNode;
  * a region with constraints (the "blocking region"). The destination node has been
  * already defined (the node each job has been redirected from), therefore no
  * routing strategy is required.
- * @author  Stefano Omini
+ * @author  Stefano Omini, Bertoli Marco
  */
 public class BlockingRouter extends OutputSection {
-
-	/** Property Identifier: Routing strategy.*/
-	public static final int PROPERTY_ID_ROUTING_STRATEGY = 0x0101;
-	/** Property Identifier: Busy.*/
-	public static final int PROPERTY_ID_BUSY = 0x0102;
-
-	/** The number of waiting acks */
+	/** The number of ACKs we are waiting */
 	private int waitingAcks = 0;
-
-	//TODO: dopo le modifiche non serve più
-	//the blocking region
-	private BlockingRegion blockingRegion;
-
-	//to speed up performance
-	Job job = null;
-	NetNode realDestinationNode = null;
 
 	/** Creates a new instance of Router which limitates the number of
 	 * jobs entering in the region with constraints.
 	 * No routing strategy is required: the destination node is already known
 	 * when the job arrives to the input station.
-	 * @param blockingReg The blocking Region whose access is controlled by this blocking router
 	 */
-	public BlockingRouter(BlockingRegion blockingReg) {
+	public BlockingRouter() {
 		//FCR bug fix: Constructor modified from super() to spuer(true,false) which will enable
 		//Jobs in Joblist at NodeSection to be automatically dropped where as for Node to be manually handled.
 		super(true, false);
-		this.blockingRegion = blockingReg;
-	}
-
-	@Override
-	protected void nodeLinked(NetNode node) {
-		blockingRegion.setInputStation(node);
-		return;
 	}
 
 	@Override
@@ -74,10 +51,10 @@ public class BlockingRouter extends OutputSection {
 		switch (message.getEvent()) {
 			case NetEvent.EVENT_JOB:
 				// Sends the message to the real destination and wait for the ack
-				job = message.getJob();
+				Job job = message.getJob();
 				//this is the real destination, i.e. the internal node that at first
 				//had redirected the job to the input station
-				realDestinationNode = job.getOriginalDestinationNode();
+				NetNode realDestinationNode = job.getOriginalDestinationNode();
 				send(job, 0.0, realDestinationNode);
 
 				waitingAcks++;
@@ -97,5 +74,4 @@ public class BlockingRouter extends OutputSection {
 				return MSG_NOT_PROCESSED;
 		}
 	}
-
 }

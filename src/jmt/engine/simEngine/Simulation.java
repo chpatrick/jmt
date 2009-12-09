@@ -408,7 +408,7 @@ public class Simulation {
 
 				InputSection is = new BlockingQueue(br);
 				ServiceSection ss = new ServiceTunnel();
-				OutputSection os = new BlockingRouter(br);
+				OutputSection os = new BlockingRouter();
 
 				SimNode inputStation = new SimNode(inputStationName, is, ss, os);
 				inputStation.getNode().setBlockingRegionInputStation(br);
