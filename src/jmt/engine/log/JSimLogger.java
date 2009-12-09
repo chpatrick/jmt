@@ -120,7 +120,7 @@ public class JSimLogger implements Serializable {
 		if (loggerName == STD_LOGGER || loggerName.startsWith(LOGTUNNEL_LOGGER)) {
 			mylogger = new JSimLogger(loggerName);
 		} else {
-			return null;
+			return getLogger(JSimLogger.STD_LOGGER);
 		}
 		return mylogger;
 	}

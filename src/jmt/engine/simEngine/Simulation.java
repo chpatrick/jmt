@@ -432,6 +432,7 @@ public class Simulation {
 				if (inputStation.getOutput() != null) {
 					inputStation.getNode().addSection(inputStation.getOutput());
 				}
+				inputStation.getNode().initializeSections();
 
 				//sets the input station of the blocking region
 				br.setInputStation(inputSt);
