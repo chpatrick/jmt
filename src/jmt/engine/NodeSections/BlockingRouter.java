@@ -85,8 +85,9 @@ public class BlockingRouter extends OutputSection {
 			case NetEvent.EVENT_ACK:
 				//this ack has been received from one of the output nodes (router was waiting for this ack)
 				//sends an ack back to the service section to request another job to be routed
-				if (waitingAcks >= 0) {
+				if (waitingAcks > 0) {
 					sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
+					waitingAcks--;
 				} else {
 					// Nobody was waiting this ACK.
 					return MSG_NOT_PROCESSED;
