@@ -39,8 +39,8 @@ public class BlockingRouter extends OutputSection {
 	/** Property Identifier: Busy.*/
 	public static final int PROPERTY_ID_BUSY = 0x0102;
 
-	//if true, router is waiting for an ack of a job previously sent
-	private boolean busy;
+	/** The number of waiting acks */
+	private int waitingAcks = 0;
 
 	//TODO: dopo le modifiche non serve più
 	//the blocking region
@@ -60,16 +60,7 @@ public class BlockingRouter extends OutputSection {
 		//FCR bug fix: Constructor modified from super() to spuer(true,false) which will enable
 		//Jobs in Joblist at NodeSection to be automatically dropped where as for Node to be manually handled.
 		super(true, false);
-		//TODO: non aggiorna joblist
-		//super(false);
-		busy = false;
 		this.blockingRegion = blockingReg;
-
-		//NEW
-		//@author Stefano Omini
-		//log = NetSystem.getLog();
-		//end NEW
-
 	}
 
 	@Override
@@ -79,89 +70,31 @@ public class BlockingRouter extends OutputSection {
 	}
 
 	@Override
-	public boolean isEnabled(int id) throws NetException {
-		switch (id) {
-			case PROPERTY_ID_BUSY:
-				return busy;
-			default:
-				return super.isEnabled(id);
-		}
-	}
-
-	@Override
 	protected int process(NetMessage message) throws NetException {
 		switch (message.getEvent()) {
-
 			case NetEvent.EVENT_JOB:
+				// Sends the message to the real destination and wait for the ack
+				job = message.getJob();
+				//this is the real destination, i.e. the internal node that at first
+				//had redirected the job to the input station
+				realDestinationNode = job.getOriginalDestinationNode();
+				send(job, 0.0, realDestinationNode);
 
-				//EVENT_JOB
-				//if the router is not busy, an ouput node is chosen using
-				//the routing strategy and a message containing the job is sent to it.
-				//The router becomes busy, waiting for the ack.
-				//
-				//Otherwise if the router is busy, message is not processed
-
-				// if not busy sends the job
-				if (!busy) {
-
-					//OLD
-					/*
-					Job job = message.getJob();
-
-					NetNode realDestinationNode = null;
-
-					if (job.isRedirected()) {
-					    //this is the real destination, i.e. the internal node that at first
-					    //had redirected the job to the input station
-					    realDestinationNode = job.getDestinationNode();
-					} else {
-					    //This is not a redirected job: we don't know the destination!!!
-					    return MSG_NOT_PROCESSED;
-					}
-					*/
-
-					//NEW
-					job = message.getJob();
-					//this is the real destination, i.e. the internal node that at first
-					//had redirected the job to the input station
-					realDestinationNode = job.getOriginalDestinationNode();
-					send(job, 0.0, realDestinationNode);
-
-					busy = true;
-					//log.write(NetLog.LEVEL_DEBUG, job, this, NetLog.JOB_OUT);
-
-					return MSG_PROCESSED;
-				}
-				// otherwise the job will be lost
-				else {
-					return MSG_NOT_PROCESSED;
-				}
-
+				waitingAcks++;
+				return MSG_PROCESSED;
 			case NetEvent.EVENT_ACK:
-
-				//EVENT_ACK
-				//
-				//If the router is not busy (is not waiting for the ack for a routed job)
-				//message is no processed.
-				//Otherwise an ack is sent back to the service section and busy becomes false.
-				//
-
-				if (!busy) {
-					return MSG_NOT_PROCESSED;
-				} else {
-					//this ack has been received from one of the output nodes (router was waiting
-					//for this ack)
-					//sends an ack back to the service section to request another job to be routed
+				//this ack has been received from one of the output nodes (router was waiting for this ack)
+				//sends an ack back to the service section to request another job to be routed
+				if (waitingAcks >= 0) {
 					sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
-					//log.write(NetLog.LEVEL_ALL, message.getJob(), this, NetLog.ACK_JOB);
-					busy = false;
+				} else {
+					// Nobody was waiting this ACK.
+					return MSG_NOT_PROCESSED;
 				}
-				break;
-
+				return MSG_PROCESSED;
 			default:
 				return MSG_NOT_PROCESSED;
 		}
-		return MSG_PROCESSED;
 	}
 
 }
