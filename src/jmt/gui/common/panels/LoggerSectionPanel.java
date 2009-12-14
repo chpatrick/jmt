@@ -530,7 +530,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
 			path = "";
 		}
 		// Add a trailing slash
-		if ((path.length() > 0) && (path.endsWith(File.separator) == false) && (path.endsWith(JSimLogger.FILESEPARATOR) == false)) {
+		if ((path.length() > 0) && (path.endsWith(File.separator) == false) && (path.endsWith("/") == false)) {
 			path = path + File.separator;
 		}
 

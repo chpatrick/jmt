@@ -80,11 +80,11 @@ public class LoggerParameters {
 		try {
 
 			if (path == null) {
-				return "." + JSimLogger.FILESEPARATOR;
+				return "./";
 			} else if (path.length() == 0 || path.startsWith(".")) {
-				return "." + JSimLogger.FILESEPARATOR;
+				return "./";
 			} else if (path.equalsIgnoreCase(syspath) || path.equalsIgnoreCase(syspath + File.separator)) {
-				return "." + JSimLogger.FILESEPARATOR;
+				return "./";
 			} else if ((System.getProperty("os.name").startsWith("Windows")) && (path.startsWith(syspath.substring(0, 2)) == false)) {
 				return path; // if not on the same drive.. return the absolute path
 			} else if ((path.startsWith(syspath))) {
