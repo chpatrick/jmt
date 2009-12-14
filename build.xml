@@ -234,7 +234,7 @@
         <copy todir="${out}" >
             <fileset dir="${util}/" includes="*.*" excludes="*shortcutSpec.xml" />
         </copy>
-    	<copy todir="${out}" filtering="true">
+    	<copy todir="${out}" filtering="true" overwrite="true">
     	     <fileset dir="${util}/" includes="*shortcutSpec.xml" />
     	</copy>
 
