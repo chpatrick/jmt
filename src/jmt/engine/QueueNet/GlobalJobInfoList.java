@@ -29,6 +29,13 @@ import jmt.engine.dataAnalysis.Measure;
  * @author Bertoli Marco
  *         Date: 8-mar-2006
  *         Time: 12.27.42
+ *         
+ *  Modified by Ashanka (Feb 2010)
+ *  Desc: Modified the logic of System Power calculation. Earlier the logic was to capture the 
+ *  	  response time (rn) of each job when it was entering the sink and to capture the time 
+ *  	  of throughput (xn) for each job. Then x1/r1 ... x2/r2 .... x3/r3...
+ *        was sent for System Power Simulation Engine. This logic was modified into :
+ *        x1/r1 .. [x1/r1 + (x1+x2)/(r1+r2)]..[x1/r1 + (x1+x2)/(r1+r2) + (x1+x2+x3)/(r1+r2+r3)]..           
  */
 public class GlobalJobInfoList {
 
@@ -53,6 +60,10 @@ public class GlobalJobInfoList {
 	private double[] lastJobOutTimePerClass, lastModifyNumberPerClass, lastJobDropTimePerClass;
 	private int[] jobsPerClass;
 	private int jobs;
+	
+	//Variables for the System Power calculation: New Modified version.
+	double systemPowerSamples, systemPowerSamplesClass[];
+	double sampling_SystemThroughputSum, sampling_SystemResponseSum, samplingClass_SystemThroughputSum[];
 
 	/**
 	 * Creates a new GlobalJobInfoList
@@ -84,6 +95,9 @@ public class GlobalJobInfoList {
 		systemPower = null;
 		systemPowerPerClass = null;
 		//Added by ASHANKA STOP
+		sampling_SystemThroughputSum = sampling_SystemResponseSum = 0;
+		samplingClass_SystemThroughputSum = new double[classNum];
+		systemPowerSamplesClass = new double[classNum];
 	}
 
 	// --- Methods to be called on job events ---------------------------------------------
@@ -363,19 +377,26 @@ public class GlobalJobInfoList {
 	 */
 	private void updateSystemPower(Job job) {
 
+		sampling_SystemThroughputSum = sampling_SystemThroughputSum + (NetSystem.getTime() - lastJobOutTime);
+		sampling_SystemResponseSum   = sampling_SystemResponseSum + (NetSystem.getTime() - job.getSystemEnteringTime());
+		systemPowerSamples = systemPowerSamples +1;
 		if (systemPowerPerClass != null) {
 			// Retrives measure (if not null)
 			// new sample is the inter-departures time (1/throughput)
 			int index = job.getJobClass().getId();
 			InverseMeasure m = systemPowerPerClass[index];
+			samplingClass_SystemThroughputSum[index] = samplingClass_SystemThroughputSum[index] + NetSystem.getTime() - lastJobOutTimePerClass[index];
+			systemPowerSamplesClass[index] = systemPowerSamplesClass[index] + 1;
 			//Measure m = systemPowerPerClass[index];
 			if (m != null) {
-				double temp = (NetSystem.getTime() - job.getSystemEnteringTime()) * (NetSystem.getTime() - lastJobOutTimePerClass[index]);
+				double temp = (sampling_SystemResponseSum/systemPowerSamples) * (samplingClass_SystemThroughputSum[index]/systemPowerSamplesClass[index]);
+				//double temp = (NetSystem.getTime() - job.getSystemEnteringTime()) * (NetSystem.getTime() - lastJobOutTimePerClass[index]);
 				m.update(temp, 1.0);
 			}
 		}
 		if (systemPower != null) {
-			double tmp = (NetSystem.getTime() - job.getSystemEnteringTime()) * (NetSystem.getTime() - lastJobOutTime);//(R/X)
+			double tmp = (sampling_SystemResponseSum/systemPowerSamples) * (sampling_SystemThroughputSum/systemPowerSamples);
+			//double tmp = (NetSystem.getTime() - job.getSystemEnteringTime()) * (NetSystem.getTime() - lastJobOutTime);//(R/X)
 			systemPower.update(tmp, 1.0);
 		}
 	}
