@@ -34,6 +34,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -172,6 +173,9 @@ import org.jgraph.plaf.basic.BasicGraphUI;
  * Modyfied by Bertoli Marco to support JGraph 5.8 - 21/mar/2006
 
  * Modified by Giuseppe De Cicco & Fabio Granara
+ * 
+ * @author Ashanka Date: 11March 2010
+ * Description: Added a logic to remove the duplicate name of the files from displaying.
 
  */
 public class Mediator implements GuiInterface {
@@ -2227,10 +2231,22 @@ public class Mediator implements GuiInterface {
 
 						// Find if the logfiles have data in them:
 						try {
-							for (String element : ln) {
+							//Code to remove duplicate file names from the list to obtain a unique list of File names.
+							Arrays.sort(ln);
+							int k = 0;
+							for (int i = 0; i < ln.length; i++){
+								if (i > 0 && ln[i].equals(ln[i -1])){
+									continue;
+								}
+								ln[k++] = ln[i];
+							}
+							String[] unique = new String[k];
+							System.arraycopy(ln, 0, unique, 0, k);
+
+							for (String element : unique) {
 								// if the files have data, print what will be overwritten
 								if (new File(logabspath + element).length() > 0) {
-									ln2 = ln2 + element + ", ";
+										ln2 = ln2 + element + ", ";
 								}
 							}
 							// remove the trailing comma

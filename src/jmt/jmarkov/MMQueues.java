@@ -1163,7 +1163,9 @@ public class MMQueues extends JMTFrame {
 			ClassLoader cl = this.getClass().getClassLoader();
 			// Use the findHelpSet method of HelpSet to create a URL referencing
 			// the helpset file.
-			URL url = HelpSet.findHelpSet(cl, "help/jMCH_it/MMQHelp.hs");
+			// Changed the path so that it ends in error and shows the Error Message as the 
+			//Help in English is not yet available.
+			URL url = HelpSet.findHelpSet(cl, "help/jMCH_en/MMQHelp.hs");//"help/jMCH_it/MMQHelp.hs");
 			// Create a new JHelp object with a new HelpSet.
 			helpViewer = new JHelp(new HelpSet(cl, url));
 
@@ -1171,7 +1173,8 @@ public class MMQueues extends JMTFrame {
 			// helpViewer.setCurrentID("");
 		} catch (Exception e) {
 			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Sorry, help is not available", "Help not found", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Sorry, JMCH help is not available yet, "
+					+ "but you can see the JMCH users manual installed with the application", "Help not found", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
