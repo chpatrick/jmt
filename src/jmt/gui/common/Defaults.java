@@ -90,10 +90,10 @@ public class Defaults implements CommonConstants {
 		def.setProperty("loggerFilePath", "");
 
 		//Simulation Defaults parameters
-		def.setProperty("measureAlpha", "0.9");
-		def.setProperty("measurePrecision", "0.1");
+		def.setProperty("measureAlpha", "0.99");
+		def.setProperty("measurePrecision", "0.03");
 		def.setProperty("simulationSeed", "23000");
-		def.setProperty("maxSimulationSamples", "500000");
+		def.setProperty("maxSimulationSamples", "1000000");
 		def.setProperty("simulationMaxDuration", "-1");
 		def.setProperty("simulationPolling", "2");
 		// Francesco D'Aquino
