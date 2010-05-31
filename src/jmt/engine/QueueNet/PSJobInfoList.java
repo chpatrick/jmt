@@ -360,29 +360,12 @@ public class PSJobInfoList implements JobInfoList {
 	
 	public void analyzeResponseTimePerSink(JobClass jobClass,
 			Measure Measurement) {
-		// TODO Auto-generated method stub
-		/*
-		 * Well this method has no real meaning over here. Has been 
-		 * incorporated only because the JobInfoList
-		 * which is the parent class has them and has to be
-		 * implemented in the sub-class.
-		 * This method is only required if JobSink needs
-		 * to analyze some performance index.
-		 */
-		
+		list.analyzeResponseTimePerSink(jobClass, Measurement);
 	}
 
 	public void analyzeThroughputPerSink(JobClass jobClass,
 			InverseMeasure Measurement) {
-		// TODO Auto-generated method stub
-		/*
-		 * Well this method has no real meaning over here. Has been 
-		 * incorporated only because the JobInfoList
-		 * which is the parent class has them and has to be
-		 * implemented in the sub-class.
-		 * This method is only required if JobSink needs
-		 * to analyze some performance index.
-		 */
+		list.analyzeThroughputPerSink(jobClass, Measurement);
 	}
 
 }
