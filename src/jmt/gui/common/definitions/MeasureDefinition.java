@@ -32,6 +32,13 @@ import jmt.framework.gui.graph.MeasureValue;
  * @author Bertoli Marco
  *         Date: 23-set-2005
  *         Time: 23.14.55
+ *         
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class. 
  */
 public interface MeasureDefinition {
 	/**
@@ -198,6 +205,9 @@ public interface MeasureDefinition {
 	public int[] getSystemPowerMeasures();
 
 	//Added by ASHANKA STOP
+	
+	public int[] getResponsetimePerSinkMeasures();
+	public int[] getThroughputPerSinkMeasures();
 
 	/**
 	 * Returns the node type of a given measure

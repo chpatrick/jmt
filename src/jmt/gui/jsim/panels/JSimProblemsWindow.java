@@ -63,6 +63,21 @@ import jmt.gui.jsim.JSIMMain;
  * @author Francesco D'Aquino
  *         Date: 24-ott-2005
  *         Time: 15.22.46
+ *         
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
+ * Hence new validations are required to check the Performance Indices of
+ * response per sink and throughput per sink follow the model validations.
+ * 1. Response Time per Sink and Throughput per Sink should have a sink in
+ * the model : added new function : isThereSinkPerfIndicesError
+ * 2. Response Time per Sink and Throughput per Sink should not be selected
+ * with a closed class because for a closed model as of now in JMT no jobs 
+ * are routed to the it. So sink should be choosen only when a open class 
+ * is present : isSinkPerfIndicesWithClosedClassError.
  */
 public class JSimProblemsWindow extends JFrame {
 	/**
@@ -384,6 +399,14 @@ public class JSimProblemsWindow extends JFrame {
 						"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>No performance indices defined",
 						null, null));
 			}
+			if (mc.isThereSinkPerfIndicesWithNoSinkError()){
+				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.SINK_PERF_IND_WITH_NO_SINK_ERROR,
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>" +
+						"Response Time per Sink and Throughput per sink should not be used " +
+						"if there is no Sink defined in the model.",
+						null, null));
+			}
 			if (mc.isThereInconsistentMeasureError()) {
 				problems
 						.add(new ProblemElement(
@@ -495,6 +518,13 @@ public class JSimProblemsWindow extends JFrame {
 						.add(new ProblemElement(ModelChecker.WARNING_PROBLEM, ModelChecker.FORK_WITHOUT_JOIN_WARNING,
 								"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>Fork found but no join",
 								null, null));
+			}
+			if (mc.isSinkPerfIndicesWithClosedClassError()){
+				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.SINK_PERF_WITH_CLOSED_CLASS_ERROR,
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>" +
+				        "Response Time per Sink and Throughput per sink should not be used for closed class.",
+				        null, null));
 			}
 		}
 	}

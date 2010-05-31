@@ -27,6 +27,13 @@ import jmt.engine.dataAnalysis.Measure;
 
 /** This class implements a job info list based on a linked list.
  * @author Francesco Radaelli, Stefano Omini.
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
  */
 public class LinkedJobInfoList implements JobInfoList {
 
@@ -46,9 +53,9 @@ public class LinkedJobInfoList implements JobInfoList {
 	private double lastJobOutTime, lastJobInTime, lastJobDropTime, lastJobOutTimePerClass[], lastJobInTimePerClass[], lastJobDropTimePerClass[];
 
 	private Measure utilization, utilizationPerClass[], responseTime, responseTimePerClass[], residenceTime, residenceTimePerClass[], queueLength,
-			queueLengthPerClass[], dropRate, dropRatePerClass[];
+			queueLengthPerClass[], dropRate, dropRatePerClass[], responseTimePerSink, responseTimePerSinkPerClass[] ;
 
-	private InverseMeasure throughput, throughputPerClass[];
+	private InverseMeasure throughput, throughputPerClass[], throughputPerSink, throughputPerSinkPerClass[];
 
 	/** The number of servers to estimate Utilization measure on multiserver environments. */
 	private int serverNumber = 1;
@@ -586,6 +593,29 @@ public class LinkedJobInfoList implements JobInfoList {
 			residenceTime = Measurement;
 		}
 	}
+	
+	public void analyzeResponseTimePerSink(JobClass jobClass,
+			Measure Measurement) {
+		if (jobClass != null) {
+			if (responseTimePerSinkPerClass == null) {
+				responseTimePerSinkPerClass = new Measure[listPerClass.length];
+			}
+			responseTimePerSinkPerClass[jobClass.getId()] = Measurement;
+		} else {
+			responseTimePerSink = Measurement;
+		}		
+	}
+
+	public void analyzeThroughputPerSink(JobClass jobClass, InverseMeasure Measurement) {
+		if (jobClass != null) {
+			if (throughputPerSinkPerClass == null) {
+				throughputPerSinkPerClass = new InverseMeasure[listPerClass.length];
+			}
+			throughputPerSinkPerClass[jobClass.getId()] = Measurement;
+		} else {
+			throughputPerSink = Measurement;
+		}		
+	}
 
 	/**
 	 * Updates Response time measure
@@ -680,7 +710,31 @@ public class LinkedJobInfoList implements JobInfoList {
 		lastJobInTimePerClass[c] = lastJobInTime = NetSystem.getTime();
 
 	}
-
+	
+	public void updateResponseTimePerSink(JobInfo jobInfo) {
+		int c = jobInfo.getJob().getJobClass().getId();
+		if (responseTimePerSinkPerClass != null) {
+			Measure m = responseTimePerSinkPerClass[c];
+			if (m != null) {
+				m.update(NetSystem.getTime() - jobInfo.getJob().getSystemEnteringTime(), 1.0);
+			}
+		}
+		if (responseTimePerSink != null) {
+			responseTimePerSink.update(NetSystem.getTime() - jobInfo.getJob().getSystemEnteringTime(), 1.0);
+		}
+	}
+	public void updateThroughputPerSink(JobInfo jobInfo) {
+		int c = jobInfo.getJob().getJobClass().getId();
+		if (throughputPerSinkPerClass != null) {
+			InverseMeasure m = throughputPerSinkPerClass[c];
+			if (m != null) {
+				m.update(NetSystem.getTime() - getLastJobDropTimePerClass(jobInfo.getJob().getJobClass()), 1.0);
+			}
+		}
+		if (throughputPerSink != null) {
+			throughputPerSink.update(NetSystem.getTime() - getLastJobDropTime(), 1.0);
+		}
+	}
 	//NEW
 	//@author Stefano Omini
 	//modified 21/5/2004
@@ -759,7 +813,8 @@ public class LinkedJobInfoList implements JobInfoList {
 
 			listPerClass[c].remove(JobInfo);
 			list.remove(JobInfo);
-
+			updateResponseTimePerSink(JobInfo);
+			updateThroughputPerSink(JobInfo);
 			return dropJob(job);
 		} else {
 			return false;

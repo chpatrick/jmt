@@ -37,6 +37,13 @@ import jmt.gui.common.xml.XMLConstantNames;
  * 
  * Modified by Ashanka: In PAResultsModel(CommonModel model) for including the label change from "Customer Number" to "Number of Customers" 
  * 		                and "System Customer Number" to "System Number of Customers".
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class. 
  */
 public class PAResultsModel implements MeasureDefinition {
 	private Vector<Measure> measures; // An array with all Measures
@@ -51,6 +58,9 @@ public class PAResultsModel implements MeasureDefinition {
 	private Vector<Integer> systemPower = new Vector<Integer>();
 	//Added by ASHANKA STOP
 
+	private Vector<Integer> responseTimePerSink = new Vector<Integer>();
+	private Vector<Integer> throughputTimePerSink = new Vector<Integer>();
+	
 	private HashMap<String, Measure> names = new HashMap<String, Measure>();
 
 	//private boolean[] finished;
@@ -130,7 +140,14 @@ public class PAResultsModel implements MeasureDefinition {
 			} else if (type.startsWith("system") && type.endsWith("rate")) {
 				numType = SimConstants.SYSTEM_DROP_RATE;
 				systemDropRate.add(new Integer(i));
+			} else if (type.startsWith("response") && type.endsWith("sink")) {
+				numType = SimConstants.RESPONSE_TIME_PER_SINK;
+				responseTimePerSink.add(new Integer(i));
+			} else if (type.startsWith("throughput") && type.endsWith("sink")) {
+				numType = SimConstants.THROUGHPUT_PER_SINK;
+				throughputTimePerSink.add(new Integer(i));
 			}
+			
 			measures.add(new Measure(measureName, stationName, className, thisAlpha, thisPrecision, numType, nodeType));
 		}
 		parameterValues = model.getParametricAnalysisModel().getParameterValues();
@@ -195,6 +212,13 @@ public class PAResultsModel implements MeasureDefinition {
 				systemPower.add(new Integer(measures.size() - 1));
 				break;
 			//Added by ASHANKA STOP
+			case SimConstants.RESPONSE_TIME_PER_SINK:
+				responseTimePerSink.add(new Integer(measures.size() - 1));
+				break;
+			case SimConstants.THROUGHPUT_PER_SINK:
+				throughputTimePerSink.add(new Integer(measures.size() - 1));
+				break;
+			
 		}
 	}
 
@@ -646,4 +670,14 @@ public class PAResultsModel implements MeasureDefinition {
 		return tmp;
 	}
 	//Added by ASHANKA STOP
+
+	public int[] getResponsetimePerSinkMeasures() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public int[] getThroughputPerSinkMeasures() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

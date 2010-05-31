@@ -88,6 +88,13 @@ import jmt.gui.jsim.panels.StationsPanel;
  * Modified by Bertoli Marco
  *
  * Modified by Francesco D'Aquino
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
+ * Model validation of the perf indices.
  */
 public class JSIMMain extends Wizard implements GuiInterface {
 
@@ -948,6 +955,12 @@ public class JSIMMain extends Wizard implements GuiInterface {
 			}
 		} else if (problemSubType == ModelChecker.PRELOADING_WITH_BLOCKING) {
 			tabbedPane.setSelectedIndex(7);
+		}
+		else if ((problemType == ModelChecker.ERROR_PROBLEM) && (problemSubType == ModelChecker.SINK_PERF_IND_WITH_NO_SINK_ERROR)) {
+			tabbedPane.setSelectedIndex(4);
+		}
+		else if ((problemType == ModelChecker.ERROR_PROBLEM) && (problemSubType == ModelChecker.SINK_PERF_WITH_CLOSED_CLASS_ERROR)) {
+			tabbedPane.setSelectedIndex(4);
 		}
 	}
 

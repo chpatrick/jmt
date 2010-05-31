@@ -81,6 +81,8 @@ public interface StationDefinition {
 	 * This method returns all station (without sources and sinks) and blocking region keys.
 	 */
 	public Vector<Object> getStationRegionKeysNoSourceSink();
+	
+	public Vector<Object> getStationKeysSink();
 
 	/** Returns name of the station in <code>String</code> representation, given the search key.*/
 	public String getStationName(Object key);

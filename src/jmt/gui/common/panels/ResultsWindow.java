@@ -54,6 +54,7 @@ import jmt.framework.gui.layouts.SpringUtilities;
 import jmt.gui.common.definitions.AbortMeasure;
 import jmt.gui.common.definitions.MeasureDefinition;
 import jmt.gui.common.definitions.ResultsConstants;
+import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.common.xml.XMLConstantNames;
 
@@ -80,6 +81,13 @@ import jmt.gui.common.xml.XMLConstantNames;
  * 
  * Modified by Ashanka (Nov 09):
  * Desc: Appended the values of various measures to the tool tip.
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
  */
 public class ResultsWindow extends JMTFrame implements ResultsConstants {
 	/**
@@ -144,7 +152,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		//Adds the System Power panel in the results window
 		addTabPane(mainPanel, "System Power", DESCRIPTION_SYSTEMPOWER, results.getSystemPowerMeasures());
 		//Added by ASHANKA STOP
-
+		addTabPane(mainPanel, SimulationDefinition.MEASURE_R_PER_SINK, DESCRIPTION_RESPONSETIME_SINK, results.getResponsetimePerSinkMeasures());
+		addTabPane(mainPanel, SimulationDefinition.MEASURE_X_PER_SINK, DESCRIPTION_THROUGHPUT_SINK, results.getThroughputPerSinkMeasures());
 		// Creates bottom toolbar
 		JToolBar toolbar = new JToolBar();
 		toolbar.setFloatable(false);

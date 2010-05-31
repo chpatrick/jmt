@@ -71,6 +71,7 @@ import jmt.framework.gui.layouts.SpringUtilities;
 import jmt.gui.common.definitions.MeasureDefinition;
 import jmt.gui.common.definitions.PAResultsModel;
 import jmt.gui.common.definitions.ResultsConstants;
+import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.definitions.parametric.ArrivalRateParametricAnalysis;
 import jmt.gui.common.definitions.parametric.NumberOfCustomerParametricAnalysis;
 import jmt.gui.common.definitions.parametric.ParametricAnalysis;
@@ -115,6 +116,13 @@ import jmt.gui.exact.table.ExactTableModel;
  * 
  * Modified by Ashanka (Nov 09):
  * Desc: Appended the values of various measures to the tool tip.
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
  */
 public class PAResultsWindow extends JMTFrame implements ResultsConstants, ParametricAnalysis {
 	/**
@@ -168,6 +176,8 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		//Adds the System Power panel in the results window.
 		addTabPane(mainPanel, "System Power", DESCRIPTION_SYSTEMPOWER, results.getSystemPowerMeasures());
 		//Added by ASHANKA STOP
+		addTabPane(mainPanel, SimulationDefinition.MEASURE_R_PER_SINK, DESCRIPTION_RESPONSETIME_SINK, results.getResponsetimePerSinkMeasures());
+		addTabPane(mainPanel, SimulationDefinition.MEASURE_X_PER_SINK, DESCRIPTION_THROUGHPUT_SINK, results.getThroughputPerSinkMeasures());
 	}
 
 	public String getXLabel() {

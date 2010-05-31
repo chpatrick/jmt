@@ -32,6 +32,13 @@ import jmt.engine.dataAnalysis.Measure;
  * <b>Time:</b> 17:00:44</p>
  * @author Bertoli Marco
  * @version 1.0
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
  */
 public interface JobInfoList {
 
@@ -282,6 +289,21 @@ public interface JobInfoList {
 	 */
 	public abstract void analyzeQueueLength(JobClass JobClass, Measure Measurement);
 
+	/**
+	 * Analyzes : Calculates the Throughput at each sink of the Network. 
+	 * @param jobClass : Job class to be analyzed.
+	 * @param Measurement : Reference to the measure object.
+	 */
+	public abstract void analyzeThroughputPerSink(JobClass jobClass, InverseMeasure Measurement);
+	
+	/**
+	 * Analyzes : Calculates the Response Time from the source to 
+	 * each sink of the job for each sink in the Queueing Network. 
+	 * @param jobClass : Job class to be analyzed.
+	 * @param Measurement : Reference to the measure object.
+	 */
+	public abstract void analyzeResponseTimePerSink(JobClass jobClass, Measure Measurement);
+	
 	/** Removes a job info from the list without updating measures.
 	 *
 	 * @param JobInfo reference to job info to be removed.

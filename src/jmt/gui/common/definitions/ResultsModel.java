@@ -34,6 +34,13 @@ import jmt.framework.gui.graph.MeasureValue;
  * @author Bertoli Marco
  *         Date: 23-set-2005
  *         Time: 15.57.43
+ *         
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
  */
 public class ResultsModel implements MeasureDefinition {
 	private TempMeasure[] measures; // An array with all TempMeasures
@@ -48,6 +55,9 @@ public class ResultsModel implements MeasureDefinition {
 	//inclusion in the JSIM as a performance Index.
 	private Vector<Integer> systemPower = new Vector<Integer>();
 	//Added by ASHANKA STOP
+	
+	private Vector<Integer> responseTimePerSink = new Vector<Integer>();
+	private Vector<Integer> throughputTimePerSink = new Vector<Integer>();
 
 	private Vector[] measuresVector; // For each TempMeasure holds a Vector with its value at every poll
 	private boolean[] finished;
@@ -119,6 +129,13 @@ public class ResultsModel implements MeasureDefinition {
 					systemPower.add(new Integer(i));
 					break;
 				//Added by ASHANKA STOP
+					
+				case SimConstants.RESPONSE_TIME_PER_SINK:
+					responseTimePerSink.add(new Integer(i));
+					break;
+				case SimConstants.THROUGHPUT_PER_SINK:
+					throughputTimePerSink.add(new Integer(i));
+					break;
 			}
 			// Adds to allMeasures HashMap a vector to collect all values of this measure
 			Vector<MeasureValueImpl> temp_mean = new Vector<MeasureValueImpl>();
@@ -498,6 +515,22 @@ public class ResultsModel implements MeasureDefinition {
 		public double getMeanValue() {
 			return value;
 		}
+	}
+
+	public int[] getResponsetimePerSinkMeasures() {
+		int[] tmp = new int[responseTimePerSink.size()];
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = responseTimePerSink.get(i).intValue();
+		}
+		return tmp;
+	}
+
+	public int[] getThroughputPerSinkMeasures() {
+		int[] tmp = new int[throughputTimePerSink.size()];
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = throughputTimePerSink.get(i).intValue();
+		}
+		return tmp;
 	}
 
 }

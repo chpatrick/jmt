@@ -44,6 +44,14 @@ import jmt.gui.common.routingStrategies.ProbabilityRouting;
  *
  *
  * Modified by Francesco D'Aquino
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
+ * Hence added a code to fetch the sinkkeys and if a measure is sink perf measure.             
  */
 public class CommonModel implements CommonConstants, ClassDefinition, StationDefinition, SimulationDefinition, BlockingRegionDefinition {
 	//key generator
@@ -604,6 +612,18 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		Vector<Object> vect = new Vector<Object>(noSourceSinkKeyset);
 		vect.addAll(blockingRegionsKeyset);
 		return vect;
+	}
+	
+	public Vector<Object> getStationKeysSink(){
+		Vector<Object> sink = new Vector<Object>();
+		Vector<Object> stations = this.getStationKeys();
+		for (int i = 0; i < stations.size(); i++) {
+			Object thisStation = stations.get(i);
+			if (this.getStationType(thisStation).equals(CommonConstants.STATION_TYPE_SINK)) {
+				sink.add(thisStation);
+			}
+		}
+		return sink;
 	}
 
 	/** Returns name of the station in <code>String</code> representation, given the
@@ -1579,6 +1599,20 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		;
 	}
 
+	/**
+	 * Tells if the Measure is being calculated keeping the Sink as reference,
+	 * Is used for the performance indices of
+	 * ResponseTimePerSink and ThroughputPerSink.
+	 * @param key
+	 * @return
+	 */
+	public boolean isSinkMeasure(Object key){
+		String type = getMeasureType(key);
+		boolean ret = false;
+		ret = (type.equals(SimulationDefinition.MEASURE_R_PER_SINK) 
+				|| type.equals(SimulationDefinition.MEASURE_X_PER_SINK)) ? true : false;
+		return ret;
+	}
 	/**
 	 * Sets preloaded jobs on a given station for a given class
 	 * @param jobs number of jobs to be put in queue

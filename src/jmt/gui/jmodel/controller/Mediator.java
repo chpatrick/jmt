@@ -176,7 +176,14 @@ import org.jgraph.plaf.basic.BasicGraphUI;
  * 
  * @author Ashanka Date: 11March 2010
  * Description: Added a logic to remove the duplicate name of the files from displaying.
-
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
+ * Model validation of the perf indices.
  */
 public class Mediator implements GuiInterface {
 	private boolean isReleased = false;
@@ -2662,6 +2669,13 @@ public class Mediator implements GuiInterface {
 		// if a measure is inconsistent (i.e have one or more 'null' field) show
 		// performance indices panel
 		else if ((problemSubType == ModelChecker.INCONSISTENT_MEASURE_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) {
+			dialogFactory.getDialog(new MeasurePanel(model, model, model), "Edit Performance Indices");
+		}
+		
+		else if ((problemSubType == ModelChecker.SINK_PERF_IND_WITH_NO_SINK_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) {
+			dialogFactory.getDialog(new MeasurePanel(model, model, model), "Edit Performance Indices");
+		}
+		else if ((problemSubType == ModelChecker.SINK_PERF_WITH_CLOSED_CLASS_ERROR) && (problemType == ModelChecker.ERROR_PROBLEM)) {
 			dialogFactory.getDialog(new MeasurePanel(model, model, model), "Edit Performance Indices");
 		}
 		// if a measure was defined more than once ask to erase all redundant

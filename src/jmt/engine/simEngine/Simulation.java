@@ -59,6 +59,13 @@ import org.w3c.dom.Document;
  * the jmt engine.
  *
  * @author Federico Granata, Stefano Omini, Bertoli Marco
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class. 
  */
 public class Simulation {
 	/** Output file handler */
@@ -557,6 +564,16 @@ public class Simulation {
 						case SimConstants.DROP_RATE:
 							// measures the drop rate of an input section
 							netNodes[nodePosition].getSection(NodeSection.INPUT).analyze(SimConstants.LIST_DROP_RATE, jClass, ms.getMeasure());
+							break;
+							
+						case SimConstants.RESPONSE_TIME_PER_SINK:
+							// measures the drop rate of an input section
+							netNodes[nodePosition].analyze(SimConstants.RESPONSE_TIME_PER_SINK, jClass, ms.getMeasure());
+							break;
+							
+						case SimConstants.THROUGHPUT_PER_SINK:
+							// measures the drop rate of an input section
+							netNodes[nodePosition].analyze(SimConstants.THROUGHPUT_PER_SINK, jClass, ms.getMeasure());
 							break;
 					}
 				}

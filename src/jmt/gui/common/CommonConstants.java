@@ -36,6 +36,10 @@ import jmt.gui.common.routingStrategies.ShortestResponseTimeRouting;
  * Date: 17-mag-2005
  * Time: 11.15.51
  * Modified by Bertoli Marco
+ * 
+ * Modified by Ashanka (May 2010):
+ * Desc: Renamed the default of Queueing Station to Queue Stat. 
+ *       in the inner class : ConstMap function: fill 
  */
 public interface CommonConstants {
 
@@ -65,7 +69,8 @@ public interface CommonConstants {
 			putConst(STATION_TYPE_TERMINAL, STATION_TYPE_TERMINAL);
 			putConst(STATION_TYPE_ROUTER, "Routing Station");
 			putConst(STATION_TYPE_DELAY, STATION_TYPE_DELAY);
-			putConst(STATION_TYPE_SERVER, "Queueing Station");
+			//putConst(STATION_TYPE_SERVER, "Queueing Station");
+			putConst(STATION_TYPE_SERVER, "Queue Stat.");
 			putConst(STATION_TYPE_FORK, STATION_TYPE_FORK);
 			putConst(STATION_TYPE_JOIN, STATION_TYPE_JOIN);
 			putConst(STATION_TYPE_LOGGER, STATION_TYPE_LOGGER);

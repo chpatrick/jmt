@@ -289,7 +289,12 @@ public class XMLResultsReader implements XMLResultsConstants {
 				numType = SimConstants.SYSTEM_POWER;
 			}
 			//Added by ASHANKA STOP
-
+			else if (tmp.startsWith("Throughput") && tmp.endsWith("Sink")) {
+				numType = SimConstants.THROUGHPUT_PER_SINK;
+			}
+			else if (tmp.startsWith("Response") && tmp.endsWith("Sink")) {
+				numType = SimConstants.RESPONSE_TIME_PER_SINK;
+			}
 			// Adds loaded informations into model data structure
 			model.addMeasure(Name, stationName, className, alpha, precision, samples, state, numType, nodeType);
 			model.addMeasureSample(Name, mean, upper, lower);

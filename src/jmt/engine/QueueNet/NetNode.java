@@ -34,6 +34,13 @@ import jmt.engine.simEngine.SimTypeP;
 /**
  * This class implements a generic QueueNetwork node.
  * @author Francesco Radaelli, Stefano Omini, Marco Bertoli
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
  */
 public class NetNode extends SimEntity {
 
@@ -351,6 +358,14 @@ public class NetNode extends SimEntity {
 
 			case SimConstants.LIST_DROP_RATE:
 				jobsList.analyzeDropRate(jobClass, (InverseMeasure) measurement);
+				break;
+				
+			case SimConstants.RESPONSE_TIME_PER_SINK:
+				jobsList.analyzeResponseTimePerSink(jobClass, measurement);
+				break;
+				
+			case SimConstants.THROUGHPUT_PER_SINK:
+				jobsList.analyzeThroughputPerSink(jobClass, (InverseMeasure)measurement);
 				break;
 
 			default:

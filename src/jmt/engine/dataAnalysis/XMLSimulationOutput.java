@@ -38,7 +38,6 @@ import jmt.engine.QueueNet.SimConstants;
 import jmt.engine.QueueNet.SimulationOutput;
 import jmt.engine.log.JSimLogger;
 import jmt.engine.simEngine.Simulation;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -59,6 +58,14 @@ import org.w3c.dom.Element;
  * Desc: The code to include the changes for label changes from 
  *       1. Customer Number to Number of Customers
  *       2. System Customer Number to System Number of Customers.
+ *       
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class. 
+ * 
  */
 public class XMLSimulationOutput extends SimulationOutput {
 	private static final String SEPARATOR = System.getProperty("file.separator");
@@ -220,6 +227,11 @@ public class XMLSimulationOutput extends SimulationOutput {
 				typeName = "System Power";
 				break;
 			//Added by ASHANKA STOP
+			case SimConstants.THROUGHPUT_PER_SINK:
+				typeName = "Throughput per Sink";
+				
+			case SimConstants.RESPONSE_TIME_PER_SINK:
+				typeName = "Response Time per Sink";
 		}
 
 		elem.setAttribute("measureType", typeName);

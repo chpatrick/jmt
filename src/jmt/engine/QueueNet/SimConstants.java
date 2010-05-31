@@ -20,7 +20,13 @@ package jmt.engine.QueueNet;
 
 /**
  * Constants used by QueueNet package.
- *
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class. 
  */
 public class SimConstants {
 
@@ -63,6 +69,8 @@ public class SimConstants {
 	//Id of the system power
 	public static final int SYSTEM_POWER = 12;
 	//Added by ASHANKA STOP
+	public static final int THROUGHPUT_PER_SINK = 13;
+	public static final int RESPONSE_TIME_PER_SINK = 14;
 
 	//-------------------- end SIMULATION MEASURE IDENTIFIERS -------------------------//
 

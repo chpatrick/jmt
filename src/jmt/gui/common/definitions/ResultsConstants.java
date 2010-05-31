@@ -40,6 +40,13 @@ package jmt.gui.common.definitions;
  * 
  * Modified by Ashanka (Nov 09):
  * Desc: Added the description of the Drop Rate
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class. 
  */
 public interface ResultsConstants {
 	public static final int BORDERSIZE = 20;
@@ -97,4 +104,10 @@ public interface ResultsConstants {
 
 	// Temp measure mean label
 	public static final String TEMP_MEAN = HTML_START + HTML_FONT_NORM + "<b>Average value: </b>" + HTML_FONT_NOR_END + HTML_END;
+	
+	public static final String DESCRIPTION_RESPONSETIME_SINK = HTML_START + HTML_FONT_TITLE + "Response Time" + HTML_FONT_TIT_END + HTML_FONT_NORM
+		+ "Response Time for each chosen Sink." + HTML_FONT_NOR_END + HTML_END;
+	
+	public static final String DESCRIPTION_THROUGHPUT_SINK = HTML_START + HTML_FONT_TITLE + "Throughput" + HTML_FONT_TIT_END + HTML_FONT_NORM
+	+ "Throughput for each chosen Sink." + HTML_FONT_NOR_END + HTML_END;
 }

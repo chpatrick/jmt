@@ -61,6 +61,21 @@ import jmt.gui.common.resources.JMTImageLoader;
  * @author Francesco D'Aquino
  *         Date: 13-ott-2005
  *         Time: 14.36.31
+ *         
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
+ * Hence new validations are required to check the Performance Indices of
+ * response per sink and throughput per sink follow the model validations.
+ * 1. Response Time per Sink and Throughput per Sink should have a sink in
+ * the model : added new function : isThereSinkPerfIndicesError
+ * 2. Response Time per Sink and Throughput per Sink should not be selected
+ * with a closed class because for a closed model as of now in JMT no jobs 
+ * are routed to the it. So sink should be choosen only when a open class 
+ * is present : isSinkPerfIndicesWithClosedClassError.
  */
 public class JModelProblemsWindow extends JDialog {
 	/**
@@ -137,8 +152,10 @@ public class JModelProblemsWindow extends JDialog {
 						continueButton.setEnabled(true);
 					}
 					//else continueButton.setEnabled(false);
-					if (((pType == ModelChecker.ERROR_PROBLEM) && ((pSubType == ModelChecker.OPEN_CLASS_BUT_NO_SOURCE_ERROR)))
-							|| ((pType == ModelChecker.ERROR_PROBLEM) && ((pSubType == ModelChecker.NO_STATION_ERROR)))) {
+					if (((pType == ModelChecker.ERROR_PROBLEM) 
+							&& ((pSubType == ModelChecker.OPEN_CLASS_BUT_NO_SOURCE_ERROR)))
+							|| ((pType == ModelChecker.ERROR_PROBLEM) 
+									&& ((pSubType == ModelChecker.NO_STATION_ERROR)))) {
 						setVisible(false);
 					} else {
 						if (!mc.isEverythingOkToJMVA()) {
@@ -150,9 +167,12 @@ public class JModelProblemsWindow extends JDialog {
 						continueButton.setEnabled(true);
 					}
 					if ((pType == ModelChecker.ERROR_PROBLEM)
-							&& ((pSubType == ModelChecker.NO_CLASSES_ERROR) || (pSubType == ModelChecker.SIMULATION_ERROR)
+							&& ((pSubType == ModelChecker.NO_CLASSES_ERROR) 
+									|| (pSubType == ModelChecker.SIMULATION_ERROR)
 									|| (pSubType == ModelChecker.REFERENCE_STATION_ERROR)
-									|| (pSubType == ModelChecker.SOURCE_WITH_NO_OPEN_CLASSES_ERROR) || (pSubType == ModelChecker.ROUTING_ERROR) || (pSubType == ModelChecker.SINK_BUT_NO_OPEN_CLASSES_ERROR))) {
+									|| (pSubType == ModelChecker.SOURCE_WITH_NO_OPEN_CLASSES_ERROR) 
+									|| (pSubType == ModelChecker.ROUTING_ERROR) 
+									|| (pSubType == ModelChecker.SINK_BUT_NO_OPEN_CLASSES_ERROR))) {
 						if (!mc.isEverythingOkNormal()) {
 							show();
 						}
@@ -230,18 +250,21 @@ public class JModelProblemsWindow extends JDialog {
 		if (isToJMVAConversion) {
 			if (mc.isThereNoClassesError()) {
 				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.NO_CLASSES_ERROR,
-						"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>No classes defined", null, null));
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>No classes defined", null, null));
 			}
 			if (mc.isThereNoStationError()) {
 				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.NO_STATION_ERROR,
-						"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>No station defined", null, null));
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>No station defined", null, null));
 			}
 			if (mc.isThereOpenClassButNoSourceError()) {
 				problems
 						.add(new ProblemElement(
 								ModelChecker.ERROR_PROBLEM,
 								ModelChecker.OPEN_CLASS_BUT_NO_SOURCE_ERROR,
-								"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>Open class found but no source defined",
+								"<html><font color=\"white\">----</font><b>Error</b>" +
+								"<font color=\"white\">---------</font>Open class found but no source defined",
 								null, null));
 			}
 			if (mc.isThereClassesWithoutRefStationError()) {
@@ -250,7 +273,8 @@ public class JModelProblemsWindow extends JDialog {
 					Object classKey = temp.get(i);
 					String className = mc.getClassModel().getClassName(classKey);
 					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.REFERENCE_STATION_ERROR,
-							"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>No reference station defined for "
+							"<html><font color=\"white\">----</font><b>Error</b>" +
+							"<font color=\"white\">---------</font>No reference station defined for "
 									+ className, null, classKey));
 				}
 			}
@@ -279,7 +303,8 @@ public class JModelProblemsWindow extends JDialog {
 				for (int i = 0; i < temp.size(); i++) {
 					String thisStation = mc.getStationModel().getStationName(temp.get(i));
 					problems.add(new ProblemElement(ModelChecker.WARNING_PROBLEM, ModelChecker.BCMP_DIFFERENT_QUEUEING_STRATEGIES_WARNING,
-							"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>Different per class queueing strategy found at "
+							"<html><font color=\"white\">--</font><i>Warning</i>" +
+							"<font color=\"white\">--------</font>Different per class queueing strategy found at "
 									+ thisStation, temp.get(i), null));
 				}
 			}
@@ -288,7 +313,8 @@ public class JModelProblemsWindow extends JDialog {
 				for (int i = 0; i < temp.size(); i++) {
 					String thisStation = mc.getStationModel().getStationName(temp.get(i));
 					problems.add(new ProblemElement(ModelChecker.WARNING_PROBLEM, ModelChecker.BCMP_FCFS_DIFFERENT_SERVICE_TYPES_WARNING,
-							"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>Non uniform service strategy inside FCFS station "
+							"<html><font color=\"white\">--</font><i>Warning</i>" +
+							"<font color=\"white\">--------</font>Non uniform service strategy inside FCFS station "
 									+ thisStation, temp.get(i), null));
 				}
 			}
@@ -297,7 +323,8 @@ public class JModelProblemsWindow extends JDialog {
 				for (int i = 0; i < temp.size(); i++) {
 					String thisStation = mc.getStationModel().getStationName(temp.get(i));
 					problems.add(new ProblemElement(ModelChecker.WARNING_PROBLEM, ModelChecker.BCMP_FCFS_EXPONENTIAL_WARNING,
-							"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>Non exponential service time inside FCFS station "
+							"<html><font color=\"white\">--</font><i>Warning</i>" +
+							"<font color=\"white\">--------</font>Non exponential service time inside FCFS station "
 									+ thisStation, temp.get(i), null));
 				}
 			}
@@ -306,7 +333,8 @@ public class JModelProblemsWindow extends JDialog {
 				for (int i = 0; i < temp.size(); i++) {
 					String thisStation = mc.getStationModel().getStationName(temp.get(i));
 					problems.add(new ProblemElement(ModelChecker.WARNING_PROBLEM, ModelChecker.BCMP_FCFS_DIFFERENT_SERVICE_TIMES_WARNING,
-							"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>Different service times inside FCFS station "
+							"<html><font color=\"white\">--</font><i>Warning</i>" +
+							"<font color=\"white\">--------</font>Different service times inside FCFS station "
 									+ thisStation, temp.get(i), null));
 				}
 			}
@@ -324,7 +352,8 @@ public class JModelProblemsWindow extends JDialog {
 						.add(new ProblemElement(
 								ModelChecker.WARNING_PROBLEM,
 								ModelChecker.BCMP_NON_STATE_INDEPENDENT_ROUTING_WARNING,
-								"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>A non state independent routing strategy was found",
+								"<html><font color=\"white\">--</font><i>Warning</i>" +
+								"<font color=\"white\">--------</font>A non state independent routing strategy was found",
 								null, null));
 			}
 			//TODO: Lcfs case handling
@@ -332,11 +361,13 @@ public class JModelProblemsWindow extends JDialog {
 		} else {
 			if (mc.isThereNoClassesError()) {
 				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.NO_CLASSES_ERROR,
-						"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>No classes defined", null, null));
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>No classes defined", null, null));
 			}
 			if (mc.isThereNoStationError()) {
 				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.NO_STATION_ERROR,
-						"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>No station defined", null, null));
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>No station defined", null, null));
 			}
 			if (mc.isThereStationLinkError()) {
 				Vector temp = mc.getKeysOfStationsWithLinkProblems();
@@ -345,9 +376,11 @@ public class JModelProblemsWindow extends JDialog {
 					String stationName = mc.getStationModel().getStationName(stationKey);
 					String description;
 					if (mc.getStationModel().getStationType(stationKey).equals(CommonConstants.STATION_TYPE_SINK)) {
-						description = ("<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>" + stationName + " has no ingoing links! No routing is possible");
+						description = ("<html><font color=\"white\">----</font><b>Error</b>" +
+								"<font color=\"white\">---------</font>" + stationName + " has no ingoing links! No routing is possible");
 					} else {
-						description = ("<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>" + stationName + "  has no outgoing links! No routing is possible");
+						description = ("<html><font color=\"white\">----</font><b>Error</b>" +
+								"<font color=\"white\">---------</font>" + stationName + "  has no outgoing links! No routing is possible");
 					}
 					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.STATION_LINK_ERROR, description, stationKey, null));
 				}
@@ -364,7 +397,8 @@ public class JModelProblemsWindow extends JDialog {
 							Object stationKey = stationWithAllForwardStationsAreSinkErrors.get(j);
 							String stationName = mc.getStationModel().getStationName(stationKey);
 							problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.ALL_FORWARD_STATION_ARE_SINK_ERROR,
-									"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>Close class "
+									"<html><font color=\"white\">----</font><b>Error</b>" +
+									"<font color=\"white\">---------</font>Close class "
 											+ className + " routed to station " + stationName + " linked only to sink", stationKey, classKey));
 						}
 					}
@@ -382,7 +416,8 @@ public class JModelProblemsWindow extends JDialog {
 							Object stationKey = stationWithRoutingProblems.get(j);
 							String stationName = mc.getStationModel().getStationName(stationKey);
 							problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.ROUTING_ERROR,
-									"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>Close class "
+									"<html><font color=\"white\">----</font><b>Error</b>" +
+									"<font color=\"white\">---------</font>Close class "
 											+ className + " at station " + stationName + " is routed to sink with p=1", stationKey, classKey));
 						}
 					}
@@ -390,7 +425,8 @@ public class JModelProblemsWindow extends JDialog {
 			}
 			if (mc.isThereSimulationError()) {
 				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.SIMULATION_ERROR,
-						"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>No performance indices defined",
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>No performance indices defined",
 						null, null));
 			}
 			if (mc.isThereClassesWithoutRefStationError()) {
@@ -399,7 +435,8 @@ public class JModelProblemsWindow extends JDialog {
 					Object classKey = temp.get(i);
 					String className = mc.getClassModel().getClassName(classKey);
 					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.REFERENCE_STATION_ERROR,
-							"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>No reference station defined for "
+							"<html><font color=\"white\">----</font><b>Error</b>" +
+							"<font color=\"white\">---------</font>No reference station defined for "
 									+ className, null, classKey));
 				}
 			}
@@ -408,12 +445,14 @@ public class JModelProblemsWindow extends JDialog {
 						.add(new ProblemElement(
 								ModelChecker.ERROR_PROBLEM,
 								ModelChecker.NO_SINK_WITH_OPEN_CLASSES_ERROR,
-								"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>Open classes were found but no sink have been defined",
+								"<html><font color=\"white\">----</font><b>Error</b>" +
+								"<font color=\"white\">---------</font>Open classes were found but no sink have been defined",
 								null, null));
 			}
 			if (mc.isThereSinkButNoOpenClassError()) {
 				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.SINK_BUT_NO_OPEN_CLASSES_ERROR,
-						"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>Sink without open classes", null,
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>Sink without open classes", null,
 						null));
 			}
 			if (mc.isThereOpenClassButNoSourceError()) {
@@ -421,7 +460,8 @@ public class JModelProblemsWindow extends JDialog {
 						.add(new ProblemElement(
 								ModelChecker.ERROR_PROBLEM,
 								ModelChecker.OPEN_CLASS_BUT_NO_SOURCE_ERROR,
-								"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>An open class was found but no source has been defined",
+								"<html><font color=\"white\">----</font><b>Error</b>" +
+								"<font color=\"white\">---------</font>An open class was found but no source has been defined",
 								null, null));
 			}
 			if (mc.isThereSourceWithNoClassesError()) {
@@ -430,16 +470,26 @@ public class JModelProblemsWindow extends JDialog {
 					Object sourceKey = temp.get(i);
 					String sourceName = mc.getStationModel().getStationName(sourceKey);
 					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.SOURCE_WITH_NO_OPEN_CLASSES_ERROR,
-							"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>" + sourceName
+							"<html><font color=\"white\">----</font><b>Error</b>" +
+							"<font color=\"white\">---------</font>" + sourceName
 									+ " without open classes associated", sourceKey, null));
 				}
 			}
+			if (mc.isThereSinkPerfIndicesWithNoSinkError()){
+				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.SINK_PERF_IND_WITH_NO_SINK_ERROR,
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>" +
+						"Response Time per Sink and Throughput per sink should not be used " +
+						"if there is no Sink defined in the model.",
+						null, null));
+			}			
 			if (mc.isThereInconsistentMeasureError()) {
 				problems
 						.add(new ProblemElement(
 								ModelChecker.ERROR_PROBLEM,
 								ModelChecker.INCONSISTENT_MEASURE_ERROR,
-								"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>Undefined station in performance index",
+								"<html><font color=\"white\">----</font><b>Error</b>" +
+								"<font color=\"white\">---------</font>Undefined station in performance index",
 								null, null));
 			}
 			if (mc.isThereMeasureError()) {
@@ -447,19 +497,22 @@ public class JModelProblemsWindow extends JDialog {
 						.add(new ProblemElement(
 								ModelChecker.ERROR_PROBLEM,
 								ModelChecker.DUPLICATE_MEASURE_ERROR,
-								"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>A performance index is defined more than once",
+								"<html><font color=\"white\">----</font><b>Error</b>" +
+								"<font color=\"white\">---------</font>A performance index is defined more than once",
 								null, null));
 			}
 			if (mc.isTherejoinWithoutForkError()) {
 				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.JOIN_WITHOUT_FORK_ERROR,
-						"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>Join without fork", null, null));
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>Join without fork", null, null));
 			}
 			if (mc.isThereEmptyBlockingRegionError()) {
 				Vector regionKeys = mc.getKeysOfEmptyBlockingRegions();
 				for (int i = 0; i < regionKeys.size(); i++) {
 					String name = mc.getBlockingModel().getRegionName(regionKeys.get(i));
 					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.EMPTY_BLOCKING_REGION,
-							"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>Finite Capacity Region " + name
+							"<html><font color=\"white\">----</font><b>Error</b>" +
+							"<font color=\"white\">---------</font>Finite Capacity Region " + name
 									+ " is empty", regionKeys.get(i), null));
 				}
 			}
@@ -468,7 +521,8 @@ public class JModelProblemsWindow extends JDialog {
 						.add(new ProblemElement(
 								ModelChecker.ERROR_PROBLEM,
 								ModelChecker.PRELOADING_WITH_BLOCKING,
-								"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>Preloading of stations inside a blocking region is not supported",
+								"<html><font color=\"white\">----</font><b>Error</b>" +
+								"<font color=\"white\">---------</font>Preloading of stations inside a blocking region is not supported",
 								null, null));
 			}
 			if (mc.isThereMoreThanOneSinkWarning()) {
@@ -476,7 +530,8 @@ public class JModelProblemsWindow extends JDialog {
 						.add(new ProblemElement(
 								ModelChecker.WARNING_PROBLEM,
 								ModelChecker.MORE_THAN_ONE_SINK_WARNING,
-								"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>More than one sink defined, measures may not be accurate",
+								"<html><font color=\"white\">--</font><i>Warning</i>" +
+								"<font color=\"white\">--------</font>More than one sink defined, measures may not be accurate",
 								null, null));
 			}
 			if (mc.isThereNoBackwardLinkWarning()) {
@@ -485,25 +540,36 @@ public class JModelProblemsWindow extends JDialog {
 					Object stationKey = temp.get(i);
 					String stationName = mc.getStationModel().getStationName(stationKey);
 					problems.add(new ProblemElement(ModelChecker.WARNING_PROBLEM, ModelChecker.NO_BACKWARD_LINK_WARNING,
-							"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>" + stationName
+							"<html><font color=\"white\">--</font><i>Warning</i>" +
+							"<font color=\"white\">--------</font>" + stationName
 									+ " is not backward linked", stationKey, null));
 				}
 			}
 			if (mc.isThereParametricAnalysisModelModifiedWarning()) {
 				problems.add(new ProblemElement(ModelChecker.WARNING_PROBLEM, ModelChecker.PARAMETRIC_ANALYSIS_MODEL_MODIFIED_WARNING,
-						"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>What-if analysis model modified",
+						"<html><font color=\"white\">--</font><i>Warning</i>" +
+						"<font color=\"white\">--------</font>What-if analysis model modified",
 						null, null));
 			}
 			if (mc.isThereParametricAnalysisNoMoreAvaibleWarning()) {
 				problems.add(new ProblemElement(ModelChecker.WARNING_PROBLEM, ModelChecker.PARAMETRIC_ANALYSIS_NO_MORE_AVAIBLE_WARNING,
-						"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>What-if analysis not avaible", null,
+						"<html><font color=\"white\">--</font><i>Warning</i>" +
+						"<font color=\"white\">--------</font>What-if analysis not avaible", null,
 						null));
 			}
 			if (mc.isThereForkWithoutJoinWarnings()) {
 				problems
 						.add(new ProblemElement(ModelChecker.WARNING_PROBLEM, ModelChecker.FORK_WITHOUT_JOIN_WARNING,
-								"<html><font color=\"white\">--</font><i>Warning</i><font color=\"white\">--------</font>Fork found but no join",
+								"<html><font color=\"white\">--</font><i>Warning</i>" +
+								"<font color=\"white\">--------</font>Fork found but no join",
 								null, null));
+			}
+			if (mc.isSinkPerfIndicesWithClosedClassError()){
+				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.SINK_PERF_WITH_CLOSED_CLASS_ERROR,
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>" +
+						"Response Time per Sink and Throughput per sink should not be used for closed class.",
+						null, null));
 			}
 		}
 	}

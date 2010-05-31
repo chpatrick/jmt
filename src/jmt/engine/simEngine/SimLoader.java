@@ -46,7 +46,6 @@ import jmt.engine.dataAnalysis.InverseMeasure;
 import jmt.engine.dataAnalysis.Measure;
 import jmt.engine.dataAnalysis.SimParameters;
 import jmt.engine.random.Distribution;
-
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -76,6 +75,13 @@ import org.xml.sax.SAXNotSupportedException;
  * Desc: The code to include the changes for label changes from 
  *       1. Customer Number to Number of Customers
  *       2. System Customer Number to System Number of Customers.
+ *       
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class. 
  */
 public class SimLoader {
 
@@ -414,6 +420,7 @@ public class SimLoader {
 						//Added System power as an Inverse Measure.
 						|| measureType == SimConstants.SYSTEM_POWER
 				//Added by ASHANKA STOP
+						|| measureType == SimConstants.THROUGHPUT_PER_SINK
 				) {
 					//throughput measure
 					InverseMeasure invMeasure = new InverseMeasure(e.getAttribute("name"), Double.parseDouble(e.getAttribute("alpha")), Double
@@ -1019,6 +1026,12 @@ public class SimLoader {
 			return SimConstants.SYSTEM_POWER;
 		}
 		//Added by ASHANKA STOP
+		else if (measure.equalsIgnoreCase("Response Time per Sink")) {
+			return SimConstants.RESPONSE_TIME_PER_SINK;
+		}
+		else if (measure.equalsIgnoreCase("Throughput per Sink")) {
+			return SimConstants.THROUGHPUT_PER_SINK;
+		}
 		//default value
 		return SimConstants.UTILIZATION;
 	}

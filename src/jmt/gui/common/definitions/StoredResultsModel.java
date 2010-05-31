@@ -32,6 +32,13 @@ import jmt.framework.gui.graph.MeasureValue;
  * @author Bertoli Marco
  *         Date: 3-ott-2005
  *         Time: 14.10.50
+ *         
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class.
  */
 public class StoredResultsModel implements MeasureDefinition {
 	protected Vector<Measure> measures = new Vector<Measure>();
@@ -48,6 +55,10 @@ public class StoredResultsModel implements MeasureDefinition {
 	private Vector<Integer> systemPower = new Vector<Integer>();
 
 	//Added by ASHANKA STOP
+	
+	private Vector<Integer> responseTimePerSink = new Vector<Integer>();
+	private Vector<Integer> throughputTimePerSink = new Vector<Integer>();
+
 
 	public Vector<Measure> getMeasures() {
 		return measures;
@@ -316,6 +327,22 @@ public class StoredResultsModel implements MeasureDefinition {
 	}
 
 	//Added by ASHANKA STOP
+	
+	public int[] getResponsetimePerSinkMeasures() {
+		int[] tmp = new int[responseTimePerSink.size()];
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = responseTimePerSink.get(i).intValue();
+		}
+		return tmp;
+	}
+
+	public int[] getThroughputPerSinkMeasures() {
+		int[] tmp = new int[throughputTimePerSink.size()];
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = throughputTimePerSink.get(i).intValue();
+		}
+		return tmp;
+	}
 
 	/**
 	 * Returns if simulation has finished, so results are fixed
@@ -402,6 +429,13 @@ public class StoredResultsModel implements MeasureDefinition {
 				systemPower.add(new Integer(measures.size() - 1));
 				break;
 			//Added by ASHANKA STOP
+				
+			case SimConstants.RESPONSE_TIME_PER_SINK:
+				responseTimePerSink.add(new Integer(measures.size() - 1));
+				break;
+			case SimConstants.THROUGHPUT_PER_SINK:
+				throughputTimePerSink.add(new Integer(measures.size() - 1));
+				break;
 		}
 	}
 

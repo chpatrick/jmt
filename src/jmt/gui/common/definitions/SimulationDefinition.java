@@ -45,6 +45,13 @@ import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
  * Desc: The code to include the changes for label changes from 
  *       1. Customer Number to Number of Customers
  *       2. System Customer Number to System Number of Customers.
+ *       
+ * Modified by Ashanka (May 2010): 
+ * Project: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class. 
  */
 public interface SimulationDefinition {
 
@@ -74,6 +81,9 @@ public interface SimulationDefinition {
 	//Added as a part of process 
 	//of including the system power performance index to JSIM
 	public static final String MEASURE_S_SP = "System Power";
+	
+	public static final String MEASURE_X_PER_SINK = "Throughput per Sink";
+	public static final String MEASURE_R_PER_SINK = "Response Time per Sink";
 
 	//Added by ASHANKA STOP
 
@@ -177,6 +187,15 @@ public interface SimulationDefinition {
 	* @return true if measure is global
 	*/
 	public boolean isGlobalMeasure(Object key);
+	
+	/**
+	 * Tells if the Measure is being calculated keeping the Sink as reference,
+	 * Is used for the performance indices of
+	 * ResponseTimePerSink and ThroughputPerSink.
+	 * @param key
+	 * @return
+	 */
+	public boolean isSinkMeasure(Object key);
 
 	/*------------------------------------------------------------------------------------------
 	------------------------------ Methods for preloading definition ---------------------------

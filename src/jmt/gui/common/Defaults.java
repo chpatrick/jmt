@@ -95,7 +95,7 @@ public class Defaults implements CommonConstants {
 		def.setProperty("simulationSeed", "23000");
 		def.setProperty("maxSimulationSamples", "1000000");
 		def.setProperty("simulationMaxDuration", "-1");
-		def.setProperty("simulationPolling", "2");
+		def.setProperty("simulationPolling", "1");
 		// Francesco D'Aquino
 		def.setProperty("isWithAnimation", "true");
 		def.setProperty("representableClasses", "10");

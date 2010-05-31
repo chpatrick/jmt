@@ -54,6 +54,17 @@ import jmt.gui.exact.table.ExactCellEditor;
  * Time: 16.08.15
  * Modified by Bertoli Marco 29/09/2005, 7-oct-2005
  *                           9-jan-2006  --> ComboBoxCellEditor
+ *                           
+ * Modified by Ashanka (May 2010):
+ * Description: Resized some column's width and edited the column headings.
+ * 
+ * Modified by Ashanka (May 2010): 
+ * Patch: Multi-Sink Perf. Index 
+ * Description: Added new Performance index for the capturing the 
+ * 				1. global response time (ResponseTime per Sink)
+ *              2. global throughput (Throughput per Sink)
+ *              each sink per class. 
+ * 
  */
 public class MeasurePanel extends WizardPanel implements CommonConstants {
 
@@ -97,7 +108,9 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 			SimulationDefinition.MEASURE_S_CN,
 			//Added by ASHANKA START
 			//Adds system power index to the performance index combo box in the JSIM panel
-			SimulationDefinition.MEASURE_S_SP
+			SimulationDefinition.MEASURE_S_SP,
+			SimulationDefinition.MEASURE_X_PER_SINK,
+			SimulationDefinition.MEASURE_R_PER_SINK
 	//Added by ASHANKA STOP
 	};
 
@@ -262,6 +275,8 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 5) {
 				return new ButtonCellEditor(deleteButton);
+			} else if (column == 2 && simData.isSinkMeasure(simData.getMeasureKeys().get(row))) {
+				return stationsCombos.getEditor(stationData.getStationKeysSink());
 			} else if (column == 2) {
 				return stationsCombos.getEditor(stationData.getStationRegionKeysNoSourceSink());
 			} else if (column == 1) {
@@ -292,10 +307,10 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
-		private String[] columnNames = new String[] { "Performance Index", "Class", "Station/Region", "Confidence Interval(0-1)",
-				"Max Relative Error(0-1)", "" };
+		private String[] columnNames = new String[] { "Performance Index", "Class", "Station/Region", "Conf.Int.",
+				"Max Rel.Err.", "" };
 		private Class[] columnClasses = new Class[] { String.class, String.class, String.class, Double.class, Double.class, Object.class };
-		public int[] columnWidths = new int[] { 120, 80, 80, 80, 80, 20 };
+		public int[] columnWidths = new int[] { 120, 80, 120, 60, 60, 20 };
 
 		public int getRowCount() {
 			return simData.getMeasureKeys().size();
