@@ -784,7 +784,7 @@ public class StatsPanel extends WizardPanel implements CommonConstants, JWATCons
 		transfPanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.LOWERED), TRANSF_BORDER_TEXT + "none"));
 		createComboTransf();
 		JPanel northPanel = new JPanel(new GridLayout(2, 2, 5, 50));
-		JLabel tr = new JLabel("Transformations:");
+		JLabel tr = new JLabel("Available transformations:");
 		tr.setHorizontalAlignment(JLabel.RIGHT);
 		northPanel.add(tr);
 		northPanel.add(transfs);
@@ -825,7 +825,7 @@ public class StatsPanel extends WizardPanel implements CommonConstants, JWATCons
 		transfs.setToolTipText(TRANSF_COMBO);
 		transfs.addItem("Logarithmic");
 		transfs.addItem("Mix - Max");
-		transfs.addItem("Standard Deviation");
+		transfs.addItem("z-score (Standard Deviation)");
 	}
 
 	private JScrollPane getScrollPaneTable() {

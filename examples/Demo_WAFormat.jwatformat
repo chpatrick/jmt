@@ -1,32 +1,16 @@
-4
-IP
-1
-1
-IP Address
-
-\d+.\d+.\d+.\d+
-
-
-Timestamp
 2
-1
-Timestamp of the visit as seen by the web server
-
-\d\d/\w\w\w/\d\d\d\d:\d\d:\d\d:\d\d
-
-
-Access request
-1
-1
-The request made
-"
-.+
-
-
-Bytes transferred
+Execution time(ms)
 0
 1
-The number of bytes transferred
+Execution time on the CPU
+
+([+-])?\d+([.]\d+)?
+
+
+KB transferred
+0
+1
+Number of KB transferred during the request
 
 ([+-])?\d+([.]\d+)?
 

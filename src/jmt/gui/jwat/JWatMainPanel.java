@@ -44,6 +44,7 @@ public class JWatMainPanel extends WizardPanel {
 	private String IMG_TRAFFIC_ICON = "TrafficIcon";
 	private String IMG_SAVE_ICON = "Open";
 	private String IMG_PATH_ICON = "PathIcon";
+	private String IMG_FITTING_ICON = "FittingIcon";
 	private String IMG_WL_ICON = "WorkLoadIcon";
 	//Tool buttons size
 	private static final int BUTTONSIZE = 25;
@@ -52,17 +53,18 @@ public class JWatMainPanel extends WizardPanel {
 	private HoverHelp help;
 	private MainJwatWizard parent = null;
 
-	protected AbstractAction startPath = new AbstractAction("") {
+	protected AbstractAction startFitting = new AbstractAction("") {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
 		{
-			putValue(Action.SHORT_DESCRIPTION, "Path analyzer");
-			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage(IMG_PATH_ICON, new Dimension(BUTTONSIZE, BUTTONSIZE)));
+			putValue(Action.SHORT_DESCRIPTION, "Fitting");
+			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage(IMG_FITTING_ICON, new Dimension(BUTTONSIZE, BUTTONSIZE)));
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			parent.setFittingEnv("load");
 		}
 	};
 	protected AbstractAction startWLA = new AbstractAction("") {
@@ -93,13 +95,13 @@ public class JWatMainPanel extends WizardPanel {
 			parent.setTrafficEnv();
 		}
 	};
-	protected AbstractAction startLoad = new AbstractAction("") {
+	protected AbstractAction startLoadWorkload = new AbstractAction("") {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
 		{
-			putValue(Action.SHORT_DESCRIPTION, "Open a demo file");
+			putValue(Action.SHORT_DESCRIPTION, "Open a demo file for Workload Analysis");
 			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage(IMG_SAVE_ICON, new Dimension(BUTTONSIZE + 10, BUTTONSIZE + 10)));
 		}
 
@@ -107,19 +109,22 @@ public class JWatMainPanel extends WizardPanel {
 			parent.setWorkloadEnv("demo");
 		}
 	};
-	protected AbstractAction empty = new AbstractAction() {
+	protected AbstractAction startLoadFitting = new AbstractAction() {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
 		{
+			putValue(Action.SHORT_DESCRIPTION, "Open a demo file for fitting");
+			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage(IMG_SAVE_ICON, new Dimension(BUTTONSIZE + 10, BUTTONSIZE + 10)));
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			parent.setFittingEnv("demo");
 		}
 	};
 	//Arrays of abstract actions for tool buttons
-	private AbstractAction[] buttonAction = { startPath, startWLA, startTraffic, empty, startLoad };
+	private AbstractAction[] buttonAction = { startWLA, startFitting,  startTraffic, startLoadWorkload, startLoadFitting  };
 
 	/**
 	 * Helper method used to create a button inside a JPanel
@@ -133,12 +138,12 @@ public class JWatMainPanel extends WizardPanel {
 		button.setVerticalTextPosition(SwingConstants.BOTTOM);
 		button.setPreferredSize(new Dimension((int) (BUTTONSIZE * 3.5), (BUTTONSIZE * 2)));
 		button.addMouseListener(rollover);
-		if (action == buttonAction[3]) {
-			button.setVisible(false);
-		}
-		if (action == buttonAction[0]) {
-			button.setEnabled(false);
-		}
+		//if (action == buttonAction[4]) {
+		//	button.setVisible(false);
+		//}
+		//if (action == buttonAction[0]) {
+		//	button.setEnabled(false);
+		//}
 		//if(action == buttonAction[2]) button.setEnabled(false);
 		//if(action == buttonAction[4]) button.setEnabled(false);
 		panel.add(button);

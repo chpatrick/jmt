@@ -32,6 +32,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 import jmt.engine.jwat.JwatSession;
 import jmt.engine.jwat.ProgressStatusListener;
+import jmt.engine.jwat.fitting.FittingSession;
 import jmt.engine.jwat.input.EventFinishAbort;
 import jmt.engine.jwat.input.EventSessionLoaded;
 import jmt.engine.jwat.input.EventStatus;
@@ -43,6 +44,8 @@ import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.panels.AboutDialogFactory;
 import jmt.gui.common.resources.JMTImageLoader;
+import jmt.gui.jwat.fitting.panels.FittingPanel;
+import jmt.gui.jwat.fitting.panels.LoadDemoFittingPanel;
 import jmt.gui.jwat.trafficAnalysis.panels.EpochPanel;
 import jmt.gui.jwat.trafficAnalysis.panels.GraphArrivalPanel;
 import jmt.gui.jwat.trafficAnalysis.panels.GraphPanel;
@@ -64,6 +67,7 @@ public class MainJwatWizard extends JWatWizard {
 	private static final String TITLE = "jWAT";
 	private static final String WORK_LOAD_TITLE = "Workload Analysis";
 	private static final String BURSTINESS_TITLE = "Traffic Analysis  - Burstiness";
+	private static final String FITTING_TITLE = "Fitting Workload Data";
 	private JPanel menus = null;
 	private JMenuBar mMenuBar = null;
 
@@ -126,6 +130,38 @@ public class MainJwatWizard extends JWatWizard {
 		mainPanel = new JWatMainPanel(this);
 		this.addPanel(mainPanel);
 	}
+	
+	public void setFittingEnv(String mode) {
+		this.setTitle(TITLE + " - " + FITTING_TITLE);
+		session = new FittingSession();
+		
+		//Creates and adds all necessary panels to jWAT main screen
+		WizardPanel p;
+		
+		if (mode.equals("load")) {
+			p = new jmt.gui.jwat.fitting.panels.InputPanel(this);
+		} else {
+			p = new LoadDemoFittingPanel(this);
+		}
+		
+		JWatPanels.add(p);
+		this.addPanel(p);
+		
+		p = new FittingPanel(this,FittingPanel.PARETO);
+		JWatPanels.add(p);
+		this.addPanel(p);
+		
+		p = new FittingPanel(this,FittingPanel.EXPO);
+		JWatPanels.add(p);
+		this.addPanel(p);
+		
+		getFittingToolbar();
+		getFittingMenubar();
+		
+		this.setEnableButton("Solve", false);
+		//Shows next panel, the first of traffic analysis wizard
+		showNextPanel();
+	}
 
 	// Set correct enviornement for traffic analysis
 	public void setTrafficEnv() {
@@ -155,7 +191,7 @@ public class MainJwatWizard extends JWatWizard {
 		//Sets menu and tool bars
 		getTrafficToolbar();
 		getTrafficMenubar();
-		//Disables Saolve button 
+		//Disables Saolve button
 		this.setEnableButton("Solve", false);
 		//Shows next panel, the first of traffic analysis wizard
 		showNextPanel();
@@ -483,6 +519,74 @@ public class MainJwatWizard extends JWatWizard {
 		public void actionPerformed(ActionEvent e) {
 		}
 	};
+	
+	/**
+	 * @return the toolbar for the jaba wizard. Shamelessly uses icon from the main jmt frame
+	 */
+	protected void getFittingToolbar() {
+		JToolBar tb = new JToolBar();
+		tb.setRollover(true);
+		tb.setOrientation(SwingConstants.HORIZONTAL);
+		tb.setFloatable(false);
+
+		Action[] actions = { FI_FILE_NEW, null, FI_HELP };
+		//Action[] actions = {FILE_NEW,null, ACTION_FINISH,null, HELP};
+		//String[] icons = {"New","Sim", "Help"};
+		//String[] htext = {"Creates a new model","Solves the current model", "Show help"};
+		String[] icons = { "New", "Help" };
+		String[] htext = { "Creates a new model", "Show help" };
+
+		JButton button;
+		tb.setBorderPainted(true);
+
+		for (int i = 0, j = 0; i < actions.length; i++, j++) {
+			if (actions[i] == null) {
+				j--;
+				tb.addSeparator(new Dimension(20, 2));
+			} else {
+				button = new JButton(actions[i]);
+				button.setText("");
+				button.setIcon(JMTImageLoader.loadImage(icons[j]));
+				button.setRolloverIcon(JMTImageLoader.loadImage(icons[j] + "RO"));
+				button.setPressedIcon(JMTImageLoader.loadImage(icons[j] + "P"));
+				button.setFocusPainted(false);
+				button.setContentAreaFilled(false);
+				button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+				tb.add(button);
+				help.addHelp(button, htext[j]);
+			}
+		}
+		setToolBar(tb);
+		
+	}
+
+	private void getFittingMenubar() {
+
+		JMenuBar jmb = new JMenuBar();
+
+		/*JMenuItem[][] menuItems = {{new JMenuItem(FILE_NEW),null, new JMenuItem(FILE_EXIT)},
+		                           {new JMenuItem(ACTION_SOLVE),
+		                            null, new JMenuItem(ACTION_NEXT), new JMenuItem(ACTION_PREV)},
+		                           {new JMenuItem(HELP), null, new JMenuItem(ABOUT)} };*/
+		JMenuItem[][] menuItems = { { new JMenuItem(FI_FILE_NEW), null, new JMenuItem(FI_FILE_EXIT) },
+				{ new JMenuItem(FI_HELP), null, new JMenuItem(FI_ABOUT) } };
+
+		String[] menuTitles = { "File", "Help" };
+		char[] chars = { 'F', 'e' };
+		for (int i = 0; i < menuItems.length; i++) {
+			JMenu menu = new JMenu(menuTitles[i]);
+			menu.setMnemonic(chars[i]);
+			for (int j = 0; j < menuItems[i].length; j++) {
+				if (menuItems[i][j] == null) {
+					menu.addSeparator();
+				} else {
+					menu.add(menuItems[i][j]);
+				}
+			}
+			jmb.add(menu);
+		}
+		setMenuBar(jmb);
+	}
 
 	/**
 	 * @return the toolbar for the exact wizard. Shamelessly uses icon from the main jmt frame
@@ -652,8 +756,41 @@ public class MainJwatWizard extends JWatWizard {
 			trafficNewModel();
 		}
 	};
+	
+	private AbstractAction FI_FILE_NEW = new AbstractAction("New...") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		{
+			putValue(Action.SHORT_DESCRIPTION, "Create New Model");
+			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage("New"));
+			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
+			putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_N));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			fittingNewModel();
+		}
+	};
 
 	private AbstractAction TR_FILE_EXIT = new AbstractAction("Exit") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		{
+			putValue(Action.SHORT_DESCRIPTION, "Exits Application");
+			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
+			putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_Q));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			cancel();
+		}
+	};
+	
+	private AbstractAction FI_FILE_EXIT = new AbstractAction("Exit") {
 		/**
 		 * 
 		 */
@@ -685,6 +822,23 @@ public class MainJwatWizard extends JWatWizard {
 			showHelp(e);
 		}
 	};
+	
+	private AbstractAction FI_HELP = new AbstractAction("Fitting help") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+		{
+			putValue(Action.SHORT_DESCRIPTION, "Show Fitting help");
+			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage("Help"));
+			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+			putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_H));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			showHelp(e);
+		}
+	};
 
 	private AbstractAction TR_ABOUT = new AbstractAction("About Burstiness...") {
 		/**
@@ -703,6 +857,25 @@ public class MainJwatWizard extends JWatWizard {
 			trafficShowAbout();
 		}
 	};
+	
+	private AbstractAction FI_ABOUT = new AbstractAction("About Fitting...") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		{
+			putValue(Action.SHORT_DESCRIPTION, "About Fitting");
+			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage("helpIcon"));
+			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.ALT_MASK));
+			putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_H));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			trafficShowAbout();
+		}
+	};
+	
 	private AbstractAction TR_ACTION_SOLVE = new AbstractAction("Solve") {
 		/**
 		 * 
@@ -730,6 +903,19 @@ public class MainJwatWizard extends JWatWizard {
 			tabbedPane.setSelectedIndex(1);
 			try {
 				((jmt.gui.jwat.trafficAnalysis.panels.InputPanel) tabbedPane.getComponentAt(1)).resetOnNew();
+			} catch (ClassCastException cce) {
+				return;
+			}
+		}
+	}
+	
+	private void fittingNewModel() {
+		if (JOptionPane.showConfirmDialog(MainJwatWizard.this, "This operation will reset data. Continue?", "Warning", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+			//Reset model and set first panel
+			session.resetSession();
+			tabbedPane.setSelectedIndex(1);
+			try {
+				((jmt.gui.jwat.fitting.panels.InputPanel) tabbedPane.getComponentAt(1)).resetOnNew();
 			} catch (ClassCastException cce) {
 				return;
 			}

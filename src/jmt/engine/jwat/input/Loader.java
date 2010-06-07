@@ -85,13 +85,17 @@ public class Loader implements JWATConstants {
 
 	public static Parameter loadParameter(String demoName) throws FileNotFoundException, IOException {
 		FormatFileReader form = new FormatFileReader(absolutePath + "examples/" + demoName + "Format.jwatformat");
-		System.out.println(absolutePath + "examples/" + demoName + "Format.jwatformat");
+	
+		//FormatFileReader form = new FormatFileReader("D:/" + demoName + "Format.jwatformat");
+		//System.out.println(absolutePath + "examples/" + demoName + "Format.jwatformat");
 		boolean[] varSelected = new boolean[form.getNumVars()];
 		String[] varName = new String[form.getNumVars()];
 		String[] regularExp = new String[form.getNumVars()];
 		String[] tokenExp = new String[form.getNumVars()];
 		int[] varType = new int[form.getNumVars()];
+		
 		int options[] = new int[] { Loader.calcNumOfObs(absolutePath + "examples/" + demoName + "Data.jwat") };
+		//int options[] = new int[] { Loader.calcNumOfObs("D:/" + demoName + "Data.jwat") };
 
 		for (int i = 0; i < form.getNumVars(); i++) {
 			varSelected[i] = true;

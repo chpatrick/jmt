@@ -40,6 +40,7 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.ToolTipManager;
 
 import jmt.common.GlobalSettings;
 import jmt.framework.gui.components.JMTFrame;
@@ -210,6 +211,9 @@ public class GraphStartScreen extends JMTFrame {
 	 * Creates all gui related stuff
 	 */
 	private void initGUI() {
+		//set tooltip delay for whole project
+		ToolTipManager.sharedInstance().setInitialDelay(0);
+		ToolTipManager.sharedInstance().setDismissDelay(100000);
 		// Sets default title, close operation and dimensions
 		this.setTitle("JMT - Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION));
 		this.setIconImage(JMTImageLoader.loadImage(IMG_SUITEICON).getImage());

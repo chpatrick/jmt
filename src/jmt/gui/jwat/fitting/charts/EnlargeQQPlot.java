@@ -1,7 +1,23 @@
-package jmt.gui.jwat.workloadAnalysis.chart;
+/**    
+ * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+ 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+package jmt.gui.jwat.fitting.charts;
 
-//TODO: aggiungere popupmenu, salvataggio grafico
-
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
@@ -21,28 +37,39 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
+import jmt.engine.jwat.VariableNumber;
+import jmt.engine.jwat.fitting.FittingAlgorithm;
+import jmt.engine.jwat.fitting.ParetoFitting;
+import jmt.engine.jwat.fitting.utils.ModelFitting;
 import jmt.engine.jwat.workloadAnalysis.utils.ChangeVariableListener;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
 import jmt.gui.jwat.JWATConstants;
+import jmt.gui.jwat.workloadAnalysis.chart.EnlargePlotDistGraph.PlotImagesFileChooser;
+import jmt.gui.jwat.workloadAnalysis.chart.EnlargePlotDistGraph.PlotImagesFileFilter;
 import ptolemy.plot.Plot;
 
-public class EnlargePlotDistGraph extends Plot implements MouseListener {
+public class EnlargeQQPlot extends Plot implements MouseListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	// Zoom factor for zoom-in / zoom-out
 	public static final double PLOT_ZOOM_FACTOR = 0.5;
-	private ModelWorkloadAnalysis model = null;
-	private int var;
+	private ModelFitting model = null;
+	private FittingAlgorithm engfitting;
+	private int distribution;
+
 	private PlotPopup pop = new PlotPopup();
 
-	/**
-	 * @param var
-	 */
-	public EnlargePlotDistGraph(ModelWorkloadAnalysis model, int var) {
-		this.var = var;
+	public EnlargeQQPlot(ModelFitting model, FittingAlgorithm engfitting, int distr) {
 		this.model = model;
+		this.engfitting = engfitting;
+		this.distribution = distr;
+		this.setConnected(false, 1);
+		this.setMarksStyle("various", 1);
+		this.setConnected(true, 2);
+		this.setMarksStyle("point", 2);
+		this.setColors(new Color[] { Color.RED, Color.BLUE });
 		this.model.addOnChangeVariableValue(new ChangeVariableListener() {
 			public void onChangeVariableValues() {
 				drawGraph();
@@ -53,29 +80,50 @@ public class EnlargePlotDistGraph extends Plot implements MouseListener {
 	}
 
 	private void drawGraph() {
-		this.repaint();
 		this.clear(true);
-		int[] values = this.model.getMatrix().getVariables()[var].getInterval1000();
-		double range = this.model.getMatrix().getVariables()[var].getUniStats().getRangeValue();
-		double min = this.model.getMatrix().getVariables()[var].getUniStats().getMinValue();
-		setXRange(this.model.getMatrix().getVariables()[var].getValue(0), this.model.getMatrix().getVariables()[var].getValue(this.model.getMatrix()
-				.getVariables()[var].Size() - 1));
-		if (this.model.getMatrix().getVariables()[var].getType() == JWATConstants.DATE) {
-			SimpleDateFormat f = new SimpleDateFormat("dd.MM.yy HH:mm:ss");
-			addXTick(f.format(new Date((long) (min + range / 10))), min + range / 10);
-			addXTick(f.format(new Date((long) (min + range / 2))), min + range / 2);
-			addXTick(f.format(new Date((long) (min + range))), min + range);
-		} else {
-			setXLabel("Variable " + this.model.getMatrix().getVariables()[var].getName());
+		this.setConnected(false, 1);
+		this.setMarksStyle("various", 1);
+		this.setConnected(true, 2);
+		this.setMarksStyle("point", 2);
+		this.setColors(new Color[] { Color.RED, Color.BLUE });
+
+		double[] x = model.getListObservations();
+		double[] y = engfitting.generateQQPlot();
+		double xRange = x[x.length-1] / x.length;
+		//double yRange = (y[y.length-1]-y[0]) / x.length;
+		
+		setXRange(0, Math.max(x[x.length-1],y[y.length-1])+1);
+		setYRange(0, Math.max(x[x.length-1],y[y.length-1])+1);
+		
+		for (int i = 0; i < x.length; i++) {
+			//System.out.println("x[i]: " + x[i] + " y[i]: " + y[i] + " xRange * i: " + xRange * i);
+			addPoint(1, x[i], y[i], true); 
+			addPoint(2, xRange * i, xRange * i, true);
 		}
-		setYLabel("Frequencies");
-		for (int i = 1; i < values.length; i++) {
-			addPoint(1, min + (range * i / 1000), values[i] - values[i - 1], true);
-		}
+		addPoint(2, xRange * x.length, xRange * x.length, true);
+
 		fillPlot();
 	}
 
-	protected class PlotPopup extends JPopupMenu {
+	public void mouseClicked(MouseEvent e) {
+		if (e.getButton() == MouseEvent.BUTTON3) {
+			pop.show(EnlargeQQPlot.this, e.getX(), e.getY());
+		}
+	}
+
+	public void mousePressed(MouseEvent e) {
+	}
+
+	public void mouseReleased(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent e) {
+	}
+
+	public void mouseExited(MouseEvent e) {
+	}
+
+	public class PlotPopup extends JPopupMenu {
 		/**
 		 * 
 		 */
@@ -147,7 +195,7 @@ public class EnlargePlotDistGraph extends Plot implements MouseListener {
 					}
 					setXRange(newXMin, newXMax);
 					setYRange(newYMin, newYMax);
-					EnlargePlotDistGraph.this.repaint();
+					EnlargeQQPlot.this.repaint();
 				}
 			});
 
@@ -187,7 +235,7 @@ public class EnlargePlotDistGraph extends Plot implements MouseListener {
 					}
 					setXRange(newXMin, newXMax);
 					setYRange(newYMin, newYMax);
-					EnlargePlotDistGraph.this.repaint();
+					EnlargeQQPlot.this.repaint();
 				}
 			});
 
@@ -203,11 +251,11 @@ public class EnlargePlotDistGraph extends Plot implements MouseListener {
 					PlotImagesFileChooser fileChooser = new PlotImagesFileChooser(PNGfilter);
 					fileChooser.setFileFilter(PNGfilter);
 					fileChooser.addChoosableFileFilter(EPSfilter);
-					int r = fileChooser.showSaveDialog(EnlargePlotDistGraph.this);
+					int r = fileChooser.showSaveDialog(EnlargeQQPlot.this);
 					if (r == JFileChooser.APPROVE_OPTION) {
 						File file = fileChooser.getSelectedFile();
 						if (fileChooser.getFileFilter().equals(EPSfilter)) {
-							EnlargePlotDistGraph plot = EnlargePlotDistGraph.this;
+							EnlargeQQPlot plot = EnlargeQQPlot.this;
 							try {
 								FileOutputStream fileStream = new FileOutputStream(file);
 								plot.export(fileStream);
@@ -218,7 +266,7 @@ public class EnlargePlotDistGraph extends Plot implements MouseListener {
 								JOptionPane.showMessageDialog(fileChooser, "I/O exception", "JMT - Error", JOptionPane.ERROR_MESSAGE);
 							}
 						} else {
-							EnlargePlotDistGraph plot = EnlargePlotDistGraph.this;
+							EnlargeQQPlot plot = EnlargeQQPlot.this;
 							BufferedImage image = plot.exportImage();
 							try {
 								BufferedImage originalImage = convertType(image, BufferedImage.TYPE_INT_RGB);
@@ -243,122 +291,6 @@ public class EnlargePlotDistGraph extends Plot implements MouseListener {
 			g.drawRenderedImage(src, null);
 			g.dispose();
 			return tgt;
-		}
-	}
-
-	public void mouseClicked(MouseEvent e) {
-		if (e.getButton() == MouseEvent.BUTTON3) {
-			pop.show(EnlargePlotDistGraph.this, e.getX(), e.getY());
-		}
-	}
-
-	public void mousePressed(MouseEvent e) {
-
-	}
-
-	public void mouseReleased(MouseEvent e) {
-
-	}
-
-	public void mouseEntered(MouseEvent e) {
-
-	}
-
-	public void mouseExited(MouseEvent e) {
-
-	}
-
-	/**
-	 * Custom file chooser class
-	 */
-	public static class PlotImagesFileChooser extends JFileChooser {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		protected PlotImagesFileFilter defaultFilter;
-
-		/**
-		 * Creates a File chooser in the appropriate directory user deafault.
-		 * @param defaultFilter default file filter
-		 */
-		public PlotImagesFileChooser(PlotImagesFileFilter defaultFilter) {
-			super(new File(System.getProperty("user.dir")));
-			this.defaultFilter = defaultFilter;
-		}
-
-		/**
-		 * Overrides default method to provide a warning if saving over an existing file
-		 */
-		@Override
-		public void approveSelection() {
-			// Gets the choosed file name
-			String name = getSelectedFile().getName();
-			String parent = getSelectedFile().getParent();
-			if (getDialogType() == OPEN_DIALOG) {
-				super.approveSelection();
-			}
-			if (getDialogType() == SAVE_DIALOG) {
-				PlotImagesFileFilter used = ((PlotImagesFileFilter) this.getFileFilter());
-				if (!name.toLowerCase().endsWith(used.getExtension())) {
-					name = name + used.getExtension();
-					setSelectedFile(new File(parent, name));
-				}
-				if (getSelectedFile().exists()) {
-					int resultValue = JOptionPane.showConfirmDialog(this, "<html>File <font color=#0000ff>" + name
-							+ "</font> already exists in this folder.<br>Do you want to replace it?</html>", "JMT - Warning",
-							JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-					if (resultValue == JOptionPane.OK_OPTION) {
-						getSelectedFile().delete();
-						super.approveSelection();
-					}
-				} else {
-					super.approveSelection();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Inner class used to create simple file filters with only extension check
-	 */
-	public static class PlotImagesFileFilter extends javax.swing.filechooser.FileFilter {
-		private String extension, description;
-
-		/**
-		 * Creates a new filefilter with specified extension and description
-		 * @param extension extension of this filter (for example ".jmt")
-		 * @param description description of this filter
-		 */
-		public PlotImagesFileFilter(String extension, String description) {
-			this.extension = extension;
-			this.description = description;
-		}
-
-		/**
-		 * Whether the given file is accepted by this filter.
-		 */
-		@Override
-		public boolean accept(File f) {
-			String name = f.getName().toLowerCase();
-			return name.endsWith(extension) || f.isDirectory();
-		}
-
-		/**
-		 * The description of this filter
-		 * @see javax.swing.filechooser.FileView#getName
-		 */
-		@Override
-		public String getDescription() {
-			return description + " (*" + extension + ")";
-		}
-
-		/**
-		 * Gets extension of this filter
-		 * @return extension of this filter
-		 */
-		public String getExtension() {
-			return extension;
 		}
 	}
 }

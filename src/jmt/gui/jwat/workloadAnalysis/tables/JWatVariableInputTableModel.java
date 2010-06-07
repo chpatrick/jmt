@@ -332,4 +332,20 @@ public class JWatVariableInputTableModel extends AbstractTableModel {
 		}
 		return true;
 	}
+	
+	public boolean checkFittingRequirements() {
+		int count = 0;
+		for (int i = 0; i < names.size(); i++) {
+			if (((Boolean) selected.get(i)).booleanValue()) {
+				if (!types.get(i).equals(JWatVariableInputTable.VarTypes[0]) || count > 0) {
+					return false;
+				}
+				count++;
+			}
+		}
+		if (count == 0) {
+			return false;
+		}
+		return true;
+	}
 }
