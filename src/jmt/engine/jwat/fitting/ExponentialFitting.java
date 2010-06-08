@@ -1054,10 +1054,7 @@ public class ExponentialFitting implements FittingAlgorithm {
 			denw += Math.pow(el - mean,2);
 		}
 		
-		System.out.println("numw:"+numw+" denw:"+denw);
-		
 		wn = ((double) n/(n-1))*((double)numw/denw);
-		System.out.println("wn: "+wn);
 	
 		if(data.length >= 1000) {
 			double sx_limit, dx_limit;
@@ -1070,7 +1067,6 @@ public class ExponentialFitting implements FittingAlgorithm {
 			//System.out.println("mu:"+mu+" sigmasq:"+sigmasq+" an:"+an+" bn:"+bn);
 						
 			fn = ((1/wn) - an - bn*mu)/(bn*Math.sqrt(sigmasq));
-			System.out.println("fn:"+fn);
 			
 			//fixed values for 0.05 significativity
 			//dx_limit = Stat.inverseNormalCDF(0, 1, 1-sign/2);

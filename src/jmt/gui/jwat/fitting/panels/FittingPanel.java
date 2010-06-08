@@ -67,10 +67,8 @@ public class FittingPanel extends WizardPanel {
 				
 		model.addOnSetMatrixObservationListener(new SetMatrixListener() {
 			public void onSetMatrixObservation() {
-				System.out.println("SET");
 				
 				obslist = model.getListObservations();
-				//System.out.println("First obs: "+obslist[0]);
 				
 				if(distribution == EXPO) {
 					engfitting = new ExponentialFitting(obslist, 0.05d);
@@ -138,7 +136,6 @@ public class FittingPanel extends WizardPanel {
 			}
 
 			public void onResetMatrixObservation() {
-				System.out.println("RESET");
 				FittingPanel.this.removeAll();
 			}
 		});
