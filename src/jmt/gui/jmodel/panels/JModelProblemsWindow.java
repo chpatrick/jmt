@@ -76,6 +76,9 @@ import jmt.gui.common.resources.JMTImageLoader;
  * with a closed class because for a closed model as of now in JMT no jobs 
  * are routed to the it. So sink should be choosen only when a open class 
  * is present : isSinkPerfIndicesWithClosedClassError.
+ * 
+ * Modified by Ashanka (June 2010):
+ * Updated the Manage Probabilities. Closed Classes routed to Sink with probability <> 0.0 should show warning to Users.
  */
 public class JModelProblemsWindow extends JDialog {
 	/**
@@ -570,6 +573,22 @@ public class JModelProblemsWindow extends JDialog {
 						"<font color=\"white\">---------</font>" +
 						"Response Time per Sink and Throughput per sink should not be used for closed class.",
 						null, null));
+			}
+			if (mc.isThereSinkProbabilityUpdateWarning()) {
+				problems
+						.add(new ProblemElement(
+								ModelChecker.WARNING_PROBLEM,
+								ModelChecker.SINK_PROBABILITY_UPDATE_WARNING,
+								"<html><font color=\"white\">--</font><i>Warning</i>" +
+								"<font color=\"white\">--------</font>Sink Probability of the Closed Class(s) " +
+								" "+ mc.getClassModel().getsinkProbabilityUpdateClasses() + " " +
+								"of Station(s)" +
+								" " + mc.getStationModel().getsinkProbabilityUpdateStations() + " " +
+								"has been updated to 0.0.",
+								null, null));
+				//Reset after displaying the offending Station and Class names.
+				mc.getClassModel().resetSinkProbabilityUpdateClasses();
+				mc.getStationModel().resetSinkProbabilityUpdateStations();
 			}
 		}
 	}

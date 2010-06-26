@@ -973,7 +973,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 			if (routingStrat.getValues() != null && routingStrat instanceof ProbabilityRouting) {
 				Vector outputs = model.getForwardConnections(stationKey);
 				Map values = routingStrat.getValues();
-				model.normalizeProbabilities(values, outputs);
+				model.normalizeProbabilities(values, outputs, classKey, stationKey);
 				XMLParameter[] empiricalEntries = new XMLParameter[outputs.size()];
 				for (int i = 0; i < empiricalEntries.length; i++) {
 					XMLParameter stationDest = new XMLParameter("stationName", String.class.getName(), null, model.getStationName(outputs.get(i)),

@@ -168,4 +168,8 @@ public interface ClassDefinition {
 	 * @return  the key of the class whose name is <code>className</code>
 	 */
 	public Object getClassByName(String className);
+	
+	public Vector<String> getsinkProbabilityUpdateClasses();
+	
+	public void resetSinkProbabilityUpdateClasses();
 }

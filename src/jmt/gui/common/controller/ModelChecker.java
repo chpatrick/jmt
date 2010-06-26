@@ -62,6 +62,9 @@ import jmt.gui.common.serviceStrategies.LDStrategy;
  * with a closed class as for a closed model till now in JMT no jobs are 
  * routed to the sink and apparently sink is allowed to choose only when a
  * open class is present.
+ * 
+ * Modified by Ashanka (June 2010): 
+ * Added Sink Probability for Closed class update to 0.0 warning message.
  */
 public class ModelChecker implements CommonConstants {
 	private ClassDefinition class_def;
@@ -221,6 +224,8 @@ public class ModelChecker implements CommonConstants {
 	// (only when trying to convert to JMVA)
 	public static int BCMP_NON_STATE_INDEPENDENT_ROUTING_WARNING = 12;
 
+	public static int SINK_PROBABILITY_UPDATE_WARNING = 13;
+	
 	/*
 	//It occours only when trying to switch from JSim or JModel to JMVA, if there is at least
 	//one non exponential distribution
@@ -235,7 +240,7 @@ public class ModelChecker implements CommonConstants {
 
 	private int NUMBER_OF_ERROR_TYPES = 19;
 	private int NUMBER_OF_NORMAL_ERROR_TYPES = 19;
-	private int NUMBER_OF_WARNING_TYPES = 13;
+	private int NUMBER_OF_WARNING_TYPES = 14;
 	private int NUMBER_OF_NORMAL_WARNING_TYPES = 5;
 
 	/**
@@ -348,6 +353,7 @@ public class ModelChecker implements CommonConstants {
 			checkForPreloadingInBlockingRegions();
 			checkForSinkPerfIndicesWithNoSink();
 			checkForSinkPerfIndicesWithClosedClass();
+			checkForSinkProbabilityUpdateWarning();
 		}
 
 	}
@@ -425,6 +431,9 @@ public class ModelChecker implements CommonConstants {
 			if (warnings[i]) {
 				ok = false;
 			}
+		}
+		if(warnings[SINK_PROBABILITY_UPDATE_WARNING]){//Added this seperatly other wise I had to redo the numbering,
+			ok = false;
 		}
 		return ok;
 	}
@@ -2259,5 +2268,16 @@ public class ModelChecker implements CommonConstants {
 				break;
 			}
 		}		
+	}
+	
+	public void checkForSinkProbabilityUpdateWarning(){
+		if(station_def.isSinkProbabilityUpdated()){
+			warnings[SINK_PROBABILITY_UPDATE_WARNING] = true;
+			station_def.setSinkProbabilityUpdatedVar(false);//reset the value.
+		} 
+	}
+	
+	public boolean isThereSinkProbabilityUpdateWarning(){
+		return warnings[SINK_PROBABILITY_UPDATE_WARNING];
 	}
 }

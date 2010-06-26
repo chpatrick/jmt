@@ -294,5 +294,12 @@ public interface StationDefinition {
 	public void setStationQueueStrategy(Object stationKey, String strategy);
 
 	public String getStationQueueStrategy(Object stationKey);
-
+	
+	public boolean isSinkProbabilityUpdated();
+	
+	public void setSinkProbabilityUpdatedVar(boolean param);
+	
+	public Vector<String> getsinkProbabilityUpdateStations();
+	
+	public void resetSinkProbabilityUpdateStations();
 }

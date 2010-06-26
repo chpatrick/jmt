@@ -51,7 +51,10 @@ import jmt.gui.common.routingStrategies.ProbabilityRouting;
  * 				1. global response time (ResponseTime per Sink)
  *              2. global throughput (Throughput per Sink)
  *              each sink per class.
- * Hence added a code to fetch the sinkkeys and if a measure is sink perf measure.             
+ * Hence added a code to fetch the sinkkeys and if a measure is sink perf measure. 
+ * 
+ * Modified by Ashanka (June 2010):
+ * Updated the Manage Probabilities. Closed Classes routed to Sink with probability <> 0.0 should show warning to Users.
  */
 public class CommonModel implements CommonConstants, ClassDefinition, StationDefinition, SimulationDefinition, BlockingRegionDefinition {
 	//key generator
@@ -124,6 +127,9 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	// ------------------ Francesco D'Aquino ----------------------
 	private ParametricAnalysisDefinition parametricAnalysisModel;
 	private boolean parametricAnalysisEnabled;
+	private boolean sinkProbabilityUpdate;//Probability Routing Error.
+	private Vector<String> sinkProbabilityUpdateClasses = new Vector<String>()
+						, sinkProbabilityUpdateStations = new Vector<String>();
 
 	// -------------- end Francesco D'Aquino ----------------------
 
@@ -1166,6 +1172,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			Object thisStation = stations.get(i);
 			//if it isn't a sink...
 			if (!getStationType(thisStation).equals(CommonConstants.STATION_TYPE_SINK)) {
+				//Aboce :-^All stations have router except Sink
 				//for each class...
 				for (int j = 0; j < classes.size(); j++) {
 					Object thisClass = classes.get(j);
@@ -1175,7 +1182,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 						Vector<Object> outputKeys = getForwardConnections(thisStation);
 						ProbabilityRouting pr = (ProbabilityRouting) getRoutingStrategy(thisStation, thisClass);
 						Map<Object, Double> values = pr.getValues();
-						normalizeProbabilities(values, outputKeys);
+						normalizeProbabilities(values, outputKeys, thisClass, thisStation);
 					}
 				}
 			}
@@ -1183,39 +1190,77 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	}
 
 	// NB: cut from jmt.gui.common.xml.XMLWriter
-	public void normalizeProbabilities(Map<Object, Double> values, Vector<Object> outputKeys) {
-		Double[] probabilities = new Double[outputKeys.size()];
-		Object[] keys = new Object[outputKeys.size()];
-		outputKeys.toArray(keys);
-		//extract all values from map in array form
-		for (int i = 0; i < keys.length; i++) {
-			probabilities[i] = values.get(keys[i]);
+	public void normalizeProbabilities(Map values, Vector outputKeys, Object thisClassKey, Object thisStation){
+		Vector<Object> sinkClosedprobabilities = new Vector<Object>();
+		Vector<Object> normalProbabilities = new Vector<Object>();
+		boolean allSink = true;
+		for(int i=0; i<outputKeys.size(); i++){
+			if(isClosedClassSinkProbability(outputKeys.get(i),thisClassKey)){
+				sinkClosedprobabilities.add(outputKeys.get(i));
+			}else{
+				normalProbabilities.add(outputKeys.get(i));
+				allSink = false;
+			}			
+	    }
+		if(allSink){
+			normalProbabilities.addAll(sinkClosedprobabilities);
+			sinkClosedprobabilities.clear();
 		}
-		values.clear();
-		//scan for null values and for total sum
-		double totalSum = 0.0;
-		int totalNonNull = 0;
-		boolean allNull = true;
-		for (Double probabilitie : probabilities) {
-			if (probabilitie != null) {
-				totalSum += probabilitie.doubleValue();
-				totalNonNull++;
-				allNull = false;
-			}
+	    Double[] probabilities = new Double[outputKeys.size()];
+	    Object[] keys = new Object[outputKeys.size()];
+	    outputKeys.toArray(keys);
+	    //extract all values from map in array form
+	    for(int i=0; i<keys.length; i++){
+	        probabilities[i] = (Double)values.get(keys[i]);
+	    }
+	    for(int i=0; i<probabilities.length; i++){	    	
+	        if(probabilities[i] != null && probabilities[i].doubleValue() != 0.0 && sinkClosedprobabilities.contains(keys[i])){
+	        	probabilities[i] = new Double(0.0);
+	        	String className = getClassName(thisClassKey);
+	        	String stationName = getStationName(thisStation);
+	        	if(!sinkProbabilityUpdateClasses.contains(className)){//I dont want the Names repeated.
+	        		sinkProbabilityUpdateClasses.add(className);
+	        	}
+	        	if(!sinkProbabilityUpdateStations.contains(stationName)){
+	        		sinkProbabilityUpdateStations.add(stationName);
+	        	}	        	
+				sinkProbabilityUpdate = true;
+	        }	    	
+	    }
+	    values.clear();
+	    //scan for null values and for total sum
+	    double totalSum = 0.0;
+	    int totalNonNull = 0;
+	    boolean allNull = true;
+	    for(int i=0; i<probabilities.length; i++){
+	        if(probabilities[i]!=null && normalProbabilities.contains(keys[i])){
+	            totalSum += probabilities[i].doubleValue();
+	            totalNonNull++;
+	            allNull = false;
+	        }
+	    }
+	    //modify non null values for their sum to match 1 and put null values to 1
+	    for(int i=0; i<probabilities.length; i++){
+	        if((probabilities[i]!=null || allNull) && normalProbabilities.contains(keys[i])){
+	            if(totalSum==0){
+	                probabilities[i] = new Double(1.0/(double)totalNonNull);
+	            }else{
+	                probabilities[i] = new Double(probabilities[i].doubleValue()/totalSum);
+	            }
+	        }else{
+	            probabilities[i] = new Double(0.0);
+	        }
+	        values.put(keys[i], probabilities[i]);
+	    }
+	}
+	
+	private boolean isClosedClassSinkProbability(Object stationKey, Object classKey){
+		boolean ret = false;
+		if(this.getStationType(stationKey).equals(CommonConstants.STATION_TYPE_SINK)
+				&& this.getClassType(classKey) == CommonConstants.CLASS_TYPE_CLOSED){
+			ret = true;
 		}
-		//modify non null values for their sum to match 1 and put null values to 1
-		for (int i = 0; i < probabilities.length; i++) {
-			if (probabilities[i] != null || allNull) {
-				if (totalSum == 0) {
-					probabilities[i] = new Double(1.0 / totalNonNull);
-				} else {
-					probabilities[i] = new Double(probabilities[i].doubleValue() / totalSum);
-				}
-			} else {
-				probabilities[i] = new Double(0.0);
-			}
-			values.put(keys[i], probabilities[i]);
-		}
+		return ret;
 	}
 
 	/**
@@ -2426,5 +2471,27 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			// debugLog.debug("LoggerGlobalParameters constructor called by \n  " + new Exception().getStackTrace()[1] + "\n  " + new Exception().getStackTrace()[2]);
 		}
 	}
+	
+	public boolean isSinkProbabilityUpdated(){
+		return sinkProbabilityUpdate;
+	}
+	
+	public void setSinkProbabilityUpdatedVar(boolean param){
+		sinkProbabilityUpdate = param;
+	}
 
+	public Vector<String> getsinkProbabilityUpdateClasses(){		
+		return sinkProbabilityUpdateClasses;
+	}
+
+	public Vector<String> getsinkProbabilityUpdateStations(){		
+		return sinkProbabilityUpdateStations;
+	}
+	
+	public void resetSinkProbabilityUpdateStations(){
+		sinkProbabilityUpdateStations = new Vector<String>();
+	}
+	public void resetSinkProbabilityUpdateClasses(){
+		sinkProbabilityUpdateClasses = new Vector<String>();
+	}
 }
