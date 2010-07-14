@@ -55,6 +55,9 @@ import jmt.gui.common.routingStrategies.ProbabilityRouting;
  * 
  * Modified by Ashanka (June 2010):
  * Updated the Manage Probabilities. Closed Classes routed to Sink with probability <> 0.0 should show warning to Users.
+ * 
+ * Modified by Ashanka (July 2010)
+ * Desc: Added new defaults control of a Random CheckBox.
  */
 public class CommonModel implements CommonConstants, ClassDefinition, StationDefinition, SimulationDefinition, BlockingRegionDefinition {
 	//key generator
@@ -151,6 +154,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	/**Creates a new instance of <code>CommonModel</code>*/
 	public CommonModel() {
 		seed = Defaults.getAsLong("simulationSeed");
+		useRandomSeed = Defaults.getAsBoolean("isSimulationSeedRandom").booleanValue();
 		maxDuration = Defaults.getAsDouble("simulationMaxDuration");
 		maxSamples = Defaults.getAsInteger("maxSimulationSamples");
 		pollingInterval = Defaults.getAsDouble("simulationPolling").doubleValue();

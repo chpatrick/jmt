@@ -23,6 +23,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 import java.util.Properties;
 
 /**
@@ -36,6 +38,10 @@ import java.util.Properties;
  *         Time: 14.04.02
  *
  * Modified by Francesco D'Aquino 15/11/2005
+ * 
+ * Modified by Ashanka (July 2010)
+ * Desc: Added new defaults control of a Random CheckBox.
+ * 
  */
 public class Defaults implements CommonConstants {
 	protected static final String FILENAME = "defaults.conf";
@@ -85,7 +91,9 @@ public class Defaults implements CommonConstants {
 
 		// Logger Parameters (for global log)
 		def.setProperty("loggerDelimiter", ";");
-		def.setProperty("loggerDecimalSeparator", ".");
+		Locale locale = new Locale(System.getProperty("user.language"), System.getProperty("user.country"),System.getProperty("user.variant"));
+		DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
+		def.setProperty("loggerDecimalSeparator", String.valueOf(symbols.getDecimalSeparator()));
 		def.setProperty("loggerAutoAppend", "" + jmt.engine.log.LoggerParameters.LOGGER_AR_ASK);
 		def.setProperty("loggerFilePath", "");
 
@@ -93,6 +101,7 @@ public class Defaults implements CommonConstants {
 		def.setProperty("measureAlpha", "0.99");
 		def.setProperty("measurePrecision", "0.03");
 		def.setProperty("simulationSeed", "23000");
+		def.setProperty("isSimulationSeedRandom", "true");
 		def.setProperty("maxSimulationSamples", "1000000");
 		def.setProperty("simulationMaxDuration", "-1");
 		def.setProperty("simulationPolling", "1");
