@@ -625,7 +625,7 @@ public class ExactModel implements ExactConstants {
 
 		this.stationTypes = stationTypes;
 		// adjusts serviceTimes size and recalculates flags
-		resize(stations, classes);
+		resize(stations, classes, true);
 		changed = true;
 		resultsOK = false;
 		return true;
@@ -711,11 +711,11 @@ public class ExactModel implements ExactConstants {
 	 * Resizes the data structures according to specified parameters. Data is preserved as far as possible
 	 * @return true if data was changed, false otherwise
 	 */
-	public boolean resize(int stations, int classes) {
+	public boolean resize(int stations, int classes, boolean forceResize) {
 		if (stations <= 0 || classes <= 0) {
 			throw new IllegalArgumentException("stations and classes must be >0");
 		}
-		if (this.stations != stations || this.classes != classes) {
+		if (forceResize || this.stations != stations || this.classes != classes) {
 			//other cases already handled in setXXX methods
 			discardResults();
 
@@ -752,6 +752,14 @@ public class ExactModel implements ExactConstants {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Resizes the data structures according to specified parameters. Data is preserved as far as possible
+	 * @return true if data was changed, false otherwise
+	 */
+	public boolean resize(int stations, int classes) {
+		return resize(stations, classes, false);
 	}
 
 	/**
