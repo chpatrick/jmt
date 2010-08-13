@@ -42,9 +42,6 @@ import jmt.engine.random.Parameter;
 public class LoadDependentStrategy extends ServiceStrategy {
 	private static final String VARIABLE = "n";
 	private static final int CACHESIZE = 1024;
-	// Used to speedup lookup
-	private byte queueSection = NodeSection.INPUT;
-	private int residentJobs = NodeSection.PROPERTY_ID_RESIDENT_JOBS;
 
 	private LDParameter[] parameters;
 	// Used to cache mean values. This structure has O(1) access time.
@@ -70,9 +67,7 @@ public class LoadDependentStrategy extends ServiceStrategy {
 		// Gets number of jobs in the station as the sum of job in queue and job under service
 		try {
 			// Number of jobs into service section
-			int jobs = CallingSection.getIntSectionProperty(residentJobs);
-			// Number of jobs into input section
-			jobs += CallingSection.getOwnerNode().getSection(queueSection).getIntSectionProperty(residentJobs);
+			int jobs = CallingSection.getOwnerNode().getIntNodeProperty(NodeSection.PROPERTY_ID_RESIDENT_JOBS);
 
 			// Search in cache for corresponding item
 			MeanCache item = (MeanCache) cache.get(jobs);
