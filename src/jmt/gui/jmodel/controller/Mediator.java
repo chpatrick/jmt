@@ -2278,7 +2278,7 @@ public class Mediator implements GuiInterface {
 							}
 						}
 					} else {
-						System.out.println("Empty file");
+						//System.out.println("Empty file");
 					}
 				}
 			} // end confirmation if file exists
