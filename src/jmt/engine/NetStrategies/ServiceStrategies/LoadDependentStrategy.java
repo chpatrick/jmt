@@ -59,15 +59,15 @@ public class LoadDependentStrategy extends ServiceStrategy {
 
 	/**
 	 * Returns service time that current job will wait inside current station
-	 * @param CallingSection reference to calling service section
+	 * @param callingSection reference to calling service section
 	 * @return time to wait into this service section
 	 */
 	@Override
-	public double wait(NodeSection CallingSection) throws jmt.common.exception.NetException {
+	public double wait(NodeSection callingSection) throws jmt.common.exception.NetException {
 		// Gets number of jobs in the station as the sum of job in queue and job under service
 		try {
 			// Number of jobs into service section
-			int jobs = CallingSection.getOwnerNode().getIntNodeProperty(NodeSection.PROPERTY_ID_RESIDENT_JOBS);
+			int jobs = callingSection.getOwnerNode().getIntNodeProperty(NodeSection.PROPERTY_ID_RESIDENT_JOBS);
 
 			// Search in cache for corresponding item
 			MeanCache item = (MeanCache) cache.get(jobs);
