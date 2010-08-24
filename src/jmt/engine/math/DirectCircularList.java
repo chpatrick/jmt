@@ -28,7 +28,7 @@ import java.util.Arrays;
  *         Date: 14-feb-2006
  *         Time: 11.17.24
  */
-public class DirectCircularList {
+public class DirectCircularList<E> {
 	// Pointer to last inserted element and its index for direct access
 	protected int last, lastIndex;
 	// Array of datas
@@ -52,7 +52,7 @@ public class DirectCircularList {
 	 * @param index position of item to be set
 	 * @param value value for the item
 	 */
-	public void set(int index, Object value) {
+	public void set(int index, E value) {
 		// Poition where new object has to be placed
 		int pos = index % size;
 
@@ -102,12 +102,13 @@ public class DirectCircularList {
 	 * @return requested element or null if it doesn't exist
 	 * @see this.getSize()
 	 */
-	public Object get(int index) {
+	@SuppressWarnings("unchecked")
+	public E get(int index) {
 		int pos = index % size;
 		if (index > lastIndex || index <= lastIndex - size) {
 			return null;
 		} else {
-			return data[pos];
+			return (E)data[pos];
 		}
 	}
 

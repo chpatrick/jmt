@@ -45,7 +45,7 @@ public class LoadDependentStrategy extends ServiceStrategy {
 
 	private LDParameter[] parameters;
 	// Used to cache mean values. This structure has O(1) access time.
-	DirectCircularList cache;
+	DirectCircularList<MeanCache> cache;
 
 	/**
 	 * Creates a new Load Dependent Service Time Strategy
@@ -54,7 +54,7 @@ public class LoadDependentStrategy extends ServiceStrategy {
 	public LoadDependentStrategy(LDParameter[] parameters) {
 		Arrays.sort(parameters);
 		this.parameters = parameters;
-		cache = new DirectCircularList(CACHESIZE);
+		cache = new DirectCircularList<MeanCache>(CACHESIZE);
 	}
 
 	/**
@@ -67,10 +67,11 @@ public class LoadDependentStrategy extends ServiceStrategy {
 		// Gets number of jobs in the station as the sum of job in queue and job under service
 		try {
 			// Number of jobs into service section
-			int jobs = callingSection.getOwnerNode().getIntNodeProperty(NodeSection.PROPERTY_ID_RESIDENT_JOBS);
+			int jobs = callingSection.getOwnerNode().getIntNodeProperty(NodeSection.PROPERTY_ID_RESIDENT_JOBS)
+			 - callingSection.getOwnerNode().getSection(NodeSection.OUTPUT).getIntSectionProperty(NodeSection.PROPERTY_ID_RESIDENT_JOBS);
 
 			// Search in cache for corresponding item
-			MeanCache item = (MeanCache) cache.get(jobs);
+			MeanCache item = cache.get(jobs);
 			if (item == null) {
 				// Item is not in cache, so retrives right LDParameter and perform parsing of function
 				int index = Arrays.binarySearch(parameters, new Integer(jobs));
