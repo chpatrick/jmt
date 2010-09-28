@@ -49,7 +49,7 @@ public class MainWindow extends JMTFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private static final String TITLE = "JSIMgraph - Advanced queuing network design tool";
+	private static final String TITLE = "JSIMgraph - Advanced queueing network design tool";
 
 	protected Mediator mediator;// mediator between components of the application
 	protected JMTToolBar toolbar;//main toolbar
