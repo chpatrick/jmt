@@ -45,8 +45,8 @@ public class MMPP2Par extends AbstractParameter implements Parameter {
 	public MMPP2Par(Double lambda0, Double lambda1, Double sigma0, Double sigma1) throws IncorrectDistributionParameterException {
 		this.sigma0 = sigma0.doubleValue();
 		this.sigma1 = sigma1.doubleValue();
-		this.lambda1 = lambda0.doubleValue();
-		this.lambda0 = lambda1.doubleValue();
+		this.lambda1 = lambda1.doubleValue();
+		this.lambda0 = lambda0.doubleValue();
 		testParameters();
 		this.mean = (this.sigma0 + this.sigma1) / (this.sigma1 * this.lambda0 + this.sigma0 * this.lambda1);
 		this.var = 0;
