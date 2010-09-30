@@ -233,12 +233,6 @@ public class MainJwatWizard extends JWatWizard {
 	 * @param args no args.
 	 */
 	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(new com.jgoodies.looks.plastic.Plastic3DLookAndFeel());
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-		Locale.setDefault(Locale.ENGLISH);
 		new MainJwatWizard().setVisible(true);
 	}
 

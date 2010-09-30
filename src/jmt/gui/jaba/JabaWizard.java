@@ -753,13 +753,6 @@ public class JabaWizard extends Wizard {
 
 	// JABA MAIN
 	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(new com.jgoodies.looks.plastic.Plastic3DLookAndFeel());
-			Locale.setDefault(Locale.ENGLISH);
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-
 		new JabaWizard(new JabaModel());
 	}
 

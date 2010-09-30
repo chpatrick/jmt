@@ -27,6 +27,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Properties;
 
+import jmt.framework.gui.components.JMTFrame;
+
 /**
  * <p>Title: Simulation Defaults</p>
  * <p>Description: This class will provide methods to get default values of every
@@ -91,7 +93,7 @@ public class Defaults implements CommonConstants {
 
 		// Logger Parameters (for global log)
 		def.setProperty("loggerDelimiter", ";");
-		Locale locale = new Locale(System.getProperty("user.language"), System.getProperty("user.country"),System.getProperty("user.variant"));
+		Locale locale = JMTFrame.getPlatformDefaultLocale();
 		DecimalFormatSymbols symbols = new DecimalFormatSymbols(locale);
 		def.setProperty("loggerDecimalSeparator", String.valueOf(symbols.getDecimalSeparator()));
 		def.setProperty("loggerAutoAppend", "" + jmt.engine.log.LoggerParameters.LOGGER_AR_ASK);

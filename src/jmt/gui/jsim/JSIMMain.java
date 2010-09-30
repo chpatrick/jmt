@@ -1043,14 +1043,7 @@ public class JSIMMain extends Wizard implements GuiInterface {
 	}
 
 	public static void main(String[] args) {
-		try {
-			UIManager.setLookAndFeel(new com.jgoodies.looks.plastic.Plastic3DLookAndFeel());
-
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-		Locale.setDefault(Locale.ENGLISH);
-		new JSIMMain().show();
+		new JSIMMain().setVisible(true);
 	}
 
 	/**
