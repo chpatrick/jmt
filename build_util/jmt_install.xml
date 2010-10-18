@@ -32,6 +32,7 @@
 		-->
 		<url>http://jmt.sourceforge.net/</url>
 		<javaversion>1.5</javaversion>
+		<run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
 	</info>
 	<!-- 
         The gui preferences indication.
@@ -64,6 +65,7 @@
 		<res id="Unix_shortcutSpec.xml" src="Unix_shortcutSpec.xml"/>
 	</resources>
 	<native type="izpack" name="ShellLink.dll"/>
+	<native type="izpack" name="ShellLink_x64.dll" />
 	<!-- 
         The panels section.
         We indicate here which panels we want to use. The order will be respected.
