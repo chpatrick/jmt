@@ -44,6 +44,10 @@ import jmt.gui.common.xml.XMLConstantNames;
  * 				1. global response time (ResponseTime per Sink)
  *              2. global throughput (Throughput per Sink)
  *              each sink per class. 
+ *              
+ * Modified by Ashanka (Oct 2010):
+ * Patch: To bug fix Multi-Sink Indices.
+ * Description: Implemented the throughputTimePerSink and responseTimePerSink for the what if/parameteric simulation.
  */
 public class PAResultsModel implements MeasureDefinition {
 	private Vector<Measure> measures; // An array with all Measures
@@ -672,12 +676,18 @@ public class PAResultsModel implements MeasureDefinition {
 	//Added by ASHANKA STOP
 
 	public int[] getResponsetimePerSinkMeasures() {
-		// TODO Auto-generated method stub
-		return null;
+		int[] tmp = new int[responseTimePerSink.size()];
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = responseTimePerSink.get(i).intValue();
+		}
+		return tmp;
 	}
 
 	public int[] getThroughputPerSinkMeasures() {
-		// TODO Auto-generated method stub
-		return null;
+		int[] tmp = new int[throughputTimePerSink.size()];
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = throughputTimePerSink.get(i).intValue();
+		}
+		return tmp;
 	}
 }
