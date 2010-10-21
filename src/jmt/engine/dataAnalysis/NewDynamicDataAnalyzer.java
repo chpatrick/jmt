@@ -41,6 +41,8 @@ import Jama.Matrix;
 public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 	private double alpha, precision;
 	private int maxData;
+	// Minimum number of samples for an OK measure.
+	private int minData;
 
 	// end tells if computation is ended
 	private boolean end;
@@ -244,7 +246,7 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 			if ((nsamples % nullTestPeriod == 0)) {
 				if (nullTest()) {
 					//null test is true (the measure is almost always equal to 0.0)
-					if (!disableStatisticStop) {
+					if (canEnd()) {
 						end = true;
 					}
 					confIntervalOk = true;
@@ -336,6 +338,14 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 			}
 		}
 		return end;
+	}
+	
+	/**
+	 * Checks minimum constraints to determine if data analysis can end
+	 * @return true if the data analysis can end
+	 */
+	private boolean canEnd() {
+		return !disableStatisticStop && nsamples > minData;
 	}
 
 	/**
@@ -449,16 +459,19 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 
 		calcVar();
 		calcConfInterval();
-		if (precision > confInt / extMean && !disableStatisticStop) {
+		if (precision > confInt / extMean && canEnd()) {
 			//simulation ended with success
 			end = true;
 
 			success = true;
 		} else {
-			// Handle if statistic stop was disabled
+			// Handle if statistic stop was disabled or min samples was not reached.
 			if (precision > confInt / extMean) {
 				success = true;
 				confIntervalOk = true;
+			} else {
+				success = false;
+				confIntervalOk = false;
 			}
 
 			if (batch == (numBatch - 1)) {
@@ -912,5 +925,6 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 		this.nullTestAlfa = parameters.getNullTestAlfa();
 		this.nullTestRate = parameters.getNullTestRate();
 		this.disableStatisticStop = parameters.isDisableStatisticStop();
+		this.minData = parameters.getMinSamples();
 	}
 }

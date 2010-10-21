@@ -55,6 +55,8 @@ public class SimParameters {
 
 	//max samples which can be collected for each measure
 	private int maxSamples = 500000;
+	//min samples collected for each measure
+	private int minSamples = 50000;
 
 	private boolean disableStatisticStop = false;
 
@@ -216,6 +218,21 @@ public class SimParameters {
 
 	public String getTimestampValue() {
 		return logtimestampvalue;
+	}
+
+	/**
+	 * @return the minimum number of samples
+	 */
+	public int getMinSamples() {
+		return minSamples;
+	}
+
+	/**
+	 * Sets the minimum number of samples
+	 * @param minSamples the minimum number of samples
+	 */
+	public void setMinSamples(int minSamples) {
+		this.minSamples = minSamples;
 	}
 
 }
