@@ -105,7 +105,7 @@ public class PAResultsModel implements MeasureDefinition {
 			} else if (type.startsWith("utilization")) {
 				numType = SimConstants.UTILIZATION;
 				utilization.add(new Integer(i));
-			} else if (type.startsWith("throughput")) {
+			} else if (type.startsWith("throughput")&& !type.endsWith("sink")) {
 				numType = SimConstants.THROUGHPUT;
 				throughput.add(new Integer(i));
 			} else if (type.startsWith("response") && type.endsWith("time")) {
