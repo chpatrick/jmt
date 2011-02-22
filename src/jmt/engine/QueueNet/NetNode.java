@@ -20,6 +20,7 @@ package jmt.engine.QueueNet;
 
 import java.util.ListIterator;
 
+import jmt.common.exception.NetException;
 import jmt.engine.NodeSections.Queue;
 import jmt.engine.dataAnalysis.InverseMeasure;
 import jmt.engine.dataAnalysis.Measure;
@@ -493,18 +494,8 @@ public class NetNode extends SimEntity {
 			}
 
 			//receive a stop event
-			if (!stopped && eventType == NetEvent.EVENT_STOP) {
-				stopped = true;
-				// Sends stop event to all sections
-				NetMessage msg = (NetMessage) message.clone();
-				msg.setDestinationSection(NodeSection.INPUT);
-				dispatch(msg);
-				msg = (NetMessage) message.clone();
-				msg.setDestinationSection(NodeSection.SERVICE);
-				dispatch(msg);
-				msg = (NetMessage) message.clone();
-				msg.setDestinationSection(NodeSection.OUTPUT);
-				dispatch(msg);
+			if (eventType == NetEvent.EVENT_STOP) {
+				handleStopMessages();
 			}
 
 			// if this node has been stopped sends automatically acks
@@ -522,6 +513,26 @@ public class NetNode extends SimEntity {
 			Exc.printStackTrace();
 		}
 
+	}
+	
+	private void handleStopMessages() throws NetException {
+		if (!stopped) {
+			stopped = true;
+			NetMessage msg = new NetMessage();
+			msg.setEvent(NetEvent.EVENT_STOP);
+			msg.setDestination(this);
+			msg.setSource(this);
+			msg.setSourceSection(NodeSection.NO_ADDRESS);
+			msg.setTime(NetSystem.getTime());
+			msg.setDestinationSection(NodeSection.INPUT);
+			dispatch(msg);
+			msg = (NetMessage) message.clone();
+			msg.setDestinationSection(NodeSection.SERVICE);
+			dispatch(msg);
+			msg = (NetMessage) message.clone();
+			msg.setDestinationSection(NodeSection.OUTPUT);
+			dispatch(msg);
+		}
 	}
 
 	/** This method should be overridden to implement a own dispatch.
@@ -613,46 +624,30 @@ public class NetNode extends SimEntity {
 	}
 
 	/** Sends a message to a NetNode.
-	 * @param Event Event tag.
-	 * @param Data  Data to be attached to the message.
-	 * @param Delay Scheduling delay.
-	 * @param SourceSection The source section.
-	 * @param DestinationSection The destination section.
-	 * @param Destination The destination node.
+	 * @param event Event tag.
+	 * @param data  Data to be attached to the message.
+	 * @param delay Scheduling delay.
+	 * @param sourceSection The source section.
+	 * @param destinationSection The destination section.
+	 * @param destination The destination node.
 	 * @return a token to remove sent event
 	 * @throws jmt.common.exception.NetException Exception
 	 */
-	RemoveToken send(int Event, Object Data, double Delay, byte SourceSection, byte DestinationSection, NetNode Destination)
+	RemoveToken send(int event, Object data, double delay, byte sourceSection, byte destinationSection, NetNode destination)
 			throws jmt.common.exception.NetException {
-		int Tag;
-		//TODO: vedi analogo problema per receive
+		
 		//Look if message is a job message and if job is leaving this node
-
 		if (outputSection != null
 				&& outputSection.automaticUpdateNodeJobinfolist()
-				&& (Event == NetEvent.EVENT_JOB)
-				&& ((Destination != this) || ((Destination == this) && (SourceSection == NodeSection.OUTPUT) && (DestinationSection == NodeSection.INPUT)))) {
-			Job job = (Job) Data;
-			JobInfo JobInfo = jobsList.lookFor(job);
-			if (JobInfo != null) {
-				jobsList.remove(JobInfo);
+				&& (event == NetEvent.EVENT_JOB)
+				&& ((destination != this) || ((destination == this) && (sourceSection == NodeSection.OUTPUT) && (destinationSection == NodeSection.INPUT)))) {
+			Job job = (Job) data;
+			JobInfo jobInfo = jobsList.lookFor(job);
+			if (jobInfo != null) {
+				jobsList.remove(jobInfo);
 			}
 		}
 
-		//TODO: forse se il job � destinato al nodo stesso (circa come se fosse un multivisita)
-		//non bisognerebbe eliminarlo.. e poi riaggiungerlo alla ricezione
-		//NEW
-		//@author Stefano Omini
-		//Look if message is a job message and if job is leaving this node
-		/*
-		if ((Event == NetEvent.EVENT_JOB) && (Destination != this) ) {
-			Job job = (Job) Data;
-			JobInfo JobInfo = jobsList.lookFor(job);
-			if (JobInfo != null)
-		        jobsList.remove(JobInfo);
-		}
-		*/
-		//end NEW
 		//
 		//EVENT_MASK        = 0x0000FFFF;
 		//SOURCE_MASK       = 0xFF000000;
@@ -663,10 +658,11 @@ public class NetNode extends SimEntity {
 		//It's the opposite than receive(...): in this case we have event, source
 		//and destination sections and we have to summarize them into a single tag
 		//of a simEvent which will be scheduled by the simulator
-		Tag = Event & NetEvent.EVENT_MASK;
-		Tag += SourceSection << NodeSection.SOURCE_SHIFT;
-		Tag += DestinationSection << NodeSection.DESTINATION_SHIFT;
-		return simSchedule(Destination.getId(), Delay, Tag, Data);
+		int tag;
+		tag = event & NetEvent.EVENT_MASK;
+		tag += sourceSection << NodeSection.SOURCE_SHIFT;
+		tag += destinationSection << NodeSection.DESTINATION_SHIFT;
+		return simSchedule(destination.getId(), delay, tag, data);
 	}
 
 	/**
@@ -744,6 +740,12 @@ public class NetNode extends SimEntity {
 	@Override
 	public void poison() {
 		state = SimEntity.FINISHED;
+		try {
+			handleStopMessages();
+		} catch (NetException ex) {
+			logger.error("Unexpected error: " + ex.getMessage());
+			logger.error(ex);
+		}
 	}
 
 	//NEW

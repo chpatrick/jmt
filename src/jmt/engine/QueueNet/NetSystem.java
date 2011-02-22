@@ -164,8 +164,6 @@ public class NetSystem {
 			while (nodes.hasNext()) {
 				node = nodes.next();
 				node.send(NetEvent.EVENT_STOP, null, 0.0, NodeSection.NO_ADDRESS, NodeSection.NO_ADDRESS, node);
-				// }
-
 			}
 			Network.setState(QueueNetwork.STATE_STOPPED);
 

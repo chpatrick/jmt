@@ -20,7 +20,7 @@ package jmt.engine.QueueNet;
 
 /**
  *	This class implements a generic job of a queue network.
- * 	@author Francesco Radaelli
+ * 	@author Francesco Radaelli, Marco Bertoli
  */
 public class Job implements Cloneable {
 
@@ -152,5 +152,8 @@ public class Job implements Cloneable {
 	}
 
 	//end NEW
-
+	
+	public static void resetCounter() {
+		counter = 0;
+	}
 }

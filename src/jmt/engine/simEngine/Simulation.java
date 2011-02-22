@@ -38,6 +38,7 @@ import jmt.engine.NodeSections.ServiceTunnel;
 import jmt.engine.NodeSections.Terminal;
 import jmt.engine.QueueNet.BlockingRegion;
 import jmt.engine.QueueNet.GlobalJobInfoList;
+import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NetSystem;
@@ -345,7 +346,9 @@ public class Simulation {
 	 *
 	 */
 	public void initialize() throws NetException {
-
+		// Resets the job counter
+		Job.resetCounter();
+		
 		// creates network
 		network = new QueueNetwork("jSIM simulation: " + name);
 		// adds network to NetSystem
