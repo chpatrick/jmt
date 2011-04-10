@@ -62,7 +62,7 @@ public class MMPP2 extends Distribution {
 
 		/* arrival rate of jobs if MMPP is in state 0 */
 		parameters[0] = new Parameter("lambda0", "\u03BB0", //unicode character for lambda0
-				Double.class, new Double(1.0));
+				Double.class, new Double(12.0));
 		// Checks value of k must be greater then 0
 		parameters[0].setValueChecker(new ValueChecker() {
 			public boolean checkValue(Object value) {
@@ -77,7 +77,7 @@ public class MMPP2 extends Distribution {
 
 		/* arrival rate of jobs if MMPP is in state 1 */
 		parameters[1] = new Parameter("lambda1", "\u03BB1", //unicode character for lambda1
-				Double.class, new Double(2.0));
+				Double.class, new Double(0.0872));
 		// Checks value of k must be greater then 0
 		parameters[1].setValueChecker(new ValueChecker() {
 			public boolean checkValue(Object value) {
@@ -92,7 +92,7 @@ public class MMPP2 extends Distribution {
 
 		/* rate of jump from state 0 to state 1 */
 		parameters[2] = new Parameter("sigma0", "\u03C30", //unicode character for sigma0 
-				Double.class, new Double(0.5));
+				Double.class, new Double(0.0098));
 		// Checks value of alpha must greater or equal then 2
 		parameters[2].setValueChecker(new ValueChecker() {
 			public boolean checkValue(Object value) {
@@ -107,7 +107,7 @@ public class MMPP2 extends Distribution {
 
 		/* rate of jump from state 1 to state 0 */
 		parameters[3] = new Parameter("sigma1", "\u03C31", //unicode character for sigma1
-				Double.class, new Double(0.1));
+				Double.class, new Double(0.0008));
 		// Checks value of k must be greater then 0
 		parameters[3].setValueChecker(new ValueChecker() {
 			public boolean checkValue(Object value) {
