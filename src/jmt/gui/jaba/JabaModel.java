@@ -19,7 +19,6 @@
 package jmt.gui.jaba;
 
 import java.util.Arrays;
-import java.util.Vector;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -126,7 +125,7 @@ public class JabaModel implements JabaConstants {
 	 */
 	private double[][] util;
 
-	private Vector<Object> res;
+	private JabaResults res;
 
 	/*****************************************************************/
 	//parameters for randomization
@@ -195,17 +194,17 @@ public class JabaModel implements JabaConstants {
 	/**
 	 * sets all the result data for this model.
 	 */
-	public void setResults(Vector<Object> res) {
-		this.res = res;
+	public void setResults(JabaResults jabaResults) {
+		this.res = jabaResults;
 		hasResults = true;
 		resultsOK = true;
 		changed = true;
 	}
 
-	public Vector<Object> getResults() {
+	public JabaResults getResults() {
 		return res;
 	}
-
+	
 	/**
 	 * Initialize the object with defaults:
 	 * 1 closed class, 1 LI station, 0 customers, all visits to one, all service times to zero, no results
@@ -1641,5 +1640,21 @@ public class JabaModel implements JabaConstants {
 	}
 
 	//END
+	
+	public double[][] createUnitaryVisits() {
+		double[][] visits = new double[serviceTimes.length][];
+		for (int i = 0; i < serviceTimes.length; i++) {
+			visits[i] = new double[serviceTimes[i].length];
+			for (int j = 0; j < serviceTimes[i].length; j++) {
+				if (serviceTimes[i][j][0] != 0) {
+					visits[i][j] = 1;
+				} else {
+					visits[i][j] = 0;
+				}
+			}
+		}
+		return visits;
+	}
+
 
 }

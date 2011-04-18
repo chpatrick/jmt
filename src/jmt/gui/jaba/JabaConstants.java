@@ -90,5 +90,10 @@ public interface JabaConstants {
 			+ "</font><font size=\"3\"><br>Average Utilization for each class and each station.<br></body></html>";
 	public static final String DESCRIPTION_EMPTY = "<html><body align=\"left\"><font size=\"4\"><b>Results</b>"
 			+ "</font><font size=\"3\"><br>Please solve the model to get results..<br></body></html>";
+	public static final String DESCRIPITION_GRAPH = "<html><body align=\"left\">Right-click on the graph to export or save it.</body></html>";
+	public static final String OPTION_SHOW_ALL_LABELS = "Show all labels";
+	public static final String SELECT_WHICH_INDEX = "Select the index you want to plot: ";
+	public static final String DESCRIPITION_GRAPH_PERFORMANCE_INDEX = "<html><body align=\"left\">Right-click on the graph to export or save it.<br />" +
+			"																					  Click on a station label to hide/show</body></html>";
 
 }

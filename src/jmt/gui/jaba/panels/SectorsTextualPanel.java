@@ -147,11 +147,11 @@ public class SectorsTextualPanel extends WizardPanel {
 	}
 
 	public void redraw() {
-		if (jabawizard.getData().hasResults() && jabawizard.getData().areResultsOK() && jabawizard.getData().getResults().size() > 0
+		if (jabawizard.getData().hasResults() && jabawizard.getData().areResultsOK() && jabawizard.getData().getResults().getSaturationSectors().size() > 0
 				&& jabawizard.getData().getClasses() >= 2 && jabawizard.getData().getClasses() <= 3) {
 			String res = "<html>" + "<body align=\"Left\">";
-			for (int i = 0; i < (jabawizard.getData().getResults()).size(); i++) {
-				String temp = ((jabawizard.getData().getResults().get(i))).toString();
+			for (int i = 0; i < (jabawizard.getData().getResults().getSaturationSectors()).size(); i++) {
+				String temp = ((jabawizard.getData().getResults().getSaturationSectors().get(i))).toString();
 				res = res.concat(temp);
 				res = res.concat("<br><br>");
 			}

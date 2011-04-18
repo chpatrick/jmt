@@ -63,11 +63,11 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 	private static final long serialVersionUID = 1L;
 
 	// Bertoli Marco - Used to show only two decimal digits
-	private static DecimalFormat formatter = new DecimalFormat("#0.00");
+	private static DecimalFormat FORMATTER = new DecimalFormat("#0.00");
 
 	private JabaWizard ew;
 	private HoverHelp help;
-	private static final String helpText = "<html>In this panel you can edit the service times of LI and delay stations for each class.<br><br>"
+	private static final String HELP_TEXT = "<html>In this panel you can edit the service times of LI and delay stations for each class.<br><br>"
 			+ " To enter values, single-click on the desired cell"
 			+ " and start typing.<br> To select multiple cells drag the mouse on them; click or drag on"
 			+ " row/column headers to select whole rows/columns.<br> <b>For a list of the available operations right-click"
@@ -222,7 +222,7 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 
 	@Override
 	public void help() {
-		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this, HELP_TEXT, "Help", JOptionPane.INFORMATION_MESSAGE);
 
 	}
 
@@ -345,7 +345,7 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 			switch (stationTypes[rowIndex]) {
 				case STATION_LI:
 				case STATION_DELAY:
-					return formatter.format(serviceTimes[rowIndex][columnIndex][0]);
+					return FORMATTER.format(serviceTimes[rowIndex][columnIndex][0]);
 				case STATION_LD:
 					return "LD";
 				default:

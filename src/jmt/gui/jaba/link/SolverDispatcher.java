@@ -18,11 +18,15 @@
 
 package jmt.gui.jaba.link;
 
+import java.awt.geom.Point2D;
 import java.util.Vector;
 
 import jmt.common.exception.InputDataException;
 import jmt.common.exception.SolverException;
-import jmt.engine.jaba.Calc;
+import jmt.engine.jaba.DPoint;
+import jmt.engine.jaba.EngineConvex2D;
+import jmt.engine.jaba.PerformanceEngine;
+import jmt.engine.jaba.SectorEngine;
 import jmt.engine.jaba.newPoint;
 import jmt.engine.jaba.Hull.ConvexHullException;
 import jmt.engine.jaba.Hull.Vertex;
@@ -41,17 +45,17 @@ import jmt.gui.jaba.JabaResults;
 public class SolverDispatcher {
 
 	private static final boolean DEBUG = false;
-
+	
 	public SolverDispatcher() {
 	}
 
-	public Vector<Object> solve(JabaModel model) throws SolverException, InputDataException {
+	public JabaResults solve(JabaModel model) throws SolverException, InputDataException {
 
 		/* disable all change-checking */
 		model.discardResults();
 		model.setChanged();
 
-		Vector<Object> res = new Vector<Object>();
+		JabaResults res = null;
 
 		try {
 			if (model.getClasses() == 2) {
@@ -83,17 +87,27 @@ public class SolverDispatcher {
 		throw new SolverException(s.toString(), t);
 	}
 
-	private Vector<Object> solve2classes(JabaModel model) throws Exception {
+	private JabaResults solve2classes(JabaModel model) throws Exception {
 		//Solve two class models
-		int stations = model.getStations();
-		//Solver solver = null;
-		String[] stationNames = model.getStationNames();
-		String[] classNames = model.getClassNames();
-		double[][][] serviceTimes = model.getServiceTimes();
-		double[][] visits = model.getVisits();
-		Vector<newPoint> vertices = new Vector<newPoint>();
-
+		int stations;
+		double[][] visits;
+		double[][][] serviceTimes;
+		String[] stationNames;
+		String[] classNames;
+		Vector<newPoint> vertices;
+		SectorEngine calc;
+		Vector<Object> saturationSects;
 		double prop;
+		EngineConvex2D convexEngine;
+		Vector<Point2D> v;
+		
+		stations = model.getStations();
+		//Solver solver = null;
+		stationNames = model.getStationNames();
+		classNames = model.getClassNames();
+		serviceTimes = model.getServiceTimes();
+		visits = model.getVisits();
+		vertices = new Vector<newPoint>();
 		prop = 100;
 
 		for (int i = 0; i < stations; i++) {
@@ -106,11 +120,33 @@ public class SolverDispatcher {
 			vertices.addElement(new newPoint(a, b));
 		}
 
-		Calc calc = new Calc();
-		Vector<Object> res;
+		calc = new SectorEngine();
 		JabaResults jres = new JabaResults();
-		res = calc.Calc2D(vertices, stationNames, classNames);
-		jres.setResults(res);
+		saturationSects = calc.Calc2D(vertices, stationNames, classNames);
+		jres.setSaturationSectors(saturationSects);
+
+		v = new Vector<Point2D>();
+		for (int k = 0; k < stationNames.length; k++) {
+			v.add(new DPoint(serviceTimes[k][0][0],
+					serviceTimes[k][1][0], stationNames[k]));
+		}
+		convexEngine = new EngineConvex2D(v, saturationSects);
+		jres.setConvex(convexEngine.getConvex());
+		jres.setAllConvex(convexEngine.getAllConvex());
+		jres.setAllDominants(convexEngine.getAllDominants());
+		jres.setDominants(convexEngine.getDominants());
+		jres.setFiltDominats(convexEngine.getFiltDominants());
+		jres.setFiltConvex(convexEngine.getFiltConvex());
+		jres.setFiltDominates(convexEngine.getFiltDominates());
+		jres.setPoints(convexEngine.getPoints());
+		jres.setDominates(convexEngine.getDominates());
+		jres.setFilteredArea(convexEngine.getFilteredArea());
+		jres.setAllPoints(convexEngine.getAllPoints());
+		
+		PerformanceEngine performanceEngine = new PerformanceEngine(serviceTimes, saturationSects, stationNames);
+		
+		jres.setUtilization(performanceEngine.getUtilization());
+		//jres.setEquiUtilizationPoint(calc.calcEquiUtilizationPoint(vertices));
 
 		/*
 		// Per la visualizzazione
@@ -118,11 +154,11 @@ public class SolverDispatcher {
 		vres.ViewRes2D(res);
 		*/
 
-		return res;
+		return jres;
 
 	}
 
-	private Vector<Object> solve3classes(JabaModel model) throws ConvexHullException {
+	private JabaResults solve3classes(JabaModel model) throws ConvexHullException {
 
 		// Solve 3 class models
 		int stations = model.getStations();
@@ -147,7 +183,7 @@ public class SolverDispatcher {
 			vertices.addElement(new Vertex(a, b, c));
 		}
 
-		Calc calc = new Calc();
+		SectorEngine calc = new SectorEngine();
 		Vector<Object> res = calc.Calc3D(vertices, stationNames, classNames);
 		//System.out.println("res.size(): "+res.size());
 		//ViewResults vres = new ViewResults();
@@ -166,10 +202,10 @@ public class SolverDispatcher {
 		for (int i = 0; i < calc.gettriangles().size(); i++) {
 			out.addElement(calc.gettriangles().get(i));
 		}
-		jres.setResults(out);
+		jres.setSaturationSectors(out);
 
 		// Ritorna il risultato
-		return out;
+		return jres;
 	}
 
 }

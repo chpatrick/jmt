@@ -50,9 +50,9 @@ public final class DescriptionPanel extends WizardPanel implements JabaConstants
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private static final String HELP_TEXT = "<html>In this panel you can enter any text describing this model</html>";
 	private JabaWizard ew;
 	private HoverHelp help;
-	private static final String helpText = "<html>In this panel you can enter any text describing this model</html>";
 
 	private JTextPane textPane = new JTextPane();
 
@@ -139,7 +139,7 @@ public final class DescriptionPanel extends WizardPanel implements JabaConstants
 
 	@Override
 	public void help() {
-		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this, HELP_TEXT, "Help", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 }

@@ -83,7 +83,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 	private static final long serialVersionUID = 1L;
 	private JabaWizard ew;
 	private HoverHelp help;
-	private static final String helpText = "<html>In this panel you can define the number of stations in the system and their properties.<br><br>"
+	private static final String HELP_TEXT = "<html>In this panel you can define the number of stations in the system and their properties.<br><br>"
 			+ " To edit values, single-click on the desired cell"
 			+ " and start typing.<br> To select stations click or drag on the row headers.<br> <b>For a list of the available operations right-click"
 			+ " on the table</b>.<br>" + " Pressing DELETE removes all selected stations from the system.</html>";
@@ -464,7 +464,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 
 	@Override
 	public void help() {
-		JOptionPane.showMessageDialog(this, helpText, "Help", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(this, HELP_TEXT, "Help", JOptionPane.INFORMATION_MESSAGE);
 
 	}
 

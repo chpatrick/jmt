@@ -20,6 +20,9 @@ package jmt.framework.gui.wizard;
 
 import javax.swing.JPanel;
 
+import jmt.gui.jaba.JabaModel;
+import jmt.gui.jaba.JabaResults;
+
 /**
 
  * @author alyf (Andrea Conti)
@@ -96,5 +99,12 @@ public abstract class WizardPanel extends JPanel {
 	public void setParentWizard(Wizard parentWizard) {
 		this.parentWizard = parentWizard;
 	}
+	
+	public void redraw() {
+	}
+
+	public void setData(JabaModel data) {
+	}
+
 
 }
