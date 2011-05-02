@@ -18,6 +18,7 @@
 
 package jmt.engine.QueueNet;
 
+import jmt.common.exception.NetException;
 import jmt.engine.simEngine.SimSystem;
 
 /**
@@ -50,43 +51,34 @@ class NetController {
 	}
 
 	/** This is the run method of the NetController (thread). */
-	public void run() {
-		try {
-			SimSystem.runStart();
-			startTime = NetSystem.getElapsedTime();
+	public void run() throws InterruptedException, NetException {
+		SimSystem.runStart();
+		startTime = NetSystem.getElapsedTime();
 
-			while (SimSystem.runTick()) {
+		while (SimSystem.runTick()) {
 
-				synchronized (this) {
-					//the presence of this "if" allows pause control
-					if (blocked) {
-						try {
-							wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
+			synchronized (this) {
+				//the presence of this "if" allows pause control
+				if (blocked) {
+					wait();
+				}
+				n++;
+
+				if (n % refreshPeriod == 0) {
+					//User may have defined measures that will not receive any sample
+					if (n % reachabilityTest == 0) {
+						//stop measures which haven't collected samples yet
+						NetSystem.stopNoSamplesMeasures();
 					}
-					n++;
-
-					if (n % refreshPeriod == 0) {
-						//User may have defined measures that will not receive any sample
-						if (n % reachabilityTest == 0) {
-							//stop measures which haven't collected samples yet
-							NetSystem.stopNoSamplesMeasures();
-						}
-						//refresh measures
-						NetSystem.checkMeasures();
-					}
+					//refresh measures
+					NetSystem.checkMeasures();
 				}
 			}
-			//sim is finished: get stop time
-			stopTime = NetSystem.getElapsedTime();
-			SimSystem.runStop();
-			running = false;
-
-		} catch (Exception Exc) {
-			Exc.printStackTrace();
 		}
+		//sim is finished: get stop time
+		stopTime = NetSystem.getElapsedTime();
+		SimSystem.runStop();
+		running = false;
 	}
 
 	public void start() {

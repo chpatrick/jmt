@@ -21,6 +21,7 @@ package jmt.gui.common.controller;
 import java.awt.Cursor;
 import java.io.File;
 
+import jmt.engine.log.JSimLogger;
 import jmt.engine.simDispatcher.Dispatcher_jSIMschema;
 import jmt.gui.common.definitions.AbortMeasure;
 import jmt.gui.common.definitions.GuiInterface;
@@ -81,10 +82,12 @@ public class DispatcherThread extends Thread implements AbortMeasure {
 		} catch (OutOfMemoryError err) {
 			simulator.abortAllMeasures();
 			simulator.killSimulation();
+			JSimLogger.getLogger(DispatcherThread.class).error(err);
 			gui.showErrorMessage("Out of memory error. Try to run Java Virtual Machine with more heap size (-Xmx<num>m)");
 		} catch (Exception ex) {
 			simulator.abortAllMeasures();
 			simulator.killSimulation();
+			JSimLogger.getLogger(DispatcherThread.class).error(ex);
 			gui.handleException(ex);
 		}
 		if (timer != null) {
