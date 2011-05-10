@@ -23,6 +23,7 @@ import java.util.Arrays;
 import jmt.common.exception.IncorrectDistributionParameterException;
 import jmt.common.exception.NetException;
 import jmt.engine.NetStrategies.ServiceStrategy;
+import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeSection;
 import jmt.engine.math.DirectCircularList;
 import jmt.engine.math.parser.Parser;
@@ -67,7 +68,7 @@ public class LoadDependentStrategy extends ServiceStrategy {
 		// Gets number of jobs in the station as the sum of job in queue and job under service
 		try {
 			// Number of jobs into service section
-			int jobs = callingSection.getOwnerNode().getIntNodeProperty(NodeSection.PROPERTY_ID_RESIDENT_JOBS)
+			int jobs = callingSection.getOwnerNode().getIntNodeProperty(NetNode.PROPERTY_ID_RESIDENT_JOBS)
 			 - callingSection.getOwnerNode().getSection(NodeSection.OUTPUT).getIntSectionProperty(NodeSection.PROPERTY_ID_RESIDENT_JOBS);
 
 			// Search in cache for corresponding item
