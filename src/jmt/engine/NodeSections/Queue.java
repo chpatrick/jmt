@@ -659,15 +659,21 @@ public class Queue extends InputSection {
 			if (residualClassJobs[randomClassIndex] > 0) {
 				//other jobs to be added
 				Job newJob = new Job(jobClasses.get(randomClassIndex));
-				queueJobInfoList.add(new JobInfo(newJob));
+				JobInfo newJobInfo = new JobInfo(newJob);
+				
+				// Signals to node jobInfoList otherwise measures and Load dependent code are wrong
+				this.getOwnerNode().getJobInfoList().add(newJobInfo);
+				// Adds this job to the queue jobinfolist
+				queueJobInfoList.add(newJobInfo);
 
 				//job has been added: decrease class e total counters
 				residualClassJobs[randomClassIndex]--;
 				totJobs--;
-
+				
 				// Signals to global jobInfoList new added job - Bertoli Marco
 				this.getOwnerNode().getQueueNet().getJobInfoList().addJob(newJob);
-
+				
+				
 			}
 
 			//else no other jobs of this class must be added
