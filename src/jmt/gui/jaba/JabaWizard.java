@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -34,7 +33,6 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -58,6 +56,7 @@ import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.common.xml.ModelLoader;
 import jmt.gui.exact.panels.ForceUpdatablePanel;
 import jmt.gui.jaba.link.SolverDispatcher;
+import jmt.gui.jaba.panels.AllInOnePanel;
 import jmt.gui.jaba.panels.ClassesPanel;
 import jmt.gui.jaba.panels.ConvexHullPanel;
 import jmt.gui.jaba.panels.DescriptionPanel;
@@ -98,6 +97,8 @@ public class JabaWizard extends Wizard {
 	private WizardPanel serviceTimesPanel, serviceDemandsPanel, visitsPanel,
 			performancePanel;
 	private ConvexHullPanel hullPanel;
+
+	private AllInOnePanel allInOnePanel;
 
 	public JabaWizard() {
 		this(new JabaModel());
@@ -143,9 +144,14 @@ public class JabaWizard extends Wizard {
 		addPanel(performancePanel);
 		// END Sebastiano Spicuglia 2010/12/04
 
-		addPanel(new SectorsTextualPanel(this));
+		// NEW Sebastiano Spicuglia 2011/18/05
+		allInOnePanel = new AllInOnePanel(this);
+		allInOnePanel.repaint();
+		addPanel(allInOnePanel);
+		// END Sebastiano Spicuglia 2011/18/05
 
-		show();
+		addPanel(new SectorsTextualPanel(this));
+		this.setVisible(true);
 	}
 
 	private AbstractJMTAction FILE_SAVE = new AbstractJMTAction("Save...") {
@@ -253,7 +259,7 @@ public class JabaWizard extends Wizard {
 
 		{
 			putValue(Action.SHORT_DESCRIPTION,
-					"Random generation of service demands");
+					"Random generation of service demands in the interval [0, 100]");
 			setIcon("dice", JMTImageLoader.getImageLoader());
 			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
 					KeyEvent.VK_R, ActionEvent.CTRL_MASK));
@@ -264,6 +270,7 @@ public class JabaWizard extends Wizard {
 			randomizeModel();
 		}
 	};
+
 
 	private AbstractJMTAction HELP = new AbstractJMTAction("JABA help") {
 		/**
@@ -331,38 +338,6 @@ public class JabaWizard extends Wizard {
 		}
 	};
 
-	protected void showDialogExportToSvg() {
-		int returnVal;
-		int response;
-		JFileChooser svgFileDialog;
-		Object curr;
-		String path;
-		File f;
-
-		svgFileDialog = new JFileChooser(System.getProperty("user.dir"));
-		returnVal = svgFileDialog.showSaveDialog(this);
-
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			curr = tabbedPane.getSelectedComponent();
-			if (curr instanceof WizardPanel) {
-				path = svgFileDialog.getSelectedFile().getAbsolutePath();
-				f = new File(path);
-				if (f.exists()) {
-					response = JOptionPane.showConfirmDialog(this, "File "
-							+ svgFileDialog.getSelectedFile().getName()
-							+ " already exists in thi folder. Do you want "
-							+ "to replace it?", "JMT - Warning",
-							JOptionPane.OK_CANCEL_OPTION,
-							JOptionPane.WARNING_MESSAGE);
-					if (response != JOptionPane.OK_OPTION) {
-						return;
-					}
-				}
-			}
-		}
-
-	}
-
 	/**
 	 * @return the toolbar for the jaba wizard. Shamelessly uses icon from the
 	 *         main jmt frame
@@ -374,8 +349,8 @@ public class JabaWizard extends Wizard {
 
 		// null values add a gap between toolbar icons
 		AbstractJMTAction[] actions = { FILE_NEW, FILE_OPEN, FILE_SAVE, null,
-				ACTION_SOLVE, SWITCH_TO_SIMULATOR, ACTION_RANDOMIZE_MODEL,
-				null, HELP };
+				ACTION_SOLVE, SWITCH_TO_SIMULATOR, ACTION_RANDOMIZE_MODEL
+				, null, HELP };
 		String[] htext = {
 				"Creates a new model",
 				"Opens a saved model",
@@ -383,7 +358,7 @@ public class JabaWizard extends Wizard {
 				"Solves the current model",
 				"Import current model to JSIMwiz to solve it with the simulator",
 				"Randomize model data", "Show help" };
-		ArrayList buttons = tb.populateToolbar(actions);
+		ArrayList<AbstractButton> buttons = tb.populateToolbar(actions);
 		// Adds help
 		for (int i = 0; i < buttons.size(); i++) {
 			AbstractButton button = (AbstractButton) buttons.get(i);
@@ -461,8 +436,8 @@ public class JabaWizard extends Wizard {
 		Rectangle bounds = this.getBounds();
 		JabaWizard ew = new JabaWizard();
 		ew.setBounds(bounds);
-		ew.show();
-		this.hide();
+		ew.setVisible(true);
+		this.setVisible(false);
 		this.dispose();
 	}
 
@@ -505,7 +480,8 @@ public class JabaWizard extends Wizard {
 		switch (retval) {
 		case ModelLoader.SUCCESS:
 			data.resetChanged();
-			this.setTitle("JABA - " + modelLoader.getSelectedFile().getAbsolutePath());
+			this.setTitle("JABA - "
+					+ modelLoader.getSelectedFile().getAbsolutePath());
 			break;
 		case ModelLoader.FAILURE:
 			JOptionPane.showMessageDialog(this,
@@ -519,6 +495,7 @@ public class JabaWizard extends Wizard {
 	 * Opens a new model <br>
 	 * Author: Bertoli Marco
 	 */
+	@SuppressWarnings("unchecked")
 	private void open() {
 		currentPanel.lostFocus();
 		if (checkForSave("<html>Save changes before opening a saved model?</html>")) {
@@ -545,7 +522,7 @@ public class JabaWizard extends Wizard {
 				addPanel(serviceDemandsPanel, 2);
 			}
 			tabbedPane.setSelectedIndex(0);
-			this.setTitle("JABA - " + modelLoader.getSelectedFile().getAbsolutePath());
+			this.setTitle("JABA - " + modelLoader.getSelectedFile().getName());
 			break;
 		case ModelLoader.FAILURE:
 			JOptionPane.showMessageDialog(this,
@@ -575,7 +552,6 @@ public class JabaWizard extends Wizard {
 		// do not call this method!!! It's already called inside checkFinish()
 		// method.
 		// currentPanel.lostFocus();
-
 		solve();
 	}
 
@@ -633,8 +609,6 @@ public class JabaWizard extends Wizard {
 		}
 		// End New Carlo Gimondi
 
-		// if (solver == null) solver = new SolverClient();
-
 		// NEW Zanzottera
 		if (jsolver == null) {
 			jsolver = new SolverDispatcher();
@@ -674,7 +648,7 @@ public class JabaWizard extends Wizard {
 
 		// Modify Carlo Gimondi
 
-		// Remove when 3 class convex hull Panel will create
+		// Remove when 3 class Utilization Panel will create
 		if (data.getClasses() == 3) {
 			tabbedPane.setEnabledAt(tabbedPane.getComponentCount() - 2, false);
 			tabbedPane.setEnabledAt(tabbedPane.getComponentCount() - 3, false);
@@ -688,29 +662,10 @@ public class JabaWizard extends Wizard {
 		// End Modify Carlo Gimondi
 	}
 
+
 	// NEW
 	// @author Stefano Omini
 	private void showHelp(ActionEvent event) {
-		/*
-		 * try { ClassLoader cl = this.getClass().getClassLoader();
-		 * 
-		 * 
-		 * //URL url = HelpSet.findHelpSet(cl, "help/mvaIt/MVA.hs"); URL url =
-		 * HelpSet.findHelpSet(cl, "help/jmva_en/jmva_eng.hs");
-		 * //System.out.println(url.toString());
-		 * 
-		 * HelpSet hs = new HelpSet(cl, url); HelpBroker hb =
-		 * hs.createHelpBroker(); CSH.DisplayHelpFromSource display = new
-		 * CSH.DisplayHelpFromSource(hb); display.actionPerformed(event);
-		 * 
-		 * //} catch (HelpSetException e) { } catch (Exception e) {
-		 * e.printStackTrace(); JOptionPane.showMessageDialog(this,
-		 * "Sorry, jMVA help is not available", "Help not found",
-		 * JOptionPane.ERROR_MESSAGE); }
-		 * 
-		 * return;
-		 */
-
 		JHelp helpViewer;
 		try {
 			// Get the classloader of this class.
@@ -811,12 +766,10 @@ public class JabaWizard extends Wizard {
 			return;
 		}
 
-		// NEW
 		for (int i = 0; i < panelCount; i++) {
 			panels.get(i).setData(data);
 			panels.get(i).redraw();
 		}
-		// END
 	}
 
 	@Override

@@ -23,8 +23,10 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Line2D;
@@ -52,7 +54,7 @@ import jmt.gui.jaba.JabaModel;
  *         Date: 8-feb-2006
  *         Time: 11.42.37
  */
-public class Sectors3DGraph extends JPanel {
+public class Sectors3DGraph extends JabaGraph implements MouseListener {
 	/**
 	 * 
 	 */
@@ -99,7 +101,8 @@ public class Sectors3DGraph extends JPanel {
 	 * @param classNames array with class names
 	 */
 	public Sectors3DGraph(JabaModel data) {
-		super(new BorderLayout());
+		super();
+		this.setLayout(new BorderLayout());
 		this.s3d = data.getResults().getSaturationSectors();
 		this.classNames = data.getClassNames();
 		this.setBackground(BGCOLOR);
@@ -116,12 +119,14 @@ public class Sectors3DGraph extends JPanel {
 		tmp.setOpaque(false);
 		this.add(tmp, BorderLayout.SOUTH);
 
+		this.addMouseListener(this);
 		// Adds a mouseListener to show graph coordinates
 		this.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				if (isShown) {
-					String coord = getCoordinates(e.getX(), e.getY());
+					Point tmp = adjustMousePoint2(e.getX(), e.getY());
+					String coord = getCoordinates(tmp.x, tmp.y);
 					if (coord != null) {
 						coordLabel.setText(coord);
 						coordLabel.setVisible(true);
@@ -384,7 +389,7 @@ public class Sectors3DGraph extends JPanel {
 	 * Inner class used to sort sector captions
 	 * <br> Author: Bertoli Marco
 	 */
-	protected class Caption implements Comparable {
+	protected class Caption implements Comparable<Object> {
 		private double x, y;
 		private String label;
 		private int statN;
@@ -464,6 +469,24 @@ public class Sectors3DGraph extends JPanel {
 				}
 			}
 		}
+	}
+
+	public void mouseClicked(MouseEvent ev) {
+		if (ev.getButton() == MouseEvent.BUTTON3) {
+			rightClick(ev);
+		}
+	}
+
+	public void mouseEntered(MouseEvent arg0) {
+	}
+
+	public void mouseExited(MouseEvent arg0) {
+	}
+
+	public void mousePressed(MouseEvent arg0) {
+	}
+
+	public void mouseReleased(MouseEvent arg0) {
 	}
 
 }

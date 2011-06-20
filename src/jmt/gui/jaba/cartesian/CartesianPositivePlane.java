@@ -39,7 +39,7 @@ import jmt.gui.jaba.label.YAxisPlacer;
 public class CartesianPositivePlane {
 	private static int SPACE_BETWEEN_MAX_VALUE_AND_ARROW = 30;
 	private static int SPACE_BETWEEN_LABEL_AND_ARROW = 7;
-	private static int SPACE_BETWEEN_LEFT_MARGIN_AND_LABEL = 17;
+	private static int SPACE_BETWEEN_LEFT_MARGIN_AND_LABEL = 22;
 	private static int SPACE_BETWEEN_X_AXIS_AND_LABEL = 15;
 	private static int ARROW_WIDTH = 8;
 	private static int ARROW_HEIGHT = 5;
@@ -87,6 +87,7 @@ public class CartesianPositivePlane {
 	 * 
 	 * @param points
 	 *            an arraylist of points
+	 * @throws Exception
 	 */
 	public void drawValuesOnXAxis(ArrayList<DPoint> points) {
 		int i;
@@ -102,7 +103,8 @@ public class CartesianPositivePlane {
 					getTrueY(points.get(i).getY())));
 		}
 		placer = new XAxisPlacer(labels, truePoints);
-		placer.place(g, getTrueY(0) + SPACE_BETWEEN_X_AXIS_AND_LABEL, getTrueY(0));
+		placer.place(g, getTrueY(0) + SPACE_BETWEEN_X_AXIS_AND_LABEL,
+				getTrueY(0));
 	}
 
 	/**
@@ -112,7 +114,7 @@ public class CartesianPositivePlane {
 	 *            an arraylist of points
 	 */
 	public void drawValuesOnYAxis(ArrayList<DPoint> points) {
-		if(points.size()==0)
+		if (points.size() == 0)
 			return;
 		int i;
 		ArrayList<String> labels;

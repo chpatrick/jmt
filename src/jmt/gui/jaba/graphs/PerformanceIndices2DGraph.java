@@ -19,15 +19,12 @@ package jmt.gui.jaba.graphs;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Polygon;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -37,11 +34,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 
 import jmt.engine.jaba.DPoint;
 import jmt.engine.jaba.FinalSect2D;
@@ -49,20 +42,18 @@ import jmt.gui.jaba.JabaModel;
 import jmt.gui.jaba.cartesian.CartesianPositivePlane;
 import jmt.gui.jaba.label.YAxisPlacer;
 
-import org.freehep.util.export.ExportDialog;
-
 /**
  * This graph shows the behaviour of the utilization of the resources.
  * 
  * @author Sebastiano Spicuglia
  * 
  */
-public class PerformanceIndices2DGraph extends JPanel implements MouseListener,
-		MouseMotionListener {
+public class PerformanceIndices2DGraph extends JabaGraph implements
+		MouseListener, MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
 
-	private static final int GRAPH_LEFT_MARGIN = 80;
+	private static final int GRAPH_LEFT_MARGIN = 60;
 	private static final int GRAPH_BOTTOM_MARGIN = 30;
 	private static final int GRAPH_RIGHT_MARGIN = 150;
 	private static final int GRAPH_TOP_MARGIN = 50;
@@ -81,14 +72,6 @@ public class PerformanceIndices2DGraph extends JPanel implements MouseListener,
 	private CartesianPositivePlane plane;
 
 	private int index = 0;
-	// Popup menu
-	private PlotPopupMenu popup = new PlotPopupMenu();
-	// Value of the current zoom
-	private float currentScale = 1;
-	// Height value panel when currentScale is equals to 1;
-	private int normalHeight;
-	// Width value panel when currentScale is equals to 1;
-	private int normalWidth;
 
 	private Color defaultColors[] = { Color.blue, Color.green, Color.magenta,
 			Color.orange, Color.red };
@@ -110,8 +93,6 @@ public class PerformanceIndices2DGraph extends JPanel implements MouseListener,
 		super();
 
 		this.data = data;
-		normalHeight = this.getHeight();
-		normalWidth = this.getWidth();
 
 		showStation = new boolean[data.getStations()];
 		stationLabels = new Rectangle[data.getStations()];
@@ -221,7 +202,12 @@ public class PerformanceIndices2DGraph extends JPanel implements MouseListener,
 		drawSummary(g, stationColors);
 
 		g.setColor(Color.black);
-
+		{// we always draw certain points
+			if (!valuesOnLeftY.contains(new DPoint(0, 1)))
+				valuesOnLeftY.add(new DPoint(0, 1));
+			if (!valuesOnRightY.contains(new DPoint(1, 1)))
+				valuesOnRightY.add(new DPoint(1, 1));
+		}
 		plane.drawValuesOnYAxis(valuesOnLeftY);
 
 		{// we draw the last points in another axis
@@ -254,7 +240,8 @@ public class PerformanceIndices2DGraph extends JPanel implements MouseListener,
 			g.setColor(Color.black);
 			g.drawString(content, (int) tooltip.getX(), (int) tooltip.getY());
 		}
-
+		g.dispose();
+		this.revalidate();
 	}
 
 	private void drawSummary(Graphics g, ArrayList<Color> stationColors) {
@@ -274,6 +261,11 @@ public class PerformanceIndices2DGraph extends JPanel implements MouseListener,
 			}
 			g.setColor(Color.black);
 			g.drawString(data.getStationNames()[i], xBase + 10, yBase);
+			stationLabels[i] = new Rectangle(xBase, yBase
+					- (g.getFontMetrics().getHeight() / 2),
+					(int) (xBase + 10 + g.getFontMetrics()
+							.getStringBounds(data.getStationNames()[i], g)
+							.getWidth()), 8);
 			yBase += 15;
 		}
 	}
@@ -283,31 +275,12 @@ public class PerformanceIndices2DGraph extends JPanel implements MouseListener,
 		repaint();
 	}
 
-	public void zoom(float perc, boolean restore) {
-		int Height = 0;
-		int Width = 0;
-
-		if (!restore) {
-			Height = (int) (getHeight() * (1 + perc));
-			Width = (int) (getWidth() * (1 + perc));
-			currentScale += perc;
-		} else {
-			Height = (int) (normalHeight);
-			Width = (int) (normalWidth);
-			currentScale = 1;
-		}
-
-		setPreferredSize(new Dimension(Width - 15, Height));
-		setSize(new Dimension(Width, Height));
-		this.repaint();
-	}
-
 	public void mouseClicked(MouseEvent ev) {
 		if (ev.getButton() == MouseEvent.BUTTON3) {
-			popup.show(this, ev.getX(), ev.getY());
+			super.rightClick(ev);
 			return;
 		}
-		DPoint test = new DPoint(ev.getX(), ev.getY());
+		DPoint test = this.adjustMousePoint(ev.getX(), ev.getY());
 		for (int i = 0; i < data.getStationNames().length; i++) {
 			if (stationLabels[i] != null && stationLabels[i].contains(test)) {
 				showStation[i] = !showStation[i];
@@ -328,78 +301,6 @@ public class PerformanceIndices2DGraph extends JPanel implements MouseListener,
 	public void mouseReleased(MouseEvent arg0) {
 	}
 
-	// --- Methods for popup menu
-	// -------------------------------------------------------------
-	/**
-	 * A simple JPopupMenu used to manage operations on plot. It gives the
-	 * choice to zoom in and out on the plot, restore original view and save
-	 * plot to images (in EPS or PNG format)
-	 */
-	protected class PlotPopupMenu extends JPopupMenu {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		public JMenuItem restore;
-		public JMenuItem zoomIn;
-		public JMenuItem zoomOut;
-		public JMenuItem saveAs;
-
-		public PlotPopupMenu() {
-			restore = new JMenuItem("Original view");
-			zoomIn = new JMenuItem("Zoom in");
-			zoomOut = new JMenuItem("Zoom out");
-			saveAs = new JMenuItem("Save as...");
-			this.add(restore);
-			this.add(zoomIn);
-			this.add(zoomOut);
-			this.addSeparator();
-			this.add(saveAs);
-			addListeners();
-		}
-
-		public void addListeners() {
-			restore.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					zoom(1, true);
-				}
-			});
-
-			zoomIn.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					zoom(0.1f, false);
-				}
-			});
-
-			zoomOut.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					zoom(-0.1f, false);
-				}
-			});
-
-			saveAs.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					ExportDialog export = new ExportDialog();
-					export.showExportDialog(
-							(Component) PerformanceIndices2DGraph.this,
-							"Export view as ...",
-							(Component) PerformanceIndices2DGraph.this,
-							"Export");
-				}
-
-			});
-		}
-
-	}
-
 	public void mouseDragged(MouseEvent e) {
 	}
 
@@ -408,13 +309,15 @@ public class PerformanceIndices2DGraph extends JPanel implements MouseListener,
 		util = data.getResults().getUtilization();
 
 		for (int j = 0; j < data.getStationNames().length; j++) {
-			DPoint test = new DPoint(ev.getX(), ev.getY());
+			DPoint test = this.adjustMousePoint(ev.getX(), ev.getY());
 			if (stationLabels[j] != null && stationLabels[j].contains(test)) {
 				setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 				return;
 			}
 			int i;
 			for (i = 0; i < util[j].size(); i = i + 2) {
+				if (!showStation[j])
+					continue;
 				DPoint pointA = plane.getTruePoint(util[j].get(i));
 				DPoint pointB = plane.getTruePoint(util[j].get(i + 1));
 

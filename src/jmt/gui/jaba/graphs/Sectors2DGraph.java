@@ -19,23 +19,19 @@ package jmt.gui.jaba.graphs;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Polygon;
 import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Rectangle2D;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 
 import jmt.engine.jaba.DPoint;
 import jmt.engine.jaba.FinalSect2D;
@@ -43,8 +39,6 @@ import jmt.engine.jaba.Station2D;
 import jmt.gui.jaba.JabaModel;
 import jmt.gui.jaba.cartesian.CartesianPositivePlane;
 import jmt.gui.jaba.label.Sectors2DPlacer;
-
-import org.freehep.util.export.ExportDialog;
 
 /**
  * <p>
@@ -62,14 +56,13 @@ import org.freehep.util.export.ExportDialog;
  * @author Bertoli Marco, Zanzottera Andrea Date: 8-feb-2006 Time: 11.33.48
  *         Modified by Sebastiano Spicuglia
  */
-public class Sectors2DGraph extends JPanel implements MouseListener,
+public class Sectors2DGraph extends JabaGraph implements MouseListener,
 		MouseMotionListener {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	private static final int GRAPH_LEFT_MARGIN = 60;
 	private static final int GRAPH_BOTTOM_MARGIN = 25;
-	// private static final int GraphRightMargin = 100;
 	private static final int GRAPH_TOP_MARGIN = 50;
 	private static final int DISTANCE_BETWEEN_GRAPH_AND_LABELS = 100;
 
@@ -83,18 +76,14 @@ public class Sectors2DGraph extends JPanel implements MouseListener,
 	private static final BasicStroke SECTORS = new BasicStroke(3);
 	private static final BasicStroke LINES = new BasicStroke(1);
 
-	// private DPoint equiUPoint;
+	private static final Color TOOL_TIP_COLOR = new Color(255, 255, 128);
+	private static final DecimalFormat FORMATTER = new DecimalFormat("0.00");
+
 	private JabaModel data;
-	// Popup menu
-	private PlotPopupMenu popup = new PlotPopupMenu();
-	// Value of the current zoom
-	private float currentScale = 1;
-	// Height value panel when currentScale is equals to 1;
-	private int normalHeight;
-	// Width value panel when currentScale is equals to 1;
-	private int normalWidth;
 	// The plane where we draw the graph
 	private CartesianPositivePlane plane;
+
+	private DPoint tooltip;
 
 	/**
 	 * Builds a new Sectors2DPanel
@@ -107,12 +96,8 @@ public class Sectors2DGraph extends JPanel implements MouseListener,
 	public Sectors2DGraph(JabaModel data) {
 		super();
 		this.data = data;
-		// this.equiUPoint = equiU;
 		this.setBorder(BorderFactory.createEtchedBorder());
 		this.setBackground(BGCOLOR);
-
-		normalHeight = this.getHeight();
-		normalWidth = this.getWidth();
 
 		addMouseListener(this);
 		addMouseMotionListener(this);
@@ -125,7 +110,7 @@ public class Sectors2DGraph extends JPanel implements MouseListener,
 	 * @param g
 	 *            graphic object. <b>Must</b> be an instance of Graphics2D
 	 */
-	  
+
 	public void paint(Graphics g) {
 		super.paint(g);
 
@@ -149,7 +134,9 @@ public class Sectors2DGraph extends JPanel implements MouseListener,
 		try {
 			graphOrigin = new DPoint(GRAPH_LEFT_MARGIN,
 					(getHeight() - GRAPH_BOTTOM_MARGIN));
-			plane = new CartesianPositivePlane(g2, graphOrigin,
+			plane = new CartesianPositivePlane(
+					g2,
+					graphOrigin,
 					(int) (getHeight() - GRAPH_TOP_MARGIN - GRAPH_BOTTOM_MARGIN),
 					(int) (getHeight() - GRAPH_TOP_MARGIN - GRAPH_BOTTOM_MARGIN),
 					1, 1);
@@ -219,6 +206,20 @@ public class Sectors2DGraph extends JPanel implements MouseListener,
 		// We draw the labels
 		placer = new Sectors2DPlacer(labels, labelPoints);
 		placer.place(g2, plane.getTrueX(1) + DISTANCE_BETWEEN_GRAPH_AND_LABELS);
+
+		if (tooltip != null) {
+			DPoint graphPoint = plane.getGraphPointFromTruePoint(tooltip);
+			String content = FORMATTER.format(graphPoint.getX()) + ", "
+					+ FORMATTER.format(graphPoint.getY());
+			Rectangle2D bounds = g.getFontMetrics().getStringBounds(content, g);
+			g.setColor(TOOL_TIP_COLOR);
+			g.fillRect((int) tooltip.getX(), (int) tooltip.getY()
+					- (int) bounds.getHeight() + 1, (int) bounds.getWidth(),
+					(int) bounds.getHeight() + 2);
+			g.setColor(Color.black);
+			g.drawString(content, (int) tooltip.getX(), (int) tooltip.getY());
+		}
+
 	}
 
 	private String labelGenerator(Vector<Station2D> stations) {
@@ -233,132 +234,49 @@ public class Sectors2DGraph extends JPanel implements MouseListener,
 		return label;
 	}
 
-	/**
-	 * Zoom the graph
-	 * 
-	 * @param f
-	 * @param abs
-	 */
-	public void zoom(float perc, boolean restore) {
-		// TODO javadoc
-
-		int Height = 0;
-		int Width = 0;
-
-		if (!restore) {
-			Height = (int) (getHeight() * (1 + perc));
-			Width = (int) (getWidth() * (1 + perc));
-			currentScale += perc;
-		} else {
-			Height = (int) (normalHeight);
-			Width = (int) (normalWidth);
-			currentScale = 1;
-		}
-
-		setPreferredSize(new Dimension(Width - 15, Height));
-		setSize(new Dimension(Width, Height));
-		this.repaint();
-	}
-
-	  
 	public void mouseDragged(MouseEvent arg0) {
 
 	}
 
-	  
 	public void mouseMoved(MouseEvent ev) {
-	}
+		DPoint test = adjustMousePoint(ev.getX(), ev.getY());
 
-	  
-	public void mouseClicked(MouseEvent ev) {
-		if (ev.getButton() == MouseEvent.BUTTON3) {
-			popup.show(this, ev.getX(), ev.getY());
+		DPoint pointA = plane.getTruePoint(new DPoint(0, 1));
+		DPoint pointB = plane.getTruePoint(new DPoint(1, 0));
+
+		Polygon rect = new Polygon();
+		rect.addPoint((int) pointA.getX(), (int) pointA.getY() - 16);
+		rect.addPoint((int) pointA.getX(), (int) pointA.getY() + 16);
+		rect.addPoint((int) pointB.getX(), (int) pointB.getY() - 16);
+		rect.addPoint((int) pointB.getX(), (int) pointB.getY() + 16);
+		if (rect.contains(test)) {
+			tooltip = test;
+			repaint();
+			return;
+		}
+		if (tooltip != null) {
+			tooltip = null;
+			repaint();
+			return;
 		}
 	}
 
-	  
+	public void mouseClicked(MouseEvent ev) {
+		if (ev.getButton() == MouseEvent.BUTTON3) {
+			rightClick(ev);
+		}
+	}
+
 	public void mouseEntered(MouseEvent arg0) {
 	}
 
-	  
 	public void mouseExited(MouseEvent arg0) {
 	}
 
-	  
 	public void mousePressed(MouseEvent arg0) {
 	}
 
-	  
-	public void mouseReleased(MouseEvent arg0) {
-	}
-
-	// --- Methods for popup menu
-	// -------------------------------------------------------------
-	/**
-	 * A simple JPopupMenu used to manage operations on plot. It gives the
-	 * choice to zoom in and out on the plot, restore original view and save
-	 * plot to images (in EPS or PNG format)
-	 */
-	protected class PlotPopupMenu extends JPopupMenu {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		public JMenuItem restore;
-		public JMenuItem zoomIn;
-		public JMenuItem zoomOut;
-		public JMenuItem saveAs;
-
-		public PlotPopupMenu() {
-			restore = new JMenuItem("Original view");
-			zoomIn = new JMenuItem("Zoom in");
-			zoomOut = new JMenuItem("Zoom out");
-			saveAs = new JMenuItem("Save as...");
-			this.add(restore);
-			this.add(zoomIn);
-			this.add(zoomOut);
-			this.addSeparator();
-			this.add(saveAs);
-			addListeners();
-		}
-
-		public void addListeners() {
-			restore.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					zoom(1, true);
-				}
-			});
-
-			zoomIn.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					zoom(0.1f, false);
-				}
-			});
-
-			zoomOut.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					zoom(-0.1f, false);
-				}
-			});
-
-			saveAs.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					ExportDialog export = new ExportDialog();
-					export.showExportDialog((Component) Sectors2DGraph.this,
-							"Export view as ...",
-							(Component) Sectors2DGraph.this, "Export");
-				}
-
-			});
-		}
+	public void mouseReleased(MouseEvent ev) {
 	}
 
 }

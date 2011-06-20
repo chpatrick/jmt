@@ -17,49 +17,42 @@
  */
 package jmt.gui.jaba.panels;
 
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 import javax.swing.ScrollPaneConstants;
 
 import jmt.framework.gui.wizard.WizardPanel;
-import jmt.gui.jaba.JabaConstants;
 import jmt.gui.jaba.JabaModel;
 import jmt.gui.jaba.JabaWizard;
+import jmt.gui.jaba.graphs.Convex2DGraph;
+import jmt.gui.jaba.graphs.Convex3DGraph;
 import jmt.gui.jaba.graphs.JabaCanvas;
 import jmt.gui.jaba.graphs.PerformanceIndices2DGraph;
+import jmt.gui.jaba.graphs.Sectors2DGraph;
+import jmt.gui.jaba.graphs.Sectors3DGraph;
 
 /**
  * 
  * @author Sebastiano Spicuglia
  *
  */
-public class PerformanceIndicesPanel extends WizardPanel implements
-		ActionListener {
+public class AllInOnePanel extends WizardPanel{
 
 	private static final long serialVersionUID = 1L;
 	private JabaModel data;
 	private boolean redrawNeeded;
-	private JComboBox whichIndexComboBox;
-	private String[] whichIndexArray = { "Utilization", "Throughput",
-			"Response time" };
-	private PerformanceIndices2DGraph graph;
+	private JabaWizard mainWin;
 
-	public PerformanceIndicesPanel(JabaWizard jabaWizard) {
+	public AllInOnePanel(JabaWizard jabaWizard) {
 		super();
+		this.mainWin = jabaWizard;
 		initComponents();
 		repaint();
-		
 	}
 
 	private void initComponents() {
@@ -78,22 +71,18 @@ public class PerformanceIndicesPanel extends WizardPanel implements
 				&& data.getResults().getSaturationSectors().size() > 0) {
 			if (data.getClasses() == 2) {
 				this.removeAll();
-				this.setLayout(new BorderLayout());
-				graph = new PerformanceIndices2DGraph(data);
-				this.add(new JabaCanvas(graph), BorderLayout.CENTER);
-				this.add(new JLabel(JabaConstants.DESCRIPITION_GRAPH_PERFORMANCE_INDEX),
-						BorderLayout.PAGE_END);
-				JPanel flowPanel = new JPanel(
-						new FlowLayout(FlowLayout.LEADING));
-				flowPanel.add(new JLabel(JabaConstants.SELECT_WHICH_INDEX));
-				whichIndexComboBox = new JComboBox(whichIndexArray);
-				whichIndexComboBox.addActionListener(this);
-				flowPanel.add(whichIndexComboBox);
-				//this.add(flowPanel, BorderLayout.PAGE_START);
+				this.setLayout(new GridLayout(2, 1));
+				JPanel tmp = new JPanel(new GridLayout(1, 2));
+				tmp.add(new JabaCanvas(new Sectors2DGraph(data)));
+				tmp.add(new JabaCanvas(new Convex2DGraph(data, mainWin)));
+				this.add(tmp);
+				this.add(new JabaCanvas(new PerformanceIndices2DGraph(data)));
 				repaint();
 			} else if (data.getClasses() == 3) {
 				this.removeAll();
-				// Not supported
+				this.setLayout(new GridLayout(1, 2));
+				this.add(new JabaCanvas(new Sectors3DGraph(data)));
+				this.add(new JabaCanvas(new Convex3DGraph(data, mainWin)));
 				repaint();
 			}
 		} else {
@@ -105,7 +94,7 @@ public class PerformanceIndicesPanel extends WizardPanel implements
 					.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 			synScroll
 					.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-			synView.setText("<html><body><center><font face=\"bold\" size=\"3\">Utilization will be here displayed once you solve the model.</font></center></body></html>");
+			synView.setText("<html><body><center><font face=\"bold\" size=\"3\">Graphs will be here displayed once you solve the model.</font></center></body></html>");
 			this.add(synScroll);
 			repaint();
 		}
@@ -120,24 +109,14 @@ public class PerformanceIndicesPanel extends WizardPanel implements
 		repaint();
 	}
 
-	
 	  
 	public String getName() {
-		return "Utilization - Graph";
-		//return "Performance Indices - Graphics";
+		return "All in one";
 	}
-
 	  
 	public void gotFocus() {
 		redraw();
 	}
-
-	  
-	public void actionPerformed(ActionEvent arg0) {
-		if(graph!=null) {
-			int index = whichIndexComboBox.getSelectedIndex();
-			graph.drawIndex(index);
-		}
-	}
+  
 
 }

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import jmt.engine.jaba.DPoint;
+import jmt.engine.jaba.convexHull3d.HullFace;
 
 /**
  * Created by IntelliJ IDEA. User: Andrea Date: 14-ott-2005 Time: 12.22.46 To
@@ -45,6 +46,7 @@ public class JabaResults {
 	private Vector<Point2D> convex;
 	private Vector<Point2D> allPoints;
 	private ArrayList<DPoint>[] util;
+	private ArrayList<HullFace> faces;
 
 	public void setSaturationSectors(Vector<Object> results) {
 		this.saturationSectors = results;
@@ -172,6 +174,14 @@ public class JabaResults {
 	
 	public ArrayList<DPoint>[] getUtilization() {
 		return util;
+	}
+	
+	public ArrayList<HullFace> getFaces() {
+		return faces;
+	}
+
+	public void setFaces(ArrayList<HullFace> cHullFaces) {
+		this.faces = cHullFaces;
 	}
 
 }

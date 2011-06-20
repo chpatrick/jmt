@@ -21,10 +21,8 @@ package jmt.gui.jaba.graphs;
 import java.awt.AlphaComposite;
 import java.awt.BasicStroke;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Composite;
 import java.awt.Cursor;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -32,7 +30,6 @@ import java.awt.Point;
 import java.awt.Polygon;
 import java.awt.RenderingHints;
 import java.awt.Stroke;
-import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -43,11 +40,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
-import javax.swing.JMenuItem;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 
 import jmt.engine.jaba.DPoint;
 import jmt.engine.jaba.FinalSect2D;
@@ -56,17 +49,19 @@ import jmt.gui.jaba.JabaModel;
 import jmt.gui.jaba.JabaWizard;
 import jmt.gui.jaba.cartesian.CartesianPositivePlane;
 
-import org.freehep.util.export.ExportDialog;
-
 /**
  * This class draws all the part of the graph
  * 
  * @author Carlo Gimondi, modified by Sebastiano Spicuglia
  */
 
-public class Convex2DGraph extends JPanel implements MouseListener,
+public class Convex2DGraph extends JabaGraph implements MouseListener,
 		MouseMotionListener {
+
 	private static final long serialVersionUID = 1L;
+
+	private static final Color UNFILTERING_COLOR = Color.RED;
+	private static final Color FILTERING_COLOR = Color.BLUE;
 
 	private static final int GRAPH_LEFT_MARGIN = 60;
 	private static final int GRAPH_BOTTOM_MARGIN = 30;
@@ -83,13 +78,9 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 
 	private static final BasicStroke LINES = new BasicStroke(1);
 
-	private static final int LEFT_MARGIN = 60;
-	private static final int BOTTOM_MARGIN = 25;
-	private static final int RIGHT_MARGIN = 100;
-	private static final int TOP_MARGIN = 50;
-
-	private static final DecimalFormat FORMAT_2_DEC = new DecimalFormat("0.00");
-	private static final DecimalFormat FORMAT_4_DEC = new DecimalFormat("0.0000");
+	private static final DecimalFormat FORMAT_3_DEC = new DecimalFormat("0.000");
+	private static final DecimalFormat FORMAT_4_DEC = new DecimalFormat(
+			"0.0000");
 
 	private double xMaxValue;
 	private double yMaxValue;
@@ -103,16 +94,18 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 									// selezionato o puntato dal mouse
 	private JabaWizard mainWin;
 	private ConvexSegment selectedConvexSegment;
-	// Popupmenu
-	private PlotPopupMenu popup = new PlotPopupMenu();
-	// Value of the current zoom
-	private float currentScale = 1;
-	// Height value panel when currentScale is equals to 1;
-	private int normalHeight;
-	// Width value panel when currentScale is equals to 1;
-	private int normalWidth;
 
 	private boolean showAllLabels;
+
+	private Point filterStartPoint;
+
+	private boolean filtering;
+
+	private Point filterEndPoint;
+
+	private boolean unFiltering;
+
+	private boolean[] filterStationLabel;
 
 	/**
 	 * Initialize the object from the vector where all the points are sored
@@ -127,6 +120,7 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 	 *            The width of the window
 	 */
 	public Convex2DGraph(JabaModel data, JabaWizard mainWin) {
+		super();
 		DPoint p;
 
 		this.setBorder(BorderFactory.createEtchedBorder());
@@ -144,9 +138,11 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 		this.dragPoint = new Point(0, 0);
 		this.xMaxValue = 0;
 		this.yMaxValue = 0;
-		this.normalHeight = this.getHeight();
-		this.normalWidth = this.getWidth();
 		this.showAllLabels = true;
+		this.filterStationLabel = new boolean[data.getStations()];
+		for (int i = 0; i < data.getStations(); i++) {
+			this.filterStationLabel[i] = false;
+		}
 
 		for (int i = 0; i < data.getResults().getAllDominants().size(); i++) {
 			p = (DPoint) data.getResults().getAllDominants().get(i);
@@ -161,7 +157,6 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 
 	}
 
-	 
 	public void paint(Graphics g) {
 		super.paint(g);
 
@@ -176,7 +171,9 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 		try {
 			graphOrigin = new DPoint(GRAPH_LEFT_MARGIN, getHeight()
 					- GRAPH_BOTTOM_MARGIN);
-			plane = new CartesianPositivePlane(g2, graphOrigin,
+			plane = new CartesianPositivePlane(
+					g2,
+					graphOrigin,
 					(int) (getWidth() - GRAPH_LEFT_MARGIN - GRAPH_RIGHT_MARGIN),
 					(int) (getHeight() - GRAPH_TOP_MARGIN - GRAPH_BOTTOM_MARGIN),
 					xMaxValue, yMaxValue);
@@ -233,6 +230,35 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 		plane.drawValuesOnYAxis(points);
 
 		plane.draw(data.getClassNames()[0], data.getClassNames()[1]);
+		if (filtering || unFiltering) {
+			Stroke oldStro = g2.getStroke();
+			Stroke stroke = new BasicStroke(2.0f, BasicStroke.CAP_ROUND,
+					BasicStroke.JOIN_ROUND);
+			g2.setStroke(stroke);
+
+			if (filtering)
+				g.setColor(FILTERING_COLOR);
+			else
+				g.setColor(UNFILTERING_COLOR);
+			Composite oldComp = g2.getComposite();
+			Composite alphaComp = AlphaComposite.getInstance(
+					AlphaComposite.SRC_OVER, 0.5f);
+			g2.setComposite(alphaComp);
+
+			int x[] = new int[2];
+			int y[] = new int[2];
+			x[0] = filterStartPoint.x;
+			y[0] = filterStartPoint.y;
+			int deltaX = filterStartPoint.x - filterEndPoint.x;
+			int deltaY = filterStartPoint.y - filterEndPoint.y;
+			x[1] = x[0] - deltaX;
+			y[1] = y[0] - deltaY;
+			Polygon area = twoPointRectangle(x[0], y[0], x[1], y[1]);
+			g2.fill(area);
+			g2.setComposite(oldComp);
+			g2.setStroke(oldStro);
+
+		}
 
 	}
 
@@ -274,10 +300,10 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 				// Current sector
 				FinalSect2D sect = (FinalSect2D) data.getResults()
 						.getSaturationSectors().get(i);
-				String pb11 = FORMAT_2_DEC.format(sect.getBeta11() * 100);
-				String pb12 = FORMAT_2_DEC.format(sect.getBeta1() * 100);
-				String pb21 = FORMAT_2_DEC.format(sect.getBeta22() * 100);
-				String pb22 = FORMAT_2_DEC.format(sect.getBeta2() * 100);
+				String pb11 = FORMAT_3_DEC.format(sect.getBeta11() * 100);
+				String pb12 = FORMAT_3_DEC.format(sect.getBeta1() * 100);
+				String pb21 = FORMAT_3_DEC.format(sect.getBeta22() * 100);
+				String pb22 = FORMAT_3_DEC.format(sect.getBeta2() * 100);
 
 				if (sect.countStation() < 2) {
 					continue;
@@ -461,12 +487,11 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 		int fontSize = 7 + getPointSize();
 		Font f = new Font("Arial", Font.PLAIN, fontSize);
 		g.setFont(f);
-		double x = Math.max(p.getX(), LEFT_MARGIN);
-		double y = Math.min(p.getY(), getHeight() - BOTTOM_MARGIN);
+		double x = Math.max(p.getX(), GRAPH_LEFT_MARGIN);
+		double y = Math.min(p.getY(), getHeight() - GRAPH_BOTTOM_MARGIN);
 
-		g.drawString(
-				"(" + FORMAT_2_DEC.format(getTrueX(x)) + ", "
-						+ FORMAT_2_DEC.format(getTrueY(y)) + ")",
+		g.drawString("(" + FORMAT_3_DEC.format(getTrueX(x)) + ", "
+				+ FORMAT_3_DEC.format(getTrueY(y)) + ")",
 				(int) (x - (fontSize * 3)), (int) y - 5 - getPointSize());
 
 		g.drawOval((int) x - (((size / 2))), (int) y - (((size / 2))), size,
@@ -480,15 +505,6 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 		g.fillOval((int) x - (((size / 2))), (int) y - (((size / 2))), size,
 				size);
 		g.setComposite(oldComp);
-	}
-
-	/**
-	 * Return the scale factor
-	 * 
-	 * @return the scale factor
-	 */
-	public double getScale() {
-		return 1;
 	}
 
 	/**
@@ -580,13 +596,15 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 				drawShadowPoint(g, dragPoint, Color.BLACK, getPointSize() + 1);
 			}
 			if (p == selectedPoint) {
-				g.drawString(p.getLabel() + " (" + FORMAT_2_DEC.format(p.getX())
-						+ ", " + FORMAT_2_DEC.format(p.getY()) + ")",
+				g.drawString(
+						p.getLabel() + " (" + FORMAT_3_DEC.format(p.getX())
+								+ ", " + FORMAT_3_DEC.format(p.getY()) + ")",
 						plane.getTrueX(p.getX()) - 15, plane.getTrueY(p.getY())
 								- 3 - getPointSize());
 			} else {
-				g.drawString(p.getLabel(), plane.getTrueX(p.getX()) - 15,
-						plane.getTrueY(p.getY()) - 3 - getPointSize());
+				if (!filterStationLabel[i])
+					g.drawString(p.getLabel(), plane.getTrueX(p.getX()) - 15,
+							plane.getTrueY(p.getY()) - 3 - getPointSize());
 
 			}
 		}
@@ -627,8 +645,9 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 	 * @return The true x point
 	 */
 	public double getTrueX(double XonScreen) {
-		return (XonScreen - LEFT_MARGIN)
-				/ (getWidth() - LEFT_MARGIN - RIGHT_MARGIN) * xMaxValue;
+		return (XonScreen - GRAPH_LEFT_MARGIN)
+				/ (getWidth() - GRAPH_LEFT_MARGIN - GRAPH_RIGHT_MARGIN)
+				* xMaxValue;
 	}
 
 	/**
@@ -640,8 +659,9 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 	 */
 	public double getTrueY(double YonScreen) {
 		YonScreen = -(YonScreen - getHeight());
-		return (YonScreen - BOTTOM_MARGIN)
-				/ (getHeight() - TOP_MARGIN - BOTTOM_MARGIN) * yMaxValue;
+		return (YonScreen - GRAPH_BOTTOM_MARGIN)
+				/ (getHeight() - GRAPH_TOP_MARGIN - GRAPH_BOTTOM_MARGIN)
+				* yMaxValue;
 	}
 
 	/**
@@ -702,36 +722,8 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 		return false;
 	}
 
-	/**
-	 * Zoom the graph
-	 * 
-	 * @param f
-	 * @param abs
-	 */
-	public void zoom(float perc, boolean restore) {
-		// TODO javadoc
-
-		int Height = 0;
-		int Width = 0;
-
-		if (!restore) {
-			Height = (int) (getHeight() * (1 + perc));
-			Width = (int) (getWidth() * (1 + perc));
-			currentScale += perc;
-		} else {
-			Height = (int) (normalHeight);
-			Width = (int) (normalWidth);
-			currentScale = 1;
-		}
-
-		setPreferredSize(new Dimension(Width - 15, Height));
-		setSize(new Dimension(Width, Height));
-		repaint();
-	}
-
-	 
 	public void mouseMoved(MouseEvent e) {
-		dragPoint = e.getPoint();
+		dragPoint = adjustMousePoint2(e.getX(), e.getY());
 		Vector<Point2D> point = data.getResults().getAllPoints();
 		DPoint p;
 
@@ -762,7 +754,6 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 			rect.addPoint((int) pointB.getX(), (int) pointB.getY() + 16);
 			DPoint test = new DPoint(dragPoint.getX(), dragPoint.getY());
 			if (rect.contains(test)) {
-				// setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 				selectedConvexSegment = new ConvexSegment(new DPoint(convex
 						.get(k).getX(), convex.get(k).getY()), new DPoint(
 						convex.get(k + 1).getX(), convex.get(k + 1).getY()));
@@ -770,16 +761,6 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 				return;
 			}
 
-			// /old
-			/*
-			 * p1 = new DPoint(plane.getX(convex.get(k).getX()),
-			 * plane.getY(convex .get(k).getY())); p2 = new
-			 * DPoint(plane.getX(convex.get(k + 1).getX()),
-			 * plane.getY(convex.get(k + 1).getY())); if
-			 * (segment.contains(dragPoint)) {
-			 * setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-			 * selectedConvexSegment = segment; repaint(); return; }
-			 */
 		}
 		selectedConvexSegment = null;
 		setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
@@ -791,7 +772,7 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 	 * number of the button are stored. If the cursor is on a point it is
 	 * selected
 	 */
-	 
+
 	public void mousePressed(MouseEvent e) {
 
 		dragging = false;
@@ -804,16 +785,46 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 				selectedPoint.setSelect(true);
 				setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 				dragging = true;
+			} else {
+				filterStartPoint = adjustMousePoint(e.getPoint());
+				filterEndPoint = filterStartPoint;
+				filtering = true;
 			}
+		} else if (e.getButton() == 3) {
+			filterStartPoint = adjustMousePoint(e.getPoint());
+			filterEndPoint = filterStartPoint;
+			unFiltering = true;
 		}
 		repaint();
 	}
 
-	 
 	public void mouseReleased(MouseEvent e) {
 		double[][][] serviceDemands;
 		Vector<Point2D> allPoints;
 
+		if (filtering || unFiltering) {
+			int x[] = new int[2];
+			int y[] = new int[2];
+			x[0] = filterStartPoint.x;
+			y[0] = filterStartPoint.y;
+			int deltaX = filterStartPoint.x - filterEndPoint.x;
+			int deltaY = filterStartPoint.y - filterEndPoint.y;
+			x[1] = x[0] - deltaX;
+			y[1] = y[0] - deltaY;
+			Polygon area = twoPointRectangle(x[0], y[0], x[1], y[1]);
+
+			for (int i = 0; i < data.getResults().getPoints().size(); i++) {
+				Point2D test = data.getResults().getPoints().get(i);
+				if (area.contains(plane.getTruePoint(test))) {
+					filterStationLabel[i] = filtering;
+				}
+			}
+			// TODO Add code to (un)filter.
+			filtering = false;
+			unFiltering = false;
+			repaint();
+			return;
+		}
 		if (!dragging || selectedPoint == null)
 			return;
 		mouseButtonPress = e.getButton();
@@ -840,34 +851,31 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 
 	/*
 	 * If the mouse is moving on the graph the dragPoint is update and the graph
-	 * is repaint
+	 * is repainted
 	 */
-	 
+
 	public void mouseDragged(MouseEvent e) {
+		if (filtering || unFiltering) {
+			filterEndPoint = super.adjustMousePoint(e.getPoint());
+			repaint();
+			return;
+		}
 		dragging = true;
-		dragPoint = e.getPoint();
+		dragPoint = adjustMousePoint2(e.getX(), e.getY());
 		repaint();
 	}
-
-	/*
-	 * When a button of the mouse is released the area between the begine point
-	 * and the actual point is filtered or free if the button is right or left.
-	 * If a point was selected and drag the point is released inn the new
-	 * position
-	 */
 
 	/*
 	 * If the cursor enter after it exited while that point was dragging the
 	 * cursor have to change
 	 */
-	 
+
 	public void mouseEntered(MouseEvent e) {
 		if (selectedPoint != null) {
 			setCursor(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
 		}
 	}
 
-	 
 	public void mouseExited(MouseEvent e) {
 	}
 
@@ -876,10 +884,10 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 	 * point is select, if the cursors is not on a point all points lost the
 	 * selection
 	 */
-	 
+
 	public void mouseClicked(MouseEvent ev) {
 		if (ev.getButton() == MouseEvent.BUTTON3) {
-			popup.show(this, ev.getX(), ev.getY());
+			rightClick(ev);
 		} else {
 			repaint();
 		}
@@ -895,75 +903,6 @@ public class Convex2DGraph extends JPanel implements MouseListener,
 		synchronized (data) {
 			data.setServiceTimes(serviceDemands);
 			data.setVisits(data.createUnitaryVisits());
-		}
-	}
-
-	// --- Methods for popup menu
-	// -------------------------------------------------------------
-	/**
-	 * A simple JPopupMenu used to manage operations on plot. It gives the
-	 * choice to zoom in and out on the plot, restore original view and save
-	 * plot to images (in EPS or PNG format)
-	 */
-	protected class PlotPopupMenu extends JPopupMenu {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		public JMenuItem restore;
-		public JMenuItem zoomIn;
-		public JMenuItem zoomOut;
-		public JMenuItem saveAs;
-
-		public PlotPopupMenu() {
-			restore = new JMenuItem("Original view");
-			zoomIn = new JMenuItem("Zoom in");
-			zoomOut = new JMenuItem("Zoom out");
-			saveAs = new JMenuItem("Save as...");
-			this.add(restore);
-			this.add(zoomIn);
-			this.add(zoomOut);
-			this.addSeparator();
-			this.add(saveAs);
-			addListeners();
-		}
-
-		public void addListeners() {
-			restore.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					zoom(1, true);
-				}
-			});
-
-			zoomIn.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					zoom(0.1f, false);
-				}
-			});
-
-			zoomOut.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					zoom(-0.1f, false);
-				}
-			});
-
-			saveAs.addActionListener(new AbstractAction() {
-				private static final long serialVersionUID = 1L;
-
-				public void actionPerformed(ActionEvent e) {
-					ExportDialog export = new ExportDialog();
-					export.showExportDialog((Component) Convex2DGraph.this,
-							"Export view as ...",
-							(Component) Convex2DGraph.this, "Export");
-				}
-
-			});
 		}
 	}
 

@@ -63,7 +63,7 @@ public final class ServiceDemandsPanel extends WizardPanel implements JabaConsta
 	private static final long serialVersionUID = 1L;
 
 	// Bertoli Marco - Used to show only two decimal digits
-	private static DecimalFormat FORMATTER = new DecimalFormat("#0.00");
+	private static DecimalFormat FORMATTER = new DecimalFormat("#0.000");
 
 	private JabaWizard ew;
 	private HoverHelp help;

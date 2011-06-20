@@ -63,7 +63,7 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 	private static final long serialVersionUID = 1L;
 
 	// Bertoli Marco - Used to show only two decimal digits
-	private static DecimalFormat FORMATTER = new DecimalFormat("#0.00");
+	private static DecimalFormat FORMATTER = new DecimalFormat("#0.000");
 
 	private JabaWizard ew;
 	private HoverHelp help;
@@ -192,9 +192,6 @@ public final class ServiceTimesPanel extends WizardPanel implements JabaConstant
 		//release();
 	}
 
-	private void switchToSD() {
-
-	}
 
 	/**
 	 * Make sure we can't finish if we are editing LD data

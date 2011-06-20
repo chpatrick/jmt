@@ -43,7 +43,6 @@ public class XAxisPlacer extends LabelPlacer {
 	public void place(Graphics2D g, int yLabelCoord, int yMarkCoord) {
 		int i;
 		int previousX, newX, y;
-		boolean overlapping;
 		String l;
 		DPoint p;
 		FontMetrics fm;
@@ -51,17 +50,13 @@ public class XAxisPlacer extends LabelPlacer {
 		p = points.get(0);
 		l = labels.get(0);
 		previousX = 0;
-		overlapping = false;
 		for (i = 0; i < labels.size(); i++) {
 			l = labels.get(i);
 			p = points.get(i);
 			fm = g.getFontMetrics();
 			newX = (int) (p.getX() - fm.getStringBounds(l, g).getWidth() / 2);
-			if (newX < previousX + DISTANCE_BETWEEN_TWO_LABELS && !overlapping) {
-				overlapping = true;
+			if (newX < previousX + DISTANCE_BETWEEN_TWO_LABELS) {
 				continue;
-			} else {
-				overlapping = false;
 			}
 			if (i % 2 == 0)
 				y = yLabelCoord;
@@ -73,4 +68,5 @@ public class XAxisPlacer extends LabelPlacer {
 			previousX = (int) (newX + fm.getStringBounds(l, g).getWidth());
 		}
 	}
+	
 }

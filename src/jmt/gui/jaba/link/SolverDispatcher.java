@@ -19,6 +19,8 @@
 package jmt.gui.jaba.link;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Vector;
 
 import jmt.common.exception.InputDataException;
@@ -30,7 +32,11 @@ import jmt.engine.jaba.SectorEngine;
 import jmt.engine.jaba.newPoint;
 import jmt.engine.jaba.Hull.ConvexHullException;
 import jmt.engine.jaba.Hull.Vertex;
-import jmt.gui.jaba.JabaConstants;
+import jmt.engine.jaba.convexHull3d.ConvexHull3D;
+import jmt.engine.jaba.convexHull3d.HullFace;
+import jmt.engine.jaba.convexHull3d.HullVertex;
+import jmt.engine.jaba.convexHull3d.exceptions.AllPointsCollinearException;
+import jmt.engine.jaba.convexHull3d.exceptions.AllPointsCoplanarExceptions;
 import jmt.gui.jaba.JabaModel;
 import jmt.gui.jaba.JabaResults;
 
@@ -161,30 +167,27 @@ public class SolverDispatcher {
 	private JabaResults solve3classes(JabaModel model) throws ConvexHullException {
 
 		// Solve 3 class models
-		int stations = model.getStations();
 
 		String[] stationNames = model.getStationNames();
 		String[] classNames = model.getClassNames();
-		double[][][] serviceTimes = model.getServiceTimes();
-		double[][] visits = model.getVisits();
-
-		Vector<Vertex> vertices = new Vector<Vertex>();
-
-		double prop;
-		prop = JabaConstants.SERVICE_DEMANDS_PROP;
-
-		for (int i = 0; i < stations; i++) {
-			// Crea il vettore da passare a Calc3D
-			// il giusto sarebbe moltiplicare per 1000000, ma dà problemi
-			int a = (int) Math.round((serviceTimes[i][0][0] * prop * visits[i][0]));
-			int b = (int) Math.round((serviceTimes[i][1][0] * prop * visits[i][1]));
-			int c = (int) Math.round((serviceTimes[i][2][0] * prop * visits[i][2]));
-			//System.out.println(i+": "+a+" "+b+" "+c);
-			vertices.addElement(new Vertex(a, b, c));
+		
+		Vector<Vertex> vertices = model.getVertices3D();
+		HashSet<HullVertex> hullVertices = model.getHullVertices();
+		
+		
+		SectorEngine calc = new SectorEngine();
+		calc.Calc3D(vertices, stationNames, classNames);
+		
+		ConvexHull3D cHullEngine = new ConvexHull3D();
+		ArrayList<HullFace> cHullFaces = null;
+		try {
+			cHullFaces = cHullEngine.buildHull(hullVertices, true);
+		} catch (AllPointsCoplanarExceptions e) {
+			e.printStackTrace();
+		} catch (AllPointsCollinearException e) {
+			e.printStackTrace();
 		}
 
-		SectorEngine calc = new SectorEngine();
-		Vector<Object> res = calc.Calc3D(vertices, stationNames, classNames);
 		//System.out.println("res.size(): "+res.size());
 		//ViewResults vres = new ViewResults();
 		//System.out.println("vres");
@@ -203,8 +206,8 @@ public class SolverDispatcher {
 			out.addElement(calc.gettriangles().get(i));
 		}
 		jres.setSaturationSectors(out);
-
-		// Ritorna il risultato
+		jres.setFaces(cHullFaces);
+		// Restituisce il risultato
 		return jres;
 	}
 

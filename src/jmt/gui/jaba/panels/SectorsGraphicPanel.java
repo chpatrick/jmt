@@ -13,6 +13,7 @@ import javax.swing.ScrollPaneConstants;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.jaba.JabaConstants;
 import jmt.gui.jaba.JabaModel;
+import jmt.gui.jaba.graphs.JabaCanvas;
 import jmt.gui.jaba.graphs.Sectors2DGraph;
 import jmt.gui.jaba.graphs.Sectors3DGraph;
 
@@ -54,7 +55,7 @@ public class SectorsGraphicPanel extends WizardPanel {
 				this.removeAll();
 				s2dp = new Sectors2DGraph(data);
 				this.setLayout(new BorderLayout());
-				this.add(new JScrollPane(s2dp), BorderLayout.CENTER);
+				this.add(new JabaCanvas(s2dp), BorderLayout.CENTER);
 				this.add(new JLabel(JabaConstants.DESCRIPITION_GRAPH),
 						BorderLayout.PAGE_END);
 				repaint();
@@ -62,7 +63,9 @@ public class SectorsGraphicPanel extends WizardPanel {
 				this.removeAll();
 				Sectors3DGraph s3dp = new Sectors3DGraph(data);
 				this.setLayout(new BorderLayout());
-				this.add(s3dp, BorderLayout.CENTER);
+				this.add(new JabaCanvas(s3dp), BorderLayout.CENTER);
+				this.add(new JLabel(JabaConstants.DESCRIPITION_GRAPH),
+						BorderLayout.PAGE_END);
 				repaint();
 			}
 		} else {

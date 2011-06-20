@@ -710,6 +710,7 @@ public class ClassesPanel extends WizardPanel implements JabaConstants, ForceUpd
 		}
 
 		@Override
+		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public Class getColumnClass(int col) {
 			switch (col) {
 				case 1:
