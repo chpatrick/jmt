@@ -66,6 +66,7 @@ public class ResultsModel implements MeasureDefinition {
 	private boolean simulationFinished = false;
 	private double pollingInterval;
 	private double progressTime = 0.0;
+	private MalformedReplayerFileListener mrfListener;
 
 	/**
 	 * Constructs a new ResultsModel
@@ -474,6 +475,20 @@ public class ResultsModel implements MeasureDefinition {
 	 */
 	public synchronized void setProgressTimeListener(ProgressTimeListener listener) {
 		ptlistener = listener;
+	}
+	
+	/**
+	 * Sets a ProgressTimeListener to listen to detected malformed replayer file. This is unique.
+	 * @param listener listener to be set or null to unset previous one
+	 */
+	public synchronized void setMalformedReplayerFileListener(MalformedReplayerFileListener listener) {
+		mrfListener = listener;
+	}
+	
+	public synchronized void detectedMalformedReplayerFile(String msg) {
+		if(mrfListener != null) {
+			mrfListener.detectedError(msg);
+		}
 	}
 
 	/**

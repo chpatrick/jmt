@@ -23,6 +23,7 @@ import java.util.Vector;
 
 import jmt.engine.QueueNet.SimConstants;
 import jmt.framework.gui.graph.MeasureValue;
+import jmt.gui.common.definitions.MeasureDefinition.MalformedReplayerFileListener;
 
 /**
  * <p>Title: Result's Model data structure</p>
@@ -548,6 +549,19 @@ public class StoredResultsModel implements MeasureDefinition {
 	 */
 	public void setProgressTimeListener(MeasureDefinition.ProgressTimeListener listener) {
 	}
+	
+	
+	/**
+	 * Sets a ProgressTimeListener to listen to detected malformed replayer file. This is unique.
+	 * @param listener listener to be set or null to unset previous one
+	 */
+	public void setMalformedReplayerFileListener(MalformedReplayerFileListener listener) {
+	}
+	
+	public void detectedMalformedReplayerFile(String msg) {
+	}
+
+	
 
 	/**
 	 * This feature is not required as loaded measures are static

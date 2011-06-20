@@ -690,4 +690,12 @@ public class PAResultsModel implements MeasureDefinition {
 		}
 		return tmp;
 	}
+
+	public void setMalformedReplayerFileListener(
+			MalformedReplayerFileListener listener) {
+	
+	}
+
+	public void detectedMalformedReplayerFile(String msg) {
+	}
 }

@@ -194,12 +194,14 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		// Adds toolbar
 		this.getContentPane().add(toolbar, BorderLayout.SOUTH);
 
+		
 		// Adds listener for progressBar
 		results.setProgressTimeListener(new MeasureDefinition.ProgressTimeListener() {
 			public void timeChanged(double time) {
 				setProgressBar(time);
 			}
 		});
+		
 
 	}
 
@@ -320,6 +322,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		protected MeasureDefinition md;
 		protected int measureIndex;
 		protected JLabel icon;
+		protected JLabel msgLabel;
 		protected Vector values;
 		protected JTextField samples, mean, lower, upper;
 		protected JButton abortButton;
@@ -350,7 +353,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			//Adds mainPanel with all informations on this measure
 			JLabel label;
 			JTextField field;
-			JPanel mainPanel = new JPanel(new SpringLayout());
+			JPanel mainPanel = new JPanel(new BorderLayout());
+			JPanel dataPanel = new JPanel(new SpringLayout());
 			// Station name
 			label = new JLabel("Station Name: ");
 			if (md.getNodeType(measureIndex).equalsIgnoreCase(XMLConstantNames.NODETYPE_REGION)) {
@@ -369,8 +373,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 				field.setText(ALL_STATIONS);
 				field.setToolTipText("This measure is referred to the entire network");
 			}
-			mainPanel.add(label);
-			mainPanel.add(field);
+			dataPanel.add(label);
+			dataPanel.add(field);
 			// Class name
 			label = new JLabel("Class Name: ");
 			field = new JTextField();
@@ -386,8 +390,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 				field.setText(ResultsConstants.ALL_CLASSES);
 				field.setToolTipText("This measure is an aggregate of every class");
 			}
-			mainPanel.add(label);
-			mainPanel.add(field);
+			dataPanel.add(label);
+			dataPanel.add(field);
 			// Alpha/Precision
 			label = new JLabel("Conf.Int/Max Rel.Err: ");
 			field = new JTextField();
@@ -396,8 +400,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			label.setLabelFor(field);
 			field.setText(md.getAlpha(measureIndex) + " / " + md.getPrecision(measureIndex)); // AnalyzedSamples
 			field.setToolTipText("Confidence Interval and Maximum Relative Error requested for this measure: " + field.getText());
-			mainPanel.add(label);
-			mainPanel.add(field);
+			dataPanel.add(label);
+			dataPanel.add(field);
 			// Analyzed samples
 			label = new JLabel("Analyzed samples: ");
 			samples = new JTextField();
@@ -406,8 +410,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			label.setLabelFor(samples);
 			samples.setText("" + md.getAnalizedSamples(measureIndex));
 			samples.setToolTipText("Number of samples currently analized: " + samples.getText());
-			mainPanel.add(label);
-			mainPanel.add(samples);
+			dataPanel.add(label);
+			dataPanel.add(samples);
 
 			MeasureValue lastValue = (MeasureValue) values.lastElement();
 
@@ -421,8 +425,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 				lower.setText(doubleToString(lastValue.getLowerBound()));
 			}
 			lower.setToolTipText("Minimum value of current confidence interval: " + lower.getText());
-			mainPanel.add(label);
-			mainPanel.add(lower);
+			dataPanel.add(label);
+			dataPanel.add(lower);
 
 			// Upper Bound
 			label = new JLabel("Max: ");
@@ -434,12 +438,14 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 				upper.setText(doubleToString(lastValue.getUpperBound()));
 			}
 			upper.setToolTipText("Maximum value of current confidence interval: " + upper.getText());
-			mainPanel.add(label);
-			mainPanel.add(upper);
+			dataPanel.add(label);
+			dataPanel.add(upper);
 
-			SpringUtilities.makeCompactGrid(mainPanel, 3, 4, //rows, cols
+			SpringUtilities.makeCompactGrid(dataPanel, 3, 4, //rows, cols
 					6, 6, //initX, initY
 					6, 6);//xPad, yPad
+			mainPanel.add(dataPanel, BorderLayout.CENTER);
+			
 			// Temp mean and abort button are threated in a separate panel
 			JPanel bottomPanel = new JPanel(new BorderLayout(6, 6));
 			label = new JLabel(TEMP_MEAN);
@@ -450,12 +456,16 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			mean.setText(doubleToString(((MeasureValue) values.lastElement()).getMeanValue()));
 			bottomPanel.add(label, BorderLayout.WEST);
 			bottomPanel.add(mean, BorderLayout.CENTER);
+			bottomPanel.add(new JLabel("Warniiiin"), BorderLayout.SOUTH);
 			// AbortButton
 			abortButton = new JButton();
 			abortButton.setText("Abort Measure");
 			bottomPanel.add(abortButton, BorderLayout.EAST);
+			msgLabel = new JLabel();
+			msgLabel.setForeground(Color.RED);
+			bottomPanel.add(msgLabel, BorderLayout.SOUTH);
 			bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 6, 6, 6));
-
+	
 			JPanel pivotPanel = new JPanel(new BorderLayout());
 			pivotPanel.add(mainPanel, BorderLayout.CENTER);
 			pivotPanel.add(bottomPanel, BorderLayout.SOUTH);
@@ -491,6 +501,13 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		 */
 		protected void addListeners() {
 			if (md.getMeasureState(measureIndex) == MeasureDefinition.MEASURE_IN_PROGRESS) {
+				md.setMalformedReplayerFileListener(new MeasureDefinition.MalformedReplayerFileListener() {
+					public void detectedError(String msg) {
+						if(msgLabel != null)
+							msgLabel.setText(msg);
+					}
+				});
+		
 				// If simulation is not finished, adds a measure listener
 				md.addMeasureListener(measureIndex, new MeasureDefinition.MeasureListener() {
 					public void measureChanged(Vector measureValues, boolean finished) {

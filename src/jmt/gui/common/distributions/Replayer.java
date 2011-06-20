@@ -34,6 +34,8 @@ import jmt.gui.common.resources.JMTImageLoader;
  *         Time: 11.29.26
  */
 public class Replayer extends Distribution {
+	public static final String FILE_NAME_PARAMETER = "fileName";
+
 	/**
 	 * Construct a new Replayer Distribution
 	 */
@@ -71,7 +73,7 @@ public class Replayer extends Distribution {
 		// Creates parameter array
 		Parameter[] parameters = new Parameter[1];
 		// Sets parameter fileName
-		parameters[0] = new Parameter("fileName", "fileName", String.class, "");
+		parameters[0] = new Parameter(FILE_NAME_PARAMETER, FILE_NAME_PARAMETER, String.class, "");
 		return parameters;
 	}
 

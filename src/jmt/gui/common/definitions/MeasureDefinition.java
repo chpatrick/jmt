@@ -222,6 +222,11 @@ public interface MeasureDefinition {
 	 */
 	public void setProgressTimeListener(ProgressTimeListener listener);
 
+	public void setMalformedReplayerFileListener(MalformedReplayerFileListener listener) ;
+
+	public void detectedMalformedReplayerFile(String msg);
+	
+	
 	/**
 	 * Returns if simulation has finished, so results are fixed
 	 * @return true iff simulation has finished
@@ -256,4 +261,13 @@ public interface MeasureDefinition {
 	public interface ProgressTimeListener {
 		public void timeChanged(double progressTime);
 	}
+	
+	/**
+	 * Interface used to specify a listener on detected malformed replayer file.
+	 * This is useful to implement a GUI with a reactive approch.
+	 */
+	public interface MalformedReplayerFileListener {
+		public void detectedError(String msg);
+	}	
+	
 }
