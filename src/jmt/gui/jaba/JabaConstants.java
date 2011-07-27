@@ -97,12 +97,14 @@ public interface JabaConstants {
 			+ "</font><font size=\"3\"><br>Average Utilization for each class and each station.<br></body></html>";
 	public static final String DESCRIPTION_EMPTY = "<html><body align=\"left\"><font size=\"4\"><b>Results</b>"
 			+ "</font><font size=\"3\"><br>Please solve the model to get results..<br></body></html>";
-	public static final String DESCRIPITION_GRAPH = "<html><body align=\"left\">Right-click on the graph to export or save it.</body></html>";
+	public static final String DESCRIPITION_GRAPH = "<html><body align=\"left\">Right-click on the graph to export or zoom it.</body></html>";
 	public static final String SELECT_WHICH_INDEX = "Select the index you want to plot: ";
-	public static final String DESCRIPITION_GRAPH_PERFORMANCE_INDEX = "<html><body align=\"left\">Right-click on the graph to export or save it.<br />"
+	public static final String DESCRIPITION_GRAPH_PERFORMANCE_INDEX = "<html><body align=\"left\">Right-click on the graph to export or zoom it.<br />"
 			+ "																					  Click on a station label to hide/show.</body></html>";
 	public static final String OPTION_SHOW_ONLY_BOTTLENECK = "Show only bottleneck stations";
-	public static final String DESCRIPITION_CONVEX_2D_GRAPH = "<html><body align=\"left\">Right-click on the graph to export or save it.<br />"
+	public static final String DESCRIPITION_CONVEX_2D_GRAPH = "<html><body align=\"left\">Right-click on the graph to export or zoom it.<br />"
 			+ "																					  Select an area with the left(right) mouse button to hide(show) the label of the stations inside.</body></html>";
-
+	public static final String CONVEX_HULL_VERTEX_EXPLANATION = "<html><body align=\"left\">The stations on the vertices are<br />"
+			+ "																					  the potential system bottlenecks.</body></html>";
+			
 }

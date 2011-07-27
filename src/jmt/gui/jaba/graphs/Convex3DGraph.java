@@ -662,12 +662,13 @@ public class Convex3DGraph extends JabaGraph implements ComponentListener,
 		}
 
 		// Draws points inside
-		if (enableInternalVertices) {
-			for (int i = 0; i < sortedVerticesInside.length; i++) {
-				PointData p = sortedVerticesInside[i];
+		for (int i = 0; i < sortedVerticesInside.length; i++) {
+			PointData p = sortedVerticesInside[i];
+			if (enableInternalVertices || p.vertex.getName().equals(selectedStation) ) {
 				drawVertex(g, p, false, false);
 			}
 		}
+		
 
 		drawAxes(g, true);
 
@@ -714,15 +715,19 @@ public class Convex3DGraph extends JabaGraph implements ComponentListener,
 		Stroke tmp = g.getStroke();
 		g.setStroke(DOTTED);
 		g.setColor(DARK_RED);
+		//In order to make the end of y-axis and its label as high as possible
+		int yOfYAxis = 0;
+		int yOfYLabel = 5;
+
 		g.drawLine((int) originPrj.x(), (int) originPrj.y(),
 				(int) axisPrjX.x(), (int) axisPrjX.y());
 		drawBorderString(g, classNames[0], (int) axisLabelX.x(),
 				(int) axisLabelX.y(), DARK_RED, null);
 		g.setColor(DARK_GREEN);
 		g.drawLine((int) originPrj.x(), (int) originPrj.y(),
-				(int) axisPrjY.x(), (int) axisPrjY.y());
+				(int) axisPrjY.x(), yOfYAxis);
 		drawBorderString(g, classNames[1], (int) axisLabelY.x(),
-				(int) axisLabelY.y(), DARK_GREEN, null);
+				yOfYLabel, DARK_GREEN, null);
 		g.setColor(DARK_BLUE);
 		g.drawLine((int) originPrj.x(), (int) originPrj.y(),
 				(int) axisPrjZ.x(), (int) axisPrjZ.y());
@@ -898,14 +903,6 @@ public class Convex3DGraph extends JabaGraph implements ComponentListener,
 					|| p.vertex.getName().equals(selectedStation)) {
 				String s = p.vertex.getName() + " " + p.worldPos.toString3D();
 				g.setColor(visible ? colorVisible : colorHidden);
-				//g.drawString(s, x + 4, y + 4);
-				//g.drawString(s, x + 4, y + 6);
-				//g.drawString(s, x + 6, y + 4);
-				//g.drawString(s, x + 6, y + 6);
-				//g.drawString(s, x + 5, y + 4);
-				//g.drawString(s, x + 5, y + 6);
-				//g.drawString(s, x + 4, y + 5);
-				//g.drawString(s, x + 6, y + 5);
 				if (p.vertex.getName().equals(selectedStation)) {
 					g.setColor(SELECTED_STATION_COLOR);
 				} else {
@@ -919,18 +916,10 @@ public class Convex3DGraph extends JabaGraph implements ComponentListener,
 				g.setColor(SELECTED_STATION_COLOR);
 				String s = p.vertex.getName() + " " + p.worldPos.toString3D();
 				g.setColor(visible ? colorVisible : colorHidden);
-				//g.drawString(s, x + 4, y + 4);
-				//g.drawString(s, x + 4, y + 6);
-				//g.drawString(s, x + 6, y + 4);
-				//g.drawString(s, x + 6, y + 6);
-				//g.drawString(s, x + 5, y + 4);
-				//g.drawString(s, x + 5, y + 6);
-				//g.drawString(s, x + 4, y + 5);
-				//g.drawString(s, x + 6, y + 5);
 				g.setColor(SELECTED_STATION_COLOR);
 				g.drawString(s, x + 5, y + 5);
 			} else {
-				g.setColor(Color.LIGHT_GRAY);
+				g.setColor(Color.BLUE);
 			}
 			g.fillOval(x - 2, y - 2, 5, 5);
 		}

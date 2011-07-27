@@ -176,7 +176,7 @@ public class ConvexHullPanel extends WizardPanel implements ActionListener,
 		
 		//CENTER PANEL
 		omni.add(res, BorderLayout.NORTH);
-		omni.add(new JLabel("   "), BorderLayout.CENTER);
+		omni.add(new JLabel(JabaConstants.CONVEX_HULL_VERTEX_EXPLANATION), BorderLayout.CENTER);
 		omni.add(new JLabel("   "), BorderLayout.SOUTH);
 		return omni;
 	}

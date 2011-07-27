@@ -53,6 +53,8 @@ public class PerformanceIndices2DGraph extends JabaGraph implements
 
 	private static final long serialVersionUID = 1L;
 
+	private static final double EPSILON = 0.01;
+
 	private static final int GRAPH_LEFT_MARGIN = 60;
 	private static final int GRAPH_BOTTOM_MARGIN = 30;
 	private static final int GRAPH_RIGHT_MARGIN = 150;
@@ -62,6 +64,8 @@ public class PerformanceIndices2DGraph extends JabaGraph implements
 	private static final BasicStroke BOLD_LINES = new BasicStroke(2);
 	private static final BasicStroke DOTTED_LINES = new BasicStroke(1, 1, 1, 1,
 			new float[] { 2f }, 1);
+	private static final BasicStroke DOTTED_LINES2 = new BasicStroke(2, BasicStroke.CAP_BUTT, 1, 1,
+			new float[] { 8f, 8f }, 1);
 
 	private static final Color BGCOLOR = Color.WHITE;
 	private static final Color LINES_COLOR = Color.BLACK;
@@ -181,6 +185,9 @@ public class PerformanceIndices2DGraph extends JabaGraph implements
 		ArrayList<DPoint> valuesOnRightY = new ArrayList<DPoint>();
 		g2.setStroke(BOLD_LINES);
 
+		int numOfSectors = util[0].size() / 2;
+		int numOfSaturatedStationPerSector[] = new int[numOfSectors];
+		
 		for (int j = 0; j < data.getStationNames().length; j++) {
 			if (!showStation[j])
 				continue;
@@ -190,7 +197,15 @@ public class PerformanceIndices2DGraph extends JabaGraph implements
 				if (i == 0) {
 					valuesOnLeftY.add(util[j].get(i));
 				}
+				//If the station j is saturated
+				if( Math.abs(util[j].get(i).getY() - util[j].get(i + 1).getY()) < EPSILON &&
+						Math.abs(util[j].get(i).getY() - 1) < EPSILON) {
+					if(numOfSaturatedStationPerSector[i/2]>=1)
+						g2.setStroke(DOTTED_LINES2);
+					numOfSaturatedStationPerSector[i/2] = numOfSaturatedStationPerSector[i/2]+1;
+				}
 				plane.drawSegment(util[j].get(i), util[j].get(i + 1));
+				g2.setStroke(BOLD_LINES);
 			}
 			i = i - 2;
 			valuesOnRightY.add(util[j].get(i + 1));
