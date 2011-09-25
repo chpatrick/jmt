@@ -184,6 +184,10 @@ public class XMLSimulationOutput extends SimulationOutput {
 				typeName = "Number of Customers";
 				break;
 
+			case SimConstants.ARRIVAL_QUEUE_LENGTH:
+				typeName = "Number of Customers at Arrival";
+				break;
+
 			case SimConstants.QUEUE_TIME:
 				typeName = "Queue Time";
 				break;

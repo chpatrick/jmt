@@ -154,10 +154,14 @@ public interface JobInfoList {
 	 */
 	public abstract boolean addFirst(JobInfo jobInfo);
 
-	/** Adds a new job info in the specified position.
-	 * The jobs must be inserted in both general and class jobs lists. The
-	 * specified position is relative to general list. In its own class job list, a job
-	 * can be put at the beginning (head) or at the end (tail).
+	/** Adds a new job info to the top of the list.
+	 * @param jobInfo reference to job info to be added.
+	 * @return True if the job has been added (True if <tt>Save</tt> property is true,
+	 * otherwise no list was created by the constructor)
+	 */
+        public abstract boolean addRand(JobInfo jobInfo);
+
+	/** Adds a new job info in a random position. It is put at the tail of its class infolist.
 	 *
 	 * @param index the specified position
 	 * @param jobInfo reference to job info to be added.
@@ -228,6 +232,13 @@ public interface JobInfoList {
 	 * @return A Job info object if it has been found, null otherwise (list
 	 * empty or Save property is false)
 	 */
+	public abstract JobInfo removeRand() throws jmt.common.exception.NetException;
+
+	/** Removes a job info of a specified job class from a random position of the list and updates the measures related to
+	 * throughput, utilization and response time.
+	 * @return A Job info object if it has been found, null otherwise (list
+	 * empty or Save property is false)
+	 */
 	public abstract JobInfo removeLast() throws jmt.common.exception.NetException;
 
 	/** Removes a job info of a specified job class from the bottom of the list  and updates the measures related to
@@ -282,12 +293,19 @@ public interface JobInfoList {
 	 */
 	public abstract void analyzeResidenceTime(JobClass JobClass, Measure Measurement);
 
-	/** Analyzes list residence time.
+	/** Analyzes list length.
 	 * @param JobClass Job class to be analyzed. If null, measure will be
 	 * job class independent.
 	 * @param Measurement Reference to a measure object.
 	 */
 	public abstract void analyzeQueueLength(JobClass JobClass, Measure Measurement);
+
+	/** Analyzes list length seen at job arrival times.
+	 * @param JobClass Job class to be analyzed. If null, measure will be
+	 * job class independent.
+	 * @param Measurement Reference to a measure object.
+	 */
+	public abstract void analyzeArrivalQueueLength(JobClass JobClass, Measure Measurement);
 
 	/**
 	 * Analyzes : Calculates the Throughput at each sink of the Network. 

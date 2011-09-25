@@ -102,7 +102,10 @@ public interface ResultsConstants {
 	public static final String DESCRIPTION_DROPRATE = HTML_START + HTML_FONT_TITLE + "Drop Rate" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Rate of the customers dropped before entering the station" + HTML_FONT_NOR_END + HTML_END;
 
-	// Temp measure mean label
+	public static final String DESCRIPTION_ARRIVAL_QUEUELENGTHS = HTML_START + HTML_FONT_TITLE + "Number of Customers at Arrival Instants" + HTML_FONT_TIT_END + HTML_FONT_NORM
+			+ "Average number of customers for each chosen class see upon job arrival at each chosen station." + HTML_FONT_NOR_END + HTML_END;
+
+        // Temp measure mean label
 	public static final String TEMP_MEAN = HTML_START + HTML_FONT_NORM + "<b>Average value: </b>" + HTML_FONT_NOR_END + HTML_END;
 	
 	public static final String DESCRIPTION_RESPONSETIME_SINK = HTML_START + HTML_FONT_TITLE + "Response Time" + HTML_FONT_TIT_END + HTML_FONT_NORM

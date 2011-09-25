@@ -61,6 +61,8 @@ public interface SimulationDefinition {
 	public static final String MEASURE_RD = "Residence Time";
 	/**Code for queue length measure*/
 	public static final String MEASURE_QL = "Number of Customers";
+	/**Code for queue length measure*/
+	public static final String MEASURE_AQL = "Number of Customers at Arrival Instants";
 	/**Code for average queue time measure*/
 	public static final String MEASURE_QT = "Queue Time";
 	/**Code for average utilization*/

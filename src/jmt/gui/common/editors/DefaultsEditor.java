@@ -661,6 +661,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants {
 		Map<String, String> distributions = new TreeMap<String, String>();
 		distributions.put(CommonConstants.QUEUE_STRATEGY_FCFS, CommonConstants.QUEUE_STRATEGY_FCFS);
 		distributions.put(CommonConstants.QUEUE_STRATEGY_LCFS, CommonConstants.QUEUE_STRATEGY_LCFS);
+                distributions.put(CommonConstants.QUEUE_STRATEGY_RAND, CommonConstants.QUEUE_STRATEGY_RAND);
 		addInputCombo(text, property, cont, distributions);
 	}
 

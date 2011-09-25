@@ -134,6 +134,11 @@ public interface MeasureDefinition {
 	 * @return an array with measures' index
 	 */
 	public int[] getQueueLengthMeasures();
+	/**
+	 * Returns an array with the measureIndex of every queue length measure
+	 * @return an array with measures' index
+	 */
+	public int[] getArrivalQueueLengthMeasures();
 
 	/**
 	 * Returns an array with the measureIndex of every throughput measure

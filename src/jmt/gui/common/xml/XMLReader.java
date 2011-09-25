@@ -447,6 +447,9 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 					} else {
 						model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_FCFS);
 					}
+				} else if (strategy.equals("RandStrategy")) {
+					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_QUEUE);
+					model.setQueueStrategy(key, classes.get(className), QUEUE_STRATEGY_RAND);
 				} else if (strategy.equals("HeadStrategyPriority")) {
 					model.setStationQueueStrategy(key, QUEUE_STRATEGY_STATION_QUEUE_PRIORITY);
 					if (fcfs) {
@@ -932,6 +935,9 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			}
 			if ("Number of Customers".equalsIgnoreCase(type) && "".equalsIgnoreCase(stationName)) {
 				type = SimulationDefinition.MEASURE_S_CN;
+			}
+			if ("Number of Customers at Arrival Instants".equalsIgnoreCase(type)) {
+				type = SimulationDefinition.MEASURE_AQL;
 			}
 			if ("Queue Length".equalsIgnoreCase(type)) {
 				type = SimulationDefinition.MEASURE_QL;

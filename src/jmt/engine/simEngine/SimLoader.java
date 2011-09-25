@@ -86,7 +86,7 @@ import org.xml.sax.SAXNotSupportedException;
 public class SimLoader {
 
 	//used for debug pourposes
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = false  ;
 
 	//represents the entire XML document. it is the root
 	//of the document tree, and provides the primary access to the document's data
@@ -996,6 +996,10 @@ public class SimLoader {
 			// The above is the present name of the performance index, the AND is used to differentiate it from the old label of System Number of Customers
 			// This Perf Index is not system level so it will always refer to some Node. eg Fork, Queueing Station etc.
 			return SimConstants.QUEUE_LENGTH;
+		} else if (measure.equalsIgnoreCase("Number of Customers at Arrival Instants") && !"".equalsIgnoreCase(referenceNode)) {
+			// The above is the present name of the performance index, the AND is used to differentiate it from the old label of System Number of Customers
+			// This Perf Index is not system level so it will always refer to some Node. eg Fork, Queueing Station etc.
+			return SimConstants.ARRIVAL_QUEUE_LENGTH;
 		} else if (measure.equalsIgnoreCase("Utilization")) {
 			return SimConstants.UTILIZATION;
 		} else if (measure.equalsIgnoreCase("Throughput")) {

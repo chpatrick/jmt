@@ -48,7 +48,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	private Vector<Integer> queueLength = new Vector<Integer>(), queueTime = new Vector<Integer>(), residenceTime = new Vector<Integer>(),
 			responseTime = new Vector<Integer>(), utilization = new Vector<Integer>(), throughput = new Vector<Integer>(),
 			dropRate = new Vector<Integer>(), systemResponseTime = new Vector<Integer>(), systemThroughput = new Vector<Integer>(),
-			customerNumber = new Vector<Integer>(), systemDropRate = new Vector<Integer>();
+			customerNumber = new Vector<Integer>(), systemDropRate = new Vector<Integer>(), arrivalQueueLength = new Vector<Integer>();
 
 	//Added by ASHANKA START
 	//Added as a part of addition of the performance index system power to the 
@@ -189,6 +189,18 @@ public class StoredResultsModel implements MeasureDefinition {
 	}
 
 	/**
+	 * Returns an array with the measureIndex of every queue length measure
+	 * @return an array with measures' index
+	 */
+	public int[] getArrivalQueueLengthMeasures() {
+		int[] tmp = new int[arrivalQueueLength.size()];
+		for (int i = 0; i < tmp.length; i++) {
+			tmp[i] = arrivalQueueLength.get(i).intValue();
+		}
+		return tmp;
+	}
+
+        /**
 	 * Returns an array with the measureIndex of every throughput measure
 	 * @return an array with measures' index
 	 */
@@ -407,6 +419,9 @@ public class StoredResultsModel implements MeasureDefinition {
 				break;
 			case SimConstants.QUEUE_LENGTH:
 				queueLength.add(new Integer(measures.size() - 1));
+				break;
+			case SimConstants.ARRIVAL_QUEUE_LENGTH:
+				arrivalQueueLength.add(new Integer(measures.size() - 1));
 				break;
 			case SimConstants.SYSTEM_RESPONSE_TIME:
 				systemResponseTime.add(new Integer(measures.size() - 1));

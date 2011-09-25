@@ -90,6 +90,8 @@ public interface ExactConstants {
 			+ "</font><font size=\"3\"><br>Input an optional short comment.<br></body></html>";
 	public static final String DESCRIPTION_QUEUELENGTHS = "<html><body align=\"left\"><font size=\"4\"><b>Number of Customers</b>"
 			+ "</font><font size=\"3\"><br>Average number of customers for each class at each station.</body></html>";
+	public static final String DESCRIPTION_QUEUELENGTHS_AT_ARRIVAL = "<html><body align=\"left\"><font size=\"4\"><b>Number of Customers at Arrival Instants</b>"
+			+ "</font><font size=\"3\"><br>Average number of customers for a class seen upon arrival at a given station.</body></html>";
 	public static final String DESCRIPTION_THROUGHPUTS = "<html><body align=\"left\"><font size=\"4\"><b>Throughput</b>"
 			+ "</font><font size=\"3\"><br>Throughput for each class at each station.</body></html>";
 	public static final String DESCRIPTION_RESPONSETIMES = "<html><body align=\"left\"><font size=\"4\"><b>Residence Times</b>"
