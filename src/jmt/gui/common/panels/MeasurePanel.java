@@ -110,9 +110,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 			//Adds system power index to the performance index combo box in the JSIM panel
 			SimulationDefinition.MEASURE_S_SP,
 			SimulationDefinition.MEASURE_X_PER_SINK,
-			SimulationDefinition.MEASURE_R_PER_SINK,
-                        //Added by CASALE START
-                        SimulationDefinition.MEASURE_AQL
+			SimulationDefinition.MEASURE_R_PER_SINK
 	//Added by ASHANKA STOP
 	};
 

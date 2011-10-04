@@ -239,19 +239,19 @@ public class PSServer extends ServiceSection {
 		}
 
 		// Computes the percentage of jobs in service and in queue
-		double serviceWeight, queueWeight;
+		double serviceWeigth, queueWeight;
 		if (jobs.size() <= numberOfServers) {
 			// Everything is in service
-			serviceWeight = 1.0;
+			serviceWeigth = 1.0;
 		} else {
-			serviceWeight = (double) numberOfServers / jobs.size();
+			serviceWeigth = (double) numberOfServers / jobs.size();
 		}
-		queueWeight = 1.0 - serviceWeight;
+		queueWeight = 1.0 - serviceWeigth;
 
 		// Updates utilization measures
 		JobClass jobClass = jobData.getJob().getJobClass();
 		queueList.psUpdateUtilization(jobClass, queueWeight, NetSystem.getTime());
-		serviceList.psUpdateUtilization(jobClass, serviceWeight, NetSystem.getTime());
+		serviceList.psUpdateUtilization(jobClass, serviceWeigth, NetSystem.getTime());
 
 		// Update busy time measures and throughputs
 		if (event == PSEvent.JOB_OUT) {

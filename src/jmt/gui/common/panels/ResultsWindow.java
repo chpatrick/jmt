@@ -138,7 +138,6 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		addTabPane(mainPanel, "Number of Customers", DESCRIPTION_QUEUELENGTHS, results.getQueueLengthMeasures());
-		addTabPane(mainPanel, "Number of Customers at Arrival Instants", DESCRIPTION_ARRIVAL_QUEUELENGTHS, results.getArrivalQueueLengthMeasures());
 		addTabPane(mainPanel, "Queue Time", DESCRIPTION_QUEUETIMES, results.getQueueTimeMeasures());
 		addTabPane(mainPanel, "Residence Time", DESCRIPTION_RESIDENCETIMES, results.getResidenceTimeMeasures());
 		addTabPane(mainPanel, "Response Time", DESCRIPTION_RESPONSETIMES, results.getResponseTimeMeasures());

@@ -162,7 +162,6 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(mainPanel, BorderLayout.CENTER);
 		addTabPane(mainPanel, "Number of Customers", DESCRIPTION_QUEUELENGTHS, results.getQueueLengthMeasures());
-		addTabPane(mainPanel, "Number of Customers at Arrival Instants", DESCRIPTION_ARRIVAL_QUEUELENGTHS, results.getArrivalQueueLengthMeasures());
 		addTabPane(mainPanel, "Queue Time", DESCRIPTION_QUEUETIMES, results.getQueueTimeMeasures());
 		addTabPane(mainPanel, "Residence Time", DESCRIPTION_RESIDENCETIMES, results.getResidenceTimeMeasures());
 		addTabPane(mainPanel, "Response Time", DESCRIPTION_RESPONSETIMES, results.getResponseTimeMeasures());
@@ -185,7 +184,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		if (pad instanceof NumberOfCustomerParametricAnalysis) {
 			return "N";
 		} else if (pad instanceof PopulationMixParametricAnalysis) {
-			return "ï¿½ of " + pad.getReferenceClassName();
+			return "ß of " + pad.getReferenceClassName();
 		} else if (pad instanceof SeedParametricAnalysis) {
 			return "Step";
 		} else if (pad instanceof ArrivalRateParametricAnalysis) {
@@ -1158,7 +1157,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 				}
 
 				public void mouseClicked(MouseEvent e) {
-					//show a popup menï¿½ where you can zomm in and out and save
+					//show a popup menù where you can zomm in and out and save
 					//the plot to an image
 					if (SwingUtilities.isRightMouseButton(e)) {
 						PlotPopupMenu plotPopup = new PlotPopupMenu(getReference());
@@ -1450,12 +1449,12 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 				int val = ((Double) (assumedValues.get(index))).intValue();
 				columnName = "N = " + Integer.toString(val);
 			}
-			//for population mix parametric analysis return the value of ï¿½
+			//for population mix parametric analysis return the value of ß
 			else if (pad.getType().equals(PA_TYPE_POPULATION_MIX)) {
 				Vector<Number> assumedValues = pad.getParameterValues();
 				DecimalFormat threeDec = new DecimalFormat("0.000");
 				double value = ((Double) assumedValues.get(index)).doubleValue();
-				columnName = "ï¿½ = " + threeDec.format(value);
+				columnName = "ß = " + threeDec.format(value);
 			}
 			// if it is a seed parametric analysis just enumerate columns
 			else if (pad.getType().equals(PA_TYPE_SEED)) {

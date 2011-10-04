@@ -35,8 +35,6 @@ public class PSJobInfoList implements JobInfoList {
 	private Measure utilization, utilizationPerClass[], responseTime, responseTimePerClass[], residenceTime, residenceTimePerClass[], queueLength,
 			queueLengthPerClass[];
 
-	private Measure arrivalQueueLength, arrivalQueueLengthPerClass[];
-
 	private InverseMeasure throughput, throughputPerClass[];
 
 	/** The number of servers to estimate Utilization measure on multiserver environments. */
@@ -63,14 +61,9 @@ public class PSJobInfoList implements JobInfoList {
 		return list.add(index, jobInfo, isClassTail);
 	}
 
-        public boolean addRand(int index, JobInfo jobInfo, boolean isClassTail) {
-		return list.addRand(jobInfo);
-	}
-
 	public boolean addFirst(JobInfo jobInfo) {
 		return list.addFirst(jobInfo);
 	}
-
 
 	public boolean addFirst(JobInfo jobInfo, boolean isClassTail) {
 		return list.addFirst(jobInfo, isClassTail);
@@ -162,20 +155,6 @@ public class PSJobInfoList implements JobInfoList {
 			queueLengthPerClass[JobClass.getId()] = measurement;
 		} else {
 			queueLength = measurement;
-		}
-	}
-
-        /* (non-Javadoc)
-	 * @see jmt.engine.QueueNet.JobInfoList#analyzeArrivalQueueLength(jmt.engine.QueueNet.JobClass, jmt.engine.dataAnalysis.Measure)
-	 */
-	public void analyzeArrivalQueueLength(JobClass JobClass, Measure Measurement) {
-		if (JobClass != null) {
-			if (arrivalQueueLengthPerClass == null) {
-				arrivalQueueLengthPerClass = new Measure[listPerClass.length];
-			}
-			arrivalQueueLengthPerClass[JobClass.getId()] = Measurement;
-		} else {
-			arrivalQueueLength = Measurement;
 		}
 	}
 
@@ -285,10 +264,6 @@ public class PSJobInfoList implements JobInfoList {
 		return list.removeLast();
 	}
 
-	public JobInfo removeRand() throws NetException {
-		return list.removeRand();
-	}
-
 	public JobInfo removeLast(JobClass jobClass) throws NetException {
 		return list.removeLast(jobClass);
 	}
@@ -315,11 +290,6 @@ public class PSJobInfoList implements JobInfoList {
 		jobsInPerClass[jobClass.getId()]++;
 		lastJobInTime = time;
 		lastJobInTimePerClass[jobClass.getId()] = time;
-                
-		double value = size();
-		double valuePerClass = size(jobClass);
-                update(arrivalQueueLength, value, 1.0);
-		update(arrivalQueueLengthPerClass, jobClass, valuePerClass, 1.0);
 	}
 
 	public void psJobOut(JobClass jobClass, double time) {

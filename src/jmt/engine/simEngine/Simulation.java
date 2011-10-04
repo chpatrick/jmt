@@ -544,10 +544,6 @@ public class Simulation {
 							//measures the number of jobs in the global node (=mean number of jobs present in node joblist)
 							netNodes[nodePosition].analyze(SimConstants.LIST_NUMBER_OF_JOBS, jClass, ms.getMeasure());
 							break;
-						case SimConstants.ARRIVAL_QUEUE_LENGTH:
-							//measures the number of jobs in the global node (=mean number of jobs present in node joblist)
-							netNodes[nodePosition].analyze(SimConstants.LIST_NUMBER_OF_JOBS_AT_ARRIVAL, jClass, ms.getMeasure());
-							break;
 						case SimConstants.UTILIZATION:
 							//measures the utilization of the service section (=mean number of jobs present in service section joblist)
 							netNodes[nodePosition].getSection(NodeSection.SERVICE).analyze(SimConstants.LIST_NUMBER_OF_JOBS, jClass, ms.getMeasure());

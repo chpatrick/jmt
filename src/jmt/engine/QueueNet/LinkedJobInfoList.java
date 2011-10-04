@@ -55,8 +55,6 @@ public class LinkedJobInfoList implements JobInfoList {
 	private Measure utilization, utilizationPerClass[], responseTime, responseTimePerClass[], residenceTime, residenceTimePerClass[], queueLength,
 			queueLengthPerClass[], dropRate, dropRatePerClass[], responseTimePerSink, responseTimePerSinkPerClass[] ;
 
-	private Measure arrivalQueueLength, arrivalQueueLengthPerClass[];
-
 	private InverseMeasure throughput, throughputPerClass[], throughputPerSink, throughputPerSinkPerClass[];
 
 	/** The number of servers to estimate Utilization measure on multiserver environments. */
@@ -270,7 +268,6 @@ public class LinkedJobInfoList implements JobInfoList {
 	 * @see jmt.engine.QueueNet.JobInfoList#getJobList()
 	 */
 	public List<JobInfo> getJobList() {
-
 		return list;
 	}
 
@@ -300,21 +297,6 @@ public class LinkedJobInfoList implements JobInfoList {
 			updateAdd(jobInfo);
 			listPerClass[jobInfo.getJob().getJobClass().getId()].addFirst(jobInfo);
 			list.addFirst(jobInfo);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-     	/* (non-Javadoc)
-	 * @see jmt.engine.QueueNet.JobInfoList#add(jmt.engine.QueueNet.JobInfo)
-	 */
-	public boolean addRand(JobInfo jobInfo) {
-		if (list != null) {
-			updateAdd(jobInfo);
-                        int pos = (int)(Math.random()*list.size());
-			listPerClass[jobInfo.getJob().getJobClass().getId()].addLast(jobInfo);
-			list.add(pos,jobInfo);
 			return true;
 		} else {
 			return false;
@@ -476,23 +458,6 @@ public class LinkedJobInfoList implements JobInfoList {
 			JobInfo jobInfo = list.getFirst();
 			if (jobInfo != null) {
 				doRemove(jobInfo, 1, 1);
-				return jobInfo;
-			} else {
-				return null;
-			}
-		} else {
-			return null;
-		}
-	}
-
-        /* (non-Javadoc)
-	 * @see jmt.engine.QueueNet.JobInfoList#removeFirst()
-	 */
-	public JobInfo removeRand() throws jmt.common.exception.NetException {
-		if (list != null) {
-			JobInfo jobInfo = list.get((int)(Math.random()*list.size()));
-			if (jobInfo != null) {
-				doRemove(jobInfo, 0, 0);
 				return jobInfo;
 			} else {
 				return null;
@@ -739,7 +704,6 @@ public class LinkedJobInfoList implements JobInfoList {
 
 		updateUtilization(jobClass);
 		updateQueueLength(jobClass);
-                updateArrivalQueueLength(jobClass);
 
 		jobsIn++;
 		jobsInPerClass[c]++;
@@ -789,20 +753,6 @@ public class LinkedJobInfoList implements JobInfoList {
 		}
 	}
 
-        /* (non-Javadoc)
-	 * @see jmt.engine.QueueNet.JobInfoList#analyzeArrivalQueueLength(jmt.engine.QueueNet.JobClass, jmt.engine.dataAnalysis.Measure)
-	 */
-	public void analyzeArrivalQueueLength(JobClass JobClass, Measure Measurement) {
-		if (JobClass != null) {
-			if (arrivalQueueLengthPerClass == null) {
-				arrivalQueueLengthPerClass = new Measure[listPerClass.length];
-			}
-			arrivalQueueLengthPerClass[JobClass.getId()] = Measurement;
-		} else {
-			arrivalQueueLength = Measurement;
-		}
-	}
-
 	/**
 	 * WARNING: updateQueueLength is implemented exactly as updateUtilization: the
 	 * difference is that in the former case the resident jobs counted
@@ -822,19 +772,6 @@ public class LinkedJobInfoList implements JobInfoList {
 		}
 		if (queueLength != null) {
 			queueLength.update(list.size(), NetSystem.getTime() - getLastModifyTime());
-		}
-	}
-
-	private void updateArrivalQueueLength(JobClass JobClass) {
-                if (arrivalQueueLengthPerClass != null) {
-			int c = JobClass.getId();
-			Measure m = arrivalQueueLengthPerClass[c];
-			if (m != null) {
-				m.update(listPerClass[c].size(), 1.0);
-			}
-		}
-		if (arrivalQueueLength != null) {
-			arrivalQueueLength.update(list.size(), 1.0);
 		}
 	}
 

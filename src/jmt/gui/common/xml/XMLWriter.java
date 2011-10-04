@@ -71,7 +71,6 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 		{
 			put(QUEUE_STRATEGY_FCFS, "TailStrategy");
 			put(QUEUE_STRATEGY_LCFS, "HeadStrategy");
-                        put(QUEUE_STRATEGY_RAND, "RandStrategy");
 		}
 	};
 

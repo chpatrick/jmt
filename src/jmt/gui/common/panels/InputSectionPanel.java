@@ -66,7 +66,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 	/**
 	 * Used to define queuing policy
 	 */
-	protected Object[] queuePolicy = { QUEUE_STRATEGY_FCFS, QUEUE_STRATEGY_LCFS, QUEUE_STRATEGY_RAND };
+	protected Object[] queuePolicy = { QUEUE_STRATEGY_FCFS, QUEUE_STRATEGY_LCFS };
 	/**
 	 * Used to define drop rules
 	 */

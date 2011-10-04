@@ -72,10 +72,6 @@ public class SimConstants {
 	public static final int THROUGHPUT_PER_SINK = 13;
 	public static final int RESPONSE_TIME_PER_SINK = 14;
 
-        //Added by G. Casale
-       	/** Measure identifier: number of jobs in queue.   */
-	public static final int ARRIVAL_QUEUE_LENGTH = 15;
-
 	//-------------------- end SIMULATION MEASURE IDENTIFIERS -------------------------//
 
 	//-------------------- JOB LIST MEASURE IDENTIFIERS ----------------------------//
@@ -97,9 +93,6 @@ public class SimConstants {
 
 	/** Measure identifier: drop rate of a finite queue.   */
 	public static final int LIST_DROP_RATE = 26;
-
-      	/** Measure identifier: number of jobs in queue.   */
-	public static final int LIST_NUMBER_OF_JOBS_AT_ARRIVAL = 27;
 
 	//-------------------- end JOB LIST MEASURE IDENTIFIERS -------------------------//
 	/** To be used for a blocking region measure */
