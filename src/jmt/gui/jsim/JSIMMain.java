@@ -29,20 +29,13 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
-import java.util.Locale;
 
-import javax.help.HelpSet;
-import javax.help.JHelp;
 import javax.swing.Action;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
-import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.components.JMTMenuBar;
 import jmt.framework.gui.components.JMTToolBar;
 import jmt.framework.gui.listeners.AbstractJMTAction;
@@ -665,33 +658,6 @@ public class JSIMMain extends Wizard implements GuiInterface {
 		SIM_PAUSE.setEnabled(pause);
 	}
 
-	private void showHelp() {
-		JHelp helpViewer = null;
-		try {
-			// Get the classloader of this class.
-			ClassLoader cl = this.getClass().getClassLoader();
-			// Use the findHelpSet method of HelpSet to create a URL referencing the helpset file.
-			URL url = HelpSet.findHelpSet(cl, "help/jSIM_en/jsim_en.hs");
-			// Create a new JHelp object with a new HelpSet.
-			helpViewer = new JHelp(new HelpSet(cl, url));
-
-			// Set the initial entry point in the table of contents.
-			//helpViewer.setCurrentID("");
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Sorry, jSIM help is not available", "Help not found", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-		// Create a new frame.
-		JMTFrame frame = new JMTFrame();
-		// Set it's size.
-		frame.centerWindow(800, 600);
-		// Add the created helpViewer to it.
-		frame.getContentPane().add(helpViewer);
-		// Make the frame visible.
-		frame.setVisible(true);
-	}
 
 	/**
 	 * Shows JSIM Credits

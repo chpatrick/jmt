@@ -24,23 +24,18 @@ import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
-import javax.help.HelpSet;
-import javax.help.JHelp;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
-import javax.swing.WindowConstants;
 
 import jmt.common.exception.InputDataException;
 import jmt.common.exception.SolverException;
@@ -673,73 +668,10 @@ public class JabaWizard extends Wizard {
 		// End Modify Carlo Gimondi
 	}
 
-
-	// NEW
-	// @author Stefano Omini
-	private void showHelp(ActionEvent event) {
-		JHelp helpViewer;
-		try {
-			// Get the classloader of this class.
-			ClassLoader cl = this.getClass().getClassLoader();
-			// Use the findHelpSet method of HelpSet to create a URL referencing
-			// the helpset file.
-			URL url = HelpSet.findHelpSet(cl, "help/jABA_en/jaba_eng.hs");
-			// Create a new JHelp object with a new HelpSet.
-			helpViewer = new JHelp(new HelpSet(cl, url));
-
-			// Set the initial entry point in the table of contents.
-			// helpViewer.setCurrentID("");
-		} catch (Exception e) {
-			if (DEBUG) {
-				e.printStackTrace();
-			}
-			JOptionPane.showMessageDialog(this,
-					"Sorry, jABA help is not available", "Help not found",
-					JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-		// Create a new frame.
-		JFrame frame = new JFrame();
-		// Set it's size.
-		frame.setSize(650, 510);
-		// Add the created helpViewer to it.
-		frame.getContentPane().add(helpViewer);
-		// Set a default close operation.
-		frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-		// Make the frame visible.
-		frame.setVisible(true);
-
-	}
-
-	// end NEW
-
 	// NEW
 	// @author Bertoli Marco
 	private void showAbout() {
 		AboutDialogFactory.showJABA(this);
-	}
-
-	// end NEW
-
-	// NEW
-	// @author Stefano Omini
-	/**
-	 * find the helpset file and create a HelpSet object
-	 */
-	public HelpSet getHelpSet(String helpsetfile) {
-		HelpSet hs = null;
-		ClassLoader cl = this.getClass().getClassLoader();
-		try {
-			URL hsURL = HelpSet.findHelpSet(cl, helpsetfile);
-			hs = new HelpSet(null, hsURL);
-		} catch (Exception ee) {
-			// System.out.println("HelpSet: "+ee.getMessage());
-			// System.out.println("HelpSet: "+ helpsetfile + " not found");
-			JOptionPane.showMessageDialog(this, ee.getMessage(),
-					"Help not found", JOptionPane.ERROR_MESSAGE);
-		}
-		return hs;
 	}
 
 	// end NEW

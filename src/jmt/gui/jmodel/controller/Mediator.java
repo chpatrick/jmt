@@ -32,7 +32,6 @@ import java.awt.event.WindowEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -44,13 +43,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.help.HelpSet;
-import javax.help.JHelp;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.components.JMTMenuBar;
 import jmt.framework.gui.components.JMTToolBar;
 import jmt.framework.gui.image.ImageLoader;
@@ -2881,35 +2877,6 @@ public class Mediator implements GuiInterface {
 	 */
 	public Rectangle2D getCellDimension(JmtCell cell) {
 		return GraphConstants.getBounds(cell.getAttributes());
-	}
-
-	public void showHelp() {
-		JHelp helpViewer = null;
-		try {
-			// Get the classloader of this class.
-			ClassLoader cl = this.getClass().getClassLoader();
-			// Use the findHelpSet method of HelpSet to create a URL referencing
-			// the helpset file.
-			URL url = HelpSet.findHelpSet(cl, "help/jMODEL_en/JSIMgraph.hs");
-			// Create a new JHelp object with a new HelpSet.
-			helpViewer = new JHelp(new HelpSet(cl, url));
-
-			// Set the initial entry point in the table of contents.
-			// helpViewer.setCurrentID("");
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(mainWindow, "Sorry, jSIMgraph help is not available", "Help not found", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-		// Create a new frame.
-		JMTFrame frame = new JMTFrame();
-		// Set it's size.
-		frame.centerWindow(800, 600);
-		// Add the created helpViewer to it.
-		frame.getContentPane().add(helpViewer);
-		// Make the frame visible.
-		frame.setVisible(true);
 	}
 
 	// --- Methods to handle blocking regions - Bertoli Marco

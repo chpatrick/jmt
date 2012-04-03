@@ -71,19 +71,7 @@
 
     </target>
 
-
-    <target name="copy_help" description="copies the help dir into build dir" depends="compile">
-
-        <!-- copies the help dir in build dir -->
-        <sync todir="${class}/help">
-            <fileset dir="help"/>
-        </sync>
-
-    </target>
-
-
-
-    <target name="prepare_dist" depends="compile,copy_help,copy_resources"
+    <target name="prepare_dist" depends="compile,copy_resources"
         description="generate the distribution jar" >
 
         <!-- Create the output and the lib directory -->

@@ -25,13 +25,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import javax.help.HelpSet;
-import javax.help.JHelp;
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -50,7 +47,6 @@ import javax.swing.WindowConstants;
 
 import jmt.common.exception.InputDataException;
 import jmt.common.exception.SolverException;
-import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.components.JMTMenuBar;
 import jmt.framework.gui.components.JMTToolBar;
 import jmt.framework.gui.help.HoverHelp;
@@ -626,87 +622,9 @@ public class ExactWizard extends Wizard {
 	}
 
 	//NEW
-	//@author Stefano Omini
-	private void showHelp(ActionEvent event) {
-		/*
-		try {
-		    ClassLoader cl = this.getClass().getClassLoader();
-
-		    //TODO: cerca nella cartella class... � l'unica soluzione attualmente funzionante
-		    //URL url = HelpSet.findHelpSet(cl, "help/mvaIt/MVA.hs");
-		    URL url = HelpSet.findHelpSet(cl, "help/jmva_en/jmva_eng.hs");
-		    //System.out.println(url.toString());
-
-		    HelpSet hs = new HelpSet(cl, url);
-		    HelpBroker hb = hs.createHelpBroker();
-		    CSH.DisplayHelpFromSource display = new CSH.DisplayHelpFromSource(hb);
-		    display.actionPerformed(event);
-
-		//} catch (HelpSetException e) {
-		//TODO: specializzare exception
-		} catch (Exception e) {
-		    e.printStackTrace();
-		    JOptionPane.showMessageDialog(this, "Sorry, jMVA help is not available", "Help not found", JOptionPane.ERROR_MESSAGE);
-		}
-
-		return;
-		*/
-
-		JHelp helpViewer = null;
-		try {
-			// Get the classloader of this class.
-			ClassLoader cl = this.getClass().getClassLoader();
-			// Use the findHelpSet method of HelpSet to create a URL referencing the helpset file.
-			URL url = HelpSet.findHelpSet(cl, "help/jMVA_en/jmva_eng.hs");
-			// Create a new JHelp object with a new HelpSet.
-			helpViewer = new JHelp(new HelpSet(cl, url));
-
-			// Set the initial entry point in the table of contents.
-			//helpViewer.setCurrentID("");
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Sorry, jMVA help is not available", "Help not found", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-		// Create a new frame.
-		JMTFrame frame = new JMTFrame();
-		// Set it's size.
-		frame.centerWindow(650, 510);
-		// Add the created helpViewer to it.
-		frame.getContentPane().add(helpViewer);
-		// Make the frame visible.
-		frame.setVisible(true);
-
-	}
-
-	//end NEW
-
-	//NEW
 	//@author Bertoli Marco
 	private void showAbout() {
 		AboutDialogFactory.showJMVA(this);
-	}
-
-	//end NEW
-
-	//NEW
-	//@author Stefano Omini
-	/**
-	* find the helpset file and create a HelpSet object
-	*/
-	public HelpSet getHelpSet(String helpsetfile) {
-		HelpSet hs = null;
-		ClassLoader cl = this.getClass().getClassLoader();
-		try {
-			URL hsURL = HelpSet.findHelpSet(cl, helpsetfile);
-			hs = new HelpSet(null, hsURL);
-		} catch (Exception ee) {
-			//System.out.println("HelpSet: "+ee.getMessage());
-			//System.out.println("HelpSet: "+ helpsetfile + " not found");
-			JOptionPane.showMessageDialog(this, ee.getMessage(), "Help not found", JOptionPane.ERROR_MESSAGE);
-		}
-		return hs;
 	}
 
 	//end NEW

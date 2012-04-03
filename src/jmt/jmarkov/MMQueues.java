@@ -34,11 +34,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Dictionary;
 
-import javax.help.HelpSet;
-import javax.help.JHelp;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -1178,46 +1175,6 @@ public class MMQueues extends JMTFrame {
 			}
 		}
 	}
-
-	// NEW
-	// @author Stefano Omini
-	private void showHelp(ActionEvent event) {
-
-		JHelp helpViewer = null;
-		try {
-			// Get the classloader of this class.
-			ClassLoader cl = this.getClass().getClassLoader();
-			// Use the findHelpSet method of HelpSet to create a URL referencing
-			// the helpset file.
-			// Changed the path so that it ends in error and shows the Error Message as the 
-			//Help in English is not yet available.
-			URL url = HelpSet.findHelpSet(cl, "help/jMCH_en/MMQHelp.hs");//"help/jMCH_it/MMQHelp.hs");
-			// Create a new JHelp object with a new HelpSet.
-			helpViewer = new JHelp(new HelpSet(cl, url));
-
-			// Set the initial entry point in the table of contents.
-			// helpViewer.setCurrentID("");
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Sorry, JMCH help is not available yet, "
-					+ "but you can see the JMCH users manual installed with the application", "Help not found", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-
-		// Create a new frame.
-		JFrame frame = new JFrame();
-		// Set it's size.
-		frame.setSize(650, 510);
-		// Add the created helpViewer to it.
-		frame.getContentPane().add(helpViewer);
-		// Set a default close operation.
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		// Make the frame visible.
-		frame.setVisible(true);
-
-	}
-
-	// end NEW
 
 	private JPanel getSplitter(int widht, int height) {
 		JPanel splitPane = new JPanel();

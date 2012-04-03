@@ -90,10 +90,10 @@ distributed according to the licenses contained in the license folder:
 - FreeHEP VectorGraphics package, released under GNU LGPL License.
 - Apache Jakarta-ORO, released under Apache Software License.
 - JFEP, released under the Apache License, Version 2.0
-- SUN JavaHelp System, released under Sun Microsystems, Inc. Binary Code License Agreement.
 - JGoodies Looks, released under BSD open source License.
 - JGraph, released under GNU LGPL License.
 - Apache Log4j, released under Apache Software License.
 - Ptolemy II Ptplot, released under BSD open source License.
 - Apache Xerces Java Parser, released under Apache Software License.
+- Pdf-renderer, released under GNU LGPL 2.1 License.
 
