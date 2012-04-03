@@ -2,10 +2,12 @@ package jmt.gui.jwat;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Locale;
@@ -55,6 +57,8 @@ import jmt.gui.jwat.workloadAnalysis.panels.ClusteringInfoPanel;
 import jmt.gui.jwat.workloadAnalysis.panels.InputPanel;
 import jmt.gui.jwat.workloadAnalysis.panels.LoadDemoPanel;
 import jmt.gui.jwat.workloadAnalysis.panels.StatsPanel;
+import jmt.manual.ManualBookmarkers;
+import jmt.manual.PDFViewerBuffer;
 
 public class MainJwatWizard extends JWatWizard {
 	/**
@@ -296,20 +300,30 @@ public class MainJwatWizard extends JWatWizard {
 			cancel();
 		}
 	};
-	private AbstractAction WL_HELP_SHOWHELP = new AbstractAction("Help") {
+	private AbstractAction WL_HELP_SHOWHELP = new AbstractAction("JWAT Help") {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
 		{
-			putValue(Action.SHORT_DESCRIPTION, "Show Help");
+			putValue(Action.SHORT_DESCRIPTION, "Show JWAT help");
 			putValue(Action.SMALL_ICON, JMTImageLoader.loadImage("Help"));
 			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
 			putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_H));
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			showHelp(e);
+			Runnable r = new Runnable() {
+				public void run() {
+					try {
+						new PDFViewerBuffer("JWAT manual", ManualBookmarkers.JWAT);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			EventQueue.invokeLater(r);
+
 		}
 	};
 	private AbstractAction WL_HELP_CREDITS = new AbstractAction("About JWAT") {
@@ -322,41 +336,21 @@ public class MainJwatWizard extends JWatWizard {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			AboutDialogFactory.showJWAT(MainJwatWizard.this);
+			Runnable r = new Runnable() {
+				public void run() {
+					try {
+						new PDFViewerBuffer("JWAT manual", ManualBookmarkers.JWAT);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			EventQueue.invokeLater(r);
+
 		}
 	};
 
-	private void showHelp(ActionEvent event) {
-		JHelp helpViewer = null;
-		try {
-			// Get the classloader of this class.
-			ClassLoader cl = this.getClass().getClassLoader();
-			// Use the findHelpSet method of HelpSet to create a URL referencing the helpset file.
-			URL url = HelpSet.findHelpSet(cl, "./help/JWat_eng/JWatWorkload.hs");
-			// Create a new JHelp object with a new HelpSet.
-			helpViewer = new JHelp(new HelpSet(cl, url));
-
-			// Set the initial entry point in the table of contents.
-			//helpViewer.setCurrentID("");
-		} catch (Exception e) {
-			e.printStackTrace();
-			JOptionPane.showMessageDialog(this, "Sorry, JWAT help is not available yet, "
-					+ "but you can see the JWAT users manual installed with the application", "Help not found", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		// Create a new frame.
-		JFrame frame = new JFrame();
-		// Set it's size.
-		frame.setSize(650, 510);
-		// Add the created helpViewer to it.
-		frame.getContentPane().add(helpViewer);
-		// Set a default close operation.
-		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-		// Make the frame visible.
-		frame.setVisible(true);
-
-	}
-
+	
 	private AbstractAction WL_FILE_NEW = new AbstractAction("New") {
 		/**
 		 * 
@@ -547,7 +541,7 @@ public class MainJwatWizard extends JWatWizard {
 				button.setContentAreaFilled(false);
 				button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				tb.add(button);
-				help.addHelp(button, htext[j]);
+			
 			}
 		}
 		setToolBar(tb);
@@ -700,8 +694,7 @@ public class MainJwatWizard extends JWatWizard {
 				button.setContentAreaFilled(false);
 				button.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 				tb.add(button);
-				help.addHelp(button, htext[j]);
-			}
+				}
 		}
 		setToolBar(tb);
 	}
@@ -813,7 +806,17 @@ public class MainJwatWizard extends JWatWizard {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			showHelp(e);
+			Runnable r = new Runnable() {
+				public void run() {
+					try {
+						new PDFViewerBuffer("JWAT manual", ManualBookmarkers.JWAT);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			EventQueue.invokeLater(r);
+
 		}
 	};
 	
@@ -830,7 +833,17 @@ public class MainJwatWizard extends JWatWizard {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			showHelp(e);
+			Runnable r = new Runnable() {
+				public void run() {
+					try {
+						new PDFViewerBuffer("JWAT manual", ManualBookmarkers.JWAT);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			EventQueue.invokeLater(r);
+
 		}
 	};
 

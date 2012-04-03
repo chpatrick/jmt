@@ -21,6 +21,7 @@ package jmt.jmarkov;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -32,6 +33,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Dictionary;
 
@@ -81,6 +83,8 @@ import jmt.jmarkov.Queues.MMNdLogic;
 import jmt.jmarkov.Queues.Processor;
 import jmt.jmarkov.Queues.Exceptions.NonErgodicException;
 import jmt.jmarkov.utils.Formatter;
+import jmt.manual.ManualBookmarkers;
+import jmt.manual.PDFViewerBuffer;
 
 import com.jgoodies.looks.Options;
 
@@ -678,27 +682,49 @@ public class MMQueues extends JMTFrame {
 
 			menuB.add(settingsMenu);
 
+			
 			// help
 			helpMenu = new JMenu("Help");
-
+	
+			JMenuItem help = new JMenuItem();
+			help.setText("JMCH help");
+			help.setToolTipText("Show help JMCH");
+						
+			
 			// OLD
 			// helpMenuItem = helpMenu.add("Help");
 			// NEW
 			// @author Stefano Omini
-			Action helpAction = new AbstractAction("Help") {
-				public void actionPerformed(ActionEvent event) {
-					// action code goes here
-					showHelp(event);
-				}
-			};
+			help.addActionListener(new ActionListener() {
+			
+				/**
+				 * Invoked when an action occurs.
+				 */
+				public void actionPerformed(ActionEvent e) {
+					Runnable r = new Runnable() {
+						public void run() {
+							try {
+								new PDFViewerBuffer("JMCH manual", ManualBookmarkers.JMCH);
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+						}
+					};
+					EventQueue.invokeLater(r);
 
-			helpMenu.add(helpAction);
+				}
+			});
+		
+			helpMenu.add(help);
+	
 			// end NEW
 
 			// NEW Bertoli Marco
 			helpMenu.addSeparator();
+
 			JMenuItem about = new JMenuItem();
-			about.setText("About...");
+			about.setText("About JMCH");
+			about.setToolTipText("About JMCH");
 			about.addActionListener(new ActionListener() {
 
 				/**

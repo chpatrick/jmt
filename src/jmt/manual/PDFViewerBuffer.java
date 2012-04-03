@@ -44,6 +44,7 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final int PAGE_NUM_RESERVED = -1;
+	private static final String MANUAL_RESOURCE = "manual.pdf";
 	
 	//size of buffer
 	private static int BUFFER_SIZE = 3;// MUST BE ODD
@@ -194,7 +195,7 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 	 * @throws IOException
 	 */
 	private void loadManual(ManualBookmarkers marker) throws IOException {
-		String path = PDFViewerBuffer.class.getResource("manual.pdf")
+		String path = PDFViewerBuffer.class.getResource(MANUAL_RESOURCE)
 				.getPath();
 		/**
 		 * To load a pdf url format does not work,

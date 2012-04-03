@@ -19,9 +19,11 @@
 package jmt.gui.jaba;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -67,6 +69,8 @@ import jmt.gui.jaba.panels.ServiceDemandsPanel;
 import jmt.gui.jaba.panels.ServiceTimesPanel;
 import jmt.gui.jaba.panels.StationsPanel;
 import jmt.gui.jaba.panels.VisitsPanel;
+import jmt.manual.ManualBookmarkers;
+import jmt.manual.PDFViewerBuffer;
 
 /**
  * This is the object you use to define your system structure and parameters
@@ -287,12 +291,21 @@ public class JabaWizard extends Wizard {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			showHelp(e);
+			Runnable r = new Runnable() {
+				public void run() {
+					try {
+						new PDFViewerBuffer("JABA manual", ManualBookmarkers.JABA);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			EventQueue.invokeLater(r);
 
 		}
 	};
 
-	private AbstractJMTAction ABOUT = new AbstractJMTAction("About JABA...") {
+	private AbstractJMTAction ABOUT = new AbstractJMTAction("About JABA") {
 		/**
 		 * 
 		 */
@@ -407,13 +420,11 @@ public class JabaWizard extends Wizard {
 		help.addHelp(button_next, "Moves on to the next step");
 		JButton button_previous = new JButton(ACTION_PREV);
 		help.addHelp(button_previous, "Goes back to the previous step");
-		JButton button_help = new JButton(ACTION_HELP);
-		help.addHelp(button_help, "Displays help for the current panel");
 		buttons.add(button_previous);
 		buttons.add(button_next);
 		buttons.add(button_finish);
 		buttons.add(button_cancel);
-		buttons.add(button_help);
+	
 
 		JPanel labelbox = new JPanel();
 		labelbox.setLayout(new BorderLayout());

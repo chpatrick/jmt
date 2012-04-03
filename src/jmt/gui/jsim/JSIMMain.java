@@ -21,12 +21,14 @@ package jmt.gui.jsim;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.Locale;
@@ -79,6 +81,8 @@ import jmt.gui.jsim.panels.ConnectionsPanel;
 import jmt.gui.jsim.panels.JSimProblemsWindow;
 import jmt.gui.jsim.panels.RSPLPanel;
 import jmt.gui.jsim.panels.StationsPanel;
+import jmt.manual.ManualBookmarkers;
+import jmt.manual.PDFViewerBuffer;
 
 /**
  * Created by IntelliJ IDEA.
@@ -318,20 +322,32 @@ public class JSIMMain extends Wizard implements GuiInterface {
 		}
 	};
 
-	private AbstractJMTAction HELP_SHOWHELP = new AbstractJMTAction("Help") {
+	private AbstractJMTAction HELP_SHOWHELP = new AbstractJMTAction("JSIMwiz help") {
 		/**
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
 		{
-			putValue(Action.SHORT_DESCRIPTION, "Show Help");
+			putValue(Action.SHORT_DESCRIPTION, "Show JSIMwiz help");
 			setIcon("Help", JMTImageLoader.getImageLoader());
 			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
 			putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_H));
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			showHelp();
+			//showHelp(e);
+
+			Runnable r = new Runnable() {
+				public void run() {
+					try {
+						new PDFViewerBuffer("JSIMwiz manual", ManualBookmarkers.JSIMwiz);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			EventQueue.invokeLater(r);
+
 		}
 	};
 
@@ -341,7 +357,7 @@ public class JSIMMain extends Wizard implements GuiInterface {
 		 */
 		private static final long serialVersionUID = 1L;
 		{
-			putValue(Action.SHORT_DESCRIPTION, "Credits");
+			putValue(Action.SHORT_DESCRIPTION, "About JSIMwiz");
 		}
 
 		public void actionPerformed(ActionEvent e) {

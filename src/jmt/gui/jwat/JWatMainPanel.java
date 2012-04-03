@@ -4,12 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
@@ -26,12 +29,16 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import javax.swing.SwingConstants;
 
 import jmt.framework.gui.help.HoverHelp;
+import jmt.framework.gui.listeners.AbstractJMTAction;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.panels.AboutDialogFactory;
 import jmt.gui.common.resources.JMTImageLoader;
+import jmt.manual.ManualBookmarkers;
+import jmt.manual.PDFViewerBuffer;
 
 public class JWatMainPanel extends WizardPanel {
 	/**
@@ -217,16 +224,7 @@ public class JWatMainPanel extends WizardPanel {
 		makeToolbar();
 		makeMenubar();
 		parent.setEnableButton("Solve", false);
-		parent.setActionButton("Help", new AbstractAction() {
-			/**
-			 * 
-			 */
-			private static final long serialVersionUID = 1L;
-
-			public void actionPerformed(ActionEvent e) {
-				System.err.println("HELP");
-			}
-		});
+	
 	}
 
 	@Override
@@ -245,9 +243,9 @@ public class JWatMainPanel extends WizardPanel {
 		workloadToolbar.setOrientation(SwingConstants.HORIZONTAL);
 		workloadToolbar.setFloatable(false);
 		//null values add a gap between toolbar icons
-		Action[] actions = { HELP_CREDITS };
+		Action[] actions = { HELP };
 		String[] icons = { "Help" };
-		String[] htext = { "Show help" };
+		String[] htext = { "Show JWAT help" };
 		JButton button;
 		workloadToolbar.setBorderPainted(true);
 		//i index scans actions' array which includes null values, while j scans other arrays.
@@ -271,6 +269,35 @@ public class JWatMainPanel extends WizardPanel {
 		}
 		parent.setToolBar(workloadToolbar);
 	}
+	private AbstractJMTAction HELP = new AbstractJMTAction("JWAT help") {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		{
+			putValue(Action.SHORT_DESCRIPTION, "Show JMVA help");
+			setIcon("Help", JMTImageLoader.getImageLoader());
+			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+			putValue(Action.MNEMONIC_KEY, new Integer(KeyEvent.VK_H));
+		}
+
+		public void actionPerformed(ActionEvent e) {
+			//showHelp(e);
+
+			Runnable r = new Runnable() {
+				public void run() {
+					try {
+						new PDFViewerBuffer("JWAT manual", ManualBookmarkers.JWAT);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			EventQueue.invokeLater(r);
+
+		}
+	};
 
 	private AbstractAction HELP_CREDITS = new AbstractAction("About JWAT") {
 		/**
@@ -278,7 +305,7 @@ public class JWatMainPanel extends WizardPanel {
 		 */
 		private static final long serialVersionUID = 1L;
 		{
-			putValue(Action.SHORT_DESCRIPTION, "Credits");
+			putValue(Action.SHORT_DESCRIPTION, "About JWAT");
 		}
 
 		public void actionPerformed(ActionEvent e) {
@@ -293,7 +320,7 @@ public class JWatMainPanel extends WizardPanel {
 	 */
 	public void makeMenubar() {
 		workloadMenubar = new JMenuBar();
-		JMenuItem[][] menuItems = { { new JMenuItem(HELP_CREDITS) } };
+		JMenuItem[][] menuItems = { { new JMenuItem(HELP),null,new JMenuItem(HELP_CREDITS) } };
 		String[] menuTitles = { "Help" };
 		char[] chars = { 'e' };
 		for (int i = 0; i < menuItems.length; i++) {

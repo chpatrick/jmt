@@ -58,8 +58,6 @@ public class JWatWizard extends Wizard {
 		help.addHelp(button_next, "Moves on to the next step");
 		JButton button_previous = new JButton(ACTION_PREV);
 		help.addHelp(button_previous, "Goes back to the previous step");
-		JButton button_help = new JButton(ACTION_HELP);
-		help.addHelp(button_help, "Displays help for the current panel");
 		buttons.add(button_previous);
 		btnList[0] = button_previous;
 		buttons.add(button_next);
@@ -68,9 +66,7 @@ public class JWatWizard extends Wizard {
 		btnList[2] = button_finish;
 		buttons.add(button_cancel);
 		btnList[3] = button_cancel;
-		buttons.add(button_help);
-		btnList[4] = button_help;
-
+		
 		JPanel labelbox = new JPanel();
 		labelbox.setLayout(new BorderLayout());
 		labelbox.add(Box.createVerticalStrut(20), BorderLayout.WEST);

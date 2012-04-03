@@ -42,8 +42,8 @@ public class About extends AbstractJmodelAction {
 	 * description string and default icon.
 	 */
 	public About(Mediator mediator) {
-		super("About...", mediator);
-		this.setTooltipText("About JMODEL...");
+		super("About JSIMgraph", mediator);
+		this.setTooltipText("About JSIMgraph");
 		this.setMnemonicKey(KeyEvent.VK_A);
 	}
 

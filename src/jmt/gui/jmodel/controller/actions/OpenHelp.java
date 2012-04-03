@@ -18,10 +18,14 @@
 
 package jmt.gui.jmodel.controller.actions;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 
 import jmt.gui.jmodel.controller.Mediator;
+import jmt.manual.ManualBookmarkers;
+import jmt.manual.PDFViewerBuffer;
 
 /**
 
@@ -42,8 +46,8 @@ public class OpenHelp extends AbstractJmodelAction {
 	 * description string and default icon.
 	 */
 	public OpenHelp(Mediator mediator) {
-		super("Help", "Help", mediator);
-		putValue(SHORT_DESCRIPTION, "open help");
+		super("JSIMgraph help", "JSIMgraph help", mediator);
+		putValue(SHORT_DESCRIPTION, "Show JSIMgraph help");
 		putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_H));
 	}
 
@@ -51,6 +55,18 @@ public class OpenHelp extends AbstractJmodelAction {
 	 * Invoked when an action occurs.
 	 */
 	public void actionPerformed(ActionEvent e) {
-		mediator.showHelp();
+		//showHelp(e);
+
+		Runnable r = new Runnable() {
+			public void run() {
+				try {
+					new PDFViewerBuffer("JSIMgraph manual", ManualBookmarkers.JSIMgraph);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		EventQueue.invokeLater(r);
+
 	}
 }

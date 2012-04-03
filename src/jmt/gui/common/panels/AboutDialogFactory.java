@@ -49,22 +49,7 @@ import jmt.gui.common.startScreen.GraphStartScreen;
  *         Time: 16.42.10
  */
 public class AboutDialogFactory {
-	/**
-	 * Authors of each application
-	 */
-	protected static String[] JMVA = { "Bertoli Marco", "Conti Andrea", "Dall'Orso Federico", "Omini Stefano", "Granata Federico" };
-
-	protected static String[] JSIM = { "Bertoli Marco", "Granata Federico", "Omini Stefano", "Radaelli Francesco", "Dall'Orso Federico" };
-
-	protected static String[] JMODEL = { "Bertoli Marco", "D'Aquino Francesco", "Granata Federico", "Omini Stefano", "Radaelli Francesco" };
-
-	protected static String[] JABA = { "Bertoli Marco", "Zanzottera Andrea", "Gimondi Carlo" };
-
-	protected static String[] JMCH = { "Canakoglu Arif", "Di Mauro Ernesto" };
-
-	protected static String[] JWAT = { "Brambilla Davide", "Fumagalli Claudio" };
-
-	/**
+		/**
 	 * Variables
 	 */
 	protected static final int BORDERSIZE = 20;
@@ -93,15 +78,7 @@ public class AboutDialogFactory {
 	 * Initialize data structures and window layout.
 	 */
 	static {
-		// Sorts arrays alphabetically
-		Arrays.sort(JMVA);
-		Arrays.sort(JSIM);
-		Arrays.sort(JMODEL);
-		Arrays.sort(JABA);
-		Arrays.sort(JMCH);
-		Arrays.sort(JWAT);
-
-		// Initialize dialog layout
+			// Initialize dialog layout
 		panel = new JPanel(new BorderLayout(BORDERSIZE / 2, BORDERSIZE / 2));
 		panel.setBorder(BorderFactory.createEmptyBorder(BORDERSIZE, BORDERSIZE, BORDERSIZE, BORDERSIZE));
 		// Adds polimi image
@@ -161,7 +138,7 @@ public class AboutDialogFactory {
 		dialog.getContentPane().add(panel, BorderLayout.CENTER);
 
 		// Sets text to be displayed
-		textArea.setText("<html><p><font size=\"-1\">" + WEBSITE + "<br><br>" + text + "</font></p></html>");
+		textArea.setText("<br><br><html><p><font size=\"-1\">" + WEBSITE + "<br><br>" );
 
 		// Adds exit button
 		JButton exit = new JButton();
@@ -202,7 +179,6 @@ public class AboutDialogFactory {
 	public static void showJMVA(Window owner) {
 		title.setText(TITLE_START + "JMVA" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JMVAICON, new Dimension(50, 50)));
-		addNames(JMVA);
 		createDialog(owner, "About JMVA").show();
 	}
 
@@ -213,8 +189,7 @@ public class AboutDialogFactory {
 	public static void showJSIM(Window owner) {
 		title.setText(TITLE_START + "JSIM<em>wiz</em>" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JSIMICON, new Dimension(50, 50)));
-		addNames(JSIM);
-		createDialog(owner, "About JSIMwiz").show();
+	    createDialog(owner, "About JSIMwiz").show();
 	}
 
 	/**
@@ -224,7 +199,6 @@ public class AboutDialogFactory {
 	public static void showJMODEL(Window owner) {
 		title.setText(TITLE_START + "JSIM<em>graph</em>" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JMODELICON, new Dimension(50, 50)));
-		addNames(JMODEL);
 		createDialog(owner, "About JSIMgraph").show();
 	}
 
@@ -235,7 +209,6 @@ public class AboutDialogFactory {
 	public static void showJABA(Window owner) {
 		title.setText(TITLE_START + "JABA" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JABAICON, new Dimension(50, 50)));
-		addNames(JABA);
 		createDialog(owner, "About JABA").show();
 	}
 
@@ -246,7 +219,6 @@ public class AboutDialogFactory {
 	public static void showJMCH(Window owner) {
 		title.setText(TITLE_START + "JMCH" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JMCHICON, new Dimension(50, 50)));
-		addNames(JMCH);
 		createDialog(owner, "About JMCH").show();
 	}
 
@@ -257,7 +229,6 @@ public class AboutDialogFactory {
 	public static void showJWAT(Window owner) {
 		title.setText(TITLE_START + "JWAT" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JWATICON, new Dimension(50, 50)));
-		addNames(JWAT);
 		createDialog(owner, "About JWAT").show();
 	}
 }

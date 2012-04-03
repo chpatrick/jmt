@@ -1,20 +1,20 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+ * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
-  * This program is free software; you can redistribute it and/or modify
-  * it under the terms of the GNU General Public License as published by
-  * the Free Software Foundation; either version 2 of the License, or
-  * (at your option) any later version.
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
 
-  * This program is distributed in the hope that it will be useful,
-  * but WITHOUT ANY WARRANTY; without even the implied warranty of
-  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  * GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
 
-  * You should have received a copy of the GNU General Public License
-  * along with this program; if not, write to the Free Software
-  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
-  */
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 package jmt.framework.gui.wizard;
 
@@ -112,20 +112,6 @@ public class Wizard extends JMTFrame {
 		}
 	};
 
-	protected AbstractJMTAction ACTION_HELP = new AbstractJMTAction("Help") {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		{
-			setTooltipText("Show quick help screen");
-		}
-
-		public void actionPerformed(ActionEvent e) {
-			help();
-		}
-	};
-
 	protected JTabbedPane tabbedPane;
 	protected JComponent buttons;
 
@@ -169,14 +155,12 @@ public class Wizard extends JMTFrame {
 		JButton button_cancel = new JButton(ACTION_CANCEL);
 		JButton button_next = new JButton(ACTION_NEXT);
 		JButton button_previous = new JButton(ACTION_PREV);
-		JButton button_help = new JButton(ACTION_HELP);
 		JPanel res = new JPanel();
 		res.add(button_previous);
 		res.add(button_next);
 		res.add(button_finish);
 		res.add(button_cancel);
-		//res.add(Box.createHorizontalStrut(80));
-		res.add(button_help);
+		// res.add(Box.createHorizontalStrut(80));
 		return res;
 	}
 
@@ -187,12 +171,14 @@ public class Wizard extends JMTFrame {
 			 */
 			private static final long serialVersionUID = 1L;
 
-			/* we hook into the tabbedpane's tab switching method and make the change
-			only if the current panel agrees */
+			/*
+			 * we hook into the tabbedpane's tab switching method and make the
+			 * change only if the current panel agrees
+			 */
 			@Override
 			public void setSelectedIndex(int index) {
 				int oldIndex = model.getSelectedIndex();
-				if (index != oldIndex) { //ignore useless requests
+				if (index != oldIndex) { // ignore useless requests
 					if (currentPanel != null) {
 						if (index > oldIndex) {
 							if (!currentPanel.canGoForward()) {
@@ -212,8 +198,10 @@ public class Wizard extends JMTFrame {
 						WizardPanel oldPanel = (WizardPanel) getComponentAt(oldIndex);
 						setTitleAt(oldIndex, oldPanel.getName());
 					}
-					setTitleAt(index, "<html><body align=\"center\"><font color=\"000000\"><b>" + currentPanel.getName()
-							+ "</b></font></body></html>");
+					setTitleAt(index,
+							"<html><body align=\"center\"><font color=\"000000\"><b>"
+									+ currentPanel.getName()
+									+ "</b></font></body></html>");
 					currentPanel.gotFocus();
 					updateActions();
 				}
@@ -234,7 +222,8 @@ public class Wizard extends JMTFrame {
 	}
 
 	/**
-	 * Called when the "Finish" button is pressed. Must be overridden in subclasses!
+	 * Called when the "Finish" button is pressed. Must be overridden in
+	 * subclasses!
 	 */
 	protected void finish() {
 
@@ -243,14 +232,18 @@ public class Wizard extends JMTFrame {
 	}
 
 	/**
-	 * Called when the "Cancel" button is pressed. Should be overridden in subclasses
+	 * Called when the "Cancel" button is pressed. Should be overridden in
+	 * subclasses
+	 * 
 	 * @return true if window can be closed, false otherwise.
 	 */
 	protected boolean cancel() {
 		return true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see jmt.framework.gui.components.JMTFrame#canBeClosed()
 	 */
 	@Override
@@ -267,7 +260,7 @@ public class Wizard extends JMTFrame {
 			return;
 		}
 		if (currentIndex == panels.size() - 1) {
-			return; //should not happen anyway
+			return; // should not happen anyway
 		}
 		tabbedPane.setSelectedIndex(currentIndex + 1);
 	}
@@ -277,7 +270,7 @@ public class Wizard extends JMTFrame {
 			return;
 		}
 		if (currentIndex == 0) {
-			return; //should not happen anyway
+			return; // should not happen anyway
 		}
 		tabbedPane.setSelectedIndex(currentIndex - 1);
 	}
@@ -286,11 +279,12 @@ public class Wizard extends JMTFrame {
 	 * enables/disables buttons according to current status
 	 */
 	protected void updateActions() {
-		ACTION_NEXT.setEnabled(currentIndex >= 0 && currentIndex < panelCount - 1);
+		ACTION_NEXT.setEnabled(currentIndex >= 0
+				&& currentIndex < panelCount - 1);
 		ACTION_PREV.setEnabled(currentIndex > 0);
 		ACTION_CANCEL.setEnabled(true);
 		ACTION_FINISH.setEnabled(panelCount > 0);
-		ACTION_HELP.setEnabled(panelCount > 0);
+
 	}
 
 	/**
@@ -325,8 +319,8 @@ public class Wizard extends JMTFrame {
 	}
 
 	/**
-	  * Removes a WizardPanel to the Wizard
-	  */
+	 * Removes a WizardPanel to the Wizard
+	 */
 	public void removePanel(WizardPanel p) {
 		tabbedPane.remove(p);
 		panelCount = tabbedPane.getTabCount();

@@ -19,10 +19,12 @@
 package jmt.gui.exact;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +83,8 @@ import jmt.gui.exact.panels.VisitsPanel;
 import jmt.gui.exact.panels.WhatIfPanel;
 import jmt.gui.jsim.JSIMMain;
 import jmt.gui.jsim.definitions.JSIMModel;
+import jmt.manual.ManualBookmarkers;
+import jmt.manual.PDFViewerBuffer;
 
 /**
  * This is the object you use to define your system structure and parameters
@@ -234,12 +238,23 @@ public class ExactWizard extends Wizard {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			showHelp(e);
+			//showHelp(e);
+
+			Runnable r = new Runnable() {
+				public void run() {
+					try {
+						new PDFViewerBuffer("JMVA manual", ManualBookmarkers.JMVA);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			};
+			EventQueue.invokeLater(r);
 
 		}
 	};
 
-	private AbstractJMTAction ABOUT = new AbstractJMTAction("About JMVA...") {
+	private AbstractJMTAction ABOUT = new AbstractJMTAction("About JMVA") {
 		/**
 		 * 
 		 */
@@ -371,13 +386,11 @@ public class ExactWizard extends Wizard {
 		help.addHelp(button_next, "Moves on to the next step");
 		JButton button_previous = new JButton(ACTION_PREV);
 		help.addHelp(button_previous, "Goes back to the previous step");
-		JButton button_help = new JButton(ACTION_HELP);
-		help.addHelp(button_help, "Displays help for the current panel");
 		buttons.add(button_previous);
 		buttons.add(button_next);
 		buttons.add(button_finish);
 		buttons.add(button_cancel);
-		buttons.add(button_help);
+	
 
 		JPanel labelbox = new JPanel();
 		labelbox.setLayout(new BorderLayout());
