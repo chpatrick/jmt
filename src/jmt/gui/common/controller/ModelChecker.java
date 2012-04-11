@@ -122,6 +122,12 @@ public class ModelChecker implements CommonConstants {
 	private Vector<Object> stationWithoutBackwardLinks;
 	/** Empty blocking regions */
 	private Vector<Object> emptyBlockingRegions;
+	//Vector containing the keys of cs with wrong matrix(sum by rows less than 1)
+	private Vector<Object> csWithWrongMatrix;
+	//Vector containing the keys of cs followed by queue with drop bas stratregy
+	private Vector<Object> csFollowedByBas;
+	//Vector containing the keys of cs between fork/join
+	private Vector<Object> csBetweenForkJoin;
 
 	//Vector containing the keys of the stations with a queue strategy different from FCFS.
 	//Used only in JMVA conversion
@@ -175,6 +181,12 @@ public class ModelChecker implements CommonConstants {
 	public static final int SINK_PERF_IND_WITH_NO_SINK_ERROR = 17;
 	//Checks if XperSink and RperSink is selected with closed classes.
 	public static final int SINK_PERF_WITH_CLOSED_CLASS_ERROR = 18;
+	//Checks if exist some rows of a Cs matrix that sum to a number less than one.
+	public static final int CS_MATRIX_HAS_ROWS_LESS_THAN_ONE = 19;
+	//Checks if exist some cs followed by a queue with bas drop strategy.
+	public static final int CS_FOLLOWED_BY_A_BAS = 20;
+	//Checks if exist some cs between a fork and a join.
+	public static final int CS_BETWEEN_FORK_JOIN = 21;
 
 	//it occours when more than one sink have been defined
 	public static int MORE_THAN_ONE_SINK_WARNING = 0;
@@ -238,8 +250,8 @@ public class ModelChecker implements CommonConstants {
 	public static int NON_STATE_INDEPENDENT_ROUTING_WARNING = 5;
 	*/
 
-	private int NUMBER_OF_ERROR_TYPES = 19;
-	private int NUMBER_OF_NORMAL_ERROR_TYPES = 19;
+	private int NUMBER_OF_ERROR_TYPES = 22;
+	private int NUMBER_OF_NORMAL_ERROR_TYPES = 22;
 	private int NUMBER_OF_WARNING_TYPES = 14;
 	private int NUMBER_OF_NORMAL_WARNING_TYPES = 5;
 
@@ -273,6 +285,9 @@ public class ModelChecker implements CommonConstants {
 		BCMPserversFCFSWithoutExponential = new Vector<Object>(0, 1);
 		BCMPFcfsServersWithDifferentServiceTimes = new Vector<Object>(0, 1);
 		BCMPdelaysWithNonRationalServiceDistribution = new Vector<Object>(0, 1);
+		csWithWrongMatrix = new Vector<Object>(0, 1);
+		csFollowedByBas = new Vector<Object>(0, 1);
+		csBetweenForkJoin = new Vector<Object>(0, 1);
 		//nonFCFSStations = new Vector(0,1);
 		BCMPnonStateIndependentRoutingStations = new Vector<Object>(0, 1);
 		emptyBlockingRegions = new Vector<Object>(0, 1);
@@ -298,6 +313,9 @@ public class ModelChecker implements CommonConstants {
 		BCMPFcfsServersWithDifferentServiceTimes.removeAllElements();
 		BCMPdelaysWithNonRationalServiceDistribution.removeAllElements();
 		BCMPnonStateIndependentRoutingStations.removeAllElements();
+		csWithWrongMatrix.removeAllElements();
+		csFollowedByBas.removeAllElements();
+		csBetweenForkJoin.removeAllElements();
 		emptyBlockingRegions.removeAllElements();
 		for (int i = 0; i < NUMBER_OF_ERROR_TYPES; i++) {
 			errors[i] = false;
@@ -354,6 +372,9 @@ public class ModelChecker implements CommonConstants {
 			checkForSinkPerfIndicesWithNoSink();
 			checkForSinkPerfIndicesWithClosedClass();
 			checkForSinkProbabilityUpdateWarning();
+			checkForCsMatrixProbabilities();
+			checkForCsFollowedByBAS();
+			checkForCsBetweenForkJoin();
 		}
 
 	}
@@ -574,6 +595,38 @@ public class ModelChecker implements CommonConstants {
 	public boolean isSinkPerfIndicesWithClosedClassError(){
 		return errors[SINK_PERF_WITH_CLOSED_CLASS_ERROR];
 	}
+	
+	/**
+	 * Returns true if exist some class_switch
+	 * components with a invalid matrix (e.g. some 
+	 * rows do not sum to a value grater or equals
+	 * to one.), returns false otherwise.
+	 * @return
+	 */
+	public boolean isThereCsMatrixRowSumError() {
+		return errors[CS_MATRIX_HAS_ROWS_LESS_THAN_ONE];
+	}
+	
+	/**
+	 * Returns true if exist some class_switch
+	 * components followed by a queue implementing
+	 * the BAS stratregy, returns false otherwise. 
+	 * @return
+	 */
+	public boolean isThereCsFollowedByBasError() {
+		return errors[CS_FOLLOWED_BY_A_BAS];
+	}
+
+	/**
+	 * Returns true if exist some class_switch
+	 * components between a fork and a join, returns
+	 * false otherwise.
+	 * @return
+	 */
+	public boolean isThereCsBetweenForkJoin() {
+		return errors[CS_BETWEEN_FORK_JOIN];
+	}
+
 
 	/**
 	 * Checks the presence in the model of a non exponential time distribution. This is an
@@ -872,7 +925,37 @@ public class ModelChecker implements CommonConstants {
 	public Vector<Object> getBCMPserversWithDifferentServiceTypes() {
 		return BCMPserversWithDifferentServiceTypes;
 	}
+	
+	/**
+	 * Use it to get a Vector<Object> containing the keys of css with a matrix
+	 * in which some rows sum to a value less than one
+	 * @return a Vector<Object> containing the keys of css with a matrix
+	 * in which some rows sum to a value less than one
+	 */
+	public Vector<Object> getCsWithWrongMatrix() {
+		return csWithWrongMatrix;
+	}
 
+	/**
+	 * Use it to get a Vector<Object> containing the keys of css followed
+	 * by a queue implementing a drop bas stratregy.
+	 * @return a Vector<Object> containing the keys of css followed
+	 * by a queue implementing a drop bas stratregy.
+	 */
+	public Vector<Object> getCsFolloweByBas() {
+		return csFollowedByBas;
+	}	
+
+	/**
+	 * Use it to get a Vector<Object> containing the keys of css between
+	 * fork/join.
+	 * @return a Vector<Object> containing the keys of css between
+	 * fork/join.
+	 */
+	public Vector<Object> getCsBetweenForkJoin() {
+		return csBetweenForkJoin;
+	}	
+	
 	/**
 	 * Use it to get a Vector<Object> containing the keys of servers with FCFS
 	 * queueing strategy but a non exponential distribution
@@ -2275,6 +2358,124 @@ public class ModelChecker implements CommonConstants {
 			warnings[SINK_PROBABILITY_UPDATE_WARNING] = true;
 			station_def.setSinkProbabilityUpdatedVar(false);//reset the value.
 		} 
+	}
+
+	/**
+	 * It checks if exist some class_switch components
+	 * between a fork and a join.
+	 */
+	public void checkForCsBetweenForkJoin() {
+		for(int i = 0; i < station_def.getStationKeys().size(); i++) {
+			Object stationKey = station_def.getStationKeys().get(i);
+			if(!station_def.getStationType(stationKey).equals(STATION_TYPE_FORK)) {
+				continue;
+			}
+			Object tmp = checkForCsBetweenForkJoinHelper(stationKey, stationKey, false, true, null);
+			if(tmp!=null) {
+				errors[CS_BETWEEN_FORK_JOIN] = true;
+				csBetweenForkJoin.add(tmp);
+			}
+		}
+	}
+	
+	/**
+	 * Helper of checkForCsBetweenForkJoin.
+	 * It uses recursion
+	 * @param start 
+	 * 			the station from which the check begins.
+	 * 			It is used to prevent infinite loop.
+	 * @param curr	the current station we are analyzing
+	 * @param foundedCS 
+	 * 			True if in the path between start  and current
+	 * 			exist some class_switch components.
+	 * @param firstInvokation
+	 * 			True if it is the first time you invoke this
+	 * 			method.
+	 * @param wrongCs
+	 * 			If foundedCS is equals to true, this parameter
+	 * 			contains the pointer to the class_switch components
+	 * 			found.
+	 * @return It returns the pointer to the class_switch components
+	 * 			founded between start and a join, it returns null
+	 * 			if such components does not exist.
+	 * 		
+	 */
+	private Object checkForCsBetweenForkJoinHelper(Object start, Object curr, boolean foundedCS, boolean firstInvokation, Object wrongCs) {
+		boolean foundedCSCopy =  foundedCS;
+		Object wrongCsCopy = wrongCs;
+		//Exit conditions
+		if(curr != null) {
+			if(station_def.getStationType(curr).equals(STATION_TYPE_CLASSSWITCH)) {
+				foundedCSCopy = true;
+				wrongCsCopy = curr;
+			}
+			if(station_def.getStationType(curr).equals(STATION_TYPE_JOIN) && foundedCS)//Error
+				return wrongCsCopy;
+			if(station_def.getStationType(curr).equals(STATION_TYPE_JOIN) && !foundedCS)//Everything ok
+				return null;
+			if(curr.equals(start) && !firstInvokation)
+				return null;
+		}
+		//Recursion
+		Vector<Object> forward = station_def.getForwardConnections(curr);
+		for(int i = 0; i < forward.size(); i++) {
+			Object forwardStation = forward.get(i); 
+			Object tmp = checkForCsBetweenForkJoinHelper(start, forwardStation, foundedCSCopy, false, wrongCsCopy);
+			if(tmp != null) {
+				return tmp;
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * It checks if exist some class_switch components
+	 * followed by a queue implementing the BAS strategy.
+	 */
+	public void checkForCsFollowedByBAS() {
+		for(int i = 0; i < station_def.getStationKeys().size(); i++) {
+			Object stationKey = station_def.getStationKeys().get(i);
+			if(!station_def.getStationType(stationKey).equals(STATION_TYPE_CLASSSWITCH)) {
+				continue;
+			}
+			Vector<Object> forward = station_def.getForwardConnections(stationKey);
+			for(int j = 0; j < forward.size(); j++) {
+				Object forwardStation = forward.get(j); 
+				for(int k = 0; k < class_def.getClassKeys().size(); k++) {
+					String queueStrat = station_def.getDropRule(forwardStation, class_def.getClassKeys().get(k));
+					if(queueStrat.equals( CommonConstants.FINITE_BLOCK)) {
+						errors[CS_FOLLOWED_BY_A_BAS] = true;
+						csFollowedByBas.add(stationKey);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * It checks if exist some class_switch components
+	 * with a wrong matrix (e.g. some rows do not sum
+	 * to a value grater or equals to one.)
+	 */
+	public void checkForCsMatrixProbabilities() {
+		for(int i = 0; i < station_def.getStationKeys().size(); i++) {
+			Object stationKey = station_def.getStationKeys().get(i);
+			if(!station_def.getStationType(stationKey).equals(STATION_TYPE_CLASSSWITCH)) {
+				continue;
+			}
+			for(int j = 0; j < class_def.getClassKeys().size(); j++) {
+				float row = 0;
+				for(int k = 0; k < class_def.getClassKeys().size(); k++) {
+					row += station_def.getClassSwitchMatrix(stationKey,
+							class_def.getClassKeys().get(j), class_def.getClassKeys().get(k));
+				}
+				if(row < 1) {
+					errors[CS_MATRIX_HAS_ROWS_LESS_THAN_ONE] = true;
+					csWithWrongMatrix.add(stationKey);
+					return;
+				}
+			}
+		}
 	}
 	
 	public boolean isThereSinkProbabilityUpdateWarning(){

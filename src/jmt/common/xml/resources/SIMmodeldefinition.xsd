@@ -199,7 +199,10 @@
 	<xs:element name="subParameter">
 		<xs:complexType>
 			<xs:choice minOccurs="0">
-				<xs:element ref="subParameter" maxOccurs="unbounded"/>
+				<xs:sequence maxOccurs="unbounded">
+					<xs:element ref="refClass" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element ref="subParameter"/>
+				</xs:sequence>
 				<xs:element ref="value"/>
 			</xs:choice>
 			<xs:attribute name="name" type="xs:string" use="required"/>

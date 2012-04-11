@@ -55,6 +55,7 @@ public class StationParameterPanel extends WizardPanel implements CommonConstant
 	protected RoutingSectionPanel rsPane;
 	protected ForkSectionPanel fsPane;
 	protected LoggerSectionPanel lsPane;
+	protected ClassSwitchSectionPanel csPane;
 	// Current wizard panel
 	protected WizardPanel current;
 
@@ -169,6 +170,19 @@ public class StationParameterPanel extends WizardPanel implements CommonConstant
 			}
 
 		}
+		if (hasClassSwitchSection(type)) {
+			if (csPane == null) {
+				csPane = new ClassSwitchSectionPanel(stationData, classData, stationKey);
+			} else {
+				csPane.setData(stationData, classData, stationKey);
+			}
+			mainPanel.add(csPane, csPane.getName());
+
+			// If this was previously selected, selects this
+			if (oldComponent == csPane) {
+				mainPanel.setSelectedComponent(oldComponent);
+			}
+		}
 		if (hasRoutingSection(type)) {
 			if (rsPane == null) {
 				rsPane = new RoutingSectionPanel(stationData, classData, stationKey);
@@ -210,7 +224,7 @@ public class StationParameterPanel extends WizardPanel implements CommonConstant
 		} else {
 			return STATION_TYPE_SERVER.equals(type) || STATION_TYPE_DELAY.equals(type) || STATION_TYPE_SOURCE.equals(type)
 					|| STATION_TYPE_ROUTER.equals(type) || STATION_TYPE_LOGGER.equals(type) || STATION_TYPE_TERMINAL.equals(type)
-					|| STATION_TYPE_JOIN.equals(type);
+					|| STATION_TYPE_JOIN.equals(type) || STATION_TYPE_CLASSSWITCH.equals(type);
 		}
 	}
 
@@ -229,7 +243,21 @@ public class StationParameterPanel extends WizardPanel implements CommonConstant
 			return STATION_TYPE_FORK.equals(type);
 		}
 	}
-
+	
+	/**
+	 * True the stations of type @type
+	 * have a class_switch panel, false otherwise.
+	 * @param type the type of the station
+	 * @return
+	 */
+	private boolean hasClassSwitchSection(String type) {
+		if (checkNullValues()) {
+			return false;
+		} else {
+			return STATION_TYPE_CLASSSWITCH.equals(type);
+		}
+	}
+	
 	private boolean checkNullValues() {
 		return stationKey == null || stationData == null || classData == null;
 	}
@@ -253,6 +281,14 @@ public class StationParameterPanel extends WizardPanel implements CommonConstant
 
 	public void showServiceSectionPanel() {
 		mainPanel.setSelectedComponent(ssPane);
+	}
+	
+	/**
+	 * It shows the class_switch panel
+	 * of the related station.
+	 */
+	public void showCsSectionPanel() {
+		mainPanel.setSelectedComponent(csPane);
 	}
 
 	/**

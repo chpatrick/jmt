@@ -21,7 +21,9 @@ package jmt.gui.common.xml;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.Vector;
 
@@ -359,6 +361,10 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			} else if (type.equals(STATION_TYPE_LOGGER)) {
 				parseLogger((Element) sections.item(1), model, key);
 				parseRouter((Element) sections.item(2), model, key);
+			} else if (type.equals(STATION_TYPE_CLASSSWITCH)) {
+				parseQueue((Element) sections.item(0), model, key);
+				parseClassSwitch((Element) sections.item(1), model, key);
+				parseRouter((Element) sections.item(2), model, key);
 			}
 
 		}
@@ -667,7 +673,45 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			}
 		}
 	}
+	
+	/**
+	 * Parse class switch section
+	 * @param section router section
+	 * @param model data structure
+	 * @param key station's key
+	 */
+	protected static void parseClassSwitch(Element section, CommonModel model, Object stationKey) {
+		Element matrix = (Element) section.getElementsByTagName(XML_E_PARAMETER).item(0);
+		Map<String, Node> rows = parseParameterRefclassArray(matrix);
+		Iterator<String> i = rows.keySet().iterator();
 
+	    while(i.hasNext()){
+	    	String classIn = (String) i.next();
+	    	Object classInKey = model.getClassByName(classIn);
+	    	Element row = (Element) rows.get(classIn);
+	    	NodeList rowChild = row.getChildNodes(); 
+	    	for(int j = 0; j < rowChild.getLength();j++){
+	    			if(rowChild.item(j).getNodeType() == Node.TEXT_NODE ) {
+	    				continue;
+	    			}
+	    			Node refClass = rowChild.item(j);
+	    			String classOut = refClass.getChildNodes().item(0).getNodeValue();
+	    			j++;
+	    			while(rowChild.item(j).getNodeType() == Node.TEXT_NODE) {
+	    				j++;
+	    			}
+	    			Node subParam = rowChild.item(j);
+	    			NodeList subParamChild = subParam.getChildNodes();
+	    			int h = 0;
+	    			while(subParamChild.item(h).getNodeType() == Node.TEXT_NODE) {
+	    				h++;
+	    			}
+	    			String value = subParamChild.item(h).getChildNodes().item(0).getNodeValue();
+	    			Object classOutKey = model.getClassByName(classOut);    			
+	    			model.setClassSwitchMatrix(stationKey, classInKey, classOutKey, Float.parseFloat(value));
+	    	}
+	    }
+	}
 	/**
 	 * Extract all parameters for a Logger section from the XML document.
 	 * The information from parseLogger is passed to LogTunnel.
@@ -873,7 +917,9 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 			return STATION_TYPE_SOURCE;
 		} else if (sectionNames[0].equals(CLASSNAME_TERMINAL)) {
 			return STATION_TYPE_TERMINAL;
-		} else if (sectionNames[1].equals(CLASSNAME_DELAY)) {
+		} else if(sectionNames[1].equals(CLASSNAME_CLASSSWITCH)) {
+			return STATION_TYPE_CLASSSWITCH;
+		}else if (sectionNames[1].equals(CLASSNAME_DELAY)) {
 			return STATION_TYPE_DELAY;
 		} else if (sectionNames[1].equals(CLASSNAME_SERVER) || sectionNames[1].equals(CLASSNAME_PSSERVER)) {
 			return STATION_TYPE_SERVER;

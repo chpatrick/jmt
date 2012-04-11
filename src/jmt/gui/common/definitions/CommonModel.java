@@ -32,6 +32,7 @@ import jmt.framework.data.BDMapImpl;
 import jmt.framework.data.CachedHashMap;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.Defaults;
+import jmt.gui.common.classSwitch.ClassSwitch;
 import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
 
@@ -1281,22 +1282,25 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		}
 		if (STATION_TYPE_DELAY.equals(sd.type)) {
 			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), Defaults.getAsNewInstance("stationDelayServiceStrategy"),
-					Defaults.getAsNewInstance("stationRoutingStrategy"));
+					Defaults.getAsNewInstance("stationRoutingStrategy"), null);
 		} else if (STATION_TYPE_SERVER.equals(sd.type)) {
 			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), Defaults.getAsNewInstance("stationServiceStrategy"), Defaults
-					.getAsNewInstance("stationRoutingStrategy"));
+					.getAsNewInstance("stationRoutingStrategy"), null);
 		} else if (STATION_TYPE_SOURCE.equals(sd.type)) {
-			defaultDetails = new StationClassData(null, null, Defaults.getAsNewInstance("stationRoutingStrategy"));
+			defaultDetails = new StationClassData(null, null, Defaults.getAsNewInstance("stationRoutingStrategy"), null);
 		} else if (STATION_TYPE_SINK.equals(sd.type)) {
-			defaultDetails = new StationClassData(null, null, null);
+			defaultDetails = new StationClassData(null, null, null, null);
 		} else if (STATION_TYPE_TERMINAL.equals(sd.type)) {
-			defaultDetails = new StationClassData(null, null, Defaults.getAsNewInstance("stationRoutingStrategy"));
+			defaultDetails = new StationClassData(null, null, Defaults.getAsNewInstance("stationRoutingStrategy"), null);
 		} else if ((STATION_TYPE_ROUTER.equals(sd.type)) || (STATION_TYPE_LOGGER.equals(sd.type))) {
-			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), null, Defaults.getAsNewInstance("stationRoutingStrategy"));
+			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), null, Defaults.getAsNewInstance("stationRoutingStrategy"), null);
 		} else if (STATION_TYPE_FORK.equals(sd.type)) {
-			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), null, null);
+			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), null, null, null);
 		} else if (STATION_TYPE_JOIN.equals(sd.type)) {
-			defaultDetails = new StationClassData(null, null, Defaults.getAsNewInstance("stationRoutingStrategy"));
+			defaultDetails = new StationClassData(null, null, Defaults.getAsNewInstance("stationRoutingStrategy"), null);
+		} else if(STATION_TYPE_CLASSSWITCH.equals(sd.type)) {
+			defaultDetails = new StationClassData(Defaults.get("stationQueueStrategy"), null, Defaults
+					.getAsNewInstance("stationRoutingStrategy"), Defaults.getAsNewInstance("stationCsRowMatrix"));
 		}
 		return defaultDetails;
 	}
@@ -1844,7 +1848,6 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 			}
 		}
 	}
-
 	/**
 	 * This method is used to manage number of jobs for every class. If class is closed
 	 * all spare jobs will be allocated to its reference source, if for some reasons more
@@ -2429,13 +2432,15 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		public String queueStrategy;
 		public Object serviceDistribution;
 		public Object routingStrategy;
+		public Object classSwitchProb; //this is a row of the cs matrix
 		public Integer preload;
 		public String dropRule;
 
-		public StationClassData(String queueStrategy, Object serviceDistribution, Object routingStrategy) {
+		public StationClassData(String queueStrategy, Object serviceDistribution, Object routingStrategy, Object classSwitchProb) {
 			this.queueStrategy = queueStrategy;
 			this.serviceDistribution = serviceDistribution;
 			this.routingStrategy = routingStrategy;
+			this.classSwitchProb = classSwitchProb;
 			this.preload = new Integer(0);
 			this.dropRule = Defaults.get("dropRule");
 		}
@@ -2498,4 +2503,30 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 	public void resetSinkProbabilityUpdateClasses(){
 		sinkProbabilityUpdateClasses = new Vector<String>();
 	}
+	
+	
+	
+	/**
+	 *	It returns the cell (@callInKey, @classOutKey) of the class
+	 *  switch matrix of station @stationKey.
+	 */
+	public float getClassSwitchMatrix(Object stationKey, Object classInKey, Object classOutKey) {
+		StationClassData current = (StationClassData) stationDetailsBDM.get(classInKey, stationKey);
+		ClassSwitch row = (ClassSwitch) current.classSwitchProb;
+		return row.getValue(classInKey, classOutKey);
+	}
+
+	/**
+	 *	It sets to @val the cell (@callInKey, @classOutKey) of the class
+	 *  switch matrix of station @stationKey.
+	 */
+	public void setClassSwitchMatrix(Object stationKey, Object classInKey, Object classOutKey, float val) {
+		if(val != getClassSwitchMatrix(stationKey, classInKey, classOutKey)) 
+			save = true;
+		StationClassData current = (StationClassData) stationDetailsBDM.get(classInKey, stationKey);
+		ClassSwitch row = (ClassSwitch) current.classSwitchProb;
+		row.setValue(classInKey, classOutKey, val);
+	}
+	
+
 }

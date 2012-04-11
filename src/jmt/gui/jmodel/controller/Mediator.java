@@ -2850,6 +2850,17 @@ public class Mediator implements GuiInterface {
 			}
 		} else if (problemSubType == ModelChecker.PRELOADING_WITH_BLOCKING) {
 			editSimulationParameters();
+		} else if ((problemSubType == ModelChecker.CS_MATRIX_HAS_ROWS_LESS_THAN_ONE) && (problemType == ModelChecker.ERROR_PROBLEM)) {
+				StationParameterPanel tempPanel = new StationParameterPanel(model, model, relatedStation);
+				String name = this.getStationDefinition().getStationName(relatedStation);
+				tempPanel.showCsSectionPanel();
+				dialogFactory.getDialog(tempPanel, "Editing " + name + " Properties...");
+		} else if ((problemSubType == ModelChecker.CS_FOLLOWED_BY_A_BAS) && (problemType == ModelChecker.ERROR_PROBLEM)) {
+			String name = this.getStationDefinition().getStationName(relatedStation);
+			JOptionPane.showMessageDialog(null, name + " is followed by a queue implementing a BAS stratregy. This topology is not allowed.", "Error", JOptionPane.ERROR_MESSAGE);
+		} else if ((problemSubType == ModelChecker.CS_BETWEEN_FORK_JOIN) && (problemType == ModelChecker.ERROR_PROBLEM)) {
+			String name = this.getStationDefinition().getStationName(relatedStation);
+			JOptionPane.showMessageDialog(null, name + " switch between fork/join. This topology is not allowed.", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 
 	}

@@ -18,6 +18,9 @@
 
 package jmt.engine.dataAnalysis;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -194,6 +197,7 @@ public class Measure {
 		maxPrecisionPercentage = 0.0;
 		this.verbose = Verbose;
 		createDOM();
+	
 	}
 
 	//NEW
@@ -408,7 +412,6 @@ public class Measure {
 	 */
 
 	public synchronized boolean update(double sample, double weight) {
-
 		//NEW
 		//@author Stefano Omini
 

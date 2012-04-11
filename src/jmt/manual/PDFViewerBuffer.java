@@ -15,6 +15,7 @@ import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
@@ -195,14 +196,13 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 	 * @throws IOException
 	 */
 	private void loadManual(ManualBookmarkers marker) throws IOException {
-		String path = PDFViewerBuffer.class.getResource(MANUAL_RESOURCE)
-				.getPath();
-		/**
-		 * To load a pdf url format does not work,
-		 * thus the following two lines change the format
-		 */
-		path = path.substring(1);
-		path = path.replace("%20", " ");
+		
+		URI path = null;
+		try {
+			path = PDFViewerBuffer.class.getResource(MANUAL_RESOURCE).toURI();
+		} catch (Exception ex) {
+			throw new IOException(ex);
+		}
 
 		RandomAccessFile raf = new RandomAccessFile(new File(path), "r");
 

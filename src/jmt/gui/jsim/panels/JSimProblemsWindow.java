@@ -525,6 +525,31 @@ public class JSimProblemsWindow extends JFrame {
 						"<font color=\"white\">---------</font>" +
 				        "Response Time per Sink and Throughput per sink should not be used for closed class.",
 				        null, null));
+			} if(mc.isThereCsMatrixRowSumError()) {
+				Vector<Object> temp = mc.getCsWithWrongMatrix();
+				for (int i = 0; i < temp.size(); i++) {
+					Object stationKey = temp.get(i);
+					String stationName = mc.getStationModel().getStationName(stationKey);
+					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.CS_MATRIX_HAS_ROWS_LESS_THAN_ONE,
+							"<html><font color=\"white\">----</font><b>Error</b>" +
+							"<font color=\"white\">---------</font>" +
+							"In " + stationName	+ " switch matrix rows must sum to a value equals or greater than one.", stationKey, null));
+				}				
+			} if(mc.isThereCsFollowedByBasError()) {
+				Vector<Object> temp = mc.getCsFolloweByBas();
+				for (int i = 0; i < temp.size(); i++) {
+					Object stationKey = temp.get(i);
+					String stationName = mc.getStationModel().getStationName(stationKey);
+					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.CS_FOLLOWED_BY_A_BAS,
+							"<html><font color=\"white\">----</font><b>Error</b>" +
+							"<font color=\"white\">---------</font>" +
+							stationName	+ " is followed by a queue implementing a BAS stratregy.", stationKey, null));
+				}				
+			} if(mc.isThereCsBetweenForkJoin()) {
+				problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.CS_BETWEEN_FORK_JOIN,
+						"<html><font color=\"white\">----</font><b>Error</b>" +
+						"<font color=\"white\">---------</font>" +
+						"Exist some Context Switch components between a fork and a join.", null, null));
 			}
 		}
 	}

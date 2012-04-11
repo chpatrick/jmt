@@ -121,6 +121,7 @@ public interface XMLConstantNames {
 	public static final String CLASSNAME_ROUTER = "Router";
 	public static final String CLASSNAME_FORK = "Fork";
 	public static final String CLASSNAME_JOIN = "Join";
+	public static final String CLASSNAME_CLASSSWITCH = "ClassSwitch";
 
 	public static final String NODETYPE_REGION = "region";
 	public static final String NODETYPE_STATION = "station";

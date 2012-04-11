@@ -75,6 +75,9 @@ public class ExactCellRenderer extends DefaultTableCellRenderer {
 		Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 
 		return c;
+		
+		
+		
 		//END Federico Dall'Orso
 	}
 

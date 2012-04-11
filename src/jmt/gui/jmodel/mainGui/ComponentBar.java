@@ -68,8 +68,9 @@ public class ComponentBar extends JMTToolBar {
 
 		// Disables all components button
 		enableButtons(false);
+		
 	}
-
+	
 	/**
 	 * Finds all possible station types using reflection on <code>JMODELConstants</code>
 	 * In such way a future placement of new station types will be easy.

@@ -156,4 +156,13 @@ public class Job implements Cloneable {
 	public static void resetCounter() {
 		counter = 0;
 	}
+
+	/**
+	 * Setter for field JobClass
+	 * @param newClass the new value of JobClass
+	 */
+	public void setClass(JobClass newClass) {
+		JobClass = newClass;
+	}
+	
 }

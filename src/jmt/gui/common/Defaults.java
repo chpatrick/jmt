@@ -72,6 +72,7 @@ public class Defaults implements CommonConstants {
 		def.setProperty("stationServiceStrategy", "jmt.gui.common.distributions.Exponential");
 		def.setProperty("stationDelayServiceStrategy", "jmt.gui.common.distributions.Exponential");
 		def.setProperty("stationRoutingStrategy", "jmt.gui.common.routingStrategies.RandomRouting");
+		def.setProperty("stationCsRowMatrix", "jmt.gui.common.classSwitch.ClassSwitch");
 		def.setProperty("forkBlock", "-1");
 		def.setProperty("forkJobsPerLink", "1");
 		def.setProperty("dropRule", "Drop");

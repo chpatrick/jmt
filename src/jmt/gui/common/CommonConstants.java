@@ -58,6 +58,7 @@ public interface CommonConstants {
 	public final static String STATION_TYPE_FORK = "Fork";
 	public final static String STATION_TYPE_JOIN = "Join";
 	public final static String STATION_TYPE_LOGGER = "Logger";
+	public final static String STATION_TYPE_CLASSSWITCH = "ClassSwitch";
 
 	/** A map that decodes from station type to station name for the GUI */
 
@@ -74,6 +75,7 @@ public interface CommonConstants {
 			putConst(STATION_TYPE_FORK, STATION_TYPE_FORK);
 			putConst(STATION_TYPE_JOIN, STATION_TYPE_JOIN);
 			putConst(STATION_TYPE_LOGGER, STATION_TYPE_LOGGER);
+			putConst(STATION_TYPE_CLASSSWITCH, STATION_TYPE_CLASSSWITCH);
 		}
 	};
 

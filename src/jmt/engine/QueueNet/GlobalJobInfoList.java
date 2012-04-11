@@ -135,7 +135,7 @@ public class GlobalJobInfoList {
 		lastModifyNumberPerClass[job.getJobClass().getId()] = lastModifyNumber = NetSystem.getTime();
 		lastJobOutTimePerClass[job.getJobClass().getId()] = lastJobOutTime = NetSystem.getTime();
 	}
-
+	
 	/**
 	 * This method MUST be called each time a job cycles in its reference station
 	 * @param job identifier or cycling job
@@ -143,6 +143,7 @@ public class GlobalJobInfoList {
 	public void recycleJob(Job job) {
 		updateResponseTime(job);
 		updateThroughput(job);
+		
 		updateJobNumber(job);
 
 		//Added by ASHANKA START
@@ -402,5 +403,21 @@ public class GlobalJobInfoList {
 	}
 	//Added by ASHANKA STOP
 	// ------------------------------------------------------------------------------------
+
+	/**
+	 * It changes the class of @job, the new class will be @newClass.
+	 * It also updates the performance indexes.
+	 * @param job the job you want to switch
+	 * @param newClass the new class of @job
+	 */
+	public void performJobClassSwitch(Job job, JobClass newClass) {
+		jobsPerClass[job.getJobClass().getId()]--;
+		updateJobNumber(job);
+		lastModifyNumberPerClass[job.getJobClass().getId()] = NetSystem.getTime();
+		jobsPerClass[newClass.getId()]++;
+		job.setClass(newClass);
+		updateJobNumber(job);
+		lastModifyNumberPerClass[job.getJobClass().getId()] = NetSystem.getTime();
+	}
 
 }

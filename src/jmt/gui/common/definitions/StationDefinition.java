@@ -302,4 +302,17 @@ public interface StationDefinition {
 	public Vector<String> getsinkProbabilityUpdateStations();
 	
 	public void resetSinkProbabilityUpdateStations();
+
+	/**
+	 *	It returns the cell (@callInKey, @classOutKey) of the class
+	 *  switch matrix of station @stationKey.
+	 */	
+	public float getClassSwitchMatrix(Object stationKey, Object classInKey, Object classOutKey);
+
+	/**
+	 *	It sets to @val the cell (@callInKey, @classOutKey) of the class
+	 *  switch matrix of station @stationKey.
+	 */
+	public void setClassSwitchMatrix(Object stationKey, Object classInKey,
+			Object classOutKey, float val);
 }

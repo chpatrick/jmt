@@ -210,7 +210,6 @@ public class ImagedComboBoxCellEditorFactory {
 			}
 			return nullRenderer;
 		}
-
 		if (cache.containsKey(key)) {
 			label = cache.get(key);
 		} else {

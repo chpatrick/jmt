@@ -589,6 +589,36 @@ public class JModelProblemsWindow extends JDialog {
 				//Reset after displaying the offending Station and Class names.
 				mc.getClassModel().resetSinkProbabilityUpdateClasses();
 				mc.getStationModel().resetSinkProbabilityUpdateStations();
+			} if(mc.isThereCsMatrixRowSumError()) {
+				Vector<Object> temp = mc.getCsWithWrongMatrix();
+				for (int i = 0; i < temp.size(); i++) {
+					Object stationKey = temp.get(i);
+					String stationName = mc.getStationModel().getStationName(stationKey);
+					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.CS_MATRIX_HAS_ROWS_LESS_THAN_ONE,
+							"<html><font color=\"white\">----</font><b>Error</b>" +
+							"<font color=\"white\">---------</font>" +
+							"In " + stationName	+ " switch, rows must sum to a value equal or greater than one.", stationKey, null));
+				}				
+			} if(mc.isThereCsFollowedByBasError()) {
+				Vector<Object> temp = mc.getCsFolloweByBas();
+				for (int i = 0; i < temp.size(); i++) {
+					Object stationKey = temp.get(i);
+					String stationName = mc.getStationModel().getStationName(stationKey);
+					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.CS_FOLLOWED_BY_A_BAS,
+							"<html><font color=\"white\">----</font><b>Error</b>" +
+							"<font color=\"white\">---------</font>" +
+							stationName	+ " is followed by a queue with BAS strategy scheduling.", stationKey, null));
+				}				
+			} if(mc.isThereCsBetweenForkJoin()) {
+				Vector<Object> temp = mc.getCsBetweenForkJoin();
+				for (int i = 0; i < temp.size(); i++) {
+					Object stationKey = temp.get(i);
+					String stationName = mc.getStationModel().getStationName(stationKey);
+					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.CS_BETWEEN_FORK_JOIN,
+							"<html><font color=\"white\">----</font><b>Error</b>" +
+							"<font color=\"white\">---------</font>" +
+							stationName + " switch between fork/join. This topology is not allowed.", stationKey, null));
+				}				
 			}
 		}
 	}
