@@ -51,7 +51,7 @@
 
         <!-- Compile the java code from ${src} into ${build} -->
         <!-- includes resource files -->
-        <javac srcdir="${src}" destdir="${class}" classpath="${javac.libs}" compiler="javac1.5" />
+        <javac srcdir="${src}" destdir="${class}" classpath="${javac.libs}" compiler="javac1.6" />
 
     </target>
 
@@ -181,7 +181,7 @@
         </sync>
 
         <!-- copy jmt license file -->
-        <copy file="license\License_JMT.txt" todir="${out}" />
+        <copy file="license/License_JMT.txt" todir="${out}" />
 
 
         <!-- Create examples directory -->
@@ -200,14 +200,14 @@
             <fileset dir="jwatFormats" includes="*.*"/>
         </sync>
 
-        <!-- Create manuals directory 
+        <!-- Create manuals directory --> 
         <mkdir dir="${out}/manuals"/>
-		-->
-        <!-- copy lib manuals dir
+		
+        <!-- copy lib manuals dir -->
         <sync todir="${out}/manuals" >
             <fileset dir="manuals" includes="*.*"/>
         </sync>
-    	-->
+    	
     </target>
 
     <!-- We call IzPack -->

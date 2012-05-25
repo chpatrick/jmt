@@ -2,39 +2,39 @@
 <shortcuts>
 	<programGroup defaultName="Java Modelling Tools" location="applications"/>
 	<shortcut name="JMT @jmt.version@" 
-	target="$INSTALL_PATH/runJMT.vbs" 
+	target="javaw" 
+	commandLine="-jar &quot;$INSTALL_PATH/JMT.jar&quot;" 
 	programGroup="yes" 
 	desktop="yes" 
 	applications="no" 
 	startMenu="no" 
 	startup="no" 
-	commandLine="" 
 	workingDirectory="$INSTALL_PATH" 
 	description="Launch Java Modelling Tools @jmt.version@" 
 	iconFile="$INSTALL_PATH/jmt.ico">
 	</shortcut>
 	
-	<shortcut name="JMT @jmt.version@ 1Gb Heap"
-	target="$INSTALL_PATH/runJMTmem.vbs" 
+	<shortcut name="JMT @jmt.version@ 1.5Gb Heap"
+	target="javaw" 
+	commandLine="-Xmx1500M -jar &quot;$INSTALL_PATH/JMT.jar&quot;" 
 	programGroup="yes" 
 	desktop="no" 
 	applications="no" 
 	startMenu="no" 
 	startup="no" 
-	commandLine="" 
 	workingDirectory="$INSTALL_PATH" 
-	description="Launch Java Modelling Tools @jmt.version@ allocating a maximum heap size of 1Gb" 
+	description="Launch Java Modelling Tools @jmt.version@ allocating a maximum heap size of 1.5Gb" 
 	iconFile="$INSTALL_PATH/jmtMem.ico">
 	</shortcut>
 
 	<shortcut name="Uninstall JMT @jmt.version@" 
-	target="$INSTALL_PATH/removeJMT.vbs" 
+	target="javaw" 
+	commandLine="-jar &quot;$INSTALL_PATH/Uninstaller/uninstaller.jar&quot;" 
 	programGroup="yes" 
 	desktop="no" 
 	applications="no" 
 	startMenu="no" 
 	startup="no" 
-	commandLine="" 
 	workingDirectory="$INSTALL_PATH" 
 	description="Uninstall Java Modelling Tools @jmt.version@"
 	iconFile="$INSTALL_PATH/uninst.ico">

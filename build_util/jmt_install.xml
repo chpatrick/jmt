@@ -31,7 +31,7 @@
 		</authors>
 		-->
 		<url>http://jmt.sourceforge.net/</url>
-		<javaversion>1.5</javaversion>
+		<javaversion>1.6</javaversion>
 		<run-privileged condition="izpack.windowsinstall.vista|izpack.windowsinstall.7"/>
 	</info>
 	<!-- 
@@ -100,7 +100,6 @@
 				<include name="license/**/*"/>
 				<include name="jwatFormats/**/*"/>
 				<include name="JMT.jar"/>
-				<include name="*.vbs"/>								
 			</fileset>
 		</pack>
 	</packs>

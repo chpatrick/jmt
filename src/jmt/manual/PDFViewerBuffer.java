@@ -45,7 +45,8 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 	 */
 	private static final long serialVersionUID = 1L;
 	private static final int PAGE_NUM_RESERVED = -1;
-	private static final String MANUAL_RESOURCE = "manual.pdf";
+	private static final String MANUAL_RESOURCE = "manuals/manual.pdf";
+	private static final String EMPTY_RESOURCE = "emptyFile.txt";
 	
 	//size of buffer
 	private static int BUFFER_SIZE = 3;// MUST BE ODD
@@ -196,15 +197,22 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 	 * @throws IOException
 	 */
 	private void loadManual(ManualBookmarkers marker) throws IOException {
-		
-		URI path = null;
-		try {
-			path = PDFViewerBuffer.class.getResource(MANUAL_RESOURCE).toURI();
-		} catch (Exception ex) {
-			throw new IOException(ex);
+		// Search for manual in default path
+		File manualFile = new File(MANUAL_RESOURCE);
+		// Try to search starting from JMT.jar location
+		if (!manualFile.isFile()) {
+			try {
+				URI uri = PDFViewerBuffer.class.getResource(EMPTY_RESOURCE).toURI();
+				manualFile = new File(new File(uri).getParentFile(), MANUAL_RESOURCE);
+			} catch (Exception ex) {
+				//Nothing to do here, we will throw exceptions later.
+			}
+		}
+		if (!manualFile.isFile()) {
+			throw new IOException("Could not find JMT manual.pdf file. Please place it in $JMT_BASE_DIR/manuals/manual.pdf location.");
 		}
 
-		RandomAccessFile raf = new RandomAccessFile(new File(path), "r");
+		RandomAccessFile raf = new RandomAccessFile(manualFile, "r");
 
 		FileChannel fc = raf.getChannel();
 		ByteBuffer buf = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());

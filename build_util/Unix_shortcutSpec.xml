@@ -17,16 +17,16 @@
 	terminal="no">
 	</shortcut>
 	
-	<shortcut name="JMT @jmt.version@ 1Gb Heap"
+	<shortcut name="JMT @jmt.version@ 1.5Gb Heap"
 	target="java" 
-	commandLine="-Xmx1000M -jar &quot;$INSTALL_PATH/JMT.jar&quot;" 
+	commandLine="-Xmx1500M -jar &quot;$INSTALL_PATH/JMT.jar&quot;" 
 	programGroup="yes"
 	desktop="no" 
 	applications="no" 
 	startMenu="no" 
 	startup="no" 
 	workingDirectory="$INSTALL_PATH" 
-	description="Launch Java Modelling Tools @jmt.version@ allocating a maximum heap size of 1Gb" 
+	description="Launch Java Modelling Tools @jmt.version@ allocating a maximum heap size of 1.5Gb" 
 	iconFile="$INSTALL_PATH/jmtMem.png" 
 	type="Application" 
 	encoding="UTF-8" 
