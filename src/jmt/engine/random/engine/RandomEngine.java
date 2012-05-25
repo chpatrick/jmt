@@ -55,8 +55,6 @@ public abstract class RandomEngine {
 		return defaultEngine;
 	}
 
-	//NEW
-	//@author Stefano Omini
 	/**
 	 * Sets the seed of the default engine of uniform random number.
 	 * WARNING: this method must be called only by the class Simulation and only
@@ -64,14 +62,13 @@ public abstract class RandomEngine {
 	 * current time.
 	 *
 	 */
-	public static void setSeed(long seed) {
+	public void setSeed(long seed) {
 		simulationSeed = seed;
 		//set the new seed
-		((MersenneTwister) defaultEngine).setNewSeed(simulationSeed);
-		return;
+		setNewSeed(seed);
 	}
 
-	//end NEW
+	protected abstract void setNewSeed(long seed);
 
 	/**
 	 * Returns a 64 bit uniformly distributed random number in the open unit

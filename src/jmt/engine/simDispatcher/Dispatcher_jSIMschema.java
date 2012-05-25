@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Vector;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import jmt.common.exception.LoadException;
 import jmt.common.exception.NetException;
@@ -151,10 +153,6 @@ public class Dispatcher_jSIMschema {
 		//try {
 		SimLoader simLoader = new SimLoader(simModelDefinitionPath);
 		sim = simLoader.getSim();
-		// Sets simulation max duration (if specified)
-		if (maxDuration > 0) {
-			sim.setMaxSimulationTime(maxDuration);
-		}
 
 		//sets in the Simulation object the path of the
 		//xml model definition
@@ -178,6 +176,21 @@ public class Dispatcher_jSIMschema {
 
 		long start, stop, elapsed;
 
+		// Sets simulation max duration (if specified)
+		ExecutorService es = Executors.newSingleThreadExecutor();
+		if (maxDuration > 0) {
+			es.submit(new Runnable() {	
+				public void run() {
+					try {
+						Thread.sleep(maxDuration);
+						abortAllMeasures();	
+					} catch(InterruptedException ex) {
+						// Nothing to do.
+					}
+				}
+			});
+		}
+
 		simStarted = true;
 		//Start time
 		start = System.currentTimeMillis();
@@ -191,22 +204,11 @@ public class Dispatcher_jSIMschema {
 
 		simPaused = false;
 		simFinished = true;
+		
+		// Shutdown the simulation timer, if any.
+		es.shutdownNow();
 
 		logger.info("Model " + simModelDefinitionPath + " solved by jSIM in " + Double.toString(elapsed) + " seconds");
-		/*
-		        } catch (IOException e) {
-		            e.printStackTrace();
-		            logger.error(e.getMessage());
-		            return false;
-		        } catch (LoadException e) {
-		            e.printStackTrace();
-		            logger.error(e.getMessage());
-		            return false;
-		        } catch (Exception e) {
-		            e.printStackTrace();
-		            logger.error(e.getMessage());
-		            return false;
-		        }   */
 
 		return true;
 	}

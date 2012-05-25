@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.channels.FileChannel;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,6 +33,8 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public class Jmt {
+	private static final String OPTION_SEED = "-seed";
+	private static final String OPTION_MAXTIME = "-maxtime";
 	
 	public static void printDocument(Document doc, OutputStream out) throws IOException, TransformerException {
 	    TransformerFactory tf = TransformerFactory.newInstance();
@@ -46,7 +50,12 @@ public class Jmt {
 	}
 	
 	public static void help(){
-		System.err.println("Usage: jmt.commandline.Jmt [sim|mva] [modelfilename]");
+		System.err.println("Usage: jmt.commandline.Jmt [sim|mva] [modelfilename] [options]");
+		System.err.println("mva options:");
+		System.err.println("  <none>");
+		System.err.println("sim options:");
+		System.err.println("  -seed 1234 : sets the simulation seed to 1234");
+		System.err.println("  -maxtime 60 : sets the maximum simulation time to 60 seconds");
 		System.exit(2);
 	}
 	
@@ -98,19 +107,21 @@ public class Jmt {
 			copyFile(model, result);			
 
 		} else if(args[0].equals("sim")){
+			Map<String,String> options = parseParameters(args, 2);
 			
 			DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 			DocumentBuilder db = dbf.newDocumentBuilder();
 			
 			File model = new File(args[1]);
-			System.out.println(args[1]);
+			if (!model.isFile()) {
+				System.err.print("Model file not found: " + model.getAbsolutePath());
+				System.exit(1);
+			}
+			System.out.println(model.getName());
+			
 			File temp = File.createTempFile("tempfileSim",".jsim");
 			temp.deleteOnExit();
 			
-			if (!model.isFile()) {
-				System.err.print("Invalid model file: " + model.getAbsolutePath());
-				System.exit(1);
-			}
 			
 			Document doc = db.parse(model);
 			Element sim = XMLArchiver.getSimFromArchiveDocument(doc);
@@ -132,13 +143,22 @@ public class Jmt {
 			
 			Dispatcher_jSIMschema dispatcher = new Dispatcher_jSIMschema(temp);
 			// Sets simulation seed if required
-			if (args.length > 2) {
+			if (options.containsKey(OPTION_SEED)) {
 				try {
-					dispatcher.setSimulationSeed(Long.parseLong(args[2]));
+					dispatcher.setSimulationSeed(Long.parseLong(options.get(OPTION_SEED)));
 				} catch (NumberFormatException ex) {
-					System.err.println("Invalid simulation seed");
+					System.err.println("Invalid simulation seed. Should be a number.");
 					System.exit(1);
 				}
+			}
+			
+			if (options.containsKey(OPTION_MAXTIME)) {
+				try {
+					dispatcher.setSimulationMaxDuration(Long.parseLong(options.get(OPTION_MAXTIME)) * 1000);
+				} catch (NumberFormatException ex) {
+					System.err.println("Invalid maximum simulation time. Should be a number.");
+					System.exit(1);
+				}	
 			}
 			
 			// Starts the simulation
@@ -154,5 +174,29 @@ public class Jmt {
 		} else {
 			help();
 		}
+	}
+	
+	/**
+	 * Returns a map with option name as key and list of parameters as value. Parameter without options are saved with "" as key
+	 * @param args command line args
+	 * @param startIndex the first index to consider in params
+	 * @return a map with option as key and 
+	 */
+	private static Map<String,String> parseParameters(String[] args, int startIndex) {
+		LinkedHashMap<String,String> options = new LinkedHashMap<String, String>();
+		// Parses command line options
+		String option = "";
+		for (int i=startIndex; i<args.length; i++) {
+			String str = args[i];
+			if (str.startsWith("-")) {
+				option = str.toLowerCase();
+				options.put(option, null);
+			} else {
+				options.put(option, str);
+				// Reset options field.
+				option = "";
+			}
+		}
+		return options;
 	}
 }

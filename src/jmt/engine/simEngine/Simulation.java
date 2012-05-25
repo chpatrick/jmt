@@ -111,44 +111,15 @@ public class Simulation {
 
 	//---------------------- SIMULATION TIMER --------------------------//
 
-	//NEW
-	//@author Stefano Omini
-
-	//true if an upper bound has been set to the simulation time
-	private boolean timeLimited = false;
-	//the max simulation time
-	private long maxSimulationTime = 0;
 	//the timer which controls max simulation time
 	//true if the simulation has finished
 	private boolean finished = false;
 
-	//end NEW
-
 	//---------------------- end SIMULATION TIMER --------------------------//
 
-	//---------------------- SIMULATION SEED --------------------------//
-
-	//NEW
-	//@author Stefano Omini
-
-	//seed of the simulation
-	private long seed = -1;
-	//reference to the RandomEngine used by the simulation
-	private RandomEngine randomEng = null;
-
-	//end NEW
-
-	//---------------------- end SIMULATION SEED --------------------------//
-
-	//NEW
-	//@author Stefano Omini
 	private SimParameters simParameters = null;
-	//end NEW
 
 	//---------------------- XML FILES PATH --------------------------//
-	//NEW
-	//@author Stefano Omini
-
 	//path of the xml file containing the mva model description
 	//this attribute has been setted only if a SimLoader has been used to
 	//create this Simulation object
@@ -158,9 +129,6 @@ public class Simulation {
 	//this attribute has been setted only if a SimLoader has been used to
 	//create this Simulation object
 	String xmlSimModelDefPath;
-
-	//end NEW
-
 	//---------------------- end XML FILES PATH --------------------------//
 
 	//---------------------- PRELOAD ------------------------------------//
@@ -194,10 +162,6 @@ public class Simulation {
 
 		//Initializes NetSystem
 		NetSystem.initialize();
-
-		//sets the maximum duration of the simulation run
-		this.timeLimited = true;
-		this.maxSimulationTime = maxSimulationTime;
 
 		//sets seed (if -1 --> automatic seed)
 		if (seed != -1) {
@@ -785,35 +749,8 @@ public class Simulation {
 		this.xmlSimModelDefPath = xmlSimModelDefPath;
 	}
 
-	//end NEW
-
-	//NEW
-	//@author Stefano Omini
 	public void setRandomEngineSeed(long seed) {
-		this.seed = seed;
-
-		randomEng = RandomEngine.makeDefault();
-		RandomEngine.setSeed(seed);
-
-	}
-
-	//end NEW
-
-	/**
-	 *  Sets the max simulation length
-	 */
-	public void setMaxSimulationTime(long maxSimulationTime) {
-		this.maxSimulationTime = maxSimulationTime;
-		this.timeLimited = true;
-	}
-
-	/**
-	 * Tells whether the simulation has a timer, which sets an upper limit to the
-	 * simulation time
-	 * @return true if the simulation has an upper bound for the simulation time
-	 */
-	public boolean isTimeLimited() {
-		return timeLimited;
+		RandomEngine.makeDefault().setSeed(seed);
 	}
 
 	/**
