@@ -24,6 +24,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -47,6 +48,7 @@ import jmt.engine.jwat.input.ProgressMonitorShow;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.CommonConstants;
+import jmt.gui.common.Defaults;
 import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.JWatWizard;
 import jmt.gui.jwat.MainJwatWizard;
@@ -56,7 +58,6 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants, JWATC
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static String absolutePath = "./";
 	private String demoDescription = "<HTML>" + "<b>Type of demo:</b> Workload analysis <p>"
 			//+ "<b>Description:</b> This demo has been extracted from an Apache log file selecting only some variables<p>"
 			+ "<b># observations:</b> This demo has 4000 observations related to the visits to a website<p>"
@@ -76,6 +77,7 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants, JWATC
 			+ "</HTML>";
 
 	private static final String TEMP_DEMO_NAME_WA = "Demo_WA";
+	private static final String DEMO_FILE = "examples/" + TEMP_DEMO_NAME_WA + "Data.jwat";
 	private JButton loadDemo;
 	private boolean canGoOn;
 	private ModelWorkloadAnalysis model;
@@ -139,10 +141,14 @@ public class LoadDemoPanel extends WizardPanel implements CommonConstants, JWATC
 		loadDemo.setBackground(Color.RED);
 		loadDemo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				File demoFile = new File(Defaults.getWorkingPath(), DEMO_FILE);
+				if (!demoFile.isFile()) {
+					demoFile = new File(".", DEMO_FILE);
+				}
 				//Calls loader
 				try {
 					
-					Loader.readData(absolutePath + "examples/" + TEMP_DEMO_NAME_WA + "Data.jwat", Loader.loadParameter(TEMP_DEMO_NAME_WA),
+					Loader.readData(demoFile.getAbsolutePath(), Loader.loadParameter(demoFile.getParentFile(), TEMP_DEMO_NAME_WA),
 							new ProgressMonitorShow(LoadDemoPanel.this, "Loading Data...", 1000), new InputStatusListener());
 					//Loader.readData("D:/" + TEMP_DEMO_NAME_WA + "Data.jwat", Loader.loadParameter(TEMP_DEMO_NAME_WA),
 							//		new ProgressMonitorShow(LoadDemoPanel.this, "Loading Data...", 1000), new InputStatusListener());

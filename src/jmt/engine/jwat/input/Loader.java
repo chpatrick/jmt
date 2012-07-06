@@ -18,6 +18,7 @@
 package jmt.engine.jwat.input;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -83,8 +84,8 @@ public class Loader implements JWATConstants {
 		loads.start();
 	}
 
-	public static Parameter loadParameter(String demoName) throws FileNotFoundException, IOException {
-		FormatFileReader form = new FormatFileReader(absolutePath + "examples/" + demoName + "Format.jwatformat");
+	public static Parameter loadParameter(File demoPath, String demoName) throws FileNotFoundException, IOException {
+		FormatFileReader form = new FormatFileReader(new File(demoPath, demoName + "Format.jwatformat").getAbsolutePath());
 	
 		//FormatFileReader form = new FormatFileReader("D:/" + demoName + "Format.jwatformat");
 		//System.out.println(absolutePath + "examples/" + demoName + "Format.jwatformat");
@@ -94,7 +95,7 @@ public class Loader implements JWATConstants {
 		String[] tokenExp = new String[form.getNumVars()];
 		int[] varType = new int[form.getNumVars()];
 		
-		int options[] = new int[] { Loader.calcNumOfObs(absolutePath + "examples/" + demoName + "Data.jwat") };
+		int options[] = new int[] { Loader.calcNumOfObs(new File(demoPath, demoName + "Data.jwat").getAbsolutePath()) };
 		//int options[] = new int[] { Loader.calcNumOfObs("D:/" + demoName + "Data.jwat") };
 
 		for (int i = 0; i < form.getNumVars(); i++) {

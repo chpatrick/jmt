@@ -23,6 +23,7 @@ import javax.swing.JPopupMenu;
 
 import jmt.engine.jwat.workloadAnalysis.utils.ChangeVariableListener;
 import jmt.engine.jwat.workloadAnalysis.utils.ModelWorkloadAnalysis;
+import jmt.gui.common.Defaults;
 import jmt.gui.jwat.JWATConstants;
 import ptolemy.plot.Plot;
 
@@ -283,7 +284,7 @@ public class EnlargePlotDistGraph extends Plot implements MouseListener {
 		 * @param defaultFilter default file filter
 		 */
 		public PlotImagesFileChooser(PlotImagesFileFilter defaultFilter) {
-			super(new File(System.getProperty("user.dir")));
+			super(Defaults.getWorkingPath());
 			this.defaultFilter = defaultFilter;
 		}
 

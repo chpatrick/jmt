@@ -44,6 +44,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.filechooser.FileFilter;
 
+import jmt.gui.common.Defaults;
 import jmt.jmarkov.Graphics.LogFile;
 
 /* 1.4 example used by DialogDemo.java. */
@@ -372,10 +373,7 @@ class CustomDialog extends JDialog implements ActionListener, PropertyChangeList
 			}
 		};
 
-		JFileChooser fc = new JFileChooser();
-
-		// Start in current directory
-		fc.setCurrentDirectory(file);
+		JFileChooser fc = new JFileChooser(Defaults.getWorkingPath());
 
 		// Set filter for Java source files.
 		fc.setFileFilter(fFileFilter);

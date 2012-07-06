@@ -68,6 +68,7 @@ import jmt.framework.gui.components.JMTDialog;
 import jmt.framework.gui.image.ImagePanel;
 import jmt.framework.gui.layouts.SpringUtilities;
 import jmt.framework.gui.listeners.KeyFocusAdapter;
+import jmt.gui.common.Defaults;
 import jmt.gui.common.distributions.Burst;
 import jmt.gui.common.distributions.Distribution;
 import jmt.gui.common.distributions.Exponential;
@@ -386,7 +387,7 @@ public class DistributionsEditor extends JMTDialog {
 
 	private JButton chooseReplayerFileButton;
 	
-	private JFileChooser replayerFileDialog = new JFileChooser();
+	private JFileChooser replayerFileDialog = new JFileChooser(Defaults.getWorkingPath());
 
 
 	/**

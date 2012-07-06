@@ -7,6 +7,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
@@ -30,6 +31,7 @@ import jmt.engine.jwat.input.Loader;
 import jmt.engine.jwat.input.ProgressMonitorShow;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.CommonConstants;
+import jmt.gui.common.Defaults;
 import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.JWatWizard;
 import jmt.gui.jwat.MainJwatWizard;
@@ -40,7 +42,6 @@ public class LoadDemoFittingPanel extends WizardPanel implements CommonConstants
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	public static String absolutePath = "./";
 	private String demoDescription = "<HTML>" + "<b>Type of demo:</b> Fitting algorithm <p>"
 			//+ "<b>Description:</b> This demo has been extracted from an Apache log file selecting only some variables<p>"
 			+ "<b># observations:</b> This demo has 500 observations <p>"
@@ -52,6 +53,7 @@ public class LoadDemoFittingPanel extends WizardPanel implements CommonConstants
 			+ "</HTML>";
 
 	private static final String TEMP_DEMO_NAME_FITTING = "DemoFittingPareto";
+	private static final String DEMO_FILE = "examples/" + TEMP_DEMO_NAME_FITTING + "Data.jwat";
 	private JButton loadDemo;
 	private boolean canGoOn;
 	private ModelFitting model;
@@ -115,9 +117,13 @@ public class LoadDemoFittingPanel extends WizardPanel implements CommonConstants
 		loadDemo.setBackground(Color.RED);
 		loadDemo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				File demoFile = new File(Defaults.getWorkingPath(), DEMO_FILE);
+				if (!demoFile.isFile()) {
+					demoFile = new File(".", DEMO_FILE);
+				}
 				//Calls loader
 				try {
-					Loader.readData(absolutePath + "examples/" + TEMP_DEMO_NAME_FITTING + "Data.jwat", Loader.loadParameter(TEMP_DEMO_NAME_FITTING),
+					Loader.readData(demoFile.getAbsolutePath(), Loader.loadParameter(demoFile.getParentFile(), TEMP_DEMO_NAME_FITTING),
 							new ProgressMonitorShow(LoadDemoFittingPanel.this, "Loading Data...", 1000), new InputStatusListener());
 					//Loader.readData("D:/" + TEMP_DEMO_NAME_FITTING + "Data.jwat", Loader.loadParameter(TEMP_DEMO_NAME_FITTING),
 						//		new ProgressMonitorShow(LoadDemoFittingPanel.this, "Loading Data...", 1000), new InputStatusListener());

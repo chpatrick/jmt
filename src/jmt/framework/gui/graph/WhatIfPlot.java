@@ -36,6 +36,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 
+import jmt.gui.common.Defaults;
+
 import ptolemy.plot.Plot;
 
 /**
@@ -351,7 +353,7 @@ public class WhatIfPlot extends Plot {
 		 * @param defaultFilter default file filter
 		 */
 		public PlotImagesFileChooser(PlotImagesFileFilter defaultFilter) {
-			super(new File(System.getProperty("user.dir")));
+			super(Defaults.getWorkingPath());
 			this.defaultFilter = defaultFilter;
 		}
 

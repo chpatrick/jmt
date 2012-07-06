@@ -42,6 +42,7 @@ import jmt.engine.jwat.trafficAnalysis.OnResetModel;
 import jmt.engine.jwat.trafficAnalysis.OnSetParamtersListener;
 import jmt.engine.jwat.trafficAnalysis.TrafficAnalysisSession;
 import jmt.framework.gui.wizard.WizardPanel;
+import jmt.gui.common.Defaults;
 import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.MainJwatWizard;
 
@@ -229,7 +230,7 @@ public class TextualPanel extends WizardPanel implements JWATConstants {
 		 * @param defaultFilter default file filter
 		 */
 		public FileChooser(FileFilter defaultFilter) {
-			super(new File(System.getProperty("user.dir")));
+			super(Defaults.getWorkingPath());
 			this.defaultFilter = defaultFilter;
 		}
 

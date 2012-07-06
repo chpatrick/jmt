@@ -68,6 +68,7 @@ import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.graph.MeasureValue;
 import jmt.framework.gui.graph.PAPlot;
 import jmt.framework.gui.layouts.SpringUtilities;
+import jmt.gui.common.Defaults;
 import jmt.gui.common.definitions.MeasureDefinition;
 import jmt.gui.common.definitions.PAResultsModel;
 import jmt.gui.common.definitions.ResultsConstants;
@@ -1565,6 +1566,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 	 * Custom file chooser class
 	 */
 	protected static class PlotImagesFileChooser extends JFileChooser {
+		private static final long serialVersionUID = 1L;
 		protected PlotImagesFileFilter defaultFilter;
 
 		/**
@@ -1572,7 +1574,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		 * @param defaultFilter default file filter
 		 */
 		public PlotImagesFileChooser(PlotImagesFileFilter defaultFilter) {
-			super(new File(System.getProperty("user.dir")));
+			super(Defaults.getWorkingPath());
 			this.defaultFilter = defaultFilter;
 		}
 

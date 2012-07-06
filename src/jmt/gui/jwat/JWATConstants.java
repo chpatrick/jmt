@@ -21,7 +21,6 @@ import java.text.DecimalFormat;
 
 public interface JWATConstants {
 	// Position of JWAT directories 
-	public String absolutePath = "./";
 	public static final int BUTTONSIZE = 25;
 	//Variable Type constants
 	public static final short NUMERIC = 0;

@@ -18,6 +18,7 @@
 
 package jmt.gui.common;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,6 +28,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Properties;
 
+import jmt.framework.data.MacroReplacer;
 import jmt.framework.gui.components.JMTFrame;
 
 /**
@@ -46,6 +48,7 @@ import jmt.framework.gui.components.JMTFrame;
  * 
  */
 public class Defaults implements CommonConstants {
+	private static final String P_WORKINGDIR = "workingDir";
 	protected static final String FILENAME = "defaults.conf";
 	protected static Properties prop;
 	// Initialize properties
@@ -116,6 +119,9 @@ public class Defaults implements CommonConstants {
 		//GUI default parameters.
 		def.setProperty("JSIMWindowWidth", "800");
 		def.setProperty("JSIMWindowHeight", "600");
+		
+		// Working directory
+		def.setProperty(P_WORKINGDIR, "${user.home}/JMT/");
 
 		return def;
 	}
@@ -242,5 +248,18 @@ public class Defaults implements CommonConstants {
 	 */
 	public static void revertToDefaults() {
 		prop = new Properties(getDefaults());
+	}
+	
+	/**
+	 * Returns the working directory. Creates it if it does not exist.
+	 * @return the working directory for JMT files
+	 */
+	public static File getWorkingPath() {
+		String dirStr = MacroReplacer.replaceSystem(get(P_WORKINGDIR));
+		File dir = new File(dirStr);
+		if (!dir.isDirectory()) {
+			dir.mkdirs();
+		}
+		return dir;
 	}
 }

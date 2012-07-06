@@ -68,6 +68,7 @@ import jmt.engine.jwat.workloadAnalysis.utils.SteppedComboBox;
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.CommonConstants;
+import jmt.gui.common.Defaults;
 import jmt.gui.jwat.JWATConstants;
 import jmt.gui.jwat.JWatWizard;
 import jmt.gui.jwat.MainJwatWizard;
@@ -167,7 +168,7 @@ public class InputPanel extends WizardPanel implements CommonConstants, JWATCons
 	// Help bar reference
 	private HoverHelp help = null;
 	// Format file chooser window
-	private JFileChooser fileSaveF = new JFileChooser(".") {
+	private JFileChooser fileSaveF = new JFileChooser(Defaults.getWorkingPath()) {
 		/**
 		 * 
 		 */
@@ -197,15 +198,8 @@ public class InputPanel extends WizardPanel implements CommonConstants, JWATCons
 		}
 	};
 	// Input log file chooser window
-	private JFileChooser file = new JFileChooser() {
-		/**
-		 * 
-		 */
+	private JFileChooser file = new JFileChooser(Defaults.getWorkingPath()) {
 		private static final long serialVersionUID = 1L;
-
-		{
-			setCurrentDirectory(new File("."));
-		}
 	};
 	// Spinner listener for format definition
 	private ChangeListener spinnerListener = new ChangeListener() {
@@ -699,7 +693,7 @@ public class InputPanel extends WizardPanel implements CommonConstants, JWATCons
 	/**
 	 * 
 	 */
-	private JFileChooser fileF = new JFileChooser() {
+	private JFileChooser fileF = new JFileChooser(Defaults.getWorkingPath()) {
 		/**
 		 * 
 		 */
@@ -723,7 +717,6 @@ public class InputPanel extends WizardPanel implements CommonConstants, JWATCons
 					return "Workload analysis format file";
 				}
 			});
-			setCurrentDirectory(new File("."));
 			setAcceptAllFileFilterUsed(false);
 		}
 	};

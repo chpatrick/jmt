@@ -26,6 +26,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
 
+import jmt.gui.common.Defaults;
+
 /**
  * <p>Title: Model Loader</p>
  * <p>Description: This class provides unified load/save functionality
@@ -195,7 +197,7 @@ public class Loader {
 		 * @param defaultFilter default file filter
 		 */
 		public JmtFileChooser(JmtFileFilter defaultFilter) {
-			super(new File(System.getProperty("user.dir")));
+			super(Defaults.getWorkingPath());
 			this.defaultFilter = defaultFilter;
 		}
 

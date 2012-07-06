@@ -20,7 +20,8 @@ package jmt.gui.common.xml;
 import java.awt.Component;
 import java.awt.HeadlessException;
 import java.io.File;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -28,6 +29,7 @@ import javax.swing.filechooser.FileFilter;
 
 import jmt.framework.xml.XMLUtils;
 import jmt.gui.common.CommonConstants;
+import jmt.gui.common.Defaults;
 import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.definitions.ModelConverter;
 import jmt.gui.common.definitions.StoredResultsModel;
@@ -95,7 +97,7 @@ public class ModelLoader {
 	protected String failureMotivation;
 
 	// Warnings found during last conversion
-	protected Vector warnings = new Vector();
+	protected List<String> warnings = new ArrayList<String>();
 
 	protected String fileFormat;
 
@@ -124,7 +126,7 @@ public class ModelLoader {
 	 * Gets a vector containing warnings of last performed operation
 	 * @return a Vector of String with every found warning
 	 */
-	public Vector getLastWarnings() {
+	public List<String> getLastWarnings() {
 		return warnings;
 	}
 
@@ -469,7 +471,7 @@ public class ModelLoader {
 		 * @param defaultFilter default file filter
 		 */
 		public JmtFileChooser(JmtFileFilter defaultFilter) {
-			super(new File(System.getProperty("user.dir")));
+			super(Defaults.getWorkingPath());
 			this.defaultFilter = defaultFilter;
 		}
 

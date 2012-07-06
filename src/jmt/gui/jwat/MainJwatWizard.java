@@ -37,6 +37,7 @@ import jmt.engine.jwat.trafficAnalysis.TrafficAnalysisSession;
 import jmt.engine.jwat.workloadAnalysis.WorkloadAnalysisSession;
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.WizardPanel;
+import jmt.gui.common.Defaults;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.jwat.fitting.panels.FittingPanel;
 import jmt.gui.jwat.fitting.panels.LoadDemoFittingPanel;
@@ -86,7 +87,7 @@ public class MainJwatWizard extends JWatWizard {
 		initGUI();
 	}
 
-	private JFileChooser fileSaveF = new JFileChooser(".") {
+	private JFileChooser fileSaveF = new JFileChooser(Defaults.getWorkingPath()) {
 		/**
 		 * 
 		 */
@@ -98,7 +99,7 @@ public class MainJwatWizard extends JWatWizard {
 		}
 	};
 
-	private JFileChooser fileOpenF = new JFileChooser(".") {
+	private JFileChooser fileOpenF = new JFileChooser(Defaults.getWorkingPath()) {
 		/**
 		 * 
 		 */

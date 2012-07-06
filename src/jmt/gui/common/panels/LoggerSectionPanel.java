@@ -41,6 +41,7 @@ import javax.swing.border.TitledBorder;
 
 import jmt.engine.log.JSimLogger;
 import jmt.engine.log.LoggerParameters;
+import jmt.framework.data.MacroReplacer;
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.common.CommonConstants;
@@ -102,7 +103,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
 		loggerAutoAppendDropdown[LoggerParameters.LOGGER_AR_REPLACE] = NAME_loggerAutoAppendDropdownReplace;
 		loggerAutoAppendDropdown[LoggerParameters.LOGGER_AR_APPEND] = NAME_loggerAutoAppendDropdownAppend;
 		loggerParameters = (LoggerParameters) stationData.getLoggingParameters(this.stationKey);
-		loggerUniversalLogPath = sd.getLoggingGlbParameter("path");
+		loggerUniversalLogPath = MacroReplacer.replaceSystem(sd.getLoggingGlbParameter("path"));
 		loggerParameters.path = loggerUniversalLogPath;
 		logFile = new File(loggerParameters.name);
 		initComponents();
@@ -357,7 +358,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
 				JFileChooser fc = new JFileChooser();
 				fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				fc.setDialogTitle("Choose Save Path for all logfiles...");
-				fc.setCurrentDirectory(new java.io.File(loggerUniversalLogPath));
+				fc.setCurrentDirectory(new File(loggerUniversalLogPath));
 				int ret = fc.showSaveDialog(LoggerSectionPanel.this);
 
 				if (ret == JFileChooser.APPROVE_OPTION) {

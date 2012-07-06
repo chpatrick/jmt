@@ -13,7 +13,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -21,11 +20,9 @@ import java.util.Date;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 
@@ -503,100 +500,6 @@ public class KMeanSingleClusterScatter extends JPanel {
 				}
 			});
 			printClusterInfo.setEnabled(false);
-		}
-	}
-
-	/**
-	 * Custom file chooser class
-	 */
-	protected class PlotImagesFileChooser extends JFileChooser {
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		protected PlotImagesFileFilter defaultFilter;
-
-		/**
-		 * Creates a File chooser in the appropriate directory user deafault.
-		 * @param defaultFilter default file filter
-		 */
-		public PlotImagesFileChooser(PlotImagesFileFilter defaultFilter) {
-			super(new File(System.getProperty("user.dir")));
-			this.defaultFilter = defaultFilter;
-		}
-
-		/**
-		 * Overrides default method to provide a warning if saving over an existing file
-		 */
-		@Override
-		public void approveSelection() {
-			// Gets the choosed file name
-			String name = getSelectedFile().getName();
-			String parent = getSelectedFile().getParent();
-			if (getDialogType() == OPEN_DIALOG) {
-				super.approveSelection();
-			}
-			if (getDialogType() == SAVE_DIALOG) {
-				PlotImagesFileFilter used = ((PlotImagesFileFilter) this.getFileFilter());
-				if (!name.toLowerCase().endsWith(used.getExtension())) {
-					name = name + used.getExtension();
-					setSelectedFile(new File(parent, name));
-				}
-				if (getSelectedFile().exists()) {
-					int resultValue = JOptionPane.showConfirmDialog(this, "<html>File <font color=#0000ff>" + name
-							+ "</font> already exists in this folder.<br>Do you want to replace it?</html>", "JMT - Warning",
-							JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
-					if (resultValue == JOptionPane.OK_OPTION) {
-						getSelectedFile().delete();
-						super.approveSelection();
-					}
-				} else {
-					super.approveSelection();
-				}
-			}
-		}
-	}
-
-	/**
-	 * Inner class used to create simple file filters with only extension check
-	 */
-	protected class PlotImagesFileFilter extends javax.swing.filechooser.FileFilter {
-		private String extension, description;
-
-		/**
-		 * Creates a new filefilter with specified extension and description
-		 * @param extension extension of this filter (for example ".jmt")
-		 * @param description description of this filter
-		 */
-		public PlotImagesFileFilter(String extension, String description) {
-			this.extension = extension;
-			this.description = description;
-		}
-
-		/**
-		 * Whether the given file is accepted by this filter.
-		 */
-		@Override
-		public boolean accept(File f) {
-			String name = f.getName().toLowerCase();
-			return name.endsWith(extension) || f.isDirectory();
-		}
-
-		/**
-		 * The description of this filter
-		 * @see javax.swing.filechooser.FileView#getName
-		 */
-		@Override
-		public String getDescription() {
-			return description + " (*" + extension + ")";
-		}
-
-		/**
-		 * Gets extension of this filter
-		 * @return extension of this filter
-		 */
-		public String getExtension() {
-			return extension;
 		}
 	}
 
