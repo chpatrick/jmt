@@ -105,7 +105,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
 		loggerParameters = (LoggerParameters) stationData.getLoggingParameters(this.stationKey);
 		loggerUniversalLogPath = MacroReplacer.replaceSystem(sd.getLoggingGlbParameter("path"));
 		loggerParameters.path = loggerUniversalLogPath;
-		logFile = new File(loggerParameters.name);
+		logFile = new File(new File(loggerUniversalLogPath), loggerParameters.name);
 		initComponents();
 	}
 
@@ -536,7 +536,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
 		}
 
 		try {
-			logFile = new File(path + loggerParameters.name);
+			logFile = new File(new File(path), loggerParameters.name);
 
 			if (logFile.exists() == true) {
 				if (logFile.length() == 0) {

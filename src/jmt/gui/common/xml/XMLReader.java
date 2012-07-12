@@ -192,7 +192,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		if (logPath != null && logPath != "") {
 			model.setLoggingGlbParameter("path", logPath);
 		} else {
-			model.setLoggingGlbParameter("path", "");
+			model.setLoggingGlbParameter("path", Defaults.get("workingDir"));
 		}
 		String logReplaceMode = root.getAttribute(XML_A_ROOT_LOGREPLACE);
 		if (logReplaceMode != null && logReplaceMode != "") {

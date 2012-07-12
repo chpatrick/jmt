@@ -40,6 +40,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import jmt.engine.log.LoggerParameters;
 import jmt.engine.random.EmpiricalEntry;
+import jmt.framework.data.MacroReplacer;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.distributions.Distribution;
@@ -224,7 +225,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 				.getDisableStatistic().toString());
 		// Write attributes used by the logs - Michael Fercu
 		elem.setAttribute(XML_A_ROOT_LOGPATH,
-				model.getLoggingGlbParameter("path"));
+				MacroReplacer.replaceSystem(model.getLoggingGlbParameter("path")));
 		elem.setAttribute(XML_A_ROOT_LOGREPLACE,
 				model.getLoggingGlbParameter("autoAppend"));
 		elem.setAttribute(XML_A_ROOT_LOGDELIM,
@@ -685,7 +686,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 				"java.lang.String", null, loggerParameters.name.toString(),
 				false);
 		name.appendParameterElement(doc, elem);
-		loggerParameters.path = model.getLoggingGlbParameter("path"); // temporary
+		loggerParameters.path = MacroReplacer.replaceSystem(model.getLoggingGlbParameter("path")); // temporary
 																		// fix
 		XMLParameter path = new XMLParameter(XML_LOG_FILEPATH,
 				"java.lang.String", null,

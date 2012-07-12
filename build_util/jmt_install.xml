@@ -94,12 +94,16 @@
 				<include name="*.ico"/>
 				<include name="*.png"/>
 				<include name="lib/**/*"/> 
-				<include name="examples/**/*"/>
 				<include name="manuals/**/*"/>
-<!--				<include name="xml/**/*"/> -->
 				<include name="license/**/*"/>
-				<include name="jwatFormats/**/*"/>
 				<include name="JMT.jar"/>
+			</fileset>
+		</pack>
+		<pack name="jmt-samples" required="yes" hidden="true">
+			<description>The Java Modelling Tools sample files</description>
+			<fileset dir="" targetdir="$USER_HOME/JMT">
+				<include name="examples/**/*"/>
+				<include name="jwatFormats/**/*"/>
 			</fileset>
 		</pack>
 	</packs>

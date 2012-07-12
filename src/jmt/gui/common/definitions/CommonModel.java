@@ -2472,7 +2472,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		public Integer autoAppendMode;
 
 		LoggerGlobalParameters() {
-			path = ".";
+			path = Defaults.get("workingDir");
 			delimiter = Defaults.get("loggerDelimiter");
 			decimalSeparator = Defaults.get("loggerDecimalSeparator");
 			autoAppendMode = Defaults.getAsInteger("loggerAutoAppend");
