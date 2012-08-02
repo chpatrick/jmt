@@ -19,13 +19,17 @@
 package jmt.engine.log;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.net.URL;
+import java.util.Map.Entry;
 import java.util.Properties;
+
+import jmt.framework.data.MacroReplacer;
 
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -50,10 +54,28 @@ public class JSimLogger implements Serializable {
 	static {
 		// Initialize only if somebody didn't already initialize this.
 		if (!LogManager.getCurrentLoggers().hasMoreElements()) {
-			URL props = JSimLogger.class.getResource(LOG4J_CONF);
-			if (props != null) {
-				PropertyConfigurator.configure(props);
-			} else {
+			URL propsUrl = JSimLogger.class.getResource(LOG4J_CONF);
+			boolean initialized = false;
+			if (propsUrl != null) {
+				Properties p = new Properties();
+				try {
+					InputStream is = propsUrl.openStream();
+					p.load(is);
+					is.close();
+					
+					// Replaces macros like work directory
+					Properties replaced = new Properties();
+					for (Entry<Object, Object> e : p.entrySet()) {
+						replaced.put(e.getKey(), MacroReplacer.replace((String)e.getValue()));
+					}
+					PropertyConfigurator.configure(replaced);
+					initialized = true;
+				} catch (IOException ex) {
+					System.err.println("Error while initializing logger form URL: " + propsUrl);
+					ex.printStackTrace();
+				}
+			} 
+			if (!initialized) {
 				System.out.println("Cannot find logProperties, using defaults");
 				//set stdout defaults
 				Properties p = new Properties();

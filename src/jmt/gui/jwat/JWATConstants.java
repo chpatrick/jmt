@@ -35,10 +35,10 @@ public interface JWATConstants {
 	public static final int KMEANS = 0;
 	public static final int FUZZYK = 1;
 	//Loading constants
-	public final static String LogFileName = "LoadingError.log";
-	public final static String InputMsgAbort = "Loading aborted by user";
-	public final static String InputMsgAbortWrongFormat = "Wrong format, no data match the given pattern";
-	public final static String InputMsgFail = "Fatal error in loading data!!";
+	public final static String LOG_FILE_NAME = "${jmt.work.dir}/LoadingError.log";
+	public final static String INPUT_MSG_ABORT = "Loading aborted by user";
+	public final static String INPUT_MSG_ABORT_WRONG_FORMAT = "Wrong format, no data match the given pattern";
+	public final static String INPUT_MSG_FAIL = "Fatal error in loading data!!";
 
 	public static final int WORKLOAD_INPUT_PANEL = 1;
 	public static final int WORKLOAD_BIVARIATE_PANEL = 2;

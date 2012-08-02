@@ -103,7 +103,7 @@ public class LoggerSectionPanel extends WizardPanel implements CommonConstants {
 		loggerAutoAppendDropdown[LoggerParameters.LOGGER_AR_REPLACE] = NAME_loggerAutoAppendDropdownReplace;
 		loggerAutoAppendDropdown[LoggerParameters.LOGGER_AR_APPEND] = NAME_loggerAutoAppendDropdownAppend;
 		loggerParameters = (LoggerParameters) stationData.getLoggingParameters(this.stationKey);
-		loggerUniversalLogPath = MacroReplacer.replaceSystem(sd.getLoggingGlbParameter("path"));
+		loggerUniversalLogPath = MacroReplacer.replace(sd.getLoggingGlbParameter("path"));
 		loggerParameters.path = loggerUniversalLogPath;
 		logFile = new File(new File(loggerUniversalLogPath), loggerParameters.name);
 		initComponents();

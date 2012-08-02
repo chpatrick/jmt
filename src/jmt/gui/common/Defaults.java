@@ -49,8 +49,6 @@ import jmt.framework.gui.components.JMTFrame;
  * 
  */
 public class Defaults implements CommonConstants {
-	private static final String SYS_PROP_WORKDIR = "jmt.work.dir";
-	private static final String DEFAULT_WORKDIR = "${user.home}/JMT/";
 	protected static final String FILENAME = "defaults.conf";
 	protected static Properties prop;
 	
@@ -263,7 +261,7 @@ public class Defaults implements CommonConstants {
 	 * @return the working directory for JMT files
 	 */
 	public static File getWorkingPath() {
-		String dirStr = MacroReplacer.replaceSystem(System.getProperty(SYS_PROP_WORKDIR, DEFAULT_WORKDIR));
+		String dirStr = MacroReplacer.replace(MacroReplacer.MACRO_WORKDIR);
 		File dir = new File(dirStr);
 		if (!dir.isDirectory()) {
 			dir.mkdirs();

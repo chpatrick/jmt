@@ -36,7 +36,7 @@ public class LogVisualizer extends JPanel implements JWATConstants {
 		String line = null;
 		DefaultListModel model = (DefaultListModel) logList.getModel();
 		try {
-			br = new BufferedReader(new FileReader(LogFileName));
+			br = new BufferedReader(new FileReader(LOG_FILE_NAME));
 			line = br.readLine();
 			while (line != null) {
 				model.addElement(line);

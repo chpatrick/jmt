@@ -10,6 +10,7 @@ import java.io.IOException;
 import jmt.engine.jwat.MatrixOsservazioni;
 import jmt.engine.jwat.Observation;
 import jmt.engine.random.engine.MersenneTwister;
+import jmt.framework.data.MacroReplacer;
 import jmt.gui.jwat.JWATConstants;
 
 import org.apache.oro.text.regex.PatternMatcherInput;
@@ -53,7 +54,7 @@ public class RndInputLoader extends InputLoader implements JWATConstants {
 		MatrixOsservazioni m = null;
 
 		try {
-			w = new FileWriter(LogFileName);
+			w = new FileWriter(MacroReplacer.replace(LOG_FILE_NAME));
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -73,7 +74,7 @@ public class RndInputLoader extends InputLoader implements JWATConstants {
 						e.printStackTrace();
 					}
 					valori = null;
-					msg = InputMsgAbort;
+					msg = INPUT_MSG_ABORT;
 					return null;
 				}
 
@@ -167,7 +168,7 @@ public class RndInputLoader extends InputLoader implements JWATConstants {
 			if (valori.size() == 0) {
 				closeView();
 				valori = null;
-				msg = InputMsgAbortWrongFormat;
+				msg = INPUT_MSG_ABORT_WRONG_FORMAT;
 				return null;
 			}
 
@@ -184,7 +185,7 @@ public class RndInputLoader extends InputLoader implements JWATConstants {
 				e1.printStackTrace();
 			}
 			valori = null;
-			msg = InputMsgFail;
+			msg = INPUT_MSG_FAIL;
 			return null;
 		} catch (OutOfMemoryError err) {
 			closeView();

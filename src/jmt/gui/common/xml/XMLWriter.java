@@ -225,7 +225,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 				.getDisableStatistic().toString());
 		// Write attributes used by the logs - Michael Fercu
 		elem.setAttribute(XML_A_ROOT_LOGPATH,
-				MacroReplacer.replaceSystem(model.getLoggingGlbParameter("path")));
+				MacroReplacer.replace(model.getLoggingGlbParameter("path")));
 		elem.setAttribute(XML_A_ROOT_LOGREPLACE,
 				model.getLoggingGlbParameter("autoAppend"));
 		elem.setAttribute(XML_A_ROOT_LOGDELIM,
@@ -686,7 +686,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 				"java.lang.String", null, loggerParameters.name.toString(),
 				false);
 		name.appendParameterElement(doc, elem);
-		loggerParameters.path = MacroReplacer.replaceSystem(model.getLoggingGlbParameter("path")); // temporary
+		loggerParameters.path = MacroReplacer.replace(model.getLoggingGlbParameter("path")); // temporary
 																		// fix
 		XMLParameter path = new XMLParameter(XML_LOG_FILEPATH,
 				"java.lang.String", null,

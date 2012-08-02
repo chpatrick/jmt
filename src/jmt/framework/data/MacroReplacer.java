@@ -31,8 +31,16 @@ import java.util.regex.Pattern;
  * @version 1.0
  */
 public class MacroReplacer {
+	public static final String MACRO_WORKDIR = "${jmt.work.dir}";
+	
+	private static final String SYS_PROP_WORKDIR = "jmt.work.dir";
+	private static final String DEFAULT_WORKDIR = "${user.home}/JMT/";
+
+	
 	private static final String TOKEN = "${"; 
 	private static final Pattern MACRO_PATTERN = Pattern.compile("\\$\\{([^}]+)\\}");
+	
+	public static enum Type {SYSTEM, APP, ALL}
 	
 	/**
 	 * Replace system variables inside the given string.
@@ -40,7 +48,18 @@ public class MacroReplacer {
 	 * @param str the string to replace
 	 * @return replaced string
 	 */
-	public static String replaceSystem(String str) {
+	public static String replace(String str) {
+		return replace(Type.ALL, str);
+	}
+	
+	/**
+	 * Replace variables inside the given string.
+	 * Variables are expressed as <code>${variable}</code>
+	 * @param replacementType the type of replacement
+	 * @param str the string to replace
+	 * @return replaced string
+	 */
+	public static String replace(Type replacementType, String str) {
 		if (str.indexOf(TOKEN) < 0) {
 			return str;
 		}
@@ -48,7 +67,7 @@ public class MacroReplacer {
 		StringBuffer ret = new StringBuffer(str.length());
 		Matcher m = MACRO_PATTERN.matcher(str);
 		while (m.find()) {
-			String value = System.getProperty(m.group(1));
+			String value = evaluateReplacement(replacementType, m.group(1));
 			if (value == null) {
 				value = m.group(0);
 			}
@@ -58,9 +77,37 @@ public class MacroReplacer {
 		return ret.toString();
 	}
 	
+	/**
+	 * Evaluate macro replacements
+	 * @param replacementType the type of replacement
+	 * @param macro the macro to replace
+	 * @return replaced macro
+	 */
+	private static String evaluateReplacement(Type replacementType, String macro) {
+		switch (replacementType) {
+			case SYSTEM:
+				return System.getProperty(macro);
+			case APP:
+				if (SYS_PROP_WORKDIR.equals(macro)) {
+					return replace(Type.SYSTEM, System.getProperty(SYS_PROP_WORKDIR, DEFAULT_WORKDIR));
+				} else {
+					return null;
+				}
+			case ALL:
+				String ret = evaluateReplacement(Type.APP, macro);
+				if (ret != null) {
+					return ret;
+				} else {
+					return evaluateReplacement(Type.SYSTEM, macro);
+				}
+			default:
+				return null;
+		}
+	}
+	
 	public static void main(String[] args) {
-		System.out.println(replaceSystem("Test: ${user.home}/JMT/"));
-		System.out.println(replaceSystem("Test2: ${user.dir}/JMT/"));
-		System.out.println(replaceSystem("Test3: ${user.dirko}/JMT/"));
+		System.out.println(replace("Test: ${user.home}/JMT/"));
+		System.out.println(replace("Test2: ${user.dir}/JMT/"));
+		System.out.println(replace("Test3: ${user.dirko}/JMT/"));
 	}
 }
