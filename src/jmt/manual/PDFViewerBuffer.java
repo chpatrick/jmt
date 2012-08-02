@@ -30,6 +30,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+import jmt.gui.common.Defaults;
+
 import com.sun.pdfview.OutlineNode;
 import com.sun.pdfview.PDFFile;
 import com.sun.pdfview.PDFPage;
@@ -208,8 +210,13 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 				//Nothing to do here, we will throw exceptions later.
 			}
 		}
+		// Finally search in Working dir
 		if (!manualFile.isFile()) {
-			throw new IOException("Could not find JMT manual.pdf file. Please place it in $JMT_BASE_DIR/manuals/manual.pdf location.");
+			manualFile = new File(Defaults.getWorkingPath(), MANUAL_RESOURCE);
+		}
+		
+		if (!manualFile.isFile()) {
+			throw new IOException("Could not find JMT manual.pdf file. Please place it in " + manualFile.getCanonicalPath() + " location.");
 		}
 
 		RandomAccessFile raf = new RandomAccessFile(manualFile, "r");

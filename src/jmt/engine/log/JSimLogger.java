@@ -129,6 +129,15 @@ public class JSimLogger implements Serializable {
 		logger.error(buffer);
 	}
 
+	public void error(String message, Throwable th) {
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
+		pw.println(message);
+		th.printStackTrace(pw);
+		String buffer = sw.toString();
+		logger.error(buffer);
+	}
+
 	public void fatal(Object message) {
 		logger.fatal(message);
 	}

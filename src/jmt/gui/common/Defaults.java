@@ -28,6 +28,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 import java.util.Properties;
 
+import jmt.engine.log.JSimLogger;
 import jmt.framework.data.MacroReplacer;
 import jmt.framework.gui.components.JMTFrame;
 
@@ -48,9 +49,12 @@ import jmt.framework.gui.components.JMTFrame;
  * 
  */
 public class Defaults implements CommonConstants {
-	private static final String P_WORKINGDIR = "workingDir";
+	private static final String SYS_PROP_WORKDIR = "jmt.work.dir";
+	private static final String DEFAULT_WORKDIR = "${user.home}/JMT/";
 	protected static final String FILENAME = "defaults.conf";
 	protected static Properties prop;
+	
+	private static JSimLogger logger = JSimLogger.getLogger(Defaults.class);
 	// Initialize properties
 	static {
 		reload();
@@ -120,9 +124,6 @@ public class Defaults implements CommonConstants {
 		def.setProperty("JSIMWindowWidth", "800");
 		def.setProperty("JSIMWindowHeight", "600");
 		
-		// Working directory
-		def.setProperty(P_WORKINGDIR, "${user.home}/JMT/");
-
 		return def;
 	}
 
@@ -220,11 +221,12 @@ public class Defaults implements CommonConstants {
 	public static boolean save() {
 		boolean saved = false;
 		try {
-			OutputStream output = new FileOutputStream(FILENAME);
-			prop.store(output, "Default parameters definition");
+			OutputStream output = new FileOutputStream(new File(getWorkingPath(), FILENAME));
+			prop.store(output, "JMT Default parameters definition");
 			saved = true;
+			output.close();
 		} catch (IOException e) {
-		} catch (SecurityException ex) {
+			logger.error("Error while storing default values", e);
 		}
 		return saved;
 	}
@@ -235,12 +237,18 @@ public class Defaults implements CommonConstants {
 	public static void reload() {
 		prop = new Properties(getDefaults());
 		// Try to load properties from default config file, otherwise uses defaults one
-		try {
-			InputStream input = new FileInputStream(FILENAME);
-			prop.load(input);
-		} catch (IOException e) {
-		} catch (SecurityException ex) {
-		}
+			File file = new File(getWorkingPath(), FILENAME);
+			if (file.isFile()) {
+				try {
+					InputStream input = new FileInputStream(new File(getWorkingPath(), FILENAME));
+					prop.load(input);
+					input.close();
+				} catch (IOException e) {
+					logger.error("Error while reading default values", e);
+				}
+			} else {
+				logger.debug("Configuration file not found in location " + file.getAbsolutePath());
+			}
 	}
 
 	/**
@@ -255,7 +263,7 @@ public class Defaults implements CommonConstants {
 	 * @return the working directory for JMT files
 	 */
 	public static File getWorkingPath() {
-		String dirStr = MacroReplacer.replaceSystem(get(P_WORKINGDIR));
+		String dirStr = MacroReplacer.replaceSystem(System.getProperty(SYS_PROP_WORKDIR, DEFAULT_WORKDIR));
 		File dir = new File(dirStr);
 		if (!dir.isDirectory()) {
 			dir.mkdirs();
