@@ -17,6 +17,7 @@
   */
 package jmt.framework.data;
 
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +61,7 @@ public class MacroReplacer {
 	 * @return replaced string
 	 */
 	public static String replace(Type replacementType, String str) {
-		if (str.indexOf(TOKEN) < 0) {
+		if (str == null || str.indexOf(TOKEN) < 0) {
 			return str;
 		}
 		
@@ -89,7 +90,7 @@ public class MacroReplacer {
 				return System.getProperty(macro);
 			case APP:
 				if (SYS_PROP_WORKDIR.equals(macro)) {
-					return replace(Type.SYSTEM, System.getProperty(SYS_PROP_WORKDIR, DEFAULT_WORKDIR));
+					return getOrCreateWorkingDir();
 				} else {
 					return null;
 				}
@@ -105,9 +106,16 @@ public class MacroReplacer {
 		}
 	}
 	
-	public static void main(String[] args) {
-		System.out.println(replace("Test: ${user.home}/JMT/"));
-		System.out.println(replace("Test2: ${user.dir}/JMT/"));
-		System.out.println(replace("Test3: ${user.dirko}/JMT/"));
+	/**
+	 * Generates or creates the working directory.
+	 * @return the working directory path
+	 */
+	private static String getOrCreateWorkingDir() {
+		String dirStr = replace(Type.SYSTEM, System.getProperty(SYS_PROP_WORKDIR, DEFAULT_WORKDIR));
+		File dir = new File(dirStr);
+		if (!dir.isDirectory()) {
+			dir.mkdirs();
+		}
+		return dirStr;
 	}
 }
