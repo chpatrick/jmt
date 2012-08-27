@@ -31,6 +31,7 @@ import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.event.TableModelEvent;
 
+import jmt.analytical.SolverAlgorithm;
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.exact.ExactModel;
@@ -51,7 +52,8 @@ import jmt.gui.exact.table.ResultsTable;
 /**
  * generic solution panel
  */
-public abstract class SolutionPanel extends WizardPanel {
+/* EDITED by Abhimanyu Chugh */
+public abstract class SolutionPanel extends AlgorithmPanel {
 
 	/**
 	 * 
@@ -60,7 +62,6 @@ public abstract class SolutionPanel extends WizardPanel {
 
 	protected String helpText, name;
 
-	protected ExactWizard ew;
 	protected HoverHelp help;
 
 	protected ExactModel data;
@@ -77,14 +78,16 @@ public abstract class SolutionPanel extends WizardPanel {
 	/** Number of iteration to be shown. Used by What-if analysis */
 	protected int iteration = 0;
 
-	public SolutionPanel(ExactWizard ew) {
-		this.ew = ew;
+	/* EDITED by Abhimanyu Chugh */
+	public SolutionPanel(ExactWizard ew, SolverAlgorithm alg) {
+		super(ew, alg);
 		help = ew.getHelp();
 
 		/* sync status with data object */
 		sync();
 		initComponents();
 	}
+	/* END */
 
 	/**
 	 * gets status from data object
@@ -160,6 +163,7 @@ public abstract class SolutionPanel extends WizardPanel {
 	 * @param iteration number of iteration to be shown. Must be between 0
 	 * and [number of iterations]-1
 	 */
+	@Override
 	public void setIteration(int iteration) {
 		this.iteration = iteration;
 		// Refresh table

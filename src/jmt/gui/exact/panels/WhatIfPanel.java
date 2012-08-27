@@ -23,6 +23,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
@@ -30,15 +32,26 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.TreeMap;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.AbstractButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -47,6 +60,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import jmt.analytical.SolverAlgorithm;
+import jmt.analytical.SolverMultiClosedAMVA;
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.exact.ExactConstants;
@@ -70,6 +85,9 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	private static final long serialVersionUID = 1L;
 	private ExactWizard wizard;
 	private HoverHelp help;
+	/** Edited by Abhimanyu Chugh **/
+	private NumberFormat numFormat = new DecimalFormat("#.###############");
+	/** End **/
 	private JLabel description, stationLabel, classLabel, fromLabel, toLabel, iterationLabel;
 
 	public static final String helpText = "<html>In this panel you can select a <em>control parameter</em> "
@@ -94,6 +112,14 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	private JTextField from, to, iterations;
 	private ClassTable classTable;
 	private JPanel tablePanel;
+	
+	/** Edited by Abhimanyu Chugh **/
+	private JCheckBox compMultiAlg;
+	private List<JCheckBox> algCheckBoxes;
+	private List<JTextField> algTolerances;
+	private List<JLabel> algToleranceLabels;
+	private JPanel compPanel;
+	/** End **/
 
 	private DecimalFormat intFormatter = new DecimalFormat("#"); // This is used to display population
 	private DecimalFormat doubleFormatter = new DecimalFormat("#0.0###"); // This is used to display doubles
@@ -128,6 +154,22 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		initComponents();
 		sync();
 	}
+	
+	/** Edited by Abhimanyu Chugh **/
+	public void enableOrDisableCompareAlgs(boolean enabled) {
+		compPanel.setEnabled(enabled);
+		compMultiAlg.setEnabled(enabled);
+		for (JCheckBox checkBox : algCheckBoxes) {
+			checkBox.setEnabled(enabled);
+		}
+		for (JTextField tolerance : algTolerances) {
+			tolerance.setEnabled(enabled);
+		}
+		for (JLabel algTolLabel : algToleranceLabels) {
+			algTolLabel.setEnabled(enabled);
+		}
+	}
+	/** End **/
 
 	/**
 	 * retrive current data structure and updates shown components
@@ -227,8 +269,42 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 			values = data.getWhatIfValues();
 		}
 		setFromToIterations();
+		
+		/** Edited by Abhimanyu Chugh **/
+		setAlgorithms();
+		/** End **/
 	}
 
+	/** Edited by Abhimanyu Chugh **/
+	private void setAlgorithms() {
+		if ((data.isCompareAlgs() && !compMultiAlg.isSelected()) || (!data.isCompareAlgs() && compMultiAlg.isSelected())) {
+			compMultiAlg.doClick();
+		}
+		if (!data.isClosed()) {
+			compMultiAlg.setEnabled(false);
+		}
+		int toleranceIndex = 0;
+		for (int i = 0; i < algCheckBoxes.size(); i++) {
+			boolean selected = (data.getCompAlg()[i] > 0);
+			JCheckBox checkbox = algCheckBoxes.get(i);
+			if ((selected && !checkbox.isSelected()) || (!selected && checkbox.isSelected())) {
+				checkbox.doClick();
+			}
+			if (!data.isClosed()) {
+				checkbox.setEnabled(false);
+			}
+			if (SolverAlgorithm.isApproximate(SolverAlgorithm.closedValues()[i])) {
+				algTolerances.get(toleranceIndex).setText(numFormat.format(data.getAlgTolerance()[i]));
+				if (!data.isClosed()) {
+					algToleranceLabels.get(toleranceIndex).setEnabled(false);
+					algTolerances.get(toleranceIndex).setEnabled(false);
+				}
+				toleranceIndex++;
+			}
+		}
+	}
+	/** End **/
+	
 	/**
 	 * Sets values for from, to and iteration fields
 	 */
@@ -293,9 +369,12 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 
 		// Description label
 		description = new JLabel(DESCRIPTION_WHATIF_NONE);
-		description.setPreferredSize(new Dimension(220, 200));
+		/* EDITED BY Abhimanyu Chugh */
+		description.setPreferredSize(new Dimension(300, 200));
+		/* END */
 		description.setVerticalAlignment(SwingConstants.NORTH);
-		add(description, BorderLayout.WEST);
+		//TODO: achugh
+		//add(description, BorderLayout.WEST);
 
 		// Builds panel with parameters
 		JPanel paramPanel = new JPanel(new GridLayout(6, 2, 5, 5));
@@ -357,7 +436,9 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		paramPanel.add(iterations);
 		JPanel tmpPanel = new JPanel(new BorderLayout()); // Used to pack fields
 		tmpPanel.add(paramPanel, BorderLayout.NORTH);
-		add(tmpPanel, BorderLayout.CENTER);
+		/** Edited by Abhimanyu Chugh **/
+		add(tmpPanel, BorderLayout.EAST);
+		/** End **/
 		// Adds class table
 		classTable = new ClassTable();
 		help.addHelp(classTable, "Classes characteristics. Values in red are currently selected for what-if analysis.");
@@ -366,6 +447,158 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		tablePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.RAISED));
 		tablePanel.setVisible(false);
 		add(tablePanel, BorderLayout.SOUTH);
+		
+		/* EDITED BY Abhimanyu Chugh */
+		//Creates the Panel for comparing different algorithms
+		final JPanel algPanel = new JPanel();
+		compMultiAlg = new JCheckBox ("Compare Algorithms");
+		compMultiAlg.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AbstractButton abstractButton = (AbstractButton) e.getSource();
+				boolean selected = abstractButton.getModel().isSelected();
+				data.setCompareAlgs(selected);
+				algPanel.setVisible(selected);
+				AMVAPanel.enableOrDisableAlgPanel(!selected);
+				repaint();
+			}
+		});
+		help.addHelp(compMultiAlg, "Check to compare results from different algorithms");
+		
+		algPanel.setLayout(new GridLayout(0, 2, 0, 0));
+		
+		algCheckBoxes = new LinkedList<JCheckBox>();
+		algTolerances = new LinkedList<JTextField>();
+		algToleranceLabels = new LinkedList<JLabel>();
+		int noOfExactAlgs = SolverAlgorithm.noOfExactAlgs();
+		for (int i = 0; i < SolverAlgorithm.closedNames().length; i++) {
+			if (i == 0) {
+				JLabel label = new JLabel("--------- Exact ---------");
+				label.setMinimumSize(new Dimension(250, 0));
+				algPanel.add(label, BorderLayout.CENTER);
+				label.setForeground(Color.DARK_GRAY);
+				label.setFocusable(false);
+				JPanel placeholder = new JPanel();
+				placeholder.setFocusable(false);
+				algPanel.add(placeholder);
+			} else if (i == noOfExactAlgs) {
+				JLabel label = new JLabel("----- Approximate -----");
+				label.setMinimumSize(new Dimension(250, 0));
+				algPanel.add(label, BorderLayout.CENTER);
+				label.setForeground(Color.DARK_GRAY);
+				label.setFocusable(false);
+				JPanel placeholder = new JPanel();
+				placeholder.setFocusable(false);
+				algPanel.add(placeholder);
+			}
+			
+			JCheckBox checkBox = new JCheckBox (SolverAlgorithm.closedNames()[i]);
+
+			final int index = i;
+			checkBox.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					AbstractButton abstractButton = (AbstractButton) e.getSource();
+					boolean selected = abstractButton.getModel().isSelected();
+					if (selected) {
+						data.setCompAlg(index, 1);
+					} else {
+						data.setCompAlg(index, 0);
+					}
+				}
+			});
+			
+			algPanel.add(checkBox);
+			algCheckBoxes.add(checkBox);
+			
+			if (SolverAlgorithm.isApproximate(SolverAlgorithm.closedValues()[i])) {
+				Dimension d = new Dimension(70,30);
+				JLabel tolLabel = new JLabel("Tolerance: ");
+				tolLabel.setMaximumSize(d);
+				tolLabel.setFocusable(false);
+				d = new Dimension(90,30);
+				JTextField tolerance = new JTextField(30);
+				tolerance.setText(numFormat.format(SolverMultiClosedAMVA.DEFAULT_TOLERANCE));
+				tolerance.setMaximumSize(d);
+				final int j = i;
+				tolerance.addFocusListener(new FocusListener() {
+					@Override
+					public void focusLost(FocusEvent e) {
+						JTextField textField = (JTextField) e.getSource();
+						Double tol = SolverMultiClosedAMVA.validateTolerance(textField.getText());
+						if (tol != null) {
+							data.setAlgTolerance(j, tol);
+						}
+						else {
+							JOptionPane.showMessageDialog(wizard.getWhatIfPanel(), "Error: Invalid tolerance value. Using last valid value.", "Input data error", JOptionPane.ERROR_MESSAGE);
+						}
+					}
+					
+					@Override
+					public void focusGained(FocusEvent e) {
+					}
+				});
+				tolerance.addKeyListener(new KeyListener() {
+					@Override
+					public void keyPressed(KeyEvent e) {
+						if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+							JTextField textField = (JTextField) e.getSource();
+							Double tol = SolverMultiClosedAMVA.validateTolerance(textField.getText());
+							if (tol != null) {
+								data.setAlgTolerance(j, tol);
+							}
+							else {
+								JOptionPane.showMessageDialog(wizard.getWhatIfPanel(), "Error: Invalid tolerance value. Using last valid value.", "Input data error", JOptionPane.ERROR_MESSAGE);
+							}
+						}
+					}
+					
+					@Override
+					public void keyTyped(KeyEvent e) {
+					}
+					
+					@Override
+					public void keyReleased(KeyEvent e) {
+					}
+				});
+				
+				JPanel algToleranceCell = new JPanel();
+				algToleranceCell.setLayout(new BoxLayout(algToleranceCell, BoxLayout.X_AXIS));
+				algToleranceCell.add(tolLabel);
+				algToleranceCell.add(tolerance);
+				algPanel.add(algToleranceCell);
+				algTolerances.add(tolerance);
+				algToleranceLabels.add(tolLabel);
+			}
+			else {
+				JPanel placeholder = new JPanel();
+				placeholder.setFocusable(false);
+				algPanel.add(placeholder);
+			}
+		}
+		
+		algPanel.setVisible(false);
+		algPanel.setBorder(BorderFactory.createEtchedBorder());
+		algPanel.setPreferredSize(new Dimension(275,22*(2+SolverAlgorithm.closedNames().length)));
+		JPanel panel = new JPanel();
+		//panel.setPreferredSize(new Dimension(200,20));
+		panel.setLayout(new BorderLayout());
+		//panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+		compPanel = new JPanel();
+		//compPanel.setMinimumSize(new Dimension(100,100));
+		compPanel.setBorder(BorderFactory.createEtchedBorder());
+		compPanel.setLayout(new BoxLayout(compPanel, BoxLayout.Y_AXIS));
+		compPanel.setMinimumSize(new Dimension(250,0));
+		JPanel compMultiAlgPanel = new JPanel();
+		compMultiAlgPanel.setLayout(new BorderLayout());
+		compMultiAlg.setFont(compMultiAlg.getFont().deriveFont(Font.BOLD));
+		compMultiAlgPanel.add(compMultiAlg, BorderLayout.WEST);
+		compPanel.add(compMultiAlgPanel);
+		//compPanel.add(Box.createRigidArea(new Dimension(0, 2)));
+		compPanel.add(algPanel, BorderLayout.LINE_START);
+		panel.add(description, BorderLayout.PAGE_START);
+		//panel.add(Box.createRigidArea(new Dimension(0, 80)));
+		panel.add(compPanel, BorderLayout.SOUTH);
+		add(panel, BorderLayout.WEST);
+		/* END */
 	}
 
 	/**

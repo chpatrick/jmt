@@ -28,6 +28,7 @@ import jmt.gui.common.definitions.ResultsModel;
 import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.panels.ResultsWindow;
 import jmt.gui.jmodel.controller.Mediator;
+import jmt.gui.jmodel.controller.ModelSnapshot;
 import jmt.gui.jmodel.controller.SimulationStateChecker;
 
 /**
@@ -179,6 +180,7 @@ public class DispatcherThread extends Thread implements AbortMeasure {
 	 * Inner thread used to poll
 	 */
 	protected class PollerThread extends Thread {
+		private static final long REFREH_INTERVAL_ANIMATION_HOLDING = 1000;
 		protected long interval;
 		protected DispatcherThread dispatcher;
 		protected boolean initialized = false;
@@ -235,9 +237,21 @@ public class DispatcherThread extends Thread implements AbortMeasure {
 						if (!simStateChecker.isInitialized()) {
 							simStateChecker.initialize();
 						}
-						simStateChecker.getModelState();
+						ModelSnapshot tmpServersContent = (ModelSnapshot) simStateChecker.getServersContent().clone();
+						ModelSnapshot tmpServersUtilization = (ModelSnapshot) simStateChecker.getServersContent().clone();
+						if(!dispatcher.simulator.isFinished()) {//SPIC
+							simStateChecker.getModelState();
+						}//SPIC
+						if(dispatcher.simulator.isFinished()) {
+							simStateChecker.setServersContent(tmpServersContent);
+							simStateChecker.setServersUtilization(tmpServersUtilization);
+						}
 						//simStateChecker.print();
-						simStateChecker.forceDraw();
+						try {
+							simStateChecker.forceDraw();
+						} catch (Exception e) {
+							//Ignore
+						}
 					}
 					// -------------end Francesco D'Aquino ---------------
 				}
@@ -250,10 +264,24 @@ public class DispatcherThread extends Thread implements AbortMeasure {
 				}
 			}
 			// Simulation is finished
-			if (sd.isAnimationEnabled()) {
-				simStateChecker.forceRepaint();
-				//gui.showResultsWindow();
-			}
+//REMOVED, NOT STABLE ENOUGH
+//			gui.setAnimationHolder((Thread)this);
+//			while (true) {
+//				try {
+//					simStateChecker.forceDraw();
+//				} catch(Exception e) {
+//					//The graph has been modified, we stop to hold animation
+//					simStateChecker.getServersContent().clear();
+//					simStateChecker.getServersUtilization().clear();
+//					simStateChecker.forceRepaint();
+//					break;
+//				}
+//				try {
+//					sleep(REFREH_INTERVAL_ANIMATION_HOLDING);
+//				} catch (InterruptedException ex) {
+//					System.err.println("Unexpected InterruptException in PollerThread");
+//				}
+//			}
 		}
 	}
 

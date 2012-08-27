@@ -52,8 +52,10 @@ public class IterationSelector extends WizardPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	/* EDITED by Abhimanyu Chugh */
 	// Vector with all solution panels
-	private Vector<SolutionPanel> panels = new Vector<SolutionPanel>();
+	private Vector<AlgorithmPanel> panels = new Vector<AlgorithmPanel>();
+	/* END */
 	// Data structure
 	private ExactModel model;
 	// Dimension of spinner
@@ -80,17 +82,21 @@ public class IterationSelector extends WizardPanel {
 	 * This component is placed in the north of given panel.
 	 * @param s solutionPanel to be added
 	 */
-	public void addSolutionPanel(SolutionPanel s) {
+	/* EDITED by Abhimanyu Chugh */
+	public void addSolutionPanel(AlgorithmPanel s) {
 		panels.add(s);
 		tabber.add(s);
 	}
+	/* END */
 
 	/**
 	 * Selects iteration i in all given panels
 	 * @param i iteration to be selected
 	 */
 	private void select(int i) {
-		Iterator<SolutionPanel> it = panels.iterator();
+		/* EDITED by Abhimanyu Chugh */
+		Iterator<AlgorithmPanel> it = panels.iterator();
+		/* END */
 		while (it.hasNext()) {
 			it.next().setIteration(i);
 		}

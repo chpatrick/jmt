@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2012, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -22,9 +22,11 @@ import jmt.engine.NetStrategies.RoutingStrategy;
 import jmt.engine.QueueNet.BlockingRegion;
 import jmt.engine.QueueNet.Job;
 import jmt.engine.QueueNet.JobClass;
+import jmt.engine.QueueNet.JobInfo;
 import jmt.engine.QueueNet.NetEvent;
 import jmt.engine.QueueNet.NetMessage;
 import jmt.engine.QueueNet.NetNode;
+import jmt.engine.QueueNet.NetSystem;
 import jmt.engine.QueueNet.NodeSection;
 
 /**
@@ -141,7 +143,12 @@ public class Router extends OutputSection {
 
 	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
-
+//		if(message.getEvent() == 4 || message.getEvent() == 8) {
+//			String debug = "I am the router of " + this.getOwnerNode().name + "\n" +
+//				"\t I am processing  " + message.getEvent() + ":" + message.getJob().getId() + "\n" +
+//				"\t jobsList.size() = " + jobsList.size();
+//			System.err.println(debug);
+//		}	
 		switch (message.getEvent()) {
 
 			case NetEvent.EVENT_JOB:
@@ -196,8 +203,18 @@ public class Router extends OutputSection {
 				//
 				//An ack is sent back to the service section.
 				//
-
+				updateJobsList(message.getJob());
+				JobInfo tmp = getOwnerNode().getSection(SERVICE).jobsList.lookFor(message.getJob());
+				if(tmp != null) {
+					getOwnerNode().getSection(SERVICE).jobsList.remove(tmp);						
+				}
 				sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
+//				JobInfo info = jobsList.lookFor(message.getJob());
+//				System.err.println("\t Response time = " + (NetSystem.getTime() - info.getTime()));
+//				if(info != null) {
+//					jobsList.remove(info);
+//					
+//				}
 				break;
 
 			default:

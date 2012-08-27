@@ -17,6 +17,8 @@
  */
 package jmt.framework.gui.graph;
 
+import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
@@ -34,7 +36,12 @@ import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+
+import jmt.gui.jaba.graphs.JabaGraph;
+
+import org.freehep.util.export.ExportDialog;
 
 import jmt.gui.common.Defaults;
 
@@ -62,6 +69,7 @@ public class WhatIfPlot extends Plot {
 	private PlotPopupMenu popup = new PlotPopupMenu();
 	// Rescale listeners
 	private Vector<RescaleListener> listeners = new Vector<RescaleListener>();
+	private Component legendPanel;
 
 	public WhatIfPlot(double[] xAxis) {
 		super();
@@ -177,17 +185,20 @@ public class WhatIfPlot extends Plot {
 		public JMenuItem zoomIn;
 		public JMenuItem zoomOut;
 		public JMenuItem saveAs;
+		public JMenuItem saveAsWithLegend;
 
 		public PlotPopupMenu() {
 			restore = new JMenuItem("Original view");
 			zoomIn = new JMenuItem("Zoom in");
 			zoomOut = new JMenuItem("Zoom out");
 			saveAs = new JMenuItem("Save as...");
+			saveAsWithLegend = new JMenuItem("Save as with legend...");
 			this.add(restore);
 			this.add(zoomIn);
 			this.add(zoomOut);
 			this.addSeparator();
 			this.add(saveAs);
+			this.add(saveAsWithLegend);
 			addListeners();
 		}
 
@@ -324,6 +335,23 @@ public class WhatIfPlot extends Plot {
 				}
 
 			});
+
+			saveAsWithLegend.addActionListener(new AbstractAction() {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
+				public void actionPerformed(ActionEvent e) {
+					if(legendPanel != null) {
+						ExportDialog export = new ExportDialog();
+						export.showExportDialog((Component) legendPanel,
+									"Export view as ...", (Component) legendPanel,
+									"Export");			
+					}
+				}
+			});
+
 		}
 
 		BufferedImage convertType(BufferedImage src, int targetType) {
@@ -432,4 +460,13 @@ public class WhatIfPlot extends Plot {
 		}
 	}
 	// ----------------------------------------------------------------------------------------
+
+	/**
+	 * Setter for legendPanel field.
+	 * legendPanel is used to export the grapgh with the legend.
+	 * @param panel
+	 */
+	public void setLegendPanel(Component panel) {
+		this.legendPanel = panel;		
+	}
 }

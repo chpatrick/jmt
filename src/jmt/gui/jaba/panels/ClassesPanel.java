@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2012, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -699,6 +699,7 @@ public class ClassesPanel extends WizardPanel implements JabaConstants, ForceUpd
 		 */
 		private static final long serialVersionUID = 1L;
 		private Object[] prototypes = { "10000", new String(new char[12]), "closed+cbox", new Integer(1000), new String(new char[12]), "" };
+		private int suffixClassCollision = 1;
 
 		@Override
 		public Object getPrototype(int columnIndex) {
@@ -776,12 +777,20 @@ public class ClassesPanel extends WizardPanel implements JabaConstants, ForceUpd
 		protected Object getRowName(int rowIndex) {
 			return new Integer(rowIndex + 1);
 		}
-
+		
 		@Override
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			switch (columnIndex) {
 				case 0: //name
-					classNames[rowIndex] = (String) value;
+					String tmpName = (String) value;
+					//Check for class name collision
+					for(int i = 0; i < classNames.length; i++ ){
+						if(classNames[i].equals(tmpName) && i != rowIndex) {
+							tmpName = tmpName + "_" + suffixClassCollision++;
+							break;
+						}
+					}
+					classNames[rowIndex] = tmpName;
 					break;
 				case 1: //type
 					for (int i = 0; i < CLASS_TYPENAMES.length; i++) {
@@ -814,6 +823,7 @@ public class ClassesPanel extends WizardPanel implements JabaConstants, ForceUpd
 				default:
 			}
 		}
+
 
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {

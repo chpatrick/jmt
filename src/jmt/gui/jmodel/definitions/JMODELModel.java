@@ -73,7 +73,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 		Long num;
 		if (!objectNumber.containsKey(Defaults.get("className"))) {
 			// This if first station of that type
-			num = new Long(0L);
+			num = new Long(1L);
 		} else {
 			// Uses next number
 			num = objectNumber.get(Defaults.get("className"));
@@ -354,7 +354,7 @@ public class JMODELModel extends CommonModel implements JmodelClassDefinition, J
 		Long num;
 		if (!objectNumber.containsKey(type)) {
 			// This if first station of that type
-			num = new Long(0L);
+			num = new Long(1L);
 		} else {
 			// Uses next number
 			num = objectNumber.get(type);

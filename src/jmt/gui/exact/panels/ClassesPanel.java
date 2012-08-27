@@ -22,6 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -45,11 +46,13 @@ import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
+import jmt.analytical.SolverAlgorithm;
 import jmt.framework.data.ArrayUtils;
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.table.editors.ButtonCellEditor;
@@ -96,6 +99,9 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 	private int[] classTypes;
 	private double[] classData;
 	private int nameCounter = 1;
+	/** Edited by Georgios Poullaides **/
+	private int algIndex = 0;
+	/** End **/
 
 	private List<ListOp> classOps;
 	private boolean hasDeletes;
@@ -159,6 +165,28 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			addClass();
 		}
 	};
+	
+	/* EDITED by Abhimanyu Chugh */
+	private ActionListener TYPE_OF_MODEL = new ActionListener() {
+		public void actionPerformed(ActionEvent e) {
+			JComboBox modelType = (JComboBox)e.getSource();
+			String type = (String)modelType.getSelectedItem();
+
+			boolean open = type.equalsIgnoreCase("open");
+			if (!open) {
+				for (int i = 0; i<classTypes.length; i++) {
+					if (CLASS_TYPENAMES[classTypes[i]] == "open" ) {
+						open = true;
+						break;
+					}
+				}
+			}
+			AMVAPanel.enableOrDisableAlgPanel(!open && !ew.getData().isCompareAlgs());
+			ew.getWhatIfPanel().enableOrDisableCompareAlgs(!open);
+			repaint();
+		}
+	};
+	/* END */
 
 	public ClassesPanel(ExactWizard ew) {
 		this.ew = ew;
@@ -561,6 +589,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			//BEGIN Federico Dall'Orso 8/3/2005
 			//NEW
 			classTypeComboBoxCell = new ComboBoxCell(CLASS_TYPENAMES);
+			
 			deleteButton = new JButton(deleteOneClass);
 			deleteButtonCellRenderer = new ButtonCellEditor(deleteButton);
 			enableDeletes();
@@ -569,6 +598,9 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			//END Federico Dall'Orso 8/3/2005
 
 			JComboBox classTypeBox = new JComboBox(CLASS_TYPENAMES);
+			/** Edited by Georgios Poullaides **/
+			classTypeBox.addActionListener(TYPE_OF_MODEL);
+			/** End **/
 			classTypeCellEditor = new DefaultCellEditor(classTypeBox);
 			classTypeBox.setEditable(false);
 

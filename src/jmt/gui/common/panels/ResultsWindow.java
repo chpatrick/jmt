@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2012, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -100,7 +101,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 	private JProgressBar progressBar;
 	// Used to format numbers
 	private static DecimalFormat decimalFormatExp = new DecimalFormat("0.000E0");
-	private static DecimalFormat decimalFormatNorm = new DecimalFormat("#0.0000");
+	private static DecimalFormat decimalFormatNorm = new DecimalFormat("#0.00000000");
 
 	/**
 	 * Creates a new ResultsWindow
@@ -327,7 +328,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		protected JTextField samples, mean, lower, upper;
 		protected JButton abortButton;
 		protected FastGraph graph, popupGraph;
-		protected JPanel graphPanel;
+		protected JSplitPane graphPanel;
 		protected JFrame popupFrame;
 		protected JTextArea textState;
 
@@ -409,7 +410,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			samples.setMaximumSize(new Dimension(samples.getMaximumSize().width, samples.getMinimumSize().height));
 			label.setLabelFor(samples);
 			samples.setText("" + md.getAnalizedSamples(measureIndex));
-			samples.setToolTipText("Number of samples currently analized: " + samples.getText());
+			samples.setToolTipText("Number of samples (observations) currently analized: " + samples.getText());
 			dataPanel.add(label);
 			dataPanel.add(samples);
 
@@ -482,14 +483,18 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			textStatePanel.setBorder(BorderFactory.createEmptyBorder(BORDERSIZE / 2, BORDERSIZE / 2, BORDERSIZE / 2, BORDERSIZE / 2));
 			pivotPanel2.add(textStatePanel, BorderLayout.SOUTH);
 			// Sets a minimal size for text area panel
-			pivotPanel2.setPreferredSize(new Dimension(360, 150));
+			Dimension minimumSize = new Dimension(360, 180);
+			pivotPanel2.setPreferredSize(minimumSize);
 
 			// Adds graph
-			graphPanel = new JPanel(new BorderLayout());
 			graph = new FastGraph(values, md.getPollingInterval());
 			graph.setToolTipText("Double click on this graph to open it in a new window");
-			graphPanel.add(graph, BorderLayout.CENTER);
-			graphPanel.add(pivotPanel2, BorderLayout.WEST);
+			graphPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+					pivotPanel2, graph);
+			graphPanel.setOneTouchExpandable(true);
+			graphPanel.setDividerLocation(360);
+			pivotPanel2.setMinimumSize(minimumSize);
+			graph.setMinimumSize(new Dimension(200, 180));
 			add(graphPanel, BorderLayout.CENTER);
 
 			// Sets icon image and abort button state
@@ -533,7 +538,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 						mean.setText(doubleToString(lastValue.getMeanValue()));
 						mean.setToolTipText("Current mean value of this measure: " + mean.getText());
 						samples.setText("" + md.getAnalizedSamples(measureIndex));
-						samples.setToolTipText("Number of samples currently analized: " + samples.getText());
+						samples.setToolTipText("Number of samples (observations) currently analized: " + samples.getText());
 						// If finished is true, state was changed
 						if (finished) {
 							setCorrectState();
@@ -601,6 +606,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 					icon.setToolTipText(NO_SAMPLES_TEXT);
 					textState.setText(NO_SAMPLES_TEXT);
 					abortButton.setEnabled(false);
+					mean.setText("-");
 					graph.setVisible(false); // Hides graph if no samples were received
 					break;
 			}

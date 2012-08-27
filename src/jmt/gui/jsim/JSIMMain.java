@@ -66,6 +66,8 @@ import jmt.gui.common.xml.ModelLoader;
 import jmt.gui.common.xml.XMLWriter;
 import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.ExactWizard;
+import jmt.gui.jmodel.controller.SimulationStateChecker;
+import jmt.gui.jmodel.panels.jmodelClassesPanel;
 import jmt.gui.jsim.definitions.JSIMModel;
 import jmt.gui.jsim.panels.AllBlockingRegionsPanel;
 import jmt.gui.jsim.panels.AllStationsParametersPanel;
@@ -1035,6 +1037,11 @@ public class JSIMMain extends Wizard implements GuiInterface {
 	@Override
 	protected void finish() {
 		SIM_START.actionPerformed(null);
+	}
+
+	@Override
+	public void setAnimationHolder(Thread thread) {
+		//Ignore		
 	}
 
 }

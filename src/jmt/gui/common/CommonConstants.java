@@ -68,10 +68,10 @@ public interface CommonConstants {
 			putConst(STATION_TYPE_SOURCE, STATION_TYPE_SOURCE);
 			putConst(STATION_TYPE_SINK, STATION_TYPE_SINK);
 			putConst(STATION_TYPE_TERMINAL, STATION_TYPE_TERMINAL);
-			putConst(STATION_TYPE_ROUTER, "Routing Station");
+			putConst(STATION_TYPE_ROUTER, "Router");
 			putConst(STATION_TYPE_DELAY, STATION_TYPE_DELAY);
 			//putConst(STATION_TYPE_SERVER, "Queueing Station");
-			putConst(STATION_TYPE_SERVER, "Queue Stat.");
+			putConst(STATION_TYPE_SERVER, "Queue");
 			putConst(STATION_TYPE_FORK, STATION_TYPE_FORK);
 			putConst(STATION_TYPE_JOIN, STATION_TYPE_JOIN);
 			putConst(STATION_TYPE_LOGGER, STATION_TYPE_LOGGER);
@@ -92,7 +92,7 @@ public interface CommonConstants {
 	public static final String SERVICE_ZERO = "Zero Service Time";
 
 	/**Constants for selection of distributions*/
-	public final static String DISTRIBUTION_CONSTANT = "Constant";
+	public final static String DISTRIBUTION_DETERMINISTIC = "Deterministic";
 	public final static String DISTRIBUTION_EXPONENTIAL = "Exponential";
 	public final static String DISTRIBUTION_NORMAL = "Normal";
 	public final static String DISTRIBUTION_PARETO = "Pareto";
@@ -144,7 +144,7 @@ public interface CommonConstants {
 			+ "Define system performance indices to be collected and " + "plotted by the simulation engine." + HTML_FONT_NOR_END + HTML_END;
 
 	public final static String SIMULATION_DESCRIPTION = HTML_START + HTML_FONT_TITLE + "Simulation Parameters" + HTML_FONT_TIT_END + HTML_FONT_NORM
-			+ "Define simulation parameters and initial state." + HTML_FONT_NOR_END + HTML_END;
+			+ "Define simulation parameters and initial customer locations." + HTML_FONT_NOR_END + HTML_END;
 
 	public final static String BATCH_SIMULATION_DESCRIPTION = HTML_START + HTML_FONT_TITLE + "What-if analysis" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Enable parametric analysis and customize it." + HTML_FONT_NOR_END + HTML_END;

@@ -20,10 +20,14 @@ package jmt.gui.exact;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import jmt.analytical.SolverAlgorithm;
+import jmt.analytical.SolverMultiClosedAMVA;
 import jmt.framework.data.ArrayUtils;
 
 import org.w3c.dom.Document;
@@ -53,8 +57,23 @@ import org.w3c.dom.NodeList;
  * Queue length as this was the previous name of the label. 
  * @version Date: Sep-2009
  */
-public class ExactModel implements ExactConstants {
 
+public class ExactModel implements ExactConstants {
+	
+	/* EDITED by Abhimanyu Chugh */
+	//Set by default to the Exact MVA algorithm
+	public static String ALGORITHM_TYPE = SolverAlgorithm.EXACT.toString();
+	//Set by default if user does not enter a tolerance value
+	public static double TOLERANCE = SolverMultiClosedAMVA.DEFAULT_TOLERANCE;
+	//Names of the algorithms to be compared
+	private String [] compAlgNames;
+	private String [] compSelectedNames;
+	public int [] compAlg;
+	public double [] algTols;
+	private int compAlgNum;
+	private boolean compareAlgs;
+	/* END */
+	
 	//true if the model is closed
 	private boolean closed;
 	//true if the model is open
@@ -118,29 +137,37 @@ public class ExactModel implements ExactConstants {
 
 	/***********************RESULTS******************************/
 
+	/* EDITED by Abhimanyu Chugh */
+	/**
+	 * number of iterations algorithm performed for each (what-if) iteration/execution
+	 * dim: algIterations<Algorithm, [iterations]>
+	 */
+	private Map<SolverAlgorithm, int[]> algIterations;
+
 	/**
 	 * queue lengths
-	 * dim: queueLen[stations][classes][iterations]
+	 * dim: queueLen<Algorithm, [stations][classes][iterations]>
 	 */
-	private double[][][] queueLen;
+	private Map<SolverAlgorithm, double[][][]> queueLen;
 
 	/**
 	 * throughput
-	 * dim: throughput[stations][classes][iterations]
+	 * dim: throughput<Algorithm, [stations][classes][iterations]>
 	 */
-	private double[][][] throughput;
+	private Map<SolverAlgorithm, double[][][]> throughput;
 
 	/**
 	 * residence times
-	 * dim: resTime[station][classes][iterations]
+	 * dim: resTime<Algorithm, [stations][classes][iterations]>
 	 */
-	private double[][][] resTimes;
+	private Map<SolverAlgorithm, double[][][]> resTimes;
 
 	/**
 	 * utilization
-	 * dim: util[stations][classes][iterations]
+	 * dim: util<Algorithm, [stations][classes][iterations]>
 	 */
-	private double[][][] util;
+	private Map<SolverAlgorithm, double[][][]> util;
+	/* END */
 
 	/*****************************************************************/
 	//parameters for randomization
@@ -165,12 +192,21 @@ public class ExactModel implements ExactConstants {
 	private double[] whatIfValues;
 
 	/*****************************************************************/
-
+	
 	/**
 	 * make an object with default values
 	 */
 	public ExactModel() {
 		setDefaults();
+		
+		/* EDITED by Abhimanyu Chugh */
+		compAlgNames = SolverAlgorithm.closedNames();
+		compSelectedNames = new String[SolverAlgorithm.closedNames().length];
+		compAlg = new int[SolverAlgorithm.closedNames().length];
+		Arrays.fill(compAlg, 0);
+		algTols = new double[SolverAlgorithm.closedNames().length];
+		Arrays.fill(algTols, SolverMultiClosedAMVA.DEFAULT_TOLERANCE);
+		/* END */
 	}
 
 	/**
@@ -197,6 +233,14 @@ public class ExactModel implements ExactConstants {
 		classNames = ArrayUtils.copy(e.classNames);
 		classTypes = ArrayUtils.copy(e.classTypes);
 		classData = ArrayUtils.copy(e.classData);
+		
+		/** Edited by Georgios Poullaides **/
+		compAlgNames =  ArrayUtils.copy(e.compAlgNames);
+		compAlg =  ArrayUtils.copy(e.compAlg);
+		compSelectedNames = new String[compAlgNames.length];
+		algTols =  ArrayUtils.copy(e.algTols);
+		compareAlgs = e.compareAlgs;
+		/** End **/
 
 		visits = ArrayUtils.copy2(e.visits);
 
@@ -210,12 +254,114 @@ public class ExactModel implements ExactConstants {
 		whatIfValues = e.whatIfValues;
 
 		if (hasResults) {
-			queueLen = ArrayUtils.copy3(e.queueLen);
-			throughput = ArrayUtils.copy3(e.throughput);
-			resTimes = ArrayUtils.copy3(e.resTimes);
-			util = ArrayUtils.copy3(e.util);
+			/* EDITED by Abhimanyu Chugh */
+			queueLen = new LinkedHashMap<SolverAlgorithm, double[][][]>();
+			throughput = new LinkedHashMap<SolverAlgorithm, double[][][]>();
+			resTimes = new LinkedHashMap<SolverAlgorithm, double[][][]>();
+			util = new LinkedHashMap<SolverAlgorithm, double[][][]>();
+			algIterations = new LinkedHashMap<SolverAlgorithm, int[]>();
+			
+			for (SolverAlgorithm alg : e.queueLen.keySet()) {
+				queueLen.put(alg, ArrayUtils.copy3(e.queueLen.get(alg)));
+				throughput.put(alg, ArrayUtils.copy3(e.throughput.get(alg)));
+				resTimes.put(alg, ArrayUtils.copy3(e.resTimes.get(alg)));
+				util.put(alg, ArrayUtils.copy3(e.util.get(alg)));
+				if (SolverAlgorithm.isApproximate(alg)) {
+					algIterations.put(alg, ArrayUtils.copy(e.algIterations.get(alg)));
+				}
+			}
+			/* END */
 		}
 	}
+	
+	/* EDITED by Abhimanyu Chugh and Georgios Poullaides */
+	public void setAlgorithmType(String algorithm) {
+		ALGORITHM_TYPE = algorithm;
+	}
+	
+	public String getAlgorithmType() {
+		return ALGORITHM_TYPE;
+	}
+	
+	public double getTolerance() {
+		return TOLERANCE;
+	}
+	
+	public void setTolerance (double tol) {
+		TOLERANCE = tol;
+	}
+	
+	public String[] getCompAlgNames() {
+		return compAlgNames;
+	}
+	
+	public String[] getSelectedCompNames() {
+		int index = 0;
+		for (int i = 0; i < compAlg.length; i++) {
+			if (getCompAlg()[i] != 0) {
+				compSelectedNames[index] = getCompAlgNames()[i];
+				index++;
+			}
+		}
+		return compSelectedNames;
+	}
+	
+	public int[] getCompAlg() {
+		return compAlg;
+	}
+	
+	public void setCompAlg(int index, int value) {
+		compAlg[index] = value;
+	}
+	
+	public double[] getAlgTolerance() {
+		return algTols;
+	}
+	
+	public void setAlgTolerance(int index, double value) {
+		algTols[index] = value;
+	}
+	
+	public boolean isCompareAlgs() {
+		return compareAlgs;
+	}
+	
+	public void setCompareAlgs(boolean compareAlgs) {
+		this.compareAlgs = compareAlgs;
+	}
+	
+	public int getCompAlgNum() {
+		compAlgNum = 0;
+		for (int i=0; i < compAlg.length; i++) {
+			if (compAlg[i] != 0) {
+				compAlgNum++;
+			}
+		}
+		return compAlgNum;
+	}
+	
+	public int getAvailbleIndex() {
+		int index = 0;
+		for (int i=0; i<compAlg.length; i++) {
+			if (compAlg[i] != 0) {
+				index = i;
+				break;
+			}
+		}
+		return index;
+	}
+	
+	public boolean compare() {
+		boolean compare = false;
+		for (int i=0; i<compAlg.length; i++) {
+			if (compAlg[i] != 0) {
+				compare = true;
+				break;
+			}
+		}
+		return compare;
+	}
+	/* END */
 
 	/**
 	 * Clears all the results
@@ -241,7 +387,8 @@ public class ExactModel implements ExactConstants {
 	 * sets all the result data for this model.
 	 * @throws IllegalArgumentException if any argument is null or not of the correct size
 	 */
-	public void setResults(double[][][] queueLen, double[][][] throughput, double[][][] resTimes, double[][][] util) {
+	/* EDITED by Abhimanyu Chugh */
+	public void setResults(SolverAlgorithm alg, int[] algIterations, double[][][] queueLen, double[][][] throughput, double[][][] resTimes, double[][][] util) {
 		if (queueLen == null || queueLen.length != stations || queueLen[0].length != classes) {
 			throw new IllegalArgumentException("queueLen must be non null and of size [stations][classes][iterations]");
 		}
@@ -255,24 +402,33 @@ public class ExactModel implements ExactConstants {
 			throw new IllegalArgumentException("util must be non null and of size [stations][classes][iterations]");
 		}
 		// non controlla il numero di classi per tutte le stazioni, ma solo per la prima!!
-		this.queueLen = ArrayUtils.copy3(queueLen);
-		this.throughput = ArrayUtils.copy3(throughput);
-		this.resTimes = ArrayUtils.copy3(resTimes);
-		this.util = ArrayUtils.copy3(util);
-		hasResults = true;
+		this.queueLen.put(alg, ArrayUtils.copy3(queueLen));
+		this.throughput.put(alg, ArrayUtils.copy3(throughput));
+		this.resTimes.put(alg, ArrayUtils.copy3(resTimes));
+		this.util.put(alg, ArrayUtils.copy3(util));
+		if (SolverAlgorithm.isApproximate(alg)) {
+			this.algIterations.put(alg, ArrayUtils.copy(algIterations));
+		}
+		
 		iterations = queueLen[0][0].length;
+		/*TODO: achugh
+		hasResults = true;
 		resultsOK = true;
 		changed = true;
+		*/
 	}
+	/* END */
 
 	/**
 	 * sets all the result data for this model. This is called when only one iteration is performed.
 	 * @throws IllegalArgumentException if any argument is null or not of the correct size
 	 */
-	public void setResults(double[][] queueLen, double[][] throughput, double[][] resTimes, double[][] util) {
+	/* EDITED by Abhimanyu Chugh */
+	public void setResults(SolverAlgorithm alg, int algIterations, double[][] queueLen, double[][] throughput, double[][] resTimes, double[][] util) {
 		resetResults();
-		setResults(queueLen, throughput, resTimes, util, 0);
+		setResults(alg, algIterations, queueLen, throughput, resTimes, util, 0);
 	}
+	/* END */
 
 	/**
 	 * Sets ResultsOK flag
@@ -286,7 +442,8 @@ public class ExactModel implements ExactConstants {
 	 * sets all the result data for this model. This is called on multiple iterations (what-if analysis)
 	 * @throws IllegalArgumentException if any argument is null or not of the correct size
 	 */
-	public void setResults(double[][] queueLen, double[][] throughput, double[][] resTimes, double[][] util, int iteration) {
+	/* EDITED by Abhimanyu Chugh */
+	public void setResults(SolverAlgorithm alg, int algIterations, double[][] queueLen, double[][] throughput, double[][] resTimes, double[][] util, int iteration) {
 		if (queueLen == null || queueLen.length != stations || queueLen[0].length != classes) {
 			throw new IllegalArgumentException("queueLen must be non null and of size [stations][classes]");
 		}
@@ -302,13 +459,70 @@ public class ExactModel implements ExactConstants {
 		if (iteration >= iterations) {
 			throw new IllegalArgumentException("iteration is greater than expected number of iterations");
 		}
-		// Creates an array for single iteration
-		ArrayUtils.copy2to3(queueLen, this.queueLen, iteration);
-		ArrayUtils.copy2to3(throughput, this.throughput, iteration);
-		ArrayUtils.copy2to3(resTimes, this.resTimes, iteration);
-		ArrayUtils.copy2to3(util, this.util, iteration);
+		boolean isApprox = SolverAlgorithm.isApproximate(alg);
+		if (this.queueLen.get(alg) == null) {
+			this.queueLen.put(alg, new double[stations][classes][iterations]);
+			this.throughput.put(alg, new double[stations][classes][iterations]);
+			this.resTimes.put(alg, new double[stations][classes][iterations]);
+			this.util.put(alg, new double[stations][classes][iterations]);
+			if (isApprox) {
+				this.algIterations.put(alg, new int[iterations]);
+			}
+		}
+		
+		ArrayUtils.copy2to3(queueLen, this.queueLen.get(alg), iteration);
+		ArrayUtils.copy2to3(throughput, this.throughput.get(alg), iteration);
+		ArrayUtils.copy2to3(resTimes, this.resTimes.get(alg), iteration);
+		ArrayUtils.copy2to3(util, this.util.get(alg), iteration);
+		if (isApprox) {
+			this.algIterations.get(alg)[iteration] = algIterations;
+		}
+		/* TODO: achugh
 		hasResults = true;
 		resultsOK = true;
+		changed = true;
+		*/
+	}
+	
+	public void setResultsBooleans(boolean value) {
+		hasResults = value;
+		resultsOK = value;
+		changed = value;
+	}
+
+	/**
+	 * Resets a particular algorithm's arrays used to store results
+	 */
+	public void resetAlgResults(SolverAlgorithm alg) {
+		if (queueLen.containsKey(alg)) {
+			queueLen.put(alg, new double[stations][classes][iterations]);
+			throughput.put(alg, new double[stations][classes][iterations]);
+			resTimes.put(alg, new double[stations][classes][iterations]);
+			util.put(alg, new double[stations][classes][iterations]);
+			if (SolverAlgorithm.isApproximate(alg)) {
+				algIterations.put(alg, new int[iterations]);
+			}
+		}
+
+		hasResults = false;
+		changed = true;
+	}
+
+	/**
+	 * Resets all algorithms' arrays used to store results
+	 */
+	public void resetAlgResults() {
+		for (SolverAlgorithm alg : queueLen.keySet()) {
+			queueLen.put(alg, new double[stations][classes][iterations]);
+			throughput.put(alg, new double[stations][classes][iterations]);
+			resTimes.put(alg, new double[stations][classes][iterations]);
+			util.put(alg, new double[stations][classes][iterations]);
+			if (SolverAlgorithm.isApproximate(alg)) {
+				algIterations.put(alg, new int[iterations]);
+			}
+		}
+
+		hasResults = false;
 		changed = true;
 	}
 
@@ -316,14 +530,16 @@ public class ExactModel implements ExactConstants {
 	 * Resets arrays used to store results
 	 */
 	public void resetResults() {
-		queueLen = new double[stations][classes][iterations];
-		throughput = new double[stations][classes][iterations];
-		resTimes = new double[stations][classes][iterations];
-		util = new double[stations][classes][iterations];
-
+		queueLen = new LinkedHashMap<SolverAlgorithm, double[][][]>();
+		throughput = new LinkedHashMap<SolverAlgorithm, double[][][]>();
+		resTimes = new LinkedHashMap<SolverAlgorithm, double[][][]>();
+		util = new LinkedHashMap<SolverAlgorithm, double[][][]>();
+		algIterations = new LinkedHashMap<SolverAlgorithm, int[]>();
+		
 		hasResults = false;
 		changed = true;
 	}
+	/* END */
 
 	/**
 	 * Initialize the object with defaults:
@@ -762,33 +978,92 @@ public class ExactModel implements ExactConstants {
 		return resize(stations, classes, false);
 	}
 
+	/* EDITED by Abhimanyu Chugh */
+	/**
+	 * @return algorithm iterations
+	 */
+	public Map<SolverAlgorithm, int[]> getAlgIterations() {
+		return algIterations;
+	}
+
+	/**
+	 * @return algorithm iterations for the given algorithm
+	 */
+	public int[] getAlgIterations(SolverAlgorithm alg) {
+		if (alg != null) {
+			return algIterations.get(alg);
+		}
+		return null;
+	}
+
 	/**
 	 * @return queue lengths
 	 */
-	public double[][][] getQueueLen() {
+	public Map<SolverAlgorithm, double[][][]> getQueueLen() {
 		return queueLen;
+	}
+
+	/**
+	 * @return queue lengths for the given algorithm
+	 */
+	public double[][][] getQueueLen(SolverAlgorithm alg) {
+		if (alg != null) {
+			return queueLen.get(alg);
+		}
+		return null;
 	}
 
 	/**
 	 * @return residence times
 	 */
-	public double[][][] getResTimes() {
+	public Map<SolverAlgorithm, double[][][]> getResTimes() {
 		return resTimes;
+	}
+
+	/**
+	 * @return residence times for the given algorithm
+	 */
+	public double[][][] getResTimes(SolverAlgorithm alg) {
+		if (alg != null) {
+			return resTimes.get(alg);
+		}
+		return null;
 	}
 
 	/**
 	* @return throughputs
 	*/
-	public double[][][] getThroughput() {
+	public Map<SolverAlgorithm, double[][][]> getThroughput() {
 		return throughput;
+	}
+
+	/**
+	 * @return throughputs for the given algorithm
+	 */
+	public double[][][] getThroughput(SolverAlgorithm alg) {
+		if (alg != null) {
+			return throughput.get(alg);
+		}
+		return null;
 	}
 
 	/**
 	 * @return utilizations
 	 */
-	public double[][][] getUtilization() {
+	public Map<SolverAlgorithm, double[][][]> getUtilization() {
 		return util;
 	}
+
+	/**
+	 * @return utilizations for the given algorithm
+	 */
+	public double[][][] getUtilization(SolverAlgorithm alg) {
+		if (alg != null) {
+			return util.get(alg);
+		}
+		return null;
+	}
+	/* END */
 
 	/**
 	 * Removes all LD stations, converting them into LI stations
@@ -909,9 +1184,18 @@ public class ExactModel implements ExactConstants {
 				.append("classData=").append(ArrayUtils.toString(classData)).append("\n").append("visits=").append(ArrayUtils.toString2(visits))
 				.append("\n").append("serviceTimes=").append(ArrayUtils.toString3(serviceTimes)).append("\n");
 		if (hasResults) {
-			s.append("number of customers=").append(ArrayUtils.toString3(queueLen)).append("\n").append("throughput=").append(
-					ArrayUtils.toString3(throughput)).append("\n").append("resTimes=").append(ArrayUtils.toString3(resTimes)).append("\n").append(
-					"utilization=").append(ArrayUtils.toString3(util)).append("\n");
+			/* EDITED by Abhimanyu Chugh */
+			for(SolverAlgorithm alg : queueLen.keySet()) {
+				double[][][] queueLens = queueLen.get(alg);
+				double[][][] throughputs = throughput.get(alg);
+				double[][][] resTime = resTimes.get(alg);
+				double[][][] utils = util.get(alg);
+				
+				s.append("algorithm=").append(alg).append("\n").append("number of customers=").append(ArrayUtils.toString3(queueLens))
+					.append("\n").append("throughput=").append(ArrayUtils.toString3(throughputs)).append("\n").append("resTimes=")
+					.append(ArrayUtils.toString3(resTime)).append("\n").append("utilization=").append(ArrayUtils.toString3(utils)).append("\n");
+			}
+			/* END */
 		}
 
 		return s.toString();
@@ -1052,6 +1336,33 @@ public class ExactModel implements ExactConstants {
 			stationsElement.appendChild(makeStationElement(root, i));
 		}
 
+		/* EDITED by Abhimanyu Chugh */
+		/* algorithm parameters */
+		Element algParamsElement = root.createElement("algParams");
+		modelElement.appendChild(algParamsElement);
+		
+		/* algorithm combo box */
+		Element algType_element = root.createElement("algType");
+		algParamsElement.appendChild(algType_element);
+		algType_element.setAttribute("name", ALGORITHM_TYPE);
+		algType_element.setAttribute("tolerance", Double.toString(TOLERANCE));
+		
+		/* compare algorithms box */
+		Element compareAlgs_element = root.createElement("compareAlgs");
+		compareAlgs_element.setAttribute("value", Boolean.toString(compareAlgs));
+		algParamsElement.appendChild(compareAlgs_element);
+		if (compareAlgs) {
+			for (int i = 0; i < compAlg.length; i++) {
+				Element alg_element = root.createElement("whatIfAlg");
+				compareAlgs_element.appendChild(alg_element);
+				alg_element.setAttribute("index", Integer.toString(i));
+				alg_element.setAttribute("value", Integer.toString(compAlg[i]));
+				alg_element.setAttribute("name", compAlgNames[i]);
+				alg_element.setAttribute("tolerance", Double.toString(algTols[i]));
+			}
+		}
+		/* END */
+		
 		/* What-if Analysis - Bertoli Marco */
 		if (isWhatIf()) {
 			Element whatIf = root.createElement("whatIf");
@@ -1226,34 +1537,47 @@ public class ExactModel implements ExactConstants {
 				result_element.setAttribute("iteration", Integer.toString(k));
 				result_element.setAttribute("iterationValue", Double.toString(whatIfValues[k]));
 			}
-			for (int i = 0; i < stations; i++) {
-				Element stationresults_element = (Element) result_element.appendChild(root.createElement("stationresults"));
-				stationresults_element.setAttribute("station", this.stationNames[i]);
-				for (int j = 0; j < classes; j++) {
-					Element classesresults_element = (Element) stationresults_element.appendChild(root.createElement("classresults"));
-					classesresults_element.setAttribute("customerclass", classNames[j]);
-
-					Element Q_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
-					Q_element.setAttribute("measureType", "Number of Customers");
-					Q_element.setAttribute("successful", "true");
-					Q_element.setAttribute("meanValue", Double.toString(this.queueLen[i][j][k]));
-
-					Element X_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
-					X_element.setAttribute("measureType", "Throughput");
-					X_element.setAttribute("successful", "true");
-					X_element.setAttribute("meanValue", Double.toString(this.throughput[i][j][k]));
-
-					Element R_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
-					R_element.setAttribute("measureType", "Residence time");
-					R_element.setAttribute("successful", "true");
-					R_element.setAttribute("meanValue", Double.toString(this.resTimes[i][j][k]));
-
-					Element U_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
-					U_element.setAttribute("measureType", "Utilization");
-					U_element.setAttribute("successful", "true");
-					U_element.setAttribute("meanValue", Double.toString(this.util[i][j][k]));
+			/* EDITED by Abhimanyu Chugh */
+			result_element.setAttribute("algCount", Integer.toString(queueLen.size()));
+			
+			for (SolverAlgorithm alg : queueLen.keySet()) {
+				Element algorithm_element = (Element) result_element.appendChild(root.createElement("algorithm"));
+				algorithm_element.setAttribute("name", alg.toString());
+				if (SolverAlgorithm.isApproximate(alg)) {
+					algorithm_element.setAttribute("iterations", Integer.toString(algIterations.get(alg)[k]));
+				}
+				
+				for (int i = 0; i < stations; i++) {
+					Element stationresults_element = (Element) algorithm_element.appendChild(root.createElement("stationresults"));
+					stationresults_element.setAttribute("station", this.stationNames[i]);
+					for (int j = 0; j < classes; j++) {
+						Element classesresults_element = (Element) stationresults_element.appendChild(root.createElement("classresults"));
+						classesresults_element.setAttribute("customerclass", classNames[j]);
+							
+						Element Q_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
+						Q_element.setAttribute("measureType", "Number of Customers");
+						Q_element.setAttribute("successful", "true");
+						Q_element.setAttribute("meanValue", Double.toString(this.queueLen.get(alg)[i][j][k]));
+	
+						Element X_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
+						X_element.setAttribute("measureType", "Throughput");
+						X_element.setAttribute("successful", "true");
+						X_element.setAttribute("meanValue", Double.toString(this.throughput.get(alg)[i][j][k]));
+	
+						Element R_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
+						R_element.setAttribute("measureType", "Residence time");
+						R_element.setAttribute("successful", "true");
+						R_element.setAttribute("meanValue", Double.toString(this.resTimes.get(alg)[i][j][k]));
+	
+						Element U_element = (Element) classesresults_element.appendChild(root.createElement("measure"));
+						U_element.setAttribute("measureType", "Utilization");
+						U_element.setAttribute("successful", "true");
+						U_element.setAttribute("meanValue", Double.toString(this.util.get(alg)[i][j][k]));
+					}
 				}
 			}
+			/* END */
+			
 			parentElement.appendChild(result_element);
 		}
 	}
@@ -1316,6 +1640,29 @@ public class ExactModel implements ExactConstants {
 		}
 
 		//end NEW
+		
+		/* EDITED by Abhimanyu Chugh */
+		/* Algorithm parameters */
+		NodeList algParams = doc.getElementsByTagName("algParams");
+		if (algParams.getLength() > 0) {
+			Element algParam = (Element) algParams.item(0);
+			
+			Element algType = (Element) algParam.getElementsByTagName("algType").item(0);
+			setAlgorithmType(algType.getAttribute("name"));
+			setTolerance(Double.parseDouble(algType.getAttribute("tolerance")));
+			
+			Element compareAlgs = (Element) algParam.getElementsByTagName("compareAlgs").item(0);
+			this.compareAlgs = Boolean.parseBoolean(compareAlgs.getAttribute("value"));
+			NodeList whatIfAlgs = compareAlgs.getElementsByTagName("whatIfAlg");
+			for (int i = 0; i < whatIfAlgs.getLength(); i++) {
+				Element alg = (Element) whatIfAlgs.item(i);
+				int index = Integer.parseInt(alg.getAttribute("index"));
+				compAlg[index] = Integer.parseInt(alg.getAttribute("value"));
+				//compAlgNames[index] = alg.getAttribute("name");
+				algTols[index] = Double.parseDouble(alg.getAttribute("tolerance"));
+			}
+		}
+		/* END */
 
 		/* What-if Analysis - Bertoli Marco */
 		NodeList whatIfs = doc.getElementsByTagName("whatIf");
@@ -1362,7 +1709,7 @@ public class ExactModel implements ExactConstants {
 			hasResults = true;
 
 		} else {
-			this.resetResults();
+			this.resetResults(); 
 		}
 
 		// compute flags
@@ -1545,15 +1892,45 @@ public class ExactModel implements ExactConstants {
 	 */
 	public boolean loadSolution(NodeList sol) {
 		resultsOK = true;
-		resetResults();
+		/* EDITED by Abhimanyu Chugh */
+		if (queueLen == null) {
+			resetResults();
+		}
+		/* END */
 		for (int i = 0; i < sol.getLength(); i++) {
 			Element solution = (Element) sol.item(i);
 			String status = solution.getAttribute("ok");
 			resultsOK = resultsOK && (status.equals("true"));
-			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Number of Customers"), queueLen, i);
-			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Throughput"), throughput, i);
-			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Residence time"), resTimes, i);
-			ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Utilization"), util, i);
+			/* EDITED by Abhimanyu Chugh */
+			int algCount = Integer.parseInt(solution.getAttribute("algCount"));
+			for (int a = 0; a < algCount; a++) {
+				Element a_alg = (Element) solution.getElementsByTagName("algorithm").item(a);
+				SolverAlgorithm alg = SolverAlgorithm.find(a_alg.getAttribute("name"));
+				
+				if (alg == null) {
+					continue;
+				}
+				boolean isApprox = SolverAlgorithm.isApproximate(alg);
+				if (i == 0) {
+					queueLen.put(alg, new double[stations][classes][iterations]);
+					throughput.put(alg, new double[stations][classes][iterations]);
+					resTimes.put(alg, new double[stations][classes][iterations]);
+					util.put(alg, new double[stations][classes][iterations]);
+					if (isApprox) {
+						algIterations.put(alg, new int[iterations]);
+					}
+				}
+				
+				ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Number of Customers"), queueLen.get(alg), i);
+				ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Throughput"), throughput.get(alg), i);
+				ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Residence time"), resTimes.get(alg), i);
+				ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Utilization"), util.get(alg), i);
+				if (isApprox) {
+					int algIters = Integer.parseInt(a_alg.getAttribute("iterations"));
+					algIterations.get(alg)[i] = algIters;
+				}
+			}
+			/* END */
 		}
 		return true;
 	}
@@ -1612,12 +1989,14 @@ public class ExactModel implements ExactConstants {
 
 	//methods for aggregate results retrieval
 
+	/* EDITED by Abhimanyu Chugh */
 	/**Returns per-class aggregate for throughput*/
-	public double[][] getPerClassX() {
+	public double[][] getPerClassX(SolverAlgorithm alg) {
 		if (throughput == null) {
 			return null;
 		} else {
 			double[][] retVal = new double[classes][iterations];
+			double[][][] throughput = this.throughput.get(alg);
 			// Scans for every iteration (what if analysis)
 			for (int k = 0; k < iterations; k++) {
 				//scan columns to get one value per column
@@ -1645,11 +2024,12 @@ public class ExactModel implements ExactConstants {
 	}
 
 	/**Returns per-station aggregate for throughput*/
-	public double[][] getPerStationX() {
+	public double[][] getPerStationX(SolverAlgorithm alg) {
 		if (throughput == null) {
 			return null;
 		} else {
 			double[][] retVal = new double[stations][iterations];
+			double[][][] throughput = this.throughput.get(alg);
 			for (int i = 0; i < retVal.length; i++) {
 				// Scans for every iteration (what if analysis)
 				for (int k = 0; k < iterations; k++) {
@@ -1664,9 +2044,9 @@ public class ExactModel implements ExactConstants {
 	}
 
 	/**Returns global aggregate for throughput*/
-	public double[] getGlobalX() {
+	public double[] getGlobalX(SolverAlgorithm alg) {
 		double[] retVal = new double[iterations];
-		double[][] aggs = getPerClassX();
+		double[][] aggs = getPerClassX(alg);
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
 			if (throughput == null) {
@@ -1685,11 +2065,12 @@ public class ExactModel implements ExactConstants {
 	}
 
 	/**Returns per-class aggregate for queue lenghts*/
-	public double[][] getPerClassQ() {
+	public double[][] getPerClassQ(SolverAlgorithm alg) {
 		if (queueLen == null) {
 			return null;
 		}
 		double[][] retVal = new double[classes][iterations];
+		double[][][] queueLen = this.queueLen.get(alg);
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
 			//first scan columns
@@ -1705,11 +2086,12 @@ public class ExactModel implements ExactConstants {
 	}
 
 	/**Returns per-station aggregate for queue lenghts*/
-	public double[][] getPerStationQ() {
+	public double[][] getPerStationQ(SolverAlgorithm alg) {
 		if (queueLen == null) {
 			return null;
 		}
 		double[][] retVal = new double[stations][iterations];
+		double[][][] queueLen = this.queueLen.get(alg);
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
 			for (int i = 0; i < queueLen.length; i++) {
@@ -1723,12 +2105,12 @@ public class ExactModel implements ExactConstants {
 	}
 
 	/**Returns global aggregate for queue lenghts*/
-	public double[] getGlobalQ() {
+	public double[] getGlobalQ(SolverAlgorithm alg) {
 		if (queueLen == null) {
 			return null;
 		}
 		double[] retVal = new double[iterations];
-		double[][] aggs = getPerClassQ();
+		double[][] aggs = getPerClassQ(alg);
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
 			if (aggs != null) {
@@ -1743,11 +2125,12 @@ public class ExactModel implements ExactConstants {
 	}
 
 	/**Returns per-class aggregate for residence times*/
-	public double[][] getPerClassR() {
+	public double[][] getPerClassR(SolverAlgorithm alg) {
 		if (resTimes == null) {
 			return null;
 		}
 		double[][] retVal = new double[classes][iterations];
+		double[][][] resTimes = this.resTimes.get(alg);
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
 			for (int i = 0; i < retVal.length; i++) {
@@ -1761,12 +2144,13 @@ public class ExactModel implements ExactConstants {
 	}
 
 	/**Returns per-station aggregate for residence times*/
-	public double[][] getPerStationR() {
+	public double[][] getPerStationR(SolverAlgorithm alg) {
 		if (resTimes == null) {
 			return null;
 		}
 		double[][] retVal = new double[stations][iterations];
-		double[][] xClassAggs = getPerClassX();
+		double[][] xClassAggs = getPerClassX(alg);
+		double[][][] resTimes = this.resTimes.get(alg);
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
 			for (int i = 0; i < retVal.length; i++) {
@@ -1791,13 +2175,13 @@ public class ExactModel implements ExactConstants {
 	}
 
 	/**Returns system response time*/
-	public double[] getGlobalR() {
+	public double[] getGlobalR(SolverAlgorithm alg) {
 		if (resTimes == null) {
 			return null;
 		}
 		double[] retVal = new double[iterations];
-		double[][] xClassAggs = getPerClassX();
-		double[][] aggs = getPerClassR();
+		double[][] xClassAggs = getPerClassX(alg);
+		double[][] aggs = getPerClassR(alg);
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
 			double dividend = 0;
@@ -1819,7 +2203,7 @@ public class ExactModel implements ExactConstants {
 	}
 
 	/**Returns per-class aggregate for utilization*/
-	public double[][] getPerClassU() {
+	public double[][] getPerClassU(SolverAlgorithm alg) {
 		if (util == null) {
 			return null;
 		} else {
@@ -1841,11 +2225,12 @@ public class ExactModel implements ExactConstants {
 		}
 	}
 
-	public double[][] getPerStationU() {
+	public double[][] getPerStationU(SolverAlgorithm alg) {
 		if (util == null) {
 			return null;
 		}
 		double[][] retVal = new double[stations][iterations];
+		double[][][] util = this.util.get(alg);
 		// Scans for every iteration (what if analysis)
 		for (int k = 0; k < iterations; k++) {
 			for (int i = 0; i < retVal.length; i++) {
@@ -1858,7 +2243,7 @@ public class ExactModel implements ExactConstants {
 		return retVal;
 	}
 
-	public double[] getGlobalU() {
+	public double[] getGlobalU(SolverAlgorithm alg) {
 		if (util == null) {
 			return null;
 		} else {
@@ -1880,7 +2265,7 @@ public class ExactModel implements ExactConstants {
 	//System Power
 	//Unlike other performance indices we don't have station level
 	//aggregate and individual 
-	public double[][] getPerClassSP() {
+	public double[][] getPerClassSP(SolverAlgorithm alg) {
 		if (resTimes == null) {
 			return null;
 		}
@@ -1889,7 +2274,7 @@ public class ExactModel implements ExactConstants {
 		for (int k = 0; k < iterations; k++) {
 			for (int i = 0; i < retVal.length; i++) {
 				try {
-					retVal[i][k] = getPerClassX()[i][k] / getPerClassR()[i][k];
+					retVal[i][k] = getPerClassX(alg)[i][k] / getPerClassR(alg)[i][k];
 				} catch (ArithmeticException ae) {
 					retVal[i][k] = 0;
 				}
@@ -1898,20 +2283,21 @@ public class ExactModel implements ExactConstants {
 		return retVal;
 	}
 
-	public double[] getGlobalSP() {
+	public double[] getGlobalSP(SolverAlgorithm alg) {
 		if (resTimes == null) {
 			return null;
 		}
 		double[] retVal = new double[iterations];
 		for (int k = 0; k < iterations; k++) {
 			try {
-				retVal[k] = getGlobalX()[k] / getGlobalR()[k];
+				retVal[k] = getGlobalX(alg)[k] / getGlobalR(alg)[k];
 			} catch (ArithmeticException e) {
 				retVal[k] = 0;
 			}
 		}
 		return retVal;
 	}
+	/* END */
 
 	//Added by ASHANKA STOP
 	/**

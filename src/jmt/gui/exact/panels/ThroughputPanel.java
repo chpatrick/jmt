@@ -18,7 +18,10 @@
 
 package jmt.gui.exact.panels;
 
+import jmt.analytical.SolverAlgorithm;
+import jmt.framework.gui.help.HoverHelp;
 import jmt.gui.exact.ExactConstants;
+import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.ExactWizard;
 import jmt.gui.exact.table.ExactTableModel;
 
@@ -43,11 +46,13 @@ public final class ThroughputPanel extends SolutionPanel {
 	private double[][] classAggr, stationAggr;
 	private double[] globalAggr;
 
-	public ThroughputPanel(ExactWizard ew) {
-		super(ew);
+	/* EDITED by Abhimanyu Chugh */
+	public ThroughputPanel(ExactWizard ew, SolverAlgorithm alg) {
+		super(ew, alg);
 		helpText = "<html>Throughput</html>";
 		name = "Throughput";
 	}
+	/* END */
 
 	/**
 	 * gets status from data object
@@ -55,10 +60,12 @@ public final class ThroughputPanel extends SolutionPanel {
 	@Override
 	protected void sync() {
 		super.sync();
-		throughput = data.getThroughput();
-		classAggr = data.getPerClassX();
-		stationAggr = data.getPerStationX();
-		globalAggr = data.getGlobalX();
+		/* EDITED by Abhimanyu Chugh */
+		throughput = data.getThroughput(algorithm);
+		classAggr = data.getPerClassX(algorithm);
+		stationAggr = data.getPerStationX(algorithm);
+		globalAggr = data.getGlobalX(algorithm);
+		/* END */
 	}
 
 	@Override

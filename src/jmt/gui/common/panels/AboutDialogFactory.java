@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2012, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -27,6 +27,8 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -49,36 +51,56 @@ import jmt.gui.common.startScreen.GraphStartScreen;
  *         Time: 16.42.10
  */
 public class AboutDialogFactory {
-		/**
+	/**
+	 * Authors of each application
+	 */
+	private static String[] JMVA = { "Bertoli Marco", "Conti Andrea", "Dall'Orso Federico", "Omini Stefano", "Granata Federico", "Abhimanyu Chugh" };
+
+	private static String[] JSIM = { "Bertoli Marco", "Granata Federico", "Omini Stefano", "Radaelli Francesco", "Dall'Orso Federico" };
+
+	private static String[] JMODEL = { "Bertoli Marco", "D'Aquino Francesco", "Granata Federico", "Omini Stefano", "Radaelli Francesco" };
+
+	private static String[] JABA = { "Bertoli Marco", "Zanzottera Andrea", "Gimondi Carlo" };
+
+	private static String[] JMCH = { "Canakoglu Arif", "Di Mauro Ernesto" };
+
+	private static String[] JWAT = { "Brambilla Davide", "Fumagalli Claudio" };
+
+	/**
 	 * Variables
 	 */
-	protected static final int BORDERSIZE = 20;
-	protected static final String TITLE_START = "<html><font face=\"Verdana\" size=+4><b>";
-	protected static final String TITLE_END = "</b></font></html>";
+	private static final long AUTOCLOSE_TIMEOUT = 2000;
+	private static final int BORDERSIZE = 20;
+	private static final String TITLE_START = "<html><font face=\"Verdana\" size=+4><b>";
+	private static final String TITLE_END = "</b></font></html>";
 
-	protected static final String SEC_START = "<font size=+2><b>";
-	protected static final String SEC_END = "</b></font>";
-
-	protected static final String LEGAL = "<html><font size=\"2\">" + "  This program is free software; you can redistribute it and/or modify "
+	private static final String LEGAL = "<html><font size=\"2\">" + "  This program is free software; you can redistribute it and/or modify "
 			+ "  it under the terms of the GNU General Public License as published by "
 			+ "  the Free Software Foundation; either version 2 of the License, or " + "  (at your option) any later version." + "<br><br>"
 			+ "  This program is distributed in the hope that it will be useful, "
 			+ "  but WITHOUT ANY WARRANTY; without even the implied warranty of "
 			+ "  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the " + "  GNU General Public License for more details."
 			+ "</font></html>";
-	protected static final String WEBSITE = "<b>Home Page:</b> <a href=\"http://jmt.sourceforge.net\">http://jmt.sourceforge.net</a>";
+	private static final String WEBSITE = "<b>Home Page:</b> <a href=\"http://jmt.sourceforge.net\">http://jmt.sourceforge.net</a>";
 
-	protected static boolean initialized = false;
-	protected static JPanel panel;
-	protected static JLabel title, legal;
-	protected static HtmlPanel textArea;
-	protected static String text; // text to be displayed in textArea
+	private static JPanel panel;
+	private static JLabel title, legal;
+	private static HtmlPanel textArea;
+	private static String text; // text to be displayed in textArea
 
 	/**
 	 * Initialize data structures and window layout.
 	 */
 	static {
-			// Initialize dialog layout
+		// Sorts arrays alphabetically
+		Arrays.sort(JMVA);
+		Arrays.sort(JSIM);
+		Arrays.sort(JMODEL);
+		Arrays.sort(JABA);
+		Arrays.sort(JMCH);
+		Arrays.sort(JWAT);
+
+		// Initialize dialog layout
 		panel = new JPanel(new BorderLayout(BORDERSIZE / 2, BORDERSIZE / 2));
 		panel.setBorder(BorderFactory.createEmptyBorder(BORDERSIZE, BORDERSIZE, BORDERSIZE, BORDERSIZE));
 		// Adds polimi image
@@ -120,9 +142,10 @@ public class AboutDialogFactory {
 	 * @param owner owner of the dialog. If it's null or invalid, created dialog will not
 	 * be modal
 	 * @param title title of dialog to be created
+	 * @param autoclose to automatically close the dialog after a timeout
 	 * @return created dialog
 	 */
-	protected static JMTDialog createDialog(Window owner, String title) {
+	protected static JMTDialog createDialog(Window owner, String title, boolean autoclose) {
 		final JMTDialog dialog;
 		if (owner == null) {
 			dialog = new JMTDialog();
@@ -138,7 +161,7 @@ public class AboutDialogFactory {
 		dialog.getContentPane().add(panel, BorderLayout.CENTER);
 
 		// Sets text to be displayed
-		textArea.setText("<br><br><html><p><font size=\"-1\">" + WEBSITE + "<br><br>" );
+		textArea.setText("<html><p><font size=\"-1\">" + WEBSITE + "<br><br>" + text + "</font></p></html>");
 
 		// Adds exit button
 		JButton exit = new JButton();
@@ -157,6 +180,24 @@ public class AboutDialogFactory {
 		bottom.add(exit);
 		dialog.getContentPane().add(bottom, BorderLayout.SOUTH);
 		dialog.centerWindow(450, 500);
+		
+		// Handles autoclose
+		if (autoclose) {
+			ExecutorService es = Executors.newSingleThreadExecutor();
+			es.execute(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(AUTOCLOSE_TIMEOUT);
+						dialog.close();
+					} catch (InterruptedException ex) {
+						// Nothing to do
+					}
+				}
+			});
+			es.shutdown();
+		}
+		
 		return dialog;
 	}
 
@@ -175,11 +216,13 @@ public class AboutDialogFactory {
 	/**
 	 * Shows JMVA about window
 	 * @param owner owner of this window (if null, window will not be modal)
+	 * @param autoclose to close automatically the window after a timeout
 	 */
-	public static void showJMVA(Window owner) {
+	public static void showJMVA(Window owner, boolean autoclose) {
 		title.setText(TITLE_START + "JMVA" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JMVAICON, new Dimension(50, 50)));
-		createDialog(owner, "About JMVA").show();
+		addNames(JMVA);
+		createDialog(owner, "About JMVA", autoclose).setVisible(true);
 	}
 
 	/**
@@ -189,7 +232,8 @@ public class AboutDialogFactory {
 	public static void showJSIM(Window owner) {
 		title.setText(TITLE_START + "JSIM<em>wiz</em>" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JSIMICON, new Dimension(50, 50)));
-	    createDialog(owner, "About JSIMwiz").show();
+		addNames(JSIM);
+		createDialog(owner, "About JSIMwiz", false).setVisible(true);
 	}
 
 	/**
@@ -199,7 +243,8 @@ public class AboutDialogFactory {
 	public static void showJMODEL(Window owner) {
 		title.setText(TITLE_START + "JSIM<em>graph</em>" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JMODELICON, new Dimension(50, 50)));
-		createDialog(owner, "About JSIMgraph").show();
+		addNames(JMODEL);
+		createDialog(owner, "About JSIMgraph", false).setVisible(true);
 	}
 
 	/**
@@ -209,7 +254,8 @@ public class AboutDialogFactory {
 	public static void showJABA(Window owner) {
 		title.setText(TITLE_START + "JABA" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JABAICON, new Dimension(50, 50)));
-		createDialog(owner, "About JABA").show();
+		addNames(JABA);
+		createDialog(owner, "About JABA", false).setVisible(true);
 	}
 
 	/**
@@ -219,7 +265,8 @@ public class AboutDialogFactory {
 	public static void showJMCH(Window owner) {
 		title.setText(TITLE_START + "JMCH" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JMCHICON, new Dimension(50, 50)));
-		createDialog(owner, "About JMCH").show();
+		addNames(JMCH);
+		createDialog(owner, "About JMCH", false).setVisible(true);
 	}
 
 	/**
@@ -229,6 +276,7 @@ public class AboutDialogFactory {
 	public static void showJWAT(Window owner) {
 		title.setText(TITLE_START + "JWAT" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JWATICON, new Dimension(50, 50)));
-		createDialog(owner, "About JWAT").show();
+		addNames(JWAT);
+		createDialog(owner, "About JWAT", false).setVisible(true);
 	}
 }

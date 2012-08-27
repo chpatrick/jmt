@@ -20,6 +20,8 @@ package jmt.gui.common.definitions;
 
 import javax.swing.JFrame;
 
+import jmt.gui.jmodel.controller.SimulationStateChecker;
+
 /**
  * <p>Title: Gui Interface</p>
  * <p>Description: This interface provides a pool of methods common to <code>Mediator</code>
@@ -76,6 +78,8 @@ public interface GuiInterface {
 	 * Shows the class panel
 	 */
 	public void showClassPanel();
+
+	public void setAnimationHolder(Thread thread);
 
 	/**
 	 * Sets the Parametric Analysis Results Window

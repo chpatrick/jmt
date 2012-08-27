@@ -28,6 +28,7 @@ import javax.swing.table.TableCellRenderer;
 import jmt.framework.gui.table.editors.ButtonCellEditor;
 import jmt.framework.gui.table.editors.ColorCellEditor;
 import jmt.gui.common.definitions.ClassDefinition;
+import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.editors.ImagedComboBoxCellEditorFactory;
 import jmt.gui.jmodel.JMODELConstants;
 import jmt.gui.jmodel.definitions.JmodelClassDefinition;

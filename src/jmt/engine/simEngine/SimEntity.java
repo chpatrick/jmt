@@ -33,9 +33,9 @@ package jmt.engine.simEngine;
 
 public abstract class SimEntity {
 	// Private data members
-	private String name; // The entities name
+	public String name; // The entities name
 	private int me; // Unique id
-	private SimEvent evbuf; // For incoming events
+	public SimEvent evbuf; // For incoming events
 	protected int state; // Our current state from list below
 	private SimPredicate waitingPred; //the predicate that the SimWaitFor is waiting
 

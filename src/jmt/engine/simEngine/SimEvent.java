@@ -11,7 +11,7 @@ package jmt.engine.simEngine;
 public class SimEvent implements Cloneable {
 	// Private data members
 	private int etype; // internal event type
-	private double time; // simulation time in which event should occur
+	public double time; // simulation time in which event should occur
 	private int entSrc; // id of entity which scheduled event
 	private int entDst; // id of entity which event will be sent to
 	private int tag; // the user defined type of event

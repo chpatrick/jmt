@@ -30,6 +30,8 @@ public class WaitingRequest extends JobInfo {
 
 	private byte Section;
 
+	private JobInfo jobData;
+
 	/**
 	 * Creates a new WaitingRequest object.
 	 * @param Node Reference to the node which sent the job.
@@ -40,6 +42,15 @@ public class WaitingRequest extends JobInfo {
 		super(Job);
 		this.Node = Node;
 		this.Section = Section;
+	}
+
+	public WaitingRequest(NetNode node, byte section, Job job,
+			JobInfo jobData) {
+		super(job);
+		this.Node = node;
+		this.Section = section;
+		this.jobData = jobData;
+		
 	}
 
 	/** Gets referenced node.
@@ -55,4 +66,11 @@ public class WaitingRequest extends JobInfo {
 	public byte getSection() {
 		return Section;
 	}
+	
+	/** Gets referenced job data.
+	 * @return jobData property value.
+	 */
+	public JobInfo getJobData() {
+		return jobData;
+	}	
 }

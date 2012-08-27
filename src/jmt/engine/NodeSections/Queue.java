@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2009, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2012, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -387,6 +387,11 @@ public class Queue extends InputSection {
 	 */
 	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
+//		if(message.getEvent() == 4 || message.getEvent() == 8) {
+//			String debug = "I am the queue of " + this.getOwnerNode().name + "\n" +
+//					"\t I am processing  " + message.getEvent() + ":" + message.getJob().getId();
+//			System.err.println(debug);
+//		}
 		Job job;
 		switch (message.getEvent()) {
 
@@ -421,9 +426,15 @@ public class Queue extends InputSection {
 					WaitingRequest wr;
 					wr = (WaitingRequest) waitingRequests.removeFirst();
 
+					//REFER TO NOTE_BUG120526 BELOW, THE FOLLOWING IF
+					//SHOULD BE DELETED, WE SHOULD ALWAYS SEND AN ACK.
+	
 					// If the source is not the owner node sends ack if blocking is enabled. Otherwise 
 					// ack was already sent.
 					if (!isMyOwnerNode(wr.getNode()) && block[wr.getJob().getJobClass().getId()]) {
+						JobInfo info = new JobInfo(wr.getJob());
+						getOwnerNode().getJobInfoList().add(info);
+
 						send(NetEvent.EVENT_ACK, wr.getJob(), 0.0, wr.getSection(), wr.getNode());
 					}
 
@@ -497,7 +508,7 @@ public class Queue extends InputSection {
 					}
 				}
 				//----END REDIRECTION BEHAVIOUR-------//
-
+			
 				//
 				//two possible cases:
 				//1 - the queue is a generic queue (redirectionOn == false)
@@ -507,9 +518,10 @@ public class Queue extends InputSection {
 				//
 				//therefore in both cases the behaviour is the same
 				//
-
+				
+				
 				// Check if there is still capacity.
-				// <= size because the arrived job hasn't been inserted in Queue
+				// <= size because the arriving job hasn't been inserted in Queue
 				// job list but has been inserted in NetNode job list !!
 				if (infinite || nodeJobsList.size() <= size) {
 					// Queue is not full. Okay.
@@ -520,6 +532,7 @@ public class Queue extends InputSection {
 					if (coolStart) {
 						// No jobs in queue: Refresh jobsList and sends job (don't use put strategy, because queue is empty)
 						queueJobInfoList.add(new JobInfo(job));
+
 						//forward without any delay
 						forward(queueJobInfoList.removeFirst().getJob());
 
@@ -534,16 +547,21 @@ public class Queue extends InputSection {
 
 					// if the job has been sent by the owner node of this queue section
 					if (isMyOwnerNode(message.getSource())) {
-						send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
-
 						waitingRequests.add(new WaitingRequest(message.getSource(), message.getSourceSection(), job));
+						send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
 					}
 					// otherwise if job has been sent by another node
 					else if (!drop[job.getJobClass().getId()]) {
+						JobInfoList nodeList = getOwnerNode().getJobInfoList();
+						JobInfo jobData = nodeList.lookFor(job);
+
+						nodeList.removeAfterRedirect(jobData);
+
 						// if drop is true reject the job, else add the job to waitingRequests
 						waitingRequests.add(new WaitingRequest(message.getSource(), message.getSourceSection(), job));
 						//if blocking is disabled, sends ack otherwise router of the previous node remains busy
 						if (!block[job.getJobClass().getId()]) {
+							//NOTE_BUG120526 HERE I SHOUDL SEND AN UNBLOC SIGNAL.
 							send(NetEvent.EVENT_ACK, job, 0.0, message.getSourceSection(), message.getSource());
 						}
 					} else {

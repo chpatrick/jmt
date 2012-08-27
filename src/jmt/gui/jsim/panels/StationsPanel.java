@@ -288,20 +288,6 @@ public class StationsPanel extends WizardPanel implements CommonConstants {
 	 */
 	@Override
 	public void lostFocus() {
-		Vector classes = classData.getClassKeys();
-		// Perform check only if valids stations are created to be reference station
-		if (data.getStationKeysNoSourceSink().size() > 0) {
-			for (int i = 0; i < classes.size(); i++) {
-				Object classKey = classes.get(i);
-				// If this is a closed class and it has no reference source or a deleted one
-				if (classData.getClassType(classKey) == CLASS_TYPE_CLOSED
-						&& (classData.getClassRefStation(classKey) == null || !data.getStationKeys().contains(classData.getClassRefStation(classKey)))) {
-					// Sets the first station as reference station
-					classData.setClassRefStation(classKey, data.getStationKeysNoSourceSink().get(0));
-				}
-			}
-		}
-
 		// Aborts editing of table
 		TableCellEditor editor = stationTable.getCellEditor();
 		if (editor != null) {

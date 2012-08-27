@@ -26,6 +26,7 @@ import java.util.Vector;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
@@ -49,7 +50,7 @@ public class ClassSwitchSectionPanel extends WizardPanel implements
 	private static final long serialVersionUID = 1L;
 	private static final String DESCRIPTION = HTML_START
 			+ "The value (i, j) is the probability that a job of class i "
-			+ "switches to class j. The values may be either probabilities or number of switches. "
+			+ "switches to class j. The values may be either probabilities or number of visits. "
 			+ "If the sum of each row is greater than one, the values will be normalized "
 			+ "in order to sum to one. The sum less than one will raise a simulation error."
 			+ HTML_END;
@@ -89,6 +90,7 @@ public class ClassSwitchSectionPanel extends WizardPanel implements
 			csTable = new ClassSwitchTable();
 			this.errorRows = new boolean[classData.getClassKeys().size()];
 			this.warningRows = new boolean[classData.getClassKeys().size()];
+			csTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		} else {
 			csTable = new JTable();
 		}
@@ -98,6 +100,7 @@ public class ClassSwitchSectionPanel extends WizardPanel implements
 	protected void initComponents() {
 		removeAll();
 		setLayout(new BorderLayout());
+		
 		WarningScrollTable wST = new WarningScrollTable(csTable, WARNING_CLASS);
 		setBorder(new TitledBorder(new EtchedBorder(), "CS Strategies"));
 		setMinimumSize(new Dimension(180, 100));
@@ -197,17 +200,21 @@ public class ClassSwitchSectionPanel extends WizardPanel implements
 		 * 
 		 */
 		private static final long serialVersionUID = 1L;
+		private static final int DEFAULT_COLUMN_WIDTH = 110;
 
 		public ClassSwitchTable() {
 			super(new ClassSwitchTableModel());
-
-			setColumnSelectionAllowed(false);
+			
+ 			setColumnSelectionAllowed(false);
 			setRowSelectionAllowed(true);
 			tableHeader.setToolTipText(null);
 			rowHeader.setToolTipText(null);
 			rowHeader.setRowHeight(18);
 			setRowHeight(18);
 			this.setDefaultRenderer(Object.class, new ClassSwitchTableRenderer());
+			for(int i = 0; i < getColumnCount(); i++) {
+				getColumnModel().getColumn(i).setPreferredWidth(DEFAULT_COLUMN_WIDTH);
+			}
 			
 		}
 		

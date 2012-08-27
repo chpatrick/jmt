@@ -20,6 +20,7 @@ package jmt.gui.jmodel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -43,8 +44,10 @@ import jmt.framework.gui.wizard.WizardPanel;
  */
 public class DialogFactory {
 	// Dimensions
+	
 	private static final int width = 720;
 	private static final int height = 520;
+	private static final float RESIZE_RATIO = 0.8f;
 
 	// Private variables
 	private JMTDialog dialogFrame;
@@ -62,7 +65,8 @@ public class DialogFactory {
 		// Creates modal dialog
 		dialogFrame = new JMTDialog(mainWindow, true);
 		dialogFrame.centerWindow(width, height);
-		//dialogFrame.setResizable(false);
+		dialogFrame.setResizable(true);
+		dialogFrame.setMinimumSize(new Dimension((int)(width * RESIZE_RATIO), (int) (height* RESIZE_RATIO)));
 		dialogFrame.getContentPane().setLayout(new BorderLayout());
 
 		//Adds button bar

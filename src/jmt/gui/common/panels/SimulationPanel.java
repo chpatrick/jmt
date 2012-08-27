@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2012, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -172,12 +172,12 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 		this.add(Box.createHorizontalStrut(BORDERSIZE), BorderLayout.WEST);
 		this.add(Box.createHorizontalStrut(BORDERSIZE), BorderLayout.EAST);
 		JPanel mainpanel = new JPanel(new BorderLayout());
-		this.add(mainpanel, BorderLayout.CENTER);
+		this.add((mainpanel), BorderLayout.CENTER);
 
 		JPanel upperPanel = new JPanel(new BorderLayout());
 		JLabel descrLabel = new JLabel(SIMULATION_DESCRIPTION);
 		descrLabel.setVerticalAlignment(SwingConstants.NORTH);
-		upperPanel.add(descrLabel, BorderLayout.WEST);
+		upperPanel.add(descrLabel, BorderLayout.NORTH);
 		upperPanel.add(Box.createVerticalStrut(BORDERSIZE / 2), BorderLayout.SOUTH);
 		mainpanel.add(upperPanel, BorderLayout.NORTH);
 
@@ -189,6 +189,7 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 		//tabbedPane.addTab("Parametric analysis options",parametricAnalysisPanel);
 		//mainpanel.add(tabbedPane, BorderLayout.CENTER);
 		mainpanel.add(preloadPanel, BorderLayout.CENTER);
+		upperPanel.add(new JLabel("Initial customer locations:"), BorderLayout.SOUTH);
 
 		// Adds simulation parameters
 		JPanel simPanel = new JPanel(new SpringLayout());
@@ -225,9 +226,11 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 
 		// Maximum number of samples
 		label = new JLabel("Maximum number of samples: ");
+		label.setToolTipText("The term samples stands for observations");
 		simPanel.add(label);
 		maxSamples = new JSpinner(new SpinnerNumberModel(500000, 100000, Integer.MAX_VALUE, 50000));
 		maxSamples.setValue(simd.getMaxSimulationSamples());
+		maxSamples.setToolTipText("The term sample stands for observation.");
 		label.setLabelFor(maxSamples);
 		simPanel.add(maxSamples);
 		// Adds disable statistic checkbox
@@ -264,6 +267,7 @@ public class SimulationPanel extends WizardPanel implements CommonConstants {
 				16, 6, //initX, initY
 				6, 6);//xPad, yPad
 		upperPanel.add(simPanel, BorderLayout.CENTER);
+
 	}
 
 	/**

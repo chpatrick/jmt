@@ -632,6 +632,7 @@ public class LinkedJobInfoList implements JobInfoList {
 			}
 		}
 		if (responseTime != null) {
+			double tmp_time = NetSystem.getTime() - ArriveTime;
 			responseTime.update(NetSystem.getTime() - ArriveTime, 1.0);
 		}
 	}
@@ -846,4 +847,5 @@ public class LinkedJobInfoList implements JobInfoList {
 	public void setServerNumber(int serverNumber) {
 		this.serverNumber = serverNumber;
 	}
+
 }

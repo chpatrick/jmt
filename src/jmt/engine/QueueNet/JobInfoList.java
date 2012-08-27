@@ -333,4 +333,5 @@ public interface JobInfoList {
 	 * @param serverNumber the number of servers.
 	 */
 	public void setServerNumber(int serverNumber);
+
 }

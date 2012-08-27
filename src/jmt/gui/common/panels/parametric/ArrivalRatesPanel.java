@@ -94,7 +94,7 @@ public class ArrivalRatesPanel extends ParameterOptionPanel {
 				+ " open class with an interarrival time distribution with infinite or null mean value.\n\n";
 
 		DESCRIPTION_SINGLE = "Repeat the simulation with different arrival rates for an open "
-				+ "classes, provided that the interarrival time distribution has a finite, not null, mean value. "
+				+ "classes, provided that the interarrival time distribution has a finite, positive, mean value. "
 				+ "The 'To' value is the final arrival rate.\n\n ";
 
 		cd = classDef;
@@ -121,14 +121,14 @@ public class ArrivalRatesPanel extends ParameterOptionPanel {
 		classChooser = new JComboBox();
 		classChooser.setToolTipText("Choose the class whose arrival rate will change");
 		if (ARPA.isSingleClass()) {
-			fromLabel = new JLabel("From (j/s):");
+			fromLabel = new JLabel("From:");
 			from = new JTextField();
 			from.setEnabled(false);
 			from.setText(Double.toString(ARPA.getInitialValue()));
-			toLabel = new JLabel("To (j/s): ");
+			toLabel = new JLabel("To: ");
 			to = new JSpinner(new SpinnerNumberModel(ARPA.getFinalValue(), 0.001, Double.MAX_VALUE, 0.001));
 			to.setToolTipText("Sets the final arrival rate in job/sec");
-			stepsLabel = new JLabel("Steps (n. of exec.): ");
+			stepsLabel = new JLabel("Steps: ");
 			steps = new JSpinner(new SpinnerNumberModel(ARPA.getNumberOfSteps(), 2, ParametricAnalysis.MAX_STEP_NUMBER, 1));
 			steps.setToolTipText("Sets the number of steps to be performed");
 			//get the vector containing the keys of the class that can be used to do this type of parametric analysis
@@ -158,7 +158,7 @@ public class ArrivalRatesPanel extends ParameterOptionPanel {
 			toLabel = new JLabel("To (%): ");
 			to = new JSpinner(new SpinnerNumberModel(ARPA.getFinalValue(), 0.1, Double.MAX_VALUE, 0.1));
 			to.setToolTipText("Sets the final proportion of arrival rate with respect to the initial");
-			stepsLabel = new JLabel("Steps (n. of exec.): ");
+			stepsLabel = new JLabel("Steps: ");
 			steps = new JSpinner(new SpinnerNumberModel(ARPA.getNumberOfSteps(), 2, ParametricAnalysis.MAX_STEP_NUMBER, 1));
 			steps.setToolTipText("Sets the number of steps to be performed");
 			classChooser.addItem("All open classes");

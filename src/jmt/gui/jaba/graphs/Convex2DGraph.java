@@ -332,9 +332,9 @@ public class Convex2DGraph extends JabaGraph implements MouseListener,
 					g.drawString("X_" + data.getClassNames()[1] + "="
 							+ FORMAT_4_DEC.format(t2) + " job/sec", x, y);
 
-					g.drawString("U_" + data.getClassNames()[1] + "=% [" + pb22
-							+ "," + pb12 + "]", x, y - 2 * (8 + getPointSize()));
-					g.drawString("U_" + data.getClassNames()[0] + "=% [" + pb21
+					g.drawString("Saturation sector X2 " + "= %[" + pb22
+							+ "," + pb21 + "]", x, y - 2 * (8 + getPointSize()));
+					g.drawString("Saturation sector X1 " + "= %[" + pb12
 							+ "," + pb11 + "]", x, y - 3 * (8 + getPointSize()));
 					break;
 				}

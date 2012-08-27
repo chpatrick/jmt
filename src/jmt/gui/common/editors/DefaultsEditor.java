@@ -321,11 +321,11 @@ public class DefaultsEditor extends JDialog implements CommonConstants {
 		classpanelnum++;
 
 		// Priority
-		addInputSpinner("Priority", "classPriority", class_panel, 0);
+		addInputSpinner("Priority", "classPriority", class_panel, 0, null);
 		classpanelnum++;
 
 		// Population
-		addInputSpinner("Population (closed classes)", "classPopulation", class_panel, 1);
+		addInputSpinner("Population (closed classes)", "classPopulation", class_panel, 1, null);
 		classpanelnum++;
 
 		// Distribution
@@ -365,7 +365,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants {
 		stationpanelnum++;
 
 		// Number of Servers
-		addInputSpinner("Number of Servers", "stationServers", station_panel, 1);
+		addInputSpinner("Number of Servers", "stationServers", station_panel, 1, null);
 		stationpanelnum++;
 
 		// Queue Strategy
@@ -393,7 +393,7 @@ public class DefaultsEditor extends JDialog implements CommonConstants {
 		stationpanelnum++;
 
 		// Number of jobs created for each fork link
-		addInputSpinner("Fork degree", "forkJobsPerLink", station_panel, 1);
+		addInputSpinner("Fork degree", "forkJobsPerLink", station_panel, 1, null);
 		stationpanelnum++;
 
 		SpringUtilities.makeCompactGrid(station_panel, stationpanelnum, 2, //rows, cols
@@ -424,12 +424,12 @@ public class DefaultsEditor extends JDialog implements CommonConstants {
 		simpanelnum++;
 
 		// Maximum duration
-		addInputSpinner("Maximum number of samples", "maxSimulationSamples", sim_panel, 100000);
+		addInputSpinner("Maximum number of samples", "maxSimulationSamples", sim_panel, 100000, "The term samples stands for observations");
 		simpanelnum++;
 
 		//Polling interval
 		simpanelnum++;
-		addInputSpinner("Animation update interval (sec)", "simulationPolling", sim_panel, 1);
+		addInputSpinner("Animation update interval (sec)", "simulationPolling", sim_panel, 1, null);
 
 		// Francesco D'Aquino
 		// Animation enabled/disabled
@@ -528,13 +528,17 @@ public class DefaultsEditor extends JDialog implements CommonConstants {
 	 * @param property property to be changed in Defaults
 	 * @param cont container where input field must be added
 	 * @param minvalue minimum value allowed for this property
+	 * @param tooltip the content of tooltip
 	 */
-	protected void addInputSpinner(String text, final String property, Container cont, final int minvalue) {
+	protected void addInputSpinner(String text, final String property, Container cont, final int minvalue, String tooltip) {
 		JLabel label;
 		label = new JLabel(text + ":");
 		final JSpinner spinner = new JSpinner();
 		label.setLabelFor(spinner);
 		spinner.setValue(Defaults.getAsInteger(property));
+		if(tooltip != null) {
+			spinner.setToolTipText(tooltip);
+		}
 		// Sets maximum size to minimal one, otherwise springLayout will stretch this
 		spinner.setMaximumSize(new Dimension(spinner.getMaximumSize().width, spinner.getMinimumSize().height));
 		spinner.addChangeListener(new ChangeListener() {

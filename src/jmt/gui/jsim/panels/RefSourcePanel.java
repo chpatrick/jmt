@@ -19,6 +19,7 @@
 package jmt.gui.jsim.panels;
 
 import java.awt.BorderLayout;
+import java.util.Vector;
 
 import javax.swing.JTable;
 import javax.swing.event.TableModelEvent;

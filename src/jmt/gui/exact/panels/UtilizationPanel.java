@@ -18,7 +18,10 @@
 
 package jmt.gui.exact.panels;
 
+import jmt.analytical.SolverAlgorithm;
+import jmt.framework.gui.help.HoverHelp;
 import jmt.gui.exact.ExactConstants;
+import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.ExactWizard;
 import jmt.gui.exact.table.ExactTableModel;
 
@@ -46,11 +49,13 @@ public final class UtilizationPanel extends SolutionPanel {
 
 	//END
 
-	public UtilizationPanel(ExactWizard ew) {
-		super(ew);
+	/* EDITED by Abhimanyu Chugh */
+	public UtilizationPanel(ExactWizard ew, SolverAlgorithm alg) {
+		super(ew, alg);
 		helpText = "<html>Utilization</html>";
 		name = "Utilization";
 	}
+	/* END */
 
 	/**
 	 * gets status from data object
@@ -58,12 +63,14 @@ public final class UtilizationPanel extends SolutionPanel {
 	@Override
 	protected void sync() {
 		super.sync();
-		util = data.getUtilization();
+		/* EDITED by Abhimanyu Chugh */
+		util = data.getUtilization(algorithm);
 		//NEW Federico Dall'Orso
-		stationAggs = data.getPerStationU();
-		classAggs = data.getPerClassU();
-		globalAgg = data.getGlobalU();
+		stationAggs = data.getPerStationU(algorithm);
+		classAggs = data.getPerClassU(algorithm);
+		globalAgg = data.getGlobalU(algorithm);
 		//END
+		/* END */
 	}
 
 	@Override

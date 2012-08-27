@@ -2,6 +2,11 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
 	<xsl:output method="html" version="1.0" encoding="ISO-8859-1" indent="yes"/>
 	
+	<!-- EDITED by Abhimanyu Chugh -->
+	<xsl:variable name="alg-name-width">50%</xsl:variable>
+	<xsl:variable name="alg-tol-width">25%</xsl:variable>
+	<xsl:variable name="alg-iter-width">25%</xsl:variable>
+	<!-- END -->
 	<xsl:variable name="class-name-width">28%</xsl:variable>
 	<xsl:variable name="class-type-width">14%</xsl:variable>
 	<xsl:variable name="class-rate-width">28%</xsl:variable>
@@ -67,6 +72,15 @@
 					<tr><th class="title">
 					jMVA Model Details<h1 class="subtitle"><xsl:value-of select="description"/></h1>
 					</th></tr>
+					<!-- EDITED by Abhimanyu Chugh -->
+					<tr><td align="center">
+					<xsl:for-each select="algParams">
+						
+						<xsl:apply-templates select="." mode="description"/>
+						
+					</xsl:for-each>
+					</td></tr>
+					<!-- END -->
 					<tr><td align="center">
 					<xsl:for-each select="parameters/*">
 						
@@ -84,6 +98,96 @@
 			</body>
 		</html>
 	</xsl:template>
+	
+	<!-- EDITED by Abhimanyu Chugh -->
+	<xsl:key name="k1" match="algorithm" use="@name"/>
+	
+	<!--creates algorithm table-->
+	<xsl:template match="algParams" mode="description">
+		<!-- Check that no open classes exist -->
+		<xsl:if test="not($model/parameters/classes/openclass)">
+			<table class="param" cellspacing="0">
+				<tr><th class="paramtitle" colspan="3">
+					Algorithms
+				</th></tr>
+				<tr class="paramhead">
+					<td>Name</td>
+					<td>Tolerance</td>
+					<td>Iterations</td>
+				</tr>
+				<xsl:for-each select="$model/algParams/compareAlgs">
+					<xsl:choose>
+					<!-- Check results are from a what-if analysis and if compare algorithms option was selected -->
+					<xsl:when test="$model/whatIf and @value='true'">
+						<!-- Go through each selected algorithm and display its name, tolerance and iterations -->
+						<xsl:for-each select="$model/algParams/compareAlgs/whatIfAlg">
+							<xsl:if test="@value = 1">
+								<tr>
+									<xsl:attribute name="class">
+										<xsl:if test="position() mod 2=0">line2</xsl:if>
+										<xsl:if test="position() mod 2=1">line1</xsl:if>
+									</xsl:attribute>
+									<td width="{$alg-name-width}"><xsl:value-of select="@name"/></td>
+									<xsl:choose>
+										<xsl:when test="@name = 'MVA'"><td width="{$alg-tol-width}">-</td></xsl:when>
+										<xsl:otherwise><td width="{$alg-tol-width}"><xsl:value-of select="@tolerance"/></td></xsl:otherwise>
+									</xsl:choose>
+									<xsl:choose>
+										<!-- Put a hyphen in iterations column for MVA -->
+										<xsl:when test="@name = 'MVA'"><td width="{$alg-iter-width}">-</td></xsl:when>
+										<xsl:otherwise>
+											<td width="{$alg-iter-width}">
+												<!-- For other algorithms, go through each what-if execution and find algorithm
+												iterations and display them in this column, separated by commas -->
+						                        <xsl:for-each select="key('k1', @name)">
+													<xsl:value-of select="@iterations"/>
+													<xsl:if test="position()!=last()">
+														<xsl:text>, </xsl:text>
+													</xsl:if>
+												</xsl:for-each>
+											</td>
+										</xsl:otherwise>
+									</xsl:choose>
+								</tr>
+							</xsl:if>
+						</xsl:for-each>
+					</xsl:when>
+					<xsl:otherwise>
+						<!-- For a normal analysis, or a what-if analysis without comapre algorithms selected,
+						get the value from the algorithm box -->
+						<xsl:for-each select="$model/algParams/algType">
+							<tr>
+								<xsl:attribute name="class">
+									<xsl:if test="position() mod 2=0">line2</xsl:if>
+									<xsl:if test="position() mod 2=1">line1</xsl:if>
+								</xsl:attribute>
+								<td width="{$alg-name-width}"><xsl:value-of select="@name"/></td>
+								<xsl:choose>
+									<xsl:when test="@name = 'MVA'"><td width="{$alg-tol-width}">-</td></xsl:when>
+									<xsl:otherwise><td width="{$alg-tol-width}"><xsl:value-of select="@tolerance"/></td></xsl:otherwise>
+								</xsl:choose>
+								<xsl:choose>
+									<xsl:when test="@name = 'MVA'"><td width="{$alg-iter-width}">-</td></xsl:when>
+									<xsl:otherwise>
+										<td width="{$alg-iter-width}">
+					                        <xsl:for-each select="key('k1', @name)">
+												<xsl:value-of select="@iterations"/>
+												<xsl:if test="position()!=last()">
+													<xsl:text>, </xsl:text>
+												</xsl:if>
+											</xsl:for-each>
+										</td>
+									</xsl:otherwise>
+								</xsl:choose>
+							</tr>
+						</xsl:for-each>
+					</xsl:otherwise>
+					</xsl:choose>
+				</xsl:for-each>
+			</table>
+		</xsl:if>
+	</xsl:template>
+	<!-- END -->
 	
 	<!--creates table of classes-->
 	<xsl:template match="parameters/classes" mode="description">

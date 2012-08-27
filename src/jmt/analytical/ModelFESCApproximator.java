@@ -124,24 +124,33 @@ public class ModelFESCApproximator {
 	private void postProcessApproximation() {
 		// Multiserver approximation
 		if (multipleServerApproximated) {
-			double[][] q = new double[inputModel.getStations()][inputModel.getClasses()];
-			double[][] r = new double[inputModel.getStations()][inputModel.getClasses()];
-			double[][] u = new double[inputModel.getStations()][inputModel.getClasses()];
-			double[][] x = new double[inputModel.getStations()][inputModel.getClasses()];
-			for (int st = 0; st < inputModel.getStations(); st++) {
-				for (int cl = 0; cl < inputModel.getClasses(); cl++) {
-					q[st][cl] = outputModel.getQueueLen()[st][cl][iteration];
-					r[st][cl] = outputModel.getResTimes()[st][cl][iteration];
-					u[st][cl] = outputModel.getUtilization()[st][cl][iteration] * inputModel.getStationServers()[st];
-					x[st][cl] = outputModel.getThroughput()[st][cl][iteration];
-					int delay = multipleServerList[st];
-					if (delay > 0) {
-						q[st][cl] += outputModel.getQueueLen()[delay][cl][iteration];
-						r[st][cl] += outputModel.getResTimes()[delay][cl][iteration];
+			/** Edited by Abhimanyu Chugh **/
+			for (SolverAlgorithm alg : outputModel.getQueueLen().keySet()) {
+				double[][] q = new double[inputModel.getStations()][inputModel.getClasses()];
+				double[][] r = new double[inputModel.getStations()][inputModel.getClasses()];
+				double[][] u = new double[inputModel.getStations()][inputModel.getClasses()];
+				double[][] x = new double[inputModel.getStations()][inputModel.getClasses()];
+				for (int st = 0; st < inputModel.getStations(); st++) {
+					for (int cl = 0; cl < inputModel.getClasses(); cl++) {
+						q[st][cl] = outputModel.getQueueLen(alg)[st][cl][iteration];
+						r[st][cl] = outputModel.getResTimes(alg)[st][cl][iteration];
+						u[st][cl] = outputModel.getUtilization(alg)[st][cl][iteration] * inputModel.getStationServers()[st];
+						x[st][cl] = outputModel.getThroughput(alg)[st][cl][iteration];
+						int delay = multipleServerList[st];
+						if (delay > 0) {
+							q[st][cl] += outputModel.getQueueLen(alg)[delay][cl][iteration];
+							r[st][cl] += outputModel.getResTimes(alg)[delay][cl][iteration];
+						}
 					}
 				}
+				int algIterations = 0;
+				if (SolverAlgorithm.isApproximate(alg)) {
+					algIterations = outputModel.getAlgIterations(alg)[iteration];
+				}
+				inputModel.setResults(alg, algIterations, q, x, r, u, iteration);
 			}
-			inputModel.setResults(q, x, r, u, iteration);
+			inputModel.setResultsBooleans(true);
+			/** End **/
 		} else {
 			// Nothing to be done here....
 		}

@@ -40,7 +40,7 @@ public class ReplayerPar extends AbstractParameter implements Parameter {
 															// is a bad one.
 															
 	private static String BAD_FILE_MSG = "<html><body>Replayer: empty file, or file with no valid values, <br /> used 0 values.</body></html>";
-	private static String BAD_VALUE_MSG = "<html><body>Replayer: some values have been discardes since not valid <p> (only integer and decimal number).</body></html>";
+	private static String BAD_VALUE_MSG = "<html><body>Replayer: some values of the trace have been discarded <p> (only integer and floating-point numbers allowed).</body></html>";
 																
 	private String fileName;
 	private FileReader fr;

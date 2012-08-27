@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2012, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -662,6 +662,7 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 		 */
 		private static final long serialVersionUID = 1L;
 		private Object[] prototypes = { "10000", new String(new char[15]), new String(new char[15]), "" };
+		private int suffixClassCollision = 1;
 
 		@Override
 		public Object getPrototype(int columnIndex) {
@@ -709,7 +710,15 @@ public final class StationsPanel extends WizardPanel implements JabaConstants, F
 		public void setValueAt(Object value, int rowIndex, int columnIndex) {
 			switch (columnIndex) {
 				case 0: //name
-					stationNames[rowIndex] = (String) value;
+					String tmpName = (String) value;
+					//Check for class name collision
+					for(int i = 0; i < stationNames.length; i++ ){
+						if(stationNames[i].equals(tmpName) && i != rowIndex) {
+							tmpName = tmpName + "_" + suffixClassCollision++;
+							break;
+						}
+					}
+					stationNames[rowIndex] = (String) tmpName;
 					break;
 				case 1: //type
 					for (int i = 0; i < STATION_TYPENAMES_LD_ENABLED.length; i++) {

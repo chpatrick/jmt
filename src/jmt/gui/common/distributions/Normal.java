@@ -124,11 +124,11 @@ public class Normal extends Distribution {
 	 * @param c c value
 	 */
 	protected void setCM(double mean, double c) {
-		// sigma = c^2*mean^2
+		// sigma = c*mean
 		// Backups old parameters to restore them upon a false result
 		Object oldm = getParameter("mean").getValue();
 		Object olds = getParameter("standardDeviation").getValue();
-		if (getParameter("mean").setValue(new Double(mean)) && getParameter("standardDeviation").setValue(new Double(c * c * mean * mean))) {
+		if (getParameter("mean").setValue(new Double(mean)) && getParameter("standardDeviation").setValue(new Double(c * mean ))) {
 			this.mean = mean;
 			this.c = c;
 		} else {
@@ -144,6 +144,7 @@ public class Normal extends Distribution {
 	@Override
 	public void updateCM() {
 		mean = ((Double) getParameter("mean").getValue()).doubleValue();
-		c = Math.sqrt(((Double) getParameter("standardDeviation").getValue()).doubleValue()) / mean;
+		c = ((Double) getParameter("standardDeviation").getValue()).doubleValue() / mean;
+		//c = Math.sqrt(((Double) getParameter("standardDeviation").getValue()).doubleValue()) / mean;
 	}
 }

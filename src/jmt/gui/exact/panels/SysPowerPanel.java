@@ -17,7 +17,10 @@
   */
 package jmt.gui.exact.panels;
 
+import jmt.analytical.SolverAlgorithm;
+import jmt.framework.gui.help.HoverHelp;
 import jmt.gui.exact.ExactConstants;
+import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.ExactWizard;
 import jmt.gui.exact.table.ExactTableModel;
 
@@ -28,18 +31,22 @@ public class SysPowerPanel extends SolutionPanel {
 	private double[][] classAggs;
 	private double[] globalAgg;
 
-	public SysPowerPanel(ExactWizard ew) {
-		super(ew);
+	/* EDITED by Abhimanyu Chugh */
+	public SysPowerPanel(ExactWizard ew, SolverAlgorithm alg) {
+		super(ew, alg);
 		// TODO Auto-generated constructor stub
 		helpText = "<html>System Power</html>";
 		name = "System Power";
 	}
+	/* END */
 
 	@Override
 	protected void sync() {
 		super.sync();
-		classAggs = data.getPerClassSP();
-		globalAgg = data.getGlobalSP();
+		/* EDITED by Abhimanyu Chugh */
+		classAggs = data.getPerClassSP(algorithm);
+		globalAgg = data.getGlobalSP(algorithm);
+		/* END */
 	}
 
 	@Override

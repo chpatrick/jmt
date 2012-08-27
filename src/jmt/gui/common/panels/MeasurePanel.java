@@ -21,17 +21,20 @@ package jmt.gui.common.panels;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Vector;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TableModelEvent;
+import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -98,11 +101,8 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 	//table containing measure data
 	protected MeasureTable measureTable;
 
-	//button for measure addition
-	private JButton addMeasureButton;
-
 	//types of measures selectable
-	protected static final String[] measureTypes = new String[] { SimulationDefinition.MEASURE_QL, SimulationDefinition.MEASURE_QT,
+	protected static final String[] measureTypes = new String[] { "---select an index---", SimulationDefinition.MEASURE_QL, SimulationDefinition.MEASURE_QT,
 			SimulationDefinition.MEASURE_RD, SimulationDefinition.MEASURE_RP, SimulationDefinition.MEASURE_U, SimulationDefinition.MEASURE_X,
 			SimulationDefinition.MEASURE_DR, SimulationDefinition.MEASURE_S_X, SimulationDefinition.MEASURE_S_RP, SimulationDefinition.MEASURE_S_DR,
 			SimulationDefinition.MEASURE_S_CN,
@@ -153,7 +153,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			addMeasure();
+				addMeasure();
 		}
 	};
 
@@ -169,17 +169,21 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 		this.setBorder(new EmptyBorder(20, 20, 20, 20));
 		this.setLayout(new BorderLayout(5, 5));
 
-		addMeasureButton = new JButton(addMeasure);
 		JPanel rightPanel = new JPanel(new BorderLayout(5, 5));
-		rightPanel.add(addMeasureButton, BorderLayout.SOUTH);
 		rightPanel.add(measureSelection, BorderLayout.CENTER);
-
+		rightPanel.add(new JLabel(" "), BorderLayout.NORTH);
+		measureSelection.addActionListener(addMeasure);
+		Object popup = measureSelection.getUI().getAccessibleChild(measureSelection, 0);  
+	    if (popup instanceof ComboPopup) {  
+		      JList jlist = ((ComboPopup)popup).getList();  
+		      jlist.setVisibleRowCount(measureTypes.length);
+	    }  
+		
 		measureTable = new MeasureTable();
 
 		JPanel headPanel = new JPanel(new BorderLayout(5, 5));
 		headPanel.add(descrLabel, BorderLayout.CENTER);
 		headPanel.add(rightPanel, BorderLayout.EAST);
-		addMeasureButton.setMaximumSize(DIM_BUTTON_M);
 		this.add(headPanel, BorderLayout.NORTH);
 		warningPanel = new WarningScrollTable(measureTable, WARNING_CLASS_STATION);
 		warningPanel.addCheckVector(classData.getClassKeys());
@@ -225,12 +229,16 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 	}
 
 	private void addMeasure() {
+		if(measureSelection.getSelectedIndex() <= 0) {
+ 			return;
+		}			
 		if (stationData.getStationRegionKeysNoSourceSink().size() == 0 || classData.getClassKeys().size() == 0) {
+			measureSelection.setSelectedIndex(0);
 			return;
 		}
-
 		simData.addMeasure((String) measureSelection.getSelectedItem(), null, null);
 		measureTable.tableChanged(new TableModelEvent(measureTable.getModel()));
+		measureSelection.setSelectedIndex(0);
 	}
 
 	private void deleteMeasure(int index) {
@@ -277,6 +285,11 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 				return new ButtonCellEditor(deleteButton);
 			} else if (column == 2 && simData.isSinkMeasure(simData.getMeasureKeys().get(row))) {
 				return stationsCombos.getEditor(stationData.getStationKeysSink());
+			} else if (column == 2 && simData.getMeasureType(simData.getMeasureKeys().get(row)).equals(SimulationDefinition.MEASURE_X)) {
+				Vector<Object> l1 = stationData.getStationRegionKeysNoSourceSink();
+				Vector<Object> l2 = stationData.getStationKeysSource();
+				l1.addAll(l2);
+				return stationsCombos.getEditor(l1);
 			} else if (column == 2) {
 				return stationsCombos.getEditor(stationData.getStationRegionKeysNoSourceSink());
 			} else if (column == 1) {

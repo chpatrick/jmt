@@ -18,7 +18,10 @@
 
 package jmt.gui.exact.panels;
 
+import jmt.analytical.SolverAlgorithm;
+import jmt.framework.gui.help.HoverHelp;
 import jmt.gui.exact.ExactConstants;
+import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.ExactWizard;
 import jmt.gui.exact.table.ExactTableModel;
 
@@ -46,11 +49,13 @@ public final class ResTimePanel extends SolutionPanel {
 
 	//END
 
-	public ResTimePanel(ExactWizard ew) {
-		super(ew);
+	/* EDITED by Abhimanyu Chugh */
+	public ResTimePanel(ExactWizard ew, SolverAlgorithm alg) {
+		super(ew, alg);
 		helpText = "<html>Residence times</html>";
 		name = "Residence Times";
 	}
+	/* END */
 
 	/**
 	 * gets status from data object
@@ -58,12 +63,14 @@ public final class ResTimePanel extends SolutionPanel {
 	@Override
 	protected void sync() {
 		super.sync();
-		resTimes = data.getResTimes();
+		/* EDITED by Abhimanyu Chugh */
+		resTimes = data.getResTimes(algorithm);
 		//NEW Dall'Orso
-		classAggs = data.getPerClassR();
-		stationAggs = data.getPerStationR();
-		globalAgg = data.getGlobalR();
+		classAggs = data.getPerClassR(algorithm);
+		stationAggs = data.getPerStationR(algorithm);
+		globalAgg = data.getGlobalR(algorithm);
 		//END
+		/* END */
 	}
 
 	@Override

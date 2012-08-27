@@ -130,7 +130,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 		queueLengthPanel.add(finiteQueueSelector);
 		JPanel spinnerPanel = new JPanel();
 		new BoxLayout(spinnerPanel, BoxLayout.Y_AXIS);
-		JLabel label = new JLabel("max num.customers: ");
+		JLabel label = new JLabel("max no. customers: ");
 		label.setToolTipText("The maximum number of customers allowed in the station.");
 		spinnerPanel.add(label);
 		spinnerPanel.add(queueLengthSpinner);

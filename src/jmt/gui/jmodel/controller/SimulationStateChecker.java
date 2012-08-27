@@ -282,8 +282,10 @@ public class SimulationStateChecker {
 
 	/**
 	 * Calls the draw method from  to draw queues and utilizations
+	 * @param detectChanges 
+	 * @throws Exception 
 	 */
-	public void forceDraw() {
+	public void forceDraw() throws Exception {
 		graphicalRepresentation.draw(serversContent, serversUtilization);
 	}
 
@@ -301,4 +303,21 @@ public class SimulationStateChecker {
 	public boolean isInitialized() {
 		return initialized;
 	}
+
+	public ModelSnapshot getServersContent() {
+		return serversContent;
+	}
+
+	public void setServersContent(ModelSnapshot serversContent) {
+		this.serversContent = serversContent;
+	}
+
+	public ModelSnapshot getServersUtilization() {
+		return serversUtilization;
+	}
+
+	public void setServersUtilization(ModelSnapshot serversUtilization) {
+		this.serversUtilization = serversUtilization;
+	}
+	
 }

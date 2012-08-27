@@ -416,7 +416,6 @@ public class GlobalJobInfoList {
 		lastModifyNumberPerClass[job.getJobClass().getId()] = NetSystem.getTime();
 		jobsPerClass[newClass.getId()]++;
 		job.setClass(newClass);
-		updateJobNumber(job);
 		lastModifyNumberPerClass[job.getJobClass().getId()] = NetSystem.getTime();
 	}
 

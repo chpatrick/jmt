@@ -18,7 +18,10 @@
 
 package jmt.gui.exact.panels;
 
+import jmt.analytical.SolverAlgorithm;
+import jmt.framework.gui.help.HoverHelp;
 import jmt.gui.exact.ExactConstants;
+import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.ExactWizard;
 import jmt.gui.exact.table.ExactTableModel;
 
@@ -57,11 +60,13 @@ public final class QueueLenPanel extends SolutionPanel {
 
 	//END
 
-	public QueueLenPanel(ExactWizard ew) {
-		super(ew);
+	/* EDITED by Abhimanyu Chugh */
+	public QueueLenPanel(ExactWizard ew, SolverAlgorithm alg) {
+		super(ew, alg);
 		helpText = "<html>Number of Customers</html>";
 		name = "Number of Customers";
 	}
+	/* END */
 
 	/**
 	 * gets status from data object
@@ -69,12 +74,14 @@ public final class QueueLenPanel extends SolutionPanel {
 	@Override
 	protected void sync() {
 		super.sync();
-		queueLen = data.getQueueLen();
+		/* EDITED by Abhimanyu Chugh */
+		queueLen = data.getQueueLen(algorithm);
 		//NEW Federico Dall'Orso
-		classAggs = data.getPerClassQ();
-		stationAggs = data.getPerStationQ();
-		globalAgg = data.getGlobalQ();
+		classAggs = data.getPerClassQ(algorithm);
+		stationAggs = data.getPerStationQ(algorithm);
+		globalAgg = data.getGlobalQ(algorithm);
 		//END
+		/* END */
 	}
 
 	@Override

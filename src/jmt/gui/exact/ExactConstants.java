@@ -127,7 +127,7 @@ public interface ExactConstants {
 			+ "keeping constant the total number of jobs N (�i = Ni / N). It is required that Ni > 0."
 			+ "<br>Since only integer Ni values are allowed, the number of models executed can be very small." + "</font></body></html>";
 	public static final String DESCRIPTION_GRAPH = "<html><body align=\"left\"><font size=\"4\"><b>Graphical Results</b>"
-			+ "</font><font size=\"3\"><br>Select performance indices to be plotted. Left-click and drag on the graph to zoom "
+			+ "</font><font size=\"3\"><br>Select performance indices to be plotted. Right-click and drag on the graph to zoom "
 			+ "it, right-click to save it in EPS or PNG format.</body></html>";
 
 	//Added by ASHANKA START

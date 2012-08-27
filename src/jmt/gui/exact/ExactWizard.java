@@ -1,5 +1,5 @@
 /**    
-  * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+  * Copyright (C) 2012, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
   * This program is free software; you can redistribute it and/or modify
   * it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.WindowConstants;
 
+import jmt.analytical.SolverAlgorithm;
 import jmt.common.exception.InputDataException;
 import jmt.common.exception.SolverException;
 import jmt.framework.gui.components.JMTMenuBar;
@@ -61,6 +62,8 @@ import jmt.gui.common.panels.WarningWindow;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.common.xml.ModelLoader;
 import jmt.gui.exact.link.SolverClient;
+import jmt.gui.exact.panels.AMVAPanel;
+import jmt.gui.exact.panels.AlgorithmPanel;
 import jmt.gui.exact.panels.ClassesPanel;
 import jmt.gui.exact.panels.DescriptionPanel;
 import jmt.gui.exact.panels.ForceUpdatablePanel;
@@ -109,9 +112,13 @@ public class ExactWizard extends Wizard {
 	//A link to the last modified model's temporary file - used to display synopsis
 	private File tempFile = null;
 	//END
-
+	
 	//keep a reference to these three components to enable switching
 	private WizardPanel serviceTimesPanel, serviceDemandsPanel, visitsPanel;
+	/* EDITED by Abhimanyu Chugh */
+	private WhatIfPanel whatIfPanel;
+	private AMVAPanel amvaPanel;
+	/* END */
 
 	private AbstractJMTAction FILE_SAVE = new AbstractJMTAction("Save...") {
 		/**
@@ -250,7 +257,7 @@ public class ExactWizard extends Wizard {
 		}
 	};
 
-	private AbstractJMTAction ABOUT = new AbstractJMTAction("About JMVA") {
+	private AbstractJMTAction ABOUT = new AbstractJMTAction("About JMVA...") {
 		/**
 		 * 
 		 */
@@ -268,7 +275,7 @@ public class ExactWizard extends Wizard {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			showAbout();
+			showAbout(false);
 		}
 	};
 
@@ -295,6 +302,7 @@ public class ExactWizard extends Wizard {
 
 		}
 	};
+	
 
 	public ExactWizard() {
 		this(new ExactModel());
@@ -320,10 +328,14 @@ public class ExactWizard extends Wizard {
 		} else {
 			addPanel(serviceDemandsPanel);
 		}
-		addPanel(new WhatIfPanel(this));
+		/* EDITED by Abhimanyu Chugh */
+		whatIfPanel = new WhatIfPanel(this);
+		addPanel(whatIfPanel);
 		addPanel(new DescriptionPanel(this));
 
-		show();
+		setVisible(true);
+		showAbout(true);
+		/* END */
 	}
 
 	/**
@@ -335,10 +347,22 @@ public class ExactWizard extends Wizard {
 		tb.setFloatable(false);
 
 		//null values add a gap between toolbar icons
-		AbstractJMTAction[] actions = { FILE_NEW, FILE_OPEN, FILE_SAVE, null, ACTION_SOLVE, SWITCH_TO_SIMULATOR, ACTION_RANDOMIZE_MODEL, null, HELP };
+		AbstractJMTAction[] actions = { FILE_NEW, FILE_OPEN, FILE_SAVE, null, ACTION_SOLVE, SWITCH_TO_SIMULATOR, ACTION_RANDOMIZE_MODEL, null, HELP,null };
 		String[] htext = { "Creates a new model", "Opens a saved model", "Saves the current model", "Solves the current model",
-				"Import current model to JSIMwiz to solve it with the simulator", "Randomize model data", "Show help" };
+				"Import current model to JSIMwiz to solve it with the simulator", "Randomize model data", "Show help"};
 		ArrayList buttons = tb.populateToolbar(actions);
+		
+		/* EDITED by Abhimanyu Chugh and Georgios Poullaides */
+		//adds the algorithm selection box
+		amvaPanel = new AMVAPanel(this);
+		tb.add(amvaPanel.algLabel());
+		tb.add(amvaPanel.algorithmList());
+		tb.add(amvaPanel.tolLabel());
+		tb.add(amvaPanel.tolerance());
+		amvaPanel.tolerance.setVisible(false);
+		amvaPanel.tolLabel.setVisible(false);
+		/* END */
+		
 		// Adds help
 		for (int i = 0; i < buttons.size(); i++) {
 			AbstractButton button = (AbstractButton) buttons.get(i);
@@ -346,6 +370,7 @@ public class ExactWizard extends Wizard {
 		}
 		return tb;
 	}
+
 
 	private JMTMenuBar makeMenubar() {
 		JMTMenuBar jmb = new JMTMenuBar(JMTImageLoader.getImageLoader());
@@ -386,7 +411,6 @@ public class ExactWizard extends Wizard {
 		buttons.add(button_next);
 		buttons.add(button_finish);
 		buttons.add(button_cancel);
-	
 
 		JPanel labelbox = new JPanel();
 		labelbox.setLayout(new BorderLayout());
@@ -576,7 +600,7 @@ public class ExactWizard extends Wizard {
 		}
 
 		ExactModel newdata = new ExactModel(data); // Yields the mean performance indices
-
+		
 		// Checks saturation
 		int state = data.checkSaturation();
 		switch (state) {
@@ -590,7 +614,17 @@ public class ExactWizard extends Wizard {
 						"Input data error", JOptionPane.ERROR_MESSAGE);
 				return;
 		}
-
+		
+		/* EDITED by Abhimanyu Chugh */
+		// Check if at least one algorithm is selected for comparison
+		if (data.isWhatIf() && data.isCompareAlgs() && data.getCompAlgNum() < 1) {
+			JOptionPane.showMessageDialog(this, "Error: Please select at least one algorithm for comparison for what-if analysis.",
+					"Algorithm selection error", JOptionPane.ERROR_MESSAGE);
+			return;
+		}
+		newdata.resetResults();
+		/* END */
+		
 		try {
 			//OLD
 			/*
@@ -620,14 +654,11 @@ public class ExactWizard extends Wizard {
 		updatePanels();
 		currentPanel.gotFocus();
 	}
-
-	//NEW
+	
 	//@author Bertoli Marco
-	private void showAbout() {
-		AboutDialogFactory.showJMVA(this);
+	private void showAbout(boolean autoclose) {
+		AboutDialogFactory.showJMVA(this, autoclose);
 	}
-
-	//end NEW
 
 	//NEW Dall'Orso
 	private void createSolutionWindow() {
@@ -642,15 +673,38 @@ public class ExactWizard extends Wizard {
 			jtp.add(new GraphPanel(data));
 			selector = new IterationSelector(data);
 		}
-		ThroughputPanel throughput = new ThroughputPanel(this);
-		QueueLenPanel queuelength = new QueueLenPanel(this);
-		ResTimePanel restimes = new ResTimePanel(this);
-		UtilizationPanel utilizations = new UtilizationPanel(this);
-		//Added by ASHANKA START
-		//Introducing the new System Power Panel as a Tabbed Pane
-		SysPowerPanel systemPower = new SysPowerPanel(this);
-		//Added by ASHANKA STOP
-		if (selector != null) {
+		/* EDITED by Abhimanyu Chugh */
+		if (selector != null && data.isClosed() && data.isCompareAlgs()) {
+			int[] compAlg = data.getCompAlg();
+			for (int i = 0; i < compAlg.length; i++) {
+				if (compAlg[i] != 0) {
+					SolverAlgorithm algorithm = SolverAlgorithm.closedValues()[i];
+					AlgorithmPanel algPanel = new AlgorithmPanel(this, algorithm);
+					algPanel.addSolutionPanel(new ThroughputPanel(this, algorithm));
+					algPanel.addSolutionPanel(new QueueLenPanel(this, algorithm));
+					algPanel.addSolutionPanel(new ResTimePanel(this, algorithm));
+					algPanel.addSolutionPanel(new UtilizationPanel(this, algorithm));
+					//Added by ASHANKA START
+					// for System Power
+					algPanel.addSolutionPanel(new SysPowerPanel(this, algorithm));
+					//Added by ASHANKA STOP
+					selector.addSolutionPanel(algPanel);
+				}
+			}
+			jtp.add(selector);
+		} else if (selector != null && data.isClosed()) {
+			SolverAlgorithm algorithm = SolverAlgorithm.find(data.getAlgorithmType());
+			AlgorithmPanel algPanel = new AlgorithmPanel(this, algorithm);
+			algPanel.addSolutionPanel(new ThroughputPanel(this, algorithm));
+			algPanel.addSolutionPanel(new QueueLenPanel(this, algorithm));
+			algPanel.addSolutionPanel(new ResTimePanel(this, algorithm));
+			algPanel.addSolutionPanel(new UtilizationPanel(this, algorithm));
+			//Added by ASHANKA START
+			// for System Power
+			algPanel.addSolutionPanel(new SysPowerPanel(this, algorithm));
+			//Added by ASHANKA STOP
+			selector.addSolutionPanel(algPanel);
+			/*
 			selector.addSolutionPanel(throughput);
 			selector.addSolutionPanel(queuelength);
 			selector.addSolutionPanel(restimes);
@@ -658,9 +712,37 @@ public class ExactWizard extends Wizard {
 			//Added by ASHANKA START
 			// for System Power
 			selector.addSolutionPanel(systemPower);
+			*/
+			//Added by ASHANKA STOP
+			jtp.add(selector);
+		} else if (selector != null) {
+			SolverAlgorithm algorithm = null;
+			if (!data.getQueueLen().isEmpty()) {
+				algorithm = data.getQueueLen().keySet().iterator().next();
+			}
+			selector.addSolutionPanel(new ThroughputPanel(this, algorithm));
+			selector.addSolutionPanel(new QueueLenPanel(this, algorithm));
+			selector.addSolutionPanel(new ResTimePanel(this, algorithm));
+			selector.addSolutionPanel(new UtilizationPanel(this, algorithm));
+			//Added by ASHANKA START
+			// for System Power
+			selector.addSolutionPanel(new SysPowerPanel(this, algorithm));
 			//Added by ASHANKA STOP
 			jtp.add(selector);
 		} else {
+			SolverAlgorithm alg = null;
+			if (!data.getQueueLen().isEmpty()) {
+				alg = data.getQueueLen().keySet().iterator().next();
+			}
+			ThroughputPanel throughput = new ThroughputPanel(this, alg);
+			QueueLenPanel queuelength = new QueueLenPanel(this, alg);
+			ResTimePanel restimes = new ResTimePanel(this, alg);
+			UtilizationPanel utilizations = new UtilizationPanel(this, alg);
+			//Added by ASHANKA START
+			//Introducing the new System Power Panel as a Tabbed Pane
+			SysPowerPanel systemPower = new SysPowerPanel(this, alg);
+			//Added by ASHANKA STOP
+			
 			jtp.add(throughput);
 			jtp.add(queuelength);
 			jtp.add(restimes);
@@ -670,6 +752,7 @@ public class ExactWizard extends Wizard {
 			jtp.add(systemPower);
 			//Added by ASHANKA STOP
 		}
+		/* END */
 		//NEW Dall'Orso 5-5-2005
 		SynopsisPanel synPane;
 		if (tempFile != null) {
@@ -735,6 +818,7 @@ public class ExactWizard extends Wizard {
 				(panels.get(i)).gotFocus();
 			}
 		}
+		amvaPanel.update();
 		//END
 	}
 
@@ -763,7 +847,10 @@ public class ExactWizard extends Wizard {
 			e.printStackTrace();
 		}
 		Locale.setDefault(Locale.ENGLISH);
-		new ExactWizard(new ExactModel());
+		/* EDITED by Abhimanyu Chugh */
+		new ExactWizard();
+		//new ExactWizard(new ExactModel());
+		/* END */
 	}
 
 	/**
@@ -778,4 +865,10 @@ public class ExactWizard extends Wizard {
 		}
 	}
 
+	/* EDITED by Abhimanyu Chugh */
+	public WhatIfPanel getWhatIfPanel() {
+		return whatIfPanel;
+	}
+	/* END */
+	
 }

@@ -20,7 +20,6 @@ package jmt.gui.exact.link;
 
 import java.awt.Frame;
 import java.io.File;
-
 import jmt.analytical.SolverDispatcher;
 import jmt.common.exception.InputDataException;
 import jmt.common.exception.SolverException;
@@ -58,7 +57,7 @@ public class SolverClient {
 		xmlUtils = new XMLUtils();
 		this.owner = owner;
 	}
-
+	
 	public File solve(ExactModel model) throws SolverException, InputDataException {
 		File temp = null;
 
@@ -91,6 +90,9 @@ public class SolverClient {
 		});
 		progress.hide();
 		// Starts solution and shows progress window
+		/* EDITED by Abhimanyu Chugh */
+		long startTime = System.currentTimeMillis();
+		/* END */
 		solverThread.start();
 		progress.show();
 
@@ -126,7 +128,12 @@ public class SolverClient {
 		} catch (Exception e) {
 			fail("Error loading solved model from tempfile", e);
 		}
+		/** Edited by Georgios Poullaides **/
+		long endTime = System.currentTimeMillis();
+		System.out.println("Total elapsed time in execution of method callMethod() is :"+ (endTime-startTime));
+		/** End **/
 		return temp;
+		
 	}
 
 	private void fail(String message, Throwable t) throws SolverException {

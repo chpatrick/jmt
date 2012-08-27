@@ -50,6 +50,7 @@ import jmt.gui.jmodel.controller.ModelSnapshot;
 public class GraphicalQueueState {
 	private Mediator mediator;
 	private HashMap<Object, JmtCell> tm; // Used to map station keys to their cells
+	private int oldModel;
 
 	public GraphicalQueueState(Mediator m) {
 		mediator = m;
@@ -70,8 +71,10 @@ public class GraphicalQueueState {
 	 * Draws the queues and the utilizations over the graph
 	 * @param queueState a <code> SimulationSnapshot </code> containing information about the queues
 	 * @param utilizationState a <code> SimulationSnapshot </code> containing information about the utilizations
+	 * @param detectChanges 
+	 * @throws Exception 
 	 */
-	public void draw(ModelSnapshot queueState, ModelSnapshot utilizationState) {
+	public void draw(ModelSnapshot queueState, ModelSnapshot utilizationState) throws Exception {
 		int MAX_NUMBER_OF_CLASSES_QUEUE = Defaults.getAsInteger("representableClasses").intValue();
 
 		double nClasses = mediator.getClassDefinition().getClassKeys().size();
