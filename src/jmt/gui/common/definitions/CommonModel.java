@@ -30,6 +30,7 @@ import jmt.engine.log.LoggerParameters;
 import jmt.framework.data.BDMap;
 import jmt.framework.data.BDMapImpl;
 import jmt.framework.data.CachedHashMap;
+import jmt.framework.data.MacroReplacer;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.Defaults;
 import jmt.gui.common.classSwitch.ClassSwitch;
@@ -2472,7 +2473,7 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		public Integer autoAppendMode;
 
 		LoggerGlobalParameters() {
-			path = Defaults.get("workingDir");
+			path = MacroReplacer.replace(MacroReplacer.MACRO_WORKDIR);
 			delimiter = Defaults.get("loggerDelimiter");
 			decimalSeparator = Defaults.get("loggerDecimalSeparator");
 			autoAppendMode = Defaults.getAsInteger("loggerAutoAppend");
