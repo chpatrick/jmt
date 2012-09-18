@@ -69,7 +69,7 @@ public class AboutDialogFactory {
 	/**
 	 * Variables
 	 */
-	private static final long AUTOCLOSE_TIMEOUT = 2000;
+	private static final long AUTOCLOSE_TIMEOUT = 2500;
 	private static final int BORDERSIZE = 20;
 	private static final String TITLE_START = "<html><font face=\"Verdana\" size=+4><b>";
 	private static final String TITLE_END = "</b></font></html>";
@@ -87,6 +87,8 @@ public class AboutDialogFactory {
 	private static JLabel title, legal;
 	private static HtmlPanel textArea;
 	private static String text; // text to be displayed in textArea
+	
+	private static boolean autoJMVAshown = false;
 
 	/**
 	 * Initialize data structures and window layout.
@@ -219,6 +221,13 @@ public class AboutDialogFactory {
 	 * @param autoclose to close automatically the window after a timeout
 	 */
 	public static void showJMVA(Window owner, boolean autoclose) {
+		if (autoclose) {
+			// Shows the window automatically only the first time
+			if (autoJMVAshown) {
+				return;
+			}
+			autoJMVAshown = true;
+		}
 		title.setText(TITLE_START + "JMVA" + TITLE_END);
 		title.setIcon(JMTImageLoader.loadImage(GraphStartScreen.IMG_JMVAICON, new Dimension(50, 50)));
 		addNames(JMVA);

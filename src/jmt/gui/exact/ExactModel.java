@@ -1901,36 +1901,52 @@ public class ExactModel implements ExactConstants {
 			Element solution = (Element) sol.item(i);
 			String status = solution.getAttribute("ok");
 			resultsOK = resultsOK && (status.equals("true"));
-			/* EDITED by Abhimanyu Chugh */
-			int algCount = Integer.parseInt(solution.getAttribute("algCount"));
-			for (int a = 0; a < algCount; a++) {
-				Element a_alg = (Element) solution.getElementsByTagName("algorithm").item(a);
-				SolverAlgorithm alg = SolverAlgorithm.find(a_alg.getAttribute("name"));
-				
-				if (alg == null) {
-					continue;
+			if (solution.hasAttribute("algCount")) {
+				/* EDITED by Abhimanyu Chugh */
+				int algCount = Integer.parseInt(solution.getAttribute("algCount"));
+				for (int a = 0; a < algCount; a++) {
+					Element a_alg = (Element) solution.getElementsByTagName("algorithm").item(a);
+					SolverAlgorithm alg = SolverAlgorithm.find(a_alg.getAttribute("name"));
+					
+					if (alg == null) {
+						continue;
+					}
+					boolean isApprox = SolverAlgorithm.isApproximate(alg);
+					if (i == 0) {
+						queueLen.put(alg, new double[stations][classes][iterations]);
+						throughput.put(alg, new double[stations][classes][iterations]);
+						resTimes.put(alg, new double[stations][classes][iterations]);
+						util.put(alg, new double[stations][classes][iterations]);
+						if (isApprox) {
+							algIterations.put(alg, new int[iterations]);
+						}
+					}
+					
+					ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Number of Customers"), queueLen.get(alg), i);
+					ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Throughput"), throughput.get(alg), i);
+					ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Residence time"), resTimes.get(alg), i);
+					ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Utilization"), util.get(alg), i);
+					if (isApprox) {
+						int algIters = Integer.parseInt(a_alg.getAttribute("iterations"));
+						algIterations.get(alg)[i] = algIters;
+					}
 				}
-				boolean isApprox = SolverAlgorithm.isApproximate(alg);
+				/* END */
+			} else {
+				SolverAlgorithm alg = SolverAlgorithm.EXACT;
+
 				if (i == 0) {
 					queueLen.put(alg, new double[stations][classes][iterations]);
 					throughput.put(alg, new double[stations][classes][iterations]);
 					resTimes.put(alg, new double[stations][classes][iterations]);
 					util.put(alg, new double[stations][classes][iterations]);
-					if (isApprox) {
-						algIterations.put(alg, new int[iterations]);
-					}
 				}
-				
-				ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Number of Customers"), queueLen.get(alg), i);
-				ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Throughput"), throughput.get(alg), i);
-				ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Residence time"), resTimes.get(alg), i);
-				ArrayUtils.copy2to3(loadResultsMatrix(a_alg, stations, classes, "Utilization"), util.get(alg), i);
-				if (isApprox) {
-					int algIters = Integer.parseInt(a_alg.getAttribute("iterations"));
-					algIterations.get(alg)[i] = algIters;
-				}
+
+				ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Number of Customers"), queueLen.get(alg), i);
+				ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Throughput"), throughput.get(alg), i);
+				ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Residence time"), resTimes.get(alg), i);
+				ArrayUtils.copy2to3(loadResultsMatrix(solution, stations, classes, "Utilization"), util.get(alg), i);
 			}
-			/* END */
 		}
 		return true;
 	}
