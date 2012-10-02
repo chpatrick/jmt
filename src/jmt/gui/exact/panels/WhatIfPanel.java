@@ -33,25 +33,20 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.TreeMap;
-import java.util.Vector;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.AbstractButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
-import javax.swing.JSeparator;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -79,9 +74,6 @@ import jmt.gui.exact.ExactWizard;
  *         Time: 13.48.45
  */
 public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpdatablePanel {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private ExactWizard wizard;
 	private HoverHelp help;
@@ -131,8 +123,8 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	private TreeMap<String, Integer> stationNames; // A map stationName --> index in source array without LD stations
 	private double[] values;
 	private String currentType, currentClass;
-	private Vector<String> openClasses, closedClasses; // All open classes and closed classes names
-	private Vector<String> modes = new Vector<String>(); // Available what-if types
+	private ArrayList<String> openClasses, closedClasses; // All open classes and closed classes names
+	private ArrayList<String> modes = new ArrayList<String>(); // Available what-if types
 	// Current value ('from' field)
 	private double current;
 
@@ -156,7 +148,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	}
 	
 	/** Edited by Abhimanyu Chugh **/
-	public void enableOrDisableCompareAlgs(boolean enabled) {
+	private void enableOrDisableCompareAlgs(boolean enabled) {
 		compPanel.setEnabled(enabled);
 		compMultiAlg.setEnabled(enabled);
 		for (JCheckBox checkBox : algCheckBoxes) {
@@ -180,11 +172,11 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 
 		// Adds all classes to classNames and closedClassNames/openClassNames arrays
 		closedClassNames = new TreeMap<String, Integer>();
-		closedClasses = new Vector<String>();
+		closedClasses = new ArrayList<String>();
 		closedClassNames.put(ALL_CLASSES, new Integer(-1));
 		openClassNames = new TreeMap<String, Integer>();
 		openClassNames.put(ALL_CLASSES, new Integer(-1));
-		openClasses = new Vector<String>();
+		openClasses = new ArrayList<String>();
 		classNames = new TreeMap<String, Integer>();
 		classNames.put(ALL_CLASSES, new Integer(-1));
 		for (int i = 0; i < data.getClasses(); i++) {
@@ -273,6 +265,8 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		/** Edited by Abhimanyu Chugh **/
 		setAlgorithms();
 		/** End **/
+		
+		enableOrDisableCompareAlgs(data.isClosed());
 	}
 
 	/** Edited by Abhimanyu Chugh **/
@@ -528,7 +522,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 							data.setAlgTolerance(j, tol);
 						}
 						else {
-							JOptionPane.showMessageDialog(wizard.getWhatIfPanel(), "Error: Invalid tolerance value. Using last valid value.", "Input data error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(WhatIfPanel.this, "Error: Invalid tolerance value. Using last valid value.", "Input data error", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 					
@@ -546,7 +540,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 								data.setAlgTolerance(j, tol);
 							}
 							else {
-								JOptionPane.showMessageDialog(wizard.getWhatIfPanel(), "Error: Invalid tolerance value. Using last valid value.", "Input data error", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(WhatIfPanel.this, "Error: Invalid tolerance value. Using last valid value.", "Input data error", JOptionPane.ERROR_MESSAGE);
 							}
 						}
 					}

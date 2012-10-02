@@ -114,11 +114,8 @@ public class ExactWizard extends Wizard {
 	//END
 	
 	//keep a reference to these three components to enable switching
-	private WizardPanel serviceTimesPanel, serviceDemandsPanel, visitsPanel;
-	/* EDITED by Abhimanyu Chugh */
-	private WhatIfPanel whatIfPanel;
+	private WizardPanel serviceTimesPanel, serviceDemandsPanel, visitsPanel, whatIfPanel;
 	private AMVAPanel amvaPanel;
-	/* END */
 
 	private AbstractJMTAction FILE_SAVE = new AbstractJMTAction("Save...") {
 		/**
@@ -798,28 +795,14 @@ public class ExactWizard extends Wizard {
 		if (data == null) {
 			return;
 		}
-		//boolean enable = data.hasResults();
-		//OLD Federico Dall'Orso
-		/*
-		for (int i = 0; i < panelCount; i++) {
-			if (panels.get(i) instanceof SolutionPanel) {
-				tabbedPane.setEnabledAt(i, enable);
-			}
-		}
 
-		// make sure we aren't left on a disabled tab
-		if ((!tabbedPane.isEnabledAt(tabbedPane.getSelectedIndex())) && (tabbedPane.getSelectedIndex() > -1)) {
-			tabbedPane.setSelectedIndex(tabbedPane.getSelectedIndex() - 1);
-		}
-		*/
-		//NEW
 		for (int i = 0; i < panelCount; i++) {
 			if (panels.get(i) instanceof WizardPanel) {
 				(panels.get(i)).gotFocus();
 			}
 		}
 		amvaPanel.update();
-		//END
+
 	}
 
 	@Override
@@ -863,12 +846,5 @@ public class ExactWizard extends Wizard {
 		} else {
 			setTitle(TITLE);
 		}
-	}
-
-	/* EDITED by Abhimanyu Chugh */
-	public WhatIfPanel getWhatIfPanel() {
-		return whatIfPanel;
-	}
-	/* END */
-	
+	}	
 }

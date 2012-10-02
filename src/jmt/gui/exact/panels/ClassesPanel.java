@@ -169,6 +169,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 	/* EDITED by Abhimanyu Chugh */
 	private ActionListener TYPE_OF_MODEL = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
+			
 			JComboBox modelType = (JComboBox)e.getSource();
 			String type = (String)modelType.getSelectedItem();
 
@@ -182,7 +183,6 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 				}
 			}
 			AMVAPanel.enableOrDisableAlgPanel(!open && !ew.getData().isCompareAlgs());
-			ew.getWhatIfPanel().enableOrDisableCompareAlgs(!open);
 			repaint();
 		}
 	};
