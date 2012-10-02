@@ -46,13 +46,11 @@ import javax.swing.JSpinner;
 import javax.swing.KeyStroke;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
-import javax.swing.event.CellEditorListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import jmt.analytical.SolverAlgorithm;
 import jmt.framework.data.ArrayUtils;
 import jmt.framework.gui.help.HoverHelp;
 import jmt.framework.gui.table.editors.ButtonCellEditor;
@@ -167,7 +165,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 	};
 	
 	/* EDITED by Abhimanyu Chugh */
-	private ActionListener TYPE_OF_MODEL = new ActionListener() {
+	private ActionListener amvaListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			
 			JComboBox modelType = (JComboBox)e.getSource();
@@ -182,7 +180,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 					}
 				}
 			}
-			AMVAPanel.enableOrDisableAlgPanel(!open && !ew.getData().isCompareAlgs());
+			ew.setAlgPanelEnabled(!open && !ew.getData().isWhatifAlgorithms());
 			repaint();
 		}
 	};
@@ -599,7 +597,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 
 			JComboBox classTypeBox = new JComboBox(CLASS_TYPENAMES);
 			/** Edited by Georgios Poullaides **/
-			classTypeBox.addActionListener(TYPE_OF_MODEL);
+			classTypeBox.addActionListener(amvaListener);
 			/** End **/
 			classTypeCellEditor = new DefaultCellEditor(classTypeBox);
 			classTypeBox.setEditable(false);

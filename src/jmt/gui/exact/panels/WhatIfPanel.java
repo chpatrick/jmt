@@ -34,9 +34,10 @@ import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.swing.AbstractButton;
@@ -105,11 +106,13 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	private ClassTable classTable;
 	private JPanel tablePanel;
 	
+	
 	/** Edited by Abhimanyu Chugh **/
+	private JPanel algPanel;
 	private JCheckBox compMultiAlg;
-	private List<JCheckBox> algCheckBoxes;
-	private List<JTextField> algTolerances;
-	private List<JLabel> algToleranceLabels;
+	private Map<SolverAlgorithm, JCheckBox> algCheckBoxes;
+	private Map<SolverAlgorithm, JTextField> algTolerances;
+	private Map<SolverAlgorithm, JLabel> algToleranceLabels;
 	private JPanel compPanel;
 	/** End **/
 
@@ -151,13 +154,13 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	private void enableOrDisableCompareAlgs(boolean enabled) {
 		compPanel.setEnabled(enabled);
 		compMultiAlg.setEnabled(enabled);
-		for (JCheckBox checkBox : algCheckBoxes) {
+		for (JCheckBox checkBox : algCheckBoxes.values()) {
 			checkBox.setEnabled(enabled);
 		}
-		for (JTextField tolerance : algTolerances) {
+		for (JTextField tolerance : algTolerances.values()) {
 			tolerance.setEnabled(enabled);
 		}
-		for (JLabel algTolLabel : algToleranceLabels) {
+		for (JLabel algTolLabel : algToleranceLabels.values()) {
 			algTolLabel.setEnabled(enabled);
 		}
 	}
@@ -269,35 +272,34 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		enableOrDisableCompareAlgs(data.isClosed());
 	}
 
-	/** Edited by Abhimanyu Chugh **/
 	private void setAlgorithms() {
-		if ((data.isCompareAlgs() && !compMultiAlg.isSelected()) || (!data.isCompareAlgs() && compMultiAlg.isSelected())) {
-			compMultiAlg.doClick();
+		if ((data.isWhatifAlgorithms() && !compMultiAlg.isSelected()) || (!data.isWhatifAlgorithms() && compMultiAlg.isSelected())) {
+			algPanel.setVisible(true);
+			wizard.setAlgPanelEnabled(false);
+			compMultiAlg.setSelected(true);
 		}
 		if (!data.isClosed()) {
 			compMultiAlg.setEnabled(false);
 		}
-		int toleranceIndex = 0;
-		for (int i = 0; i < algCheckBoxes.size(); i++) {
-			boolean selected = (data.getCompAlg()[i] > 0);
-			JCheckBox checkbox = algCheckBoxes.get(i);
+		for (Entry<SolverAlgorithm, JCheckBox> e : this.algCheckBoxes.entrySet()) {
+			SolverAlgorithm algo = e.getKey();
+			boolean selected = (data.getWhatifAlgorithms().contains(algo));
+			JCheckBox checkbox = e.getValue();
 			if ((selected && !checkbox.isSelected()) || (!selected && checkbox.isSelected())) {
 				checkbox.doClick();
 			}
 			if (!data.isClosed()) {
 				checkbox.setEnabled(false);
 			}
-			if (SolverAlgorithm.isApproximate(SolverAlgorithm.closedValues()[i])) {
-				algTolerances.get(toleranceIndex).setText(numFormat.format(data.getAlgTolerance()[i]));
+			if (!algo.isExact()) {
+				algTolerances.get(algo).setText(numFormat.format(data.getWhatifAlgorithmTolerance(algo)));
 				if (!data.isClosed()) {
-					algToleranceLabels.get(toleranceIndex).setEnabled(false);
-					algTolerances.get(toleranceIndex).setEnabled(false);
+					algToleranceLabels.get(algo).setEnabled(false);
+					algTolerances.get(algo).setEnabled(false);
 				}
-				toleranceIndex++;
 			}
 		}
 	}
-	/** End **/
 	
 	/**
 	 * Sets values for from, to and iteration fields
@@ -444,15 +446,17 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		
 		/* EDITED BY Abhimanyu Chugh */
 		//Creates the Panel for comparing different algorithms
-		final JPanel algPanel = new JPanel();
+		algPanel = new JPanel();
 		compMultiAlg = new JCheckBox ("Compare Algorithms");
 		compMultiAlg.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				AbstractButton abstractButton = (AbstractButton) e.getSource();
 				boolean selected = abstractButton.getModel().isSelected();
-				data.setCompareAlgs(selected);
+				if (!selected) {
+					data.clearWhatifAlgorithms();
+				}
 				algPanel.setVisible(selected);
-				AMVAPanel.enableOrDisableAlgPanel(!selected);
+				wizard.setAlgPanelEnabled(!selected && data.isClosed());
 				repaint();
 			}
 		});
@@ -460,11 +464,12 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		
 		algPanel.setLayout(new GridLayout(0, 2, 0, 0));
 		
-		algCheckBoxes = new LinkedList<JCheckBox>();
-		algTolerances = new LinkedList<JTextField>();
-		algToleranceLabels = new LinkedList<JLabel>();
+		algCheckBoxes = new EnumMap<SolverAlgorithm, JCheckBox>(SolverAlgorithm.class);
+		algTolerances = new EnumMap<SolverAlgorithm, JTextField>(SolverAlgorithm.class);
+		algToleranceLabels = new EnumMap<SolverAlgorithm, JLabel>(SolverAlgorithm.class);
 		int noOfExactAlgs = SolverAlgorithm.noOfExactAlgs();
-		for (int i = 0; i < SolverAlgorithm.closedNames().length; i++) {
+		for (int i = 0; i < SolverAlgorithm.closedValues().length; i++) {
+			SolverAlgorithm algo = SolverAlgorithm.closedValues()[i];
 			if (i == 0) {
 				JLabel label = new JLabel("--------- Exact ---------");
 				label.setMinimumSize(new Dimension(250, 0));
@@ -485,25 +490,23 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 				algPanel.add(placeholder);
 			}
 			
-			JCheckBox checkBox = new JCheckBox (SolverAlgorithm.closedNames()[i]);
+			JCheckBox checkBox = new JCheckBox (algo.toString());
+			checkBox.setName(algo.toString());
 
 			final int index = i;
 			checkBox.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					AbstractButton abstractButton = (AbstractButton) e.getSource();
 					boolean selected = abstractButton.getModel().isSelected();
-					if (selected) {
-						data.setCompAlg(index, 1);
-					} else {
-						data.setCompAlg(index, 0);
-					}
+					SolverAlgorithm algorithm = SolverAlgorithm.fromString(abstractButton.getName());
+					data.setWhatifAlgorithm(algorithm, selected);
 				}
 			});
 			
 			algPanel.add(checkBox);
-			algCheckBoxes.add(checkBox);
+			algCheckBoxes.put(algo,checkBox);
 			
-			if (SolverAlgorithm.isApproximate(SolverAlgorithm.closedValues()[i])) {
+			if (!algo.isExact()) {
 				Dimension d = new Dimension(70,30);
 				JLabel tolLabel = new JLabel("Tolerance: ");
 				tolLabel.setMaximumSize(d);
@@ -512,14 +515,15 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 				JTextField tolerance = new JTextField(30);
 				tolerance.setText(numFormat.format(SolverMultiClosedAMVA.DEFAULT_TOLERANCE));
 				tolerance.setMaximumSize(d);
-				final int j = i;
+				tolerance.setName(algo.toString());
 				tolerance.addFocusListener(new FocusListener() {
 					@Override
 					public void focusLost(FocusEvent e) {
 						JTextField textField = (JTextField) e.getSource();
 						Double tol = SolverMultiClosedAMVA.validateTolerance(textField.getText());
+						SolverAlgorithm algorithm = SolverAlgorithm.fromString(textField.getName());
 						if (tol != null) {
-							data.setAlgTolerance(j, tol);
+							data.setWhatifAlgorithmTolerance(algorithm, tol);
 						}
 						else {
 							JOptionPane.showMessageDialog(WhatIfPanel.this, "Error: Invalid tolerance value. Using last valid value.", "Input data error", JOptionPane.ERROR_MESSAGE);
@@ -535,9 +539,10 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 					public void keyPressed(KeyEvent e) {
 						if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 							JTextField textField = (JTextField) e.getSource();
+							SolverAlgorithm algorithm = SolverAlgorithm.fromString(textField.getName());
 							Double tol = SolverMultiClosedAMVA.validateTolerance(textField.getText());
 							if (tol != null) {
-								data.setAlgTolerance(j, tol);
+								data.setWhatifAlgorithmTolerance(algorithm, tol);
 							}
 							else {
 								JOptionPane.showMessageDialog(WhatIfPanel.this, "Error: Invalid tolerance value. Using last valid value.", "Input data error", JOptionPane.ERROR_MESSAGE);
@@ -559,8 +564,8 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 				algToleranceCell.add(tolLabel);
 				algToleranceCell.add(tolerance);
 				algPanel.add(algToleranceCell);
-				algTolerances.add(tolerance);
-				algToleranceLabels.add(tolLabel);
+				algTolerances.put(algo,tolerance);
+				algToleranceLabels.put(algo,tolLabel);
 			}
 			else {
 				JPanel placeholder = new JPanel();

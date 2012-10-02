@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2006, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+ * Copyright (C) 2012, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,7 +26,6 @@ import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -47,7 +46,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.text.html.HTMLDocument.HTMLReader.HiddenAction;
 
 import jmt.analytical.SolverAlgorithm;
 import jmt.framework.data.ArrayUtils;
@@ -83,8 +81,6 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 	private boolean forcedUpdate = false;
 	// Table used to select performance indices to be plotted
 	private LinesTable table;
-	// Scrollpane used for table
-	private JScrollPane tableScrollPane;
 	// Dimension of bounds spinners
 	final static Dimension DIM_SPINNER = new Dimension(60, 20);
 	// Current performance index
@@ -92,9 +88,9 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 	// Selected performance indices
 	private int[] classes;
 	private int[] stations;
-	/** Edited by Georgios Poullaides **/
-	private int[] algorithms;
-	/** End **/
+	// Selected solver algorithm
+	private SolverAlgorithm[] algorithms;
+	private List<SolverAlgorithm> executedAlgorithms;
 	// Aggregate special value
 	private static final String AGGREGATE = "<html><b><i>Aggregate</i></b></html>";
 
@@ -194,13 +190,16 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		stations = new int[graph.getColors().length];
 		Arrays.fill(stations, -10);
 		
-		algorithms = new int[graph.getColors().length];
-		if (model.getCompAlgNum() > 1) {
-			Arrays.fill(algorithms, 0);
+		algorithms = new SolverAlgorithm[graph.getColors().length];
+		Arrays.fill(algorithms, model.getAlgorithmType());
+		if (model.isWhatifAlgorithms()) {
+			executedAlgorithms = new ArrayList<SolverAlgorithm>(model.getWhatifAlgorithms());
+		} else {
+			executedAlgorithms = Arrays.asList(model.getAlgorithmType());
 		}
 		
 		table = new LinesTable();
-		tableScrollPane = new JScrollPane(table);
+		JScrollPane tableScrollPane = new JScrollPane(table);
 		tableScrollPane.setPreferredSize(new Dimension(160, tableScrollPane.getPreferredSize().height));
 		left.add(tableScrollPane, BorderLayout.CENTER);
 		graph.setLegendPanel(mainPanel);
@@ -274,87 +273,51 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 	private void updateIndex() {
 		String current = (String) index.getSelectedItem();
 		if (!current.equals(currentIndex)) {
+			// Removes incorrect utilization measures
+			if (table.getCellEditor() != null) {
+				table.getCellEditor().stopCellEditing();
+			}
+
 			currentIndex = current;
 			//Added by ASHANKA START
 			if (currentIndex.equals(ExactConstants.INDICES_TYPES[4])) {
 				//If the System Power is selected then Need to remove the Stations Column if present
 				//If column count is less than 3 then do nothing as Stations Column is already removed.
+				table.showColumn(LinesTableColumn.CLASS);
 				table.hideColumn(LinesTableColumn.STATION);
-			} else {
+			} else if (AGGREGATE_TYPES_SET.contains(currentIndex)) {
+				table.hideColumn(LinesTableColumn.STATION);
+				table.hideColumn(LinesTableColumn.CLASS);
+			} else  {
 				//If any thing other than System Power is clicked then 
 				//restore the Stations Column only if it is not present.
+				table.showColumn(LinesTableColumn.CLASS);
 				table.showColumn(LinesTableColumn.STATION);
 			}
-			//Added by ASHANKA STOP
-			// System Response time
-			if (currentIndex.equals(AGGREGATE_TYPES[0])) {
-				tableScrollPane.setVisible(false);
+			// This is an aggregated set
+			if (AGGREGATE_TYPES_SET.contains(currentIndex)) {
 				graph.clear(false);
-				/* EDITED by Abhimanyu Chugh */
-				Iterator<SolverAlgorithm> algs = model.getResTimes().keySet().iterator();
-				int i = 0;
-				while(algs.hasNext()) {
-					//SolverAlgorithm alg = SolverAlgorithm.find(getAlgorithmName(i));
-					graph.draw(i++, model.getGlobalR(algs.next()));
+				int i=0;
+				for (SolverAlgorithm algo : executedAlgorithms) {
+					// System response time
+					if (currentIndex.equals(AGGREGATE_TYPES[0])) {
+						graph.draw(i++, model.getGlobalR(algo));
+					}
+					// System throughput
+					else if (currentIndex.equals(AGGREGATE_TYPES[1])) {
+						graph.draw(i++, model.getGlobalX(algo));
+					}
+					// Number of customers
+					else if (currentIndex.equals(AGGREGATE_TYPES[2])) {
+						graph.draw(i++, model.getGlobalQ(algo));
+					}
+					//For single Class TableScroll Pane is removed. 
+					else if (currentIndex.equals(ExactConstants.INDICES_TYPES[4]) && !model.isMultiClass()) {
+						graph.draw(i++, model.getGlobalSP(algo));
+					}
 				}
-				//TODO: achugh graph.draw(0, model.getGlobalR());
-				/* END */
-				graph.fillPlot();
-			}
-			// System throughput
-			else if (currentIndex.equals(AGGREGATE_TYPES[1])) {
-				tableScrollPane.setVisible(false);
-				graph.clear(false);
-				/* EDITED by Abhimanyu Chugh */
-				Iterator<SolverAlgorithm> algs = model.getThroughput().keySet().iterator();
-				int i = 0;
-				while(algs.hasNext()) {
-					//SolverAlgorithm alg = SolverAlgorithm.find(getAlgorithmName(i));
-					graph.draw(i++, model.getGlobalX(algs.next()));
-				}
-				//TODO: achugh graph.draw(0, model.getGlobalX());
-				/* END */
-				graph.fillPlot();
-			}
-			// Number of customers
-			else if (currentIndex.equals(AGGREGATE_TYPES[2])) {
-				tableScrollPane.setVisible(false);
-				graph.clear(false);
-				/* EDITED by Abhimanyu Chugh */
-				Iterator<SolverAlgorithm> algs = model.getQueueLen().keySet().iterator();
-				int i = 0;
-				while(algs.hasNext()) {
-					//SolverAlgorithm alg = SolverAlgorithm.find(getAlgorithmName(i));
-					graph.draw(i++, model.getGlobalQ(algs.next()));
-				}
-				//TODO: achugh graph.draw(0, model.getGlobalQ());
-				/* END */
-				graph.fillPlot();
-			}
-			//Added by ASHANKA START
-			//For single Class TableScroll Pane is removed. 
-			else if (currentIndex.equals(ExactConstants.INDICES_TYPES[4]) && !model.isMultiClass()) {
-				tableScrollPane.setVisible(false);
-				graph.clear(false);
-				/* EDITED by Abhimanyu Chugh */
-				Iterator<SolverAlgorithm> algs = model.getThroughput().keySet().iterator();
-				int i = 0;
-				while(algs.hasNext()) {
-					//SolverAlgorithm alg = SolverAlgorithm.find(getAlgorithmName(i));
-					graph.draw(i++, model.getGlobalSP(algs.next()));
-				}
-				//TODO: achugh graph.draw(0, model.getGlobalSP());
-				/* END */
-				graph.fillPlot();
-			}
-			//Added by ASHANKA STOP
-			// otherwise
-			else {
-				tableScrollPane.setVisible(true);
-				// Removes incorrect utilization measures
-				if (table.getCellEditor() != null) {
-					table.getCellEditor().stopCellEditing();
-				}
+				autosizeGraph();
+			} else {
 				if (currentIndex.equals(ExactConstants.INDICES_TYPES[3])) {
 					for (int i = 0; i < stations.length; i++) {
 						if (stations[i] == -1) {
@@ -365,6 +328,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 				table.repaint();
 				paintAllIndices();
 			}
+			
 			// Updates graph
 			graph.setYLabel(current);
 			graph.repaint();
@@ -414,6 +378,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		graph.clear(rowNum);
 		int classNum = classes[rowNum];
 		int statNum = stations[rowNum];
+		SolverAlgorithm alg = algorithms[rowNum];
 
 		//Modified the below condition by ASHANKA for 
 		//System Power there is no Station Panel
@@ -426,8 +391,6 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 			return;
 		}
 
-		/* EDITED by Abhimanyu Chugh */
-		SolverAlgorithm alg = SolverAlgorithm.find(getAlgorithmName(rowNum));
 		// Throughput
 		if (currentIndex.equals(ExactConstants.INDICES_TYPES[0])) {
 			if (classNum >= 0 && statNum >= 0) {
@@ -512,21 +475,6 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		return "Graphical Results";
 	}
 
-	/* EDITED by Abhimanyu Chugh */
-	private String getAlgorithmName(int num) {
-		if (model.isClosed()) {
-			if (model.isCompareAlgs()) {
-				if (algorithms[num] >= 0) {
-					return model.getSelectedCompNames()[algorithms[num]];
-				}
-			} else {
-				return model.getAlgorithmType();
-			}
-		}
-		return "";
-	}
-	/* END */
-	
 	private enum LinesTableColumn {
 		COLOR(""), 
 		CLASS("Class"), 
@@ -554,7 +502,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		private ComboEditor classEditor, stationsEditor, uStationsEditor;
 		
 		/** Edited by Georgios Poullaides **/
-		private ComboEditor algorithmEditor;
+		private ComboAlgoEditor algorithmEditor;
 		/** End **/
 
 		/**
@@ -588,15 +536,12 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 				uStationsCombo.addItem(model.getStationNames()[i]);
 			}
 			
-			/* EDITED by Abhimanyu Chugh */
 			//Creates algorithm editor
 			JComboBox algorithmCombo = new JComboBox();
-			Iterator<SolverAlgorithm> algs = model.getQueueLen().keySet().iterator();
-			while (algs.hasNext()) {
-				algorithmCombo.addItem(algs.next().toString());
+			for (SolverAlgorithm algo : model.getWhatifAlgorithms()) {
+				algorithmCombo.addItem(algo);
 			}
-			algorithmEditor = new ComboEditor(algorithmCombo);
-			/* END */
+			algorithmEditor = new ComboAlgoEditor(algorithmCombo);
 
 			// Creates editors
 			classEditor = new ComboEditor(classCombo);
@@ -761,7 +706,32 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 				return new Integer(val - 2);
 			}
 		}
-	}
+
+		/**
+		 * Inner class used as a comboBox editor
+		 */
+		protected class ComboAlgoEditor extends ComboEditor {
+			private static final long serialVersionUID = 1L;
+
+			/**
+			 * Constructs a <code>DefaultCellEditor</code> object that uses a
+			 * combo box.
+			 *
+			 * @param comboBox a <code>JComboBox</code> object
+			 */
+			public ComboAlgoEditor(JComboBox comboBox) {
+				super(comboBox);
+			}
+
+			/**
+			 * Returns selected algorithm
+			 */
+			@Override
+			public Object getCellEditorValue() {
+				return combo.getSelectedItem();
+			}
+		}
+}
 
 	/**
 	 * Table model for LinesTable
@@ -866,14 +836,25 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		public Object getValueAt(int rowIndex, int columnIndex) {
 			int stationNum = stations[rowIndex];
 			int classNum = classes[rowIndex];
+			int algoNum = 1;
+			if (model.isWhatifAlgorithms()) {
+				algoNum = model.getWhatifAlgorithms().size();
+			}
 			
 			LinesTableColumn column = getColumn(columnIndex);
+			boolean aggregate = AGGREGATE_TYPES_SET.contains(currentIndex);
 			
 			switch (column) {
 				case COLOR:
 					return graph.getColors()[rowIndex];
 				case CLASS:
-					if (classNum >= 0) {
+					if (aggregate) {
+						if (rowIndex < algoNum) {
+							return AGGREGATE;
+						} else {
+							return null;
+						}
+					} else if (classNum >= 0) {
 						return model.getClassNames()[classNum];
 					} else if (classNum == -1) {
 						return AGGREGATE;
@@ -881,7 +862,13 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 						return null;
 					}
 				case STATION:
-					if (stationNum >= 0) {
+					if (aggregate) {
+						if (rowIndex < algoNum) {
+							return AGGREGATE;
+						} else {
+							return null;
+						}
+					} else if (stationNum >= 0) {
 						return model.getStationNames()[stationNum];
 					} else if (stationNum == -1) {
 						return AGGREGATE;
@@ -889,7 +876,15 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 						return null;
 					}
 				case ALGORITHM:
-					return getAlgorithmName(rowIndex);
+					if (aggregate) {
+						if (rowIndex < algoNum) {
+							return executedAlgorithms.get(rowIndex);
+						} else {
+							return null;
+						}
+					} else {
+						return algorithms[rowIndex];
+					}
 			}
 			return null;
 		}
@@ -918,7 +913,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 				}
 				break;
 			case ALGORITHM:
-				algorithms[rowIndex] = ((Integer) aValue).intValue() + 2;
+				algorithms[rowIndex] = (SolverAlgorithm)aValue;
 				break;
 			
 			}
@@ -936,6 +931,10 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 		 */
 		@Override
 		public boolean isCellEditable(int rowIndex, int columnIndex) {
+			// Nothing is editable for aggregate indices
+			if (AGGREGATE_TYPES_SET.contains(currentIndex)) {
+				return false;
+			}
 			LinesTableColumn column = getColumn(columnIndex);
 			
 			switch (column) {
@@ -944,7 +943,7 @@ public class GraphPanel extends WizardPanel implements ExactConstants {
 				case STATION:
 					return true;
 				case ALGORITHM:
-					return model.getCompAlgNum() > 1;
+					return model.isWhatifAlgorithms();
 			}
 			return false;
 		}

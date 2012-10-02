@@ -611,14 +611,6 @@ public class ExactWizard extends Wizard {
 						"Input data error", JOptionPane.ERROR_MESSAGE);
 				return;
 		}
-		
-		/* EDITED by Abhimanyu Chugh */
-		// Check if at least one algorithm is selected for comparison
-		if (data.isWhatIf() && data.isCompareAlgs() && data.getCompAlgNum() < 1) {
-			JOptionPane.showMessageDialog(this, "Error: Please select at least one algorithm for comparison for what-if analysis.",
-					"Algorithm selection error", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
 		newdata.resetResults();
 		/* END */
 		
@@ -671,26 +663,22 @@ public class ExactWizard extends Wizard {
 			selector = new IterationSelector(data);
 		}
 		/* EDITED by Abhimanyu Chugh */
-		if (selector != null && data.isClosed() && data.isCompareAlgs()) {
-			int[] compAlg = data.getCompAlg();
-			for (int i = 0; i < compAlg.length; i++) {
-				if (compAlg[i] != 0) {
-					SolverAlgorithm algorithm = SolverAlgorithm.closedValues()[i];
-					AlgorithmPanel algPanel = new AlgorithmPanel(this, algorithm);
-					algPanel.addSolutionPanel(new ThroughputPanel(this, algorithm));
-					algPanel.addSolutionPanel(new QueueLenPanel(this, algorithm));
-					algPanel.addSolutionPanel(new ResTimePanel(this, algorithm));
-					algPanel.addSolutionPanel(new UtilizationPanel(this, algorithm));
-					//Added by ASHANKA START
-					// for System Power
-					algPanel.addSolutionPanel(new SysPowerPanel(this, algorithm));
-					//Added by ASHANKA STOP
-					selector.addSolutionPanel(algPanel);
-				}
+		if (selector != null && data.isClosed() && data.isWhatifAlgorithms()) {
+			for (SolverAlgorithm algorithm : data.getWhatifAlgorithms()) {
+				AlgorithmPanel algPanel = new AlgorithmPanel(this, algorithm);
+				algPanel.addSolutionPanel(new ThroughputPanel(this, algorithm));
+				algPanel.addSolutionPanel(new QueueLenPanel(this, algorithm));
+				algPanel.addSolutionPanel(new ResTimePanel(this, algorithm));
+				algPanel.addSolutionPanel(new UtilizationPanel(this, algorithm));
+				//Added by ASHANKA START
+				// for System Power
+				algPanel.addSolutionPanel(new SysPowerPanel(this, algorithm));
+				//Added by ASHANKA STOP
+				selector.addSolutionPanel(algPanel);
 			}
 			jtp.add(selector);
 		} else if (selector != null && data.isClosed()) {
-			SolverAlgorithm algorithm = SolverAlgorithm.find(data.getAlgorithmType());
+			SolverAlgorithm algorithm = data.getAlgorithmType();
 			AlgorithmPanel algPanel = new AlgorithmPanel(this, algorithm);
 			algPanel.addSolutionPanel(new ThroughputPanel(this, algorithm));
 			algPanel.addSolutionPanel(new QueueLenPanel(this, algorithm));
@@ -713,10 +701,7 @@ public class ExactWizard extends Wizard {
 			//Added by ASHANKA STOP
 			jtp.add(selector);
 		} else if (selector != null) {
-			SolverAlgorithm algorithm = null;
-			if (!data.getQueueLen().isEmpty()) {
-				algorithm = data.getQueueLen().keySet().iterator().next();
-			}
+			SolverAlgorithm algorithm = data.getAlgorithmType();
 			selector.addSolutionPanel(new ThroughputPanel(this, algorithm));
 			selector.addSolutionPanel(new QueueLenPanel(this, algorithm));
 			selector.addSolutionPanel(new ResTimePanel(this, algorithm));
@@ -727,10 +712,7 @@ public class ExactWizard extends Wizard {
 			//Added by ASHANKA STOP
 			jtp.add(selector);
 		} else {
-			SolverAlgorithm alg = null;
-			if (!data.getQueueLen().isEmpty()) {
-				alg = data.getQueueLen().keySet().iterator().next();
-			}
+			SolverAlgorithm alg = data.getAlgorithmType();
 			ThroughputPanel throughput = new ThroughputPanel(this, alg);
 			QueueLenPanel queuelength = new QueueLenPanel(this, alg);
 			ResTimePanel restimes = new ResTimePanel(this, alg);
@@ -802,7 +784,6 @@ public class ExactWizard extends Wizard {
 			}
 		}
 		amvaPanel.update();
-
 	}
 
 	@Override
@@ -847,4 +828,12 @@ public class ExactWizard extends Wizard {
 			setTitle(TITLE);
 		}
 	}	
+	
+	/**
+	 * Enables or disables the AMVA algorithm panel
+	 * @param enabled true to enable, false to disable
+	 */
+	public void setAlgPanelEnabled(boolean enabled) {
+		this.amvaPanel.setAlgPanelEnabled(enabled);
+	}
 }

@@ -144,7 +144,7 @@ public class ModelFESCApproximator {
 					}
 				}
 				int algIterations = 0;
-				if (SolverAlgorithm.isApproximate(alg)) {
+				if (!alg.isExact()) {
 					algIterations = outputModel.getAlgIterations(alg)[iteration];
 				}
 				inputModel.setResults(alg, algIterations, q, x, r, u, iteration);

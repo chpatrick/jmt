@@ -18,6 +18,10 @@
 
 package jmt.gui.exact;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * This class contains some constants for exact models.
  * @author alyf (Andrea Conti), Bertoli Marco
@@ -66,7 +70,8 @@ public interface ExactConstants {
 	public static final String[] INDICES_TYPES = { "Throughput", "Number of Customers", "Residence Times", "Utilization", "System Power" };
 	// Aggregate performance indices
 	public static final String[] AGGREGATE_TYPES = { "System Response Time", "System Throughput", "System Number of Customers" };
-
+	public static final Set<String> AGGREGATE_TYPES_SET = new HashSet<String>(Arrays.asList(AGGREGATE_TYPES));
+	
 	public static final String DESCRIPTION_CLASSES = "<html><body align=\"left\"><font size=\"4\"><b>Classes characteristics</b>"
 			+ "</font><font size=\"3\"><br>Number, customized name, type of classes and number of "
 			+ "customers (closed class) or arrival rate (open class). "

@@ -1,6 +1,7 @@
 package jmt.gui.exact.panels;
 
 import java.awt.BorderLayout;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -26,7 +27,7 @@ public class AlgorithmPanel extends WizardPanel {
 	 * 
 	 */
 	// Vector with all solution panels
-	private Vector<SolutionPanel> panels = new Vector<SolutionPanel>();
+	private ArrayList<SolutionPanel> panels = new ArrayList<SolutionPanel>();
 	// Data structure
 	protected ExactWizard ew;
 	// Dimension of spinner

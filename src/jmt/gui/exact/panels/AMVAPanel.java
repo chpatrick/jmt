@@ -1,3 +1,21 @@
+/**    
+  * Copyright (C) 2012, Laboratorio di Valutazione delle Prestazioni - Politecnico di Milano
+
+  * This program is free software; you can redistribute it and/or modify
+  * it under the terms of the GNU General Public License as published by
+  * the Free Software Foundation; either version 2 of the License, or
+  * (at your option) any later version.
+
+  * This program is distributed in the hope that it will be useful,
+  * but WITHOUT ANY WARRANTY; without even the implied warranty of
+  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  * GNU General Public License for more details.
+
+  * You should have received a copy of the GNU General Public License
+  * along with this program; if not, write to the Free Software
+  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+  */
+
 package jmt.gui.exact.panels;
 
 import java.awt.Component;
@@ -17,11 +35,13 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
+
 import jmt.analytical.SolverAlgorithm;
 import jmt.analytical.SolverMultiClosedAMVA;
 import jmt.framework.gui.help.HoverHelp;
-import jmt.framework.gui.wizard.WizardPanel;
+import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.ExactWizard;
 
 /**
@@ -30,20 +50,19 @@ import jmt.gui.exact.ExactWizard;
  * @author Abhimanyu Chugh
  *
  */
-public final class AMVAPanel extends WizardPanel {
+public final class AMVAPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private HoverHelp help;
 	private NumberFormat numFormat = new DecimalFormat("#.###############");
-	private static final String helpText = "<html>In this panel you can select the algorithm that the solver will use.<br><br>";
 
-	private static ExactWizard ew;
+	private ExactWizard ew;
 	
-	public static JLabel tolLabel, algLabel;
-	public static JTextField tolerance;
-	public static String algorithm;
-	public static JComboBox algorithmList;
-	public static String [] modelName;
+	public JLabel tolLabel, algLabel;
+	public JTextField tolerance;
+	public String algorithm;
+	public JComboBox algorithmList;
+	public String [] modelName;
 	
 	private ActionListener ACTION_CHANGE_ALGORITHM = new ActionListener() {
 		// initial value
@@ -54,13 +73,13 @@ public final class AMVAPanel extends WizardPanel {
 			algorithm = (String)algorithmList.getSelectedItem();
 			
 			// check if algorithm or not
-			if (SolverAlgorithm.find(algorithm) == null) {
+			if (SolverAlgorithm.fromString(algorithm) == null) {
 				algorithmList.setSelectedIndex(currentItem);
 			} else {
 				currentItem = algorithmList.getSelectedIndex();
-				ew.getData().setAlgorithmType(algorithm);
-				SolverAlgorithm alg = SolverAlgorithm.find(algorithm);
-				boolean exact = alg != null && SolverAlgorithm.isExact(alg);
+				ew.getData().setAlgorithmType(SolverAlgorithm.fromString(algorithm));
+				SolverAlgorithm alg = SolverAlgorithm.fromString(algorithm);
+				boolean exact = alg != null && alg.isExact();
 				showToleranceField(!exact);
 			}
 		}
@@ -89,14 +108,18 @@ public final class AMVAPanel extends WizardPanel {
 		}
 	}
 	
-	public static void enableOrDisableAlgPanel(boolean enabled) {
+	/**
+	 * Enables or disables the AMVA algorithm panel
+	 * @param enabled true to enable, false to disable
+	 */
+	public void setAlgPanelEnabled(boolean enabled) {
 		algLabel.setEnabled(enabled);
 		algorithmList.setEnabled(enabled);
 		tolLabel.setEnabled(enabled);
 		tolerance.setEnabled(enabled);
 	}
 	
-	public static void showToleranceField(boolean show) {
+	public void showToleranceField(boolean show) {
 		tolLabel.setVisible(show);
 		tolerance.setVisible(show);
 	}
@@ -120,7 +143,7 @@ public final class AMVAPanel extends WizardPanel {
 				Component comp = super.getListCellRendererComponent(list, value, index, isSelected,
 						cellHasFocus);
 				String str = (value == null) ? "" : value.toString();
-				if (SolverAlgorithm.find(str) == null) {
+				if (SolverAlgorithm.fromString(str) == null) {
 					comp.setEnabled(false);
 					comp.setFocusable(false);
 					setBackground(list.getBackground());
@@ -157,7 +180,7 @@ public final class AMVAPanel extends WizardPanel {
 		return tolerance;
 	}
 	
-	public static void setAlgorithm (String alg) {
+	public void setAlgorithm (String alg) {
 		algorithm = alg;
 	}
 	
@@ -166,9 +189,12 @@ public final class AMVAPanel extends WizardPanel {
 	}
 	
 	public void update() {
-		algorithm = ew.getData().getAlgorithmType();
-		tolerance.setText(numFormat.format(ew.getData().getTolerance()));
+		ExactModel data = ew.getData();
+		algorithm = data.getAlgorithmType().toString();
+		tolerance.setText(numFormat.format(data.getTolerance()));
 		algorithmList.setSelectedItem(algorithm);
+		setAlgPanelEnabled(data.isClosed() && !data.isWhatifAlgorithms());
+
 	}
 
 	public JComponent algLabel() {

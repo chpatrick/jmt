@@ -19,9 +19,12 @@
 package jmt.gui.exact;
 
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -62,16 +65,12 @@ public class ExactModel implements ExactConstants {
 	
 	/* EDITED by Abhimanyu Chugh */
 	//Set by default to the Exact MVA algorithm
-	public static String ALGORITHM_TYPE = SolverAlgorithm.EXACT.toString();
+	public SolverAlgorithm algorithmType = SolverAlgorithm.EXACT;
 	//Set by default if user does not enter a tolerance value
-	public static double TOLERANCE = SolverMultiClosedAMVA.DEFAULT_TOLERANCE;
+	public double tolerance = SolverMultiClosedAMVA.DEFAULT_TOLERANCE;
 	//Names of the algorithms to be compared
-	private String [] compAlgNames;
-	private String [] compSelectedNames;
-	public int [] compAlg;
-	public double [] algTols;
-	private int compAlgNum;
-	private boolean compareAlgs;
+	private Set<SolverAlgorithm> whatifAlgorithms;
+	private Map<SolverAlgorithm, Double> whatifAlgorithmsTollerance;
 	/* END */
 	
 	//true if the model is closed
@@ -200,12 +199,6 @@ public class ExactModel implements ExactConstants {
 		setDefaults();
 		
 		/* EDITED by Abhimanyu Chugh */
-		compAlgNames = SolverAlgorithm.closedNames();
-		compSelectedNames = new String[SolverAlgorithm.closedNames().length];
-		compAlg = new int[SolverAlgorithm.closedNames().length];
-		Arrays.fill(compAlg, 0);
-		algTols = new double[SolverAlgorithm.closedNames().length];
-		Arrays.fill(algTols, SolverMultiClosedAMVA.DEFAULT_TOLERANCE);
 		/* END */
 	}
 
@@ -234,13 +227,8 @@ public class ExactModel implements ExactConstants {
 		classTypes = ArrayUtils.copy(e.classTypes);
 		classData = ArrayUtils.copy(e.classData);
 		
-		/** Edited by Georgios Poullaides **/
-		compAlgNames =  ArrayUtils.copy(e.compAlgNames);
-		compAlg =  ArrayUtils.copy(e.compAlg);
-		compSelectedNames = new String[compAlgNames.length];
-		algTols =  ArrayUtils.copy(e.algTols);
-		compareAlgs = e.compareAlgs;
-		/** End **/
+		whatifAlgorithms = EnumSet.copyOf(e.whatifAlgorithms);
+		whatifAlgorithmsTollerance = new EnumMap<SolverAlgorithm, Double>(e.whatifAlgorithmsTollerance);
 
 		visits = ArrayUtils.copy2(e.visits);
 
@@ -266,7 +254,7 @@ public class ExactModel implements ExactConstants {
 				throughput.put(alg, ArrayUtils.copy3(e.throughput.get(alg)));
 				resTimes.put(alg, ArrayUtils.copy3(e.resTimes.get(alg)));
 				util.put(alg, ArrayUtils.copy3(e.util.get(alg)));
-				if (SolverAlgorithm.isApproximate(alg)) {
+				if (!alg.isExact()) {
 					algIterations.put(alg, ArrayUtils.copy(e.algIterations.get(alg)));
 				}
 			}
@@ -274,95 +262,80 @@ public class ExactModel implements ExactConstants {
 		}
 	}
 	
-	/* EDITED by Abhimanyu Chugh and Georgios Poullaides */
-	public void setAlgorithmType(String algorithm) {
-		ALGORITHM_TYPE = algorithm;
+	public void setAlgorithmType(SolverAlgorithm algorithm) {
+		algorithmType = algorithm;
 	}
 	
-	public String getAlgorithmType() {
-		return ALGORITHM_TYPE;
+	public SolverAlgorithm getAlgorithmType() {
+		return algorithmType;
 	}
 	
 	public double getTolerance() {
-		return TOLERANCE;
+		return tolerance;
 	}
 	
 	public void setTolerance (double tol) {
-		TOLERANCE = tol;
+		tolerance = tol;
 	}
-	
-	public String[] getCompAlgNames() {
-		return compAlgNames;
-	}
-	
-	public String[] getSelectedCompNames() {
-		int index = 0;
-		for (int i = 0; i < compAlg.length; i++) {
-			if (getCompAlg()[i] != 0) {
-				compSelectedNames[index] = getCompAlgNames()[i];
-				index++;
-			}
-		}
-		return compSelectedNames;
-	}
-	
-	public int[] getCompAlg() {
-		return compAlg;
-	}
-	
-	public void setCompAlg(int index, int value) {
-		compAlg[index] = value;
-	}
-	
-	public double[] getAlgTolerance() {
-		return algTols;
-	}
-	
-	public void setAlgTolerance(int index, double value) {
-		algTols[index] = value;
-	}
-	
-	public boolean isCompareAlgs() {
-		return compareAlgs;
-	}
-	
-	public void setCompareAlgs(boolean compareAlgs) {
-		this.compareAlgs = compareAlgs;
-	}
-	
-	public int getCompAlgNum() {
-		compAlgNum = 0;
-		for (int i=0; i < compAlg.length; i++) {
-			if (compAlg[i] != 0) {
-				compAlgNum++;
-			}
-		}
-		return compAlgNum;
-	}
-	
-	public int getAvailbleIndex() {
-		int index = 0;
-		for (int i=0; i<compAlg.length; i++) {
-			if (compAlg[i] != 0) {
-				index = i;
-				break;
-			}
-		}
-		return index;
-	}
-	
-	public boolean compare() {
-		boolean compare = false;
-		for (int i=0; i<compAlg.length; i++) {
-			if (compAlg[i] != 0) {
-				compare = true;
-				break;
-			}
-		}
-		return compare;
-	}
-	/* END */
 
+	
+	/**
+	 * @return the set of algorithm to perform whatif on
+	 */
+	public Set<SolverAlgorithm> getWhatifAlgorithms() {
+		return whatifAlgorithms;
+	}
+	
+	/**
+	 * Set algorithm to perform whatif on
+	 * @param algorithm the algorithm
+	 * @param compare true to do whatif, false otherwise
+	 */
+	public void setWhatifAlgorithm(SolverAlgorithm algorithm, boolean compare) {
+		if (compare) {
+			this.whatifAlgorithms.add(algorithm);
+		} else {
+			this.whatifAlgorithms.remove(algorithm);
+		}
+	}
+	
+	/**
+	 * Returns the tolerance for a whatif algorithm
+	 * @param algorithm the algorithm
+	 * @return the tolerance
+	 */
+	public double getWhatifAlgorithmTolerance(SolverAlgorithm algorithm) {
+		Double val = whatifAlgorithmsTollerance.get(algorithm);
+		if (val != null) {
+			return val;
+		} else {
+			return SolverMultiClosedAMVA.DEFAULT_TOLERANCE;
+		}
+	}
+	
+	/**
+	 * Sets the tolerance for a whatif algorithm
+	 * @param algorithm the algorithm
+	 * @param value the tolerance
+	 */
+	public void setWhatifAlgorithmTolerance(SolverAlgorithm algorithm, double value) {
+		whatifAlgorithmsTollerance.put(algorithm, value);
+	}
+	
+	/**
+	 * @return true if AMVA algorithm comparison was requested. false otherwise.
+	 */
+	public boolean isWhatifAlgorithms() {
+		return whatifAlgorithms.size() > 0;
+	}
+	
+	/**
+	 * Clears whatif algorithms selection
+	 */
+	public void clearWhatifAlgorithms() {
+		whatifAlgorithms.clear();
+	}
+	
 	/**
 	 * Clears all the results
 	 */
@@ -406,7 +379,7 @@ public class ExactModel implements ExactConstants {
 		this.throughput.put(alg, ArrayUtils.copy3(throughput));
 		this.resTimes.put(alg, ArrayUtils.copy3(resTimes));
 		this.util.put(alg, ArrayUtils.copy3(util));
-		if (SolverAlgorithm.isApproximate(alg)) {
+		if (!alg.isExact()) {
 			this.algIterations.put(alg, ArrayUtils.copy(algIterations));
 		}
 		
@@ -459,7 +432,7 @@ public class ExactModel implements ExactConstants {
 		if (iteration >= iterations) {
 			throw new IllegalArgumentException("iteration is greater than expected number of iterations");
 		}
-		boolean isApprox = SolverAlgorithm.isApproximate(alg);
+		boolean isApprox = !alg.isExact();
 		if (this.queueLen.get(alg) == null) {
 			this.queueLen.put(alg, new double[stations][classes][iterations]);
 			this.throughput.put(alg, new double[stations][classes][iterations]);
@@ -499,7 +472,7 @@ public class ExactModel implements ExactConstants {
 			throughput.put(alg, new double[stations][classes][iterations]);
 			resTimes.put(alg, new double[stations][classes][iterations]);
 			util.put(alg, new double[stations][classes][iterations]);
-			if (SolverAlgorithm.isApproximate(alg)) {
+			if (!alg.isExact()) {
 				algIterations.put(alg, new int[iterations]);
 			}
 		}
@@ -517,7 +490,7 @@ public class ExactModel implements ExactConstants {
 			throughput.put(alg, new double[stations][classes][iterations]);
 			resTimes.put(alg, new double[stations][classes][iterations]);
 			util.put(alg, new double[stations][classes][iterations]);
-			if (SolverAlgorithm.isApproximate(alg)) {
+			if (!alg.isExact()) {
 				algIterations.put(alg, new int[iterations]);
 			}
 		}
@@ -587,6 +560,9 @@ public class ExactModel implements ExactConstants {
 		//end NEW
 
 		description = "";
+	
+		whatifAlgorithms = EnumSet.noneOf(SolverAlgorithm.class);
+		whatifAlgorithmsTollerance = new EnumMap<SolverAlgorithm, Double>(SolverAlgorithm.class);
 	}
 
 	/**
@@ -1344,21 +1320,19 @@ public class ExactModel implements ExactConstants {
 		/* algorithm combo box */
 		Element algType_element = root.createElement("algType");
 		algParamsElement.appendChild(algType_element);
-		algType_element.setAttribute("name", ALGORITHM_TYPE);
-		algType_element.setAttribute("tolerance", Double.toString(TOLERANCE));
+		algType_element.setAttribute("name", algorithmType.toString());
+		algType_element.setAttribute("tolerance", Double.toString(tolerance));
 		
 		/* compare algorithms box */
 		Element compareAlgs_element = root.createElement("compareAlgs");
-		compareAlgs_element.setAttribute("value", Boolean.toString(compareAlgs));
+		compareAlgs_element.setAttribute("value", Boolean.toString(isWhatifAlgorithms()));
 		algParamsElement.appendChild(compareAlgs_element);
-		if (compareAlgs) {
-			for (int i = 0; i < compAlg.length; i++) {
+		if (isWhatifAlgorithms()) {
+			for (SolverAlgorithm algo : getWhatifAlgorithms()) {
 				Element alg_element = root.createElement("whatIfAlg");
 				compareAlgs_element.appendChild(alg_element);
-				alg_element.setAttribute("index", Integer.toString(i));
-				alg_element.setAttribute("value", Integer.toString(compAlg[i]));
-				alg_element.setAttribute("name", compAlgNames[i]);
-				alg_element.setAttribute("tolerance", Double.toString(algTols[i]));
+				alg_element.setAttribute("name", algo.toString());
+				alg_element.setAttribute("tolerance", Double.toString(getWhatifAlgorithmTolerance(algo)));
 			}
 		}
 		/* END */
@@ -1543,7 +1517,7 @@ public class ExactModel implements ExactConstants {
 			for (SolverAlgorithm alg : queueLen.keySet()) {
 				Element algorithm_element = (Element) result_element.appendChild(root.createElement("algorithm"));
 				algorithm_element.setAttribute("name", alg.toString());
-				if (SolverAlgorithm.isApproximate(alg)) {
+				if (!alg.isExact()) {
 					algorithm_element.setAttribute("iterations", Integer.toString(algIterations.get(alg)[k]));
 				}
 				
@@ -1648,19 +1622,21 @@ public class ExactModel implements ExactConstants {
 			Element algParam = (Element) algParams.item(0);
 			
 			Element algType = (Element) algParam.getElementsByTagName("algType").item(0);
-			setAlgorithmType(algType.getAttribute("name"));
+			setAlgorithmType(SolverAlgorithm.fromString(algType.getAttribute("name")));
 			setTolerance(Double.parseDouble(algType.getAttribute("tolerance")));
 			
 			Element compareAlgs = (Element) algParam.getElementsByTagName("compareAlgs").item(0);
-			this.compareAlgs = Boolean.parseBoolean(compareAlgs.getAttribute("value"));
 			NodeList whatIfAlgs = compareAlgs.getElementsByTagName("whatIfAlg");
 			for (int i = 0; i < whatIfAlgs.getLength(); i++) {
 				Element alg = (Element) whatIfAlgs.item(i);
-				int index = Integer.parseInt(alg.getAttribute("index"));
-				compAlg[index] = Integer.parseInt(alg.getAttribute("value"));
-				//compAlgNames[index] = alg.getAttribute("name");
-				algTols[index] = Double.parseDouble(alg.getAttribute("tolerance"));
+				String name = alg.getAttribute("name");
+				SolverAlgorithm algo = SolverAlgorithm.fromString(name);
+				this.setWhatifAlgorithm(algo, true);
+				this.setWhatifAlgorithmTolerance(algo, Double.parseDouble(alg.getAttribute("tolerance")));
 			}
+		} else {
+			this.whatifAlgorithms = EnumSet.noneOf(SolverAlgorithm.class);
+			this.whatifAlgorithmsTollerance = new EnumMap<SolverAlgorithm, Double>(SolverAlgorithm.class);
 		}
 		/* END */
 
@@ -1906,12 +1882,12 @@ public class ExactModel implements ExactConstants {
 				int algCount = Integer.parseInt(solution.getAttribute("algCount"));
 				for (int a = 0; a < algCount; a++) {
 					Element a_alg = (Element) solution.getElementsByTagName("algorithm").item(a);
-					SolverAlgorithm alg = SolverAlgorithm.find(a_alg.getAttribute("name"));
+					SolverAlgorithm alg = SolverAlgorithm.fromString(a_alg.getAttribute("name"));
 					
 					if (alg == null) {
 						continue;
 					}
-					boolean isApprox = SolverAlgorithm.isApproximate(alg);
+					boolean isApprox = !alg.isExact();
 					if (i == 0) {
 						queueLen.put(alg, new double[stations][classes][iterations]);
 						throughput.put(alg, new double[stations][classes][iterations]);

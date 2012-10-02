@@ -141,18 +141,16 @@ public class SolverDispatcher {
 		ModelFESCApproximator fesc = new ModelFESCApproximator(model, iteration);
 		try {
 			/** Edited by Abhimanyu Chugh **/
-			if (model.isClosed() && model.isWhatIf() && model.isCompareAlgs()) {
-				String origAlgType = model.getAlgorithmType();
+			if (model.isClosed() && model.isWhatIf() && model.isWhatifAlgorithms()) {
+				SolverAlgorithm origAlgType = model.getAlgorithmType();
 				double origAlgTolerance = model.getTolerance();
-				for (int i = 0; i < model.compAlg.length; i++) {
-					if (model.getCompAlg()[i] != 0) {
-						model.setAlgorithmType(model.getCompAlgNames()[i]);
-						model.setTolerance(model.getAlgTolerance()[i]);
-						if (model.isMultiClass()) {
-							solveMulti(fesc.getModelToBeSolved(), iteration);
-						} else {
-							solveSingle(fesc.getModelToBeSolved(), iteration);
-						}
+				for (SolverAlgorithm algo : model.getWhatifAlgorithms()) {
+					model.setAlgorithmType(algo);
+					model.setTolerance(model.getWhatifAlgorithmTolerance(algo));
+					if (model.isMultiClass()) {
+						solveMulti(fesc.getModelToBeSolved(), iteration);
+					} else {
+						solveSingle(fesc.getModelToBeSolved(), iteration);
 					}
 				}
 				model.setAlgorithmType(origAlgType);
@@ -200,7 +198,7 @@ public class SolverDispatcher {
 		int stations = model.getStations();
 		Solver solver = null;
 		/** Edited by Abhimanyu Chugh **/
-		SolverAlgorithm algorithmType = SolverAlgorithm.find(model.ALGORITHM_TYPE);
+		SolverAlgorithm algorithmType = model.getAlgorithmType();
 		int algIterations = 0;
 		/** End **/
 
@@ -230,8 +228,8 @@ public class SolverDispatcher {
 				/*} else if (SolverAlgorithm.MoM.equals(algorithmType)) {
 					solver = new SolverSingleClosedMoM(pop, stations);
 				*/} else {
-					SolverAlgorithm algType = SolverAlgorithm.find(model.ALGORITHM_TYPE);
-					solver = new SolverSingleClosedAMVA(pop, stations, algType, model.TOLERANCE);
+					SolverAlgorithm algType = model.getAlgorithmType();
+					solver = new SolverSingleClosedAMVA(pop, stations, algType, model.getTolerance());
 				}
 				/** End **/
 				
@@ -244,7 +242,7 @@ public class SolverDispatcher {
 				}
 			} else {
 				/** Edited by Abhimanyu Chugh **/
-				algorithmType = SolverAlgorithm.OPEN;
+				algorithmType = SolverAlgorithm.EXACT;
 				/** End **/
 				//TODO this is not used any more (multi solver is used instead)
 				/* single open */
@@ -312,7 +310,7 @@ public class SolverDispatcher {
 		int[] classPop = ArrayUtils.toInt(classData);
 		
 		/** Edited by Abhimanyu Chugh **/
-		SolverAlgorithm algorithmType = SolverAlgorithm.find(model.ALGORITHM_TYPE);
+		SolverAlgorithm algorithmType = model.getAlgorithmType();
 		int algIterations = 0;
 		/** End **/
 
@@ -343,7 +341,7 @@ public class SolverDispatcher {
 		try {
 			if (model.isOpen()) {
 				/** Edited by Abhimanyu Chugh **/
-				algorithmType = SolverAlgorithm.OPEN;
+				algorithmType = SolverAlgorithm.EXACT;
 				/** End **/
 				solver = new SolverMultiOpen(classes, stations, model.getClassData(), model.getStationServers());
 				if (!solver.input(stationNames, stationTypes, serviceTimes, visits)) {
@@ -365,7 +363,7 @@ public class SolverDispatcher {
 						}
 						solver = closedSolver;
 					*/} else {
-						double tolerance = model.TOLERANCE;
+						double tolerance = model.getTolerance();
 						SolverMultiClosedAMVA closerSolver = null;
 						if (SolverAlgorithm.CHOW.equals(algorithmType)) {
 							closerSolver = new SolverMultiClosedChow(classes, stations, classPop);
@@ -389,7 +387,7 @@ public class SolverDispatcher {
 				} else {
 					//model is multiclass mixed
 					/** Edited by Abhimanyu Chugh **/
-					algorithmType = SolverAlgorithm.MIXED;
+					algorithmType = SolverAlgorithm.EXACT;
 					/** End **/
 					int[] classTypes = mapClassTypes(model.getClassTypes());
 
