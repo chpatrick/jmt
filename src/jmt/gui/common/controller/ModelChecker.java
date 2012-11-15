@@ -18,11 +18,8 @@
 
 package jmt.gui.common.controller;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
+import java.util.*;
+
 
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.definitions.BlockingRegionDefinition;
@@ -32,6 +29,7 @@ import jmt.gui.common.definitions.StationDefinition;
 import jmt.gui.common.definitions.parametric.ParametricAnalysisChecker;
 import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
 import jmt.gui.common.distributions.Distribution;
+import jmt.gui.common.routingStrategies.LoadDependentRouting;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
 import jmt.gui.common.routingStrategies.RandomRouting;
 import jmt.gui.common.routingStrategies.RoutingStrategy;
@@ -129,6 +127,8 @@ public class ModelChecker implements CommonConstants {
 	//Vector containing the keys of cs between fork/join
 	private Vector<Object> csBetweenForkJoin;
 
+    private Map<Object, HashMap<Object, Object>> invalidLoadDependentRouting;
+
 	//Vector containing the keys of the stations with a queue strategy different from FCFS.
 	//Used only in JMVA conversion
 	//private Vector nonFCFSStations;
@@ -187,6 +187,8 @@ public class ModelChecker implements CommonConstants {
 	public static final int CS_FOLLOWED_BY_A_BAS = 20;
 	//Checks if exist some cs between a fork and a join.
 	public static final int CS_BETWEEN_FORK_JOIN = 21;
+
+    public static final int LOAD_DEPENDENT_ROUTING_INVALID = 22;
 
 	//it occours when more than one sink have been defined
 	public static int MORE_THAN_ONE_SINK_WARNING = 0;
@@ -250,8 +252,9 @@ public class ModelChecker implements CommonConstants {
 	public static int NON_STATE_INDEPENDENT_ROUTING_WARNING = 5;
 	*/
 
-	private int NUMBER_OF_ERROR_TYPES = 22;
-	private int NUMBER_OF_NORMAL_ERROR_TYPES = 22;
+
+	private int NUMBER_OF_ERROR_TYPES = 23;
+	private int NUMBER_OF_NORMAL_ERROR_TYPES = 23;
 	private int NUMBER_OF_WARNING_TYPES = 14;
 	private int NUMBER_OF_NORMAL_WARNING_TYPES = 5;
 
@@ -285,6 +288,7 @@ public class ModelChecker implements CommonConstants {
 		BCMPserversFCFSWithoutExponential = new Vector<Object>(0, 1);
 		BCMPFcfsServersWithDifferentServiceTimes = new Vector<Object>(0, 1);
 		BCMPdelaysWithNonRationalServiceDistribution = new Vector<Object>(0, 1);
+        invalidLoadDependentRouting = new HashMap<Object, HashMap<Object, Object>>(0);
 		csWithWrongMatrix = new Vector<Object>(0, 1);
 		csFollowedByBas = new Vector<Object>(0, 1);
 		csBetweenForkJoin = new Vector<Object>(0, 1);
@@ -305,7 +309,7 @@ public class ModelChecker implements CommonConstants {
 		allForwardStationsAreSinkErrors.clear();
 		stationWithoutBackwardLinks.removeAllElements();
 		redundantMeasure.removeAllElements();
-		inconsistentMeasures.removeAllElements();
+		inconsistentMeasures.clear();
 		//nonFCFSStations.removeAllElements();
 		BCMPserversWithDifferentQueueStrategy.removeAllElements();
 		BCMPserversWithDifferentServiceTypes.removeAllElements();
@@ -317,6 +321,7 @@ public class ModelChecker implements CommonConstants {
 		csFollowedByBas.removeAllElements();
 		csBetweenForkJoin.removeAllElements();
 		emptyBlockingRegions.removeAllElements();
+        invalidLoadDependentRouting.clear();
 		for (int i = 0; i < NUMBER_OF_ERROR_TYPES; i++) {
 			errors[i] = false;
 			if (i < NUMBER_OF_WARNING_TYPES) {
@@ -361,6 +366,7 @@ public class ModelChecker implements CommonConstants {
 			checkForSimulationError();
 			checkForMeasureError();
 			checkForInconsistentMeasureError();
+            checkForLoadDependentRoutingError();
 			//checkForMoreThanOneSinkWarning();
 			checkForNoBacwardLinkWarning();
 			checkForParametricAnalysisModelModifiedWarning();
@@ -615,6 +621,10 @@ public class ModelChecker implements CommonConstants {
 	 */
 	public boolean isThereCsFollowedByBasError() {
 		return errors[CS_FOLLOWED_BY_A_BAS];
+	}
+
+    public boolean isThereLoadDependentRoutingError() {
+		return errors[LOAD_DEPENDENT_ROUTING_INVALID];
 	}
 
 	/**
@@ -988,6 +998,10 @@ public class ModelChecker implements CommonConstants {
 	 */
 	public Vector<Object> getBCMPdelaysWithNonRationalServiceDistribution() {
 		return BCMPdelaysWithNonRationalServiceDistribution;
+	}
+
+    public Map<Object, HashMap<Object, Object>> getInvalidLoadDependentRoutingStations() {
+		return invalidLoadDependentRouting;
 	}
 
 	/**
@@ -1500,6 +1514,25 @@ public class ModelChecker implements CommonConstants {
 			}
 		}
 	}
+
+    private void checkForLoadDependentRoutingError() {
+        //Step 1 : Find all stations.
+        for(Object stationKey : station_def.getStationKeys()) {
+            //Step 2: check Routing for each class of the station
+            for(Object classKey : class_def.getClassKeys()) {
+                RoutingStrategy rs = (RoutingStrategy) station_def.getRoutingStrategy(stationKey, classKey);
+                if(rs instanceof LoadDependentRouting){
+                    List<String> errorMsgs = ((LoadDependentRouting) rs).validate();
+                    if(errorMsgs != null && errorMsgs.size() > 0){
+                        errors[LOAD_DEPENDENT_ROUTING_INVALID] = true;
+                        HashMap innerVal = new HashMap<Object, Object>();
+                        innerVal.put(stationKey, classKey);
+                        invalidLoadDependentRouting.put(rs, innerVal);
+                    }
+                }
+            }
+        }
+    }
 
 	/**
 	 * This method is the same of checkForReferenceStationError but it checks only open classes

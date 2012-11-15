@@ -35,7 +35,9 @@ import jmt.gui.common.CommonConstants;
 import jmt.gui.common.Defaults;
 import jmt.gui.common.classSwitch.ClassSwitch;
 import jmt.gui.common.definitions.parametric.ParametricAnalysisDefinition;
+import jmt.gui.common.routingStrategies.LoadDependentRouting;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
+import jmt.gui.common.routingStrategies.RoutingStrategy;
 
 /**
  * Created by IntelliJ IDEA.
@@ -60,6 +62,8 @@ import jmt.gui.common.routingStrategies.ProbabilityRouting;
  * 
  * Modified by Ashanka (July 2010)
  * Desc: Added new defaults control of a Random CheckBox.
+  * Modified by Ashanka (Nov 2012)
+ * Desc: Added refresh of LoadDependent Routing on deletion of station.
  */
 public class CommonModel implements CommonConstants, ClassDefinition, StationDefinition, SimulationDefinition, BlockingRegionDefinition {
 	//key generator
@@ -888,6 +892,20 @@ public class CommonModel implements CommonConstants, ClassDefinition, StationDef
 		if (stationsKeyset.contains(key)) {
 			// Removes this station from owner blocking region (if needed)
 			StationData sd = (StationData) stationDataHM.get(key);
+			//Part where LoadDependant Routing must be refreshed:
+			Vector<Object> bacwardStationKeys = this.getBackwardConnections(key);
+            for(Iterator<Object> it = bacwardStationKeys.iterator(); it.hasNext();){
+                Object stationKey = it.next();
+                Vector<Object> classKeys = this.getClassKeys();
+                for(Object classKey : classKeys){
+                    RoutingStrategy rs = (RoutingStrategy)this.getRoutingStrategy(stationKey, classKey);
+                    if(rs instanceof LoadDependentRouting){
+                        LoadDependentRouting ld = (LoadDependentRouting) rs;
+                        ld.refreshRoutingOnStationDeletion(this.getStationName(key));
+                    }
+                }
+            }
+			//
 			if (sd.blockingRegion != null) {
 				removeRegionStation(sd.blockingRegion, key);
 			}

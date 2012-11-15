@@ -2856,6 +2856,12 @@ public class Mediator implements GuiInterface {
 			}
 		} else if (problemSubType == ModelChecker.PRELOADING_WITH_BLOCKING) {
 			editSimulationParameters();
+		} else if ((problemType == ModelChecker.ERROR_PROBLEM) && (problemSubType == ModelChecker.LOAD_DEPENDENT_ROUTING_INVALID)) {
+            StationParameterPanel tempPanel = new StationParameterPanel(model, model, relatedStation);
+			String stationName = model.getStationName(relatedStation);
+			// set the station parameter panel to show the routing section
+			tempPanel.showRoutingSectionPanel(relatedClass);
+			dialogFactory.getDialog(tempPanel, "Editing " + stationName + " Properties...");
 		} else if ((problemSubType == ModelChecker.CS_MATRIX_HAS_ROWS_LESS_THAN_ONE) && (problemType == ModelChecker.ERROR_PROBLEM)) {
 				StationParameterPanel tempPanel = new StationParameterPanel(model, model, relatedStation);
 				String name = this.getStationDefinition().getStationName(relatedStation);

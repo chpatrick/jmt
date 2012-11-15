@@ -18,8 +18,8 @@
 
 package jmt.gui.common.panels;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
+import java.awt.*;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.JSplitPane;
@@ -39,7 +39,9 @@ import jmt.gui.common.CommonConstants;
 import jmt.gui.common.definitions.ClassDefinition;
 import jmt.gui.common.definitions.StationDefinition;
 import jmt.gui.common.editors.ImagedComboBoxCellEditorFactory;
+import jmt.gui.common.editors.LoadDependentRoutingEditor;
 import jmt.gui.common.editors.RoutingProbabilitiesEditor;
+import jmt.gui.common.routingStrategies.LoadDependentRouting;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
 import jmt.gui.common.routingStrategies.RoutingStrategy;
 
@@ -62,6 +64,7 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 	private Object stationKey;
 	private JSplitPane mainPanel;
 
+    private static String className;
 	private RoutingSelectionTable routingStrategies;
 	private RoutingProbabilitiesEditor routingProbEditor;
 
@@ -72,7 +75,7 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 		classEditor = new ImagedComboBoxCellEditorFactory(cd);
 		setData(sd, cd, stationKey);
 		routingStrategies = new RoutingSelectionTable();
-		routingProbEditor = new RoutingProbabilitiesEditor(stationData, stationKey, null);
+		routingProbEditor = new RoutingProbabilitiesEditor(stationData, cd, stationKey, null);
 		initComponents();
 	}
 
@@ -198,7 +201,7 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 			if (row != -1) {
 				if (routingProbEditor != null) {
 					routingProbEditor.stopEditing();
-					routingProbEditor.setData(stationData, stationKey, classData.getClassKeys().get(row));
+					routingProbEditor.setData(stationData, classData,  stationKey, classData.getClassKeys().get(row));
 					RoutingSectionPanel.this.doLayout();
 					RoutingSectionPanel.this.repaint();
 				}
@@ -255,17 +258,36 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 		public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 			if (columnIndex == 1) {
 				Object classKey = indexToKey(rowIndex);
+                className = classData.getClassName(classKey);
 				Object value = aValue;
 				if (aValue instanceof ProbabilityRouting) {
 					value = ((ProbabilityRouting) aValue).clone();
 				}
+                else if(aValue instanceof LoadDependentRouting){
+
+                    value = ((LoadDependentRouting) aValue).clone();
+                }
 				if (!value.equals(stationData.getRoutingStrategy(stationKey, classKey))) {
 					stationData.setRoutingStrategy(stationKey, classKey, value);
 				}
-				routingProbEditor.setData(stationData, stationKey, classKey);
+				routingProbEditor.setData(stationData, classData, stationKey, classKey);
 				doLayout();
 				repaint();
 				RoutingSectionPanel.this.doLayout();
+                if(aValue instanceof LoadDependentRouting) {
+                    Container parent = (Container)RoutingSectionPanel.this;
+                    HashMap<String, Object> params = new HashMap<String, Object>();
+                    params.put("ClassDefinition", classData);
+                    params.put("StationDefinition",stationData);
+                    String stationName = stationData.getStationName(stationKey);
+                    params.put("stationKey",stationKey);
+                    params.put("classKey",classKey);
+                    params.put("title", "Editing for [Class] "+className + " for [Station] " + stationName + " Load Dependent Routing ...");
+                    if(stationData.getForwardConnections(stationKey) != null
+                            && stationData.getForwardConnections(stationKey).size() != 0){
+                        RoutingSectionPanel.openLoadDependentRoutingEditor(parent,params);
+                    }
+                }
 			}
 		}
 
@@ -273,4 +295,17 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 			return classData.getClassKeys().get(index);
 		}
 	}
+    public static void openLoadDependentRoutingEditor(Container parent, HashMap<String, Object> params){
+
+        while (!(parent instanceof Frame || parent instanceof Dialog)) {
+            parent = parent.getParent();
+        }
+        LoadDependentRoutingEditor editor = null;
+        if (parent instanceof Frame) {
+            editor = new LoadDependentRoutingEditor((Frame) parent,params);
+        } else {
+            editor = new LoadDependentRoutingEditor((Dialog)parent,params);
+        }
+        editor.setVisible(true);
+    }
 }

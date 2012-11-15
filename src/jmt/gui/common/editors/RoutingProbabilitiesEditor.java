@@ -18,22 +18,26 @@
 
 package jmt.gui.common.editors;
 
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
-import javax.swing.JTextArea;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.AbstractTableModel;
 
 import jmt.gui.common.CommonConstants;
+import jmt.gui.common.definitions.ClassDefinition;
 import jmt.gui.common.definitions.StationDefinition;
+import jmt.gui.common.panels.RoutingSectionPanel;
 import jmt.gui.common.panels.WarningScrollTable;
+import jmt.gui.common.routingStrategies.LoadDependentRouting;
+import jmt.gui.common.routingStrategies.ProbabilityRouting;
 import jmt.gui.common.routingStrategies.RoutingStrategy;
 
 /**
@@ -52,6 +56,7 @@ public class RoutingProbabilitiesEditor extends JSplitPane implements CommonCons
 	private Map<Object, Double> routingProbs;
 	private StationDefinition stations;
 	private Object stationKey, classKey;
+    private ClassDefinition classes;
 
 	private WarningScrollTable rtPane;
 	private JTextArea descrTextPane = new JTextArea("");
@@ -60,14 +65,14 @@ public class RoutingProbabilitiesEditor extends JSplitPane implements CommonCons
 	private JTextArea noOptLabel = new JTextArea("No options available for this routing strategy");
 	private JScrollPane noOptLabelPanel = new JScrollPane(noOptLabel);
 
-	public RoutingProbabilitiesEditor(StationDefinition sd, Object stationKey, Object classKey) {
+	public RoutingProbabilitiesEditor(StationDefinition sd, ClassDefinition cs, Object stationKey, Object classKey) {
 		super();
 		super.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		super.setDividerSize(3);
 		super.setBorder(new EmptyBorder(0, 0, 0, 0));
 		this.setResizeWeight(.5);
 		initComponents();
-		setData(sd, stationKey, classKey);
+		setData(sd, cs, stationKey, classKey);
 	}
 
 	private void initComponents() {
@@ -87,21 +92,46 @@ public class RoutingProbabilitiesEditor extends JSplitPane implements CommonCons
 		setLeftComponent(descrPane);
 	}
 
-	public void setData(StationDefinition sd, Object stationKey, Object classKey) {
+	public void setData(StationDefinition sd, ClassDefinition cs, Object stationKey, Object classKey) {
 		/*        if(stationKey==null||classKey==null||sd==null){
 		            emptyPane();
 		            return;
 		        }
-		*/RoutingStrategy rs = (RoutingStrategy) sd.getRoutingStrategy(stationKey, classKey);
+		*/
+        RoutingStrategy rs = (RoutingStrategy) sd.getRoutingStrategy(stationKey, classKey);
 		if (rs == null) {
 			emptyPane();
 		} else {
 			descrTextPane.setText(rs.getDescription());
-			if (rs.getValues() == null) {
+			/*if (rs.getValues() == null) {
 				emptyPane();
 			} else {
 				createDetails(rs, sd, stationKey, classKey);
-			}
+			}*/
+            if(rs instanceof ProbabilityRouting){
+                createDetails(rs, sd, stationKey, classKey);
+            }else if(rs instanceof LoadDependentRouting){
+                JComponent LDRoutingPanel = new JPanel();
+                LDRoutingPanel.setBorder(new TitledBorder(new EtchedBorder(), "LD Routing Options"));
+                if(sd.getForwardConnections(stationKey) != null && sd.getForwardConnections(stationKey).size() != 0){
+                    JButton editLoadDependentRoutingButton = new JButton("Edit LD Routing..");
+                    HashMap<String, Object> ldParameters = new HashMap<String, Object>();
+                    ldParameters.put("ClassDefinition",cs);
+                    ldParameters.put("StationDefinition",sd);
+                    ldParameters.put("stationKey",stationKey);
+                    ldParameters.put("classKey",classKey);
+                    String stationName = sd.getStationName(stationKey);
+                    String className = cs.getClassName(classKey);
+                    ldParameters.put("title","Editing for [Class] "+className + " for [Station] " + stationName + " Load Dependent Routing ...");
+                    editLoadDependentRoutingButton.addActionListener(new EditLoadDependentRoutingListener(ldParameters));
+                    LDRoutingPanel.add(editLoadDependentRoutingButton);
+                }else{
+                    LDRoutingPanel = rtPane;
+                }
+                setRightComponent(LDRoutingPanel);
+            }else{
+               emptyPane();
+            }
 		}
 		doLayout();
 	}
@@ -244,4 +274,15 @@ public class RoutingProbabilitiesEditor extends JSplitPane implements CommonCons
 		}
 	}
 
+    private class EditLoadDependentRoutingListener implements ActionListener{
+        HashMap<String, Object> properties = null;
+        public EditLoadDependentRoutingListener (HashMap<String, Object> properties){
+
+            this.properties = properties;
+        }
+        public void actionPerformed(ActionEvent e){
+            Container parent = (Container)RoutingProbabilitiesEditor.this;
+            RoutingSectionPanel.openLoadDependentRoutingEditor(parent,properties);
+        }
+    }
 }

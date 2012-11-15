@@ -44,6 +44,7 @@ import jmt.framework.data.MacroReplacer;
 import jmt.gui.common.CommonConstants;
 import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.distributions.Distribution;
+import jmt.gui.common.routingStrategies.LoadDependentRouting;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
 import jmt.gui.common.routingStrategies.RoutingStrategy;
 import jmt.gui.common.serviceStrategies.LDStrategy;
@@ -659,7 +660,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 	 * 
 	 * @param doc
 	 *            XML document
-	 * @param node
+	 * @param nodeNode
 	 *            XML hierarchy node
 	 * @param model
 	 *            link to data structure
@@ -669,7 +670,7 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 	 * @see jmt.engine.log.LoggerParameters LoggerParameters
 	 * @see jmt.gui.common.definitions.CommonModel#getLoggingParameters
 	 *      CommonModel.getLoggingParameters()
-	 * @see jmt.gui.common.XMLReader#parseLogger XMLReader.parseLogger()
+	 * @see jmt.gui.common.xml.XMLReader XMLReader.parseLogger()
 	 * @see jmt.engine.NodeSections.LogTunnel LogTunnel
 	 */
 	static protected void writeLoggerSection(Document doc, Node nodeNode,
@@ -1229,9 +1230,9 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 				RoutingStrategy routingStrat, CommonModel model,
 				Object classKey, Object stationKey) {
 			// parameter containing array of empirical entries
-			XMLParameter probRoutingPar = null;
-			if (routingStrat.getValues() != null
-					&& routingStrat instanceof ProbabilityRouting) {
+            XMLParameter[] innerRoutingPar = null;
+			if (routingStrat.getValues() != null && routingStrat instanceof ProbabilityRouting) {
+                XMLParameter probRoutingPar = null;
 				Vector outputs = model.getForwardConnections(stationKey);
 				Map values = routingStrat.getValues();
 				model.normalizeProbabilities(values, outputs, classKey,
@@ -1253,11 +1254,41 @@ public class XMLWriter implements CommonConstants, XMLConstantNames {
 				probRoutingPar = new XMLParameter("EmpiricalEntryArray",
 						EmpiricalEntry.class.getName(), null, empiricalEntries,
 						true);
-			}
+                innerRoutingPar = new XMLParameter[] { probRoutingPar };
+			}else if(routingStrat instanceof LoadDependentRouting){
+                LoadDependentRouting routing = (LoadDependentRouting)routingStrat;
+
+                XMLParameter ldRoutingPar = null;
+                XMLParameter[] ranges = new XMLParameter[routing.getEmpiricalEntries().size()];
+
+                Iterator<Integer> froms = routing.getEmpiricalEntries().keySet().iterator();
+                int countersRange =0;
+                while(froms.hasNext()){
+                    Integer fromKey = froms.next();
+                    String from = fromKey.toString();
+                    XMLParameter fromEntry = new XMLParameter("from", Integer.class.getName(), null, from , true);
+                    XMLParameter probLDRoutingPar = null;
+                    XMLParameter[] empiricalEntries = new XMLParameter[routing.getEmpiricalEntries().get(fromKey).length];
+                    for (int i = 0; i < empiricalEntries.length; i++) {
+                        String station = routing.getEmpiricalEntries().get(fromKey)[i].getStationName();
+                        XMLParameter stationDest = new XMLParameter("stationName", String.class.getName(), null, station, true);
+						Double probability = routing.getEmpiricalEntries().get(fromKey)[i].getProbability();
+                        XMLParameter routProb = new XMLParameter("probability", Double.class.getName(), null, probability.toString(), true);
+                        empiricalEntries[i] = new XMLParameter("EmpiricalEntry", EmpiricalEntry.class.getName(),null, new XMLParameter[] { stationDest,routProb }, true);
+					    empiricalEntries[i].parameterArray = "false";
+                    }
+                    probLDRoutingPar = new XMLParameter("EmpiricalEntryArray", EmpiricalEntry.class.getName(), null, empiricalEntries, true);
+                    ranges[countersRange] = new XMLParameter("LoadDependentRoutingParameter", strategiesClasspathBase + routingStrategiesSuffix + "LoadDependentRoutingParameter", null,
+			                new XMLParameter[] { fromEntry,probLDRoutingPar }, true);
+					ranges[countersRange].parameterArray = "false";
+                    countersRange = countersRange + 1;
+                }
+
+                ldRoutingPar = new XMLParameter("LoadDependentRoutingParameter", strategiesClasspathBase + routingStrategiesSuffix + "LoadDependentRoutingParameter", null, ranges, true);
+                innerRoutingPar = new XMLParameter[] { ldRoutingPar } ;
+            }
 			// creating parameter for empirical strategy: must be null if
 			// routing is empirical
-			XMLParameter[] innerRoutingPar = probRoutingPar != null ? new XMLParameter[] { probRoutingPar }
-					: null;
 			XMLParameter routingStrategy = new XMLParameter(
 					routingStrat.getName(), routingStrat.getClassPath(),
 					model.getClassName(classKey), innerRoutingPar, true);

@@ -18,6 +18,7 @@
 
 package jmt.engine.NodeSections;
 
+import jmt.engine.NetStrategies.RoutingStrategies.LoadDependentRoutingStrategy;
 import jmt.engine.NetStrategies.RoutingStrategy;
 import jmt.engine.QueueNet.BlockingRegion;
 import jmt.engine.QueueNet.Job;
@@ -162,10 +163,7 @@ public class Router extends OutputSection {
 				JobClass jobClass = job.getJobClass();
 
 				//choose the outNode using the corresponding routing strategy
-				NetNode outNode;
-
-				outNode = routingStrategies[jobClass.getId()].getOutNode(getOwnerNode().getOutputNodes(), jobClass);
-
+				NetNode outNode = routingStrategies[jobClass.getId()].getOutNode(this, jobClass);
 				// Bertoli Marco: sanity checks with closed classes and sinks were moved inside
 				// routing strategies
 

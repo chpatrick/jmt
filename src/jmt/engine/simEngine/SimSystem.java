@@ -105,7 +105,17 @@ public class SimSystem {
 	 * @return A reference to the entity, or null if it could not be found
 	 */
 	static final public SimEntity getEntity(int id) {
-		return entities.get(id);
+        SimEntity ent, found = null;
+        for (Iterator<SimEntity> it = entities.iterator(); it.hasNext();) {
+            ent = it.next();
+            if(ent.getId() == id){
+                 found = ent;
+            }
+        }
+        if (found == null) {
+			System.out.println("SimSystem: could not find entity " + id);
+		}
+		return found;
 	}
 
 	/** Finds an entity by its name.

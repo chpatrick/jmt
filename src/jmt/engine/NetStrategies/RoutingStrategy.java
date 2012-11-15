@@ -22,12 +22,14 @@ import jmt.common.AutoCheck;
 import jmt.engine.QueueNet.JobClass;
 import jmt.engine.QueueNet.NetNode;
 import jmt.engine.QueueNet.NodeList;
+import jmt.engine.QueueNet.NodeSection;
 
 /**
  * Use this class to implement a specific routing strategy. A routing
  * strategy is a rule which selects an output node from a node list.
  * @author Francesco Radaelli
  * @author Bertoli Marco 13-11-2005 (Added job class)
+ * @author Das Ashanka 11-2011 (Added getOutNode with NodeSection).
  */
 public abstract class RoutingStrategy implements AutoCheck {
 
@@ -38,6 +40,20 @@ public abstract class RoutingStrategy implements AutoCheck {
 	 * @return Selected node .
 	 */
 	public abstract NetNode getOutNode(NodeList Nodes, JobClass jobClass);
+
+    /**
+     * @author Ashanka
+     * @param callingSection
+     * @param jobClass
+     * @return
+     *
+     * Made it normal func instead of Abstract as I don't want
+     * other Strategies to forcefully overide this method.
+     * Currently only LoadDependentRoutingStrategy overides it.
+     */
+    public NetNode getOutNode(NodeSection callingSection, JobClass jobClass){
+        return getOutNode(callingSection.getOwnerNode().getOutputNodes(), jobClass);
+    }
 
 	public boolean check() {
 		return true;

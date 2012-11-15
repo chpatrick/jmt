@@ -43,6 +43,7 @@ import jmt.gui.common.Defaults;
 import jmt.gui.common.definitions.CommonModel;
 import jmt.gui.common.definitions.SimulationDefinition;
 import jmt.gui.common.distributions.Distribution;
+import jmt.gui.common.routingStrategies.LoadDependentRouting;
 import jmt.gui.common.routingStrategies.ProbabilityRouting;
 import jmt.gui.common.routingStrategies.RoutingStrategy;
 import jmt.gui.common.serviceStrategies.LDStrategy;
@@ -192,7 +193,7 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 		if (logPath != null && logPath != "") {
 			model.setLoggingGlbParameter("path", logPath);
 		} else {
-			model.setLoggingGlbParameter("path", Defaults.get("workingDir"));
+			model.setLoggingGlbParameter("path", "");
 		}
 		String logReplaceMode = root.getAttribute(XML_A_ROOT_LOGREPLACE);
 		if (logReplaceMode != null && logReplaceMode != "") {
@@ -671,6 +672,73 @@ public class XMLReader implements XMLConstantNames, CommonConstants {
 					empiricalRouting.put(new Object[] { key, classes.get(className2) }, tmp);
 				}
 			}
+            if (rs instanceof LoadDependentRouting) {
+                Node entryArray = routing.get(className2).getFirstChild();
+                Vector<Node> entriesNew = new Vector<Node>();
+                while (entryArray != null && (entryArray.getNodeType() != Node.ELEMENT_NODE || !entryArray.getNodeName().equals(XML_E_SUBPARAMETER))) {
+                    entryArray = entryArray.getNextSibling();//This is a SubParameter..So nxt time it wont enter.
+                    String name = null;
+                    try {
+                        name = ((Element) entryArray).getAttribute("name");//LDParameter Here
+                        name = ((Element) entryArray).getAttribute("classPath");//"jmt.engine.NetStrategies.RoutingStrategies.LDParameter"
+                        name = ((Element) entryArray).getAttribute("array"); //Trues
+                    } catch (Exception e) {
+                    }
+                    if (entryArray != null) {
+                        entriesNew.add(entryArray.getFirstChild());
+                    }
+                }
+                Vector<Node> from = new Vector<Node>();
+                while (entryArray.getNodeType() != Node.ELEMENT_NODE || !entryArray.getNodeName().equals(XML_E_SUBPARAMETER)) {
+                    entryArray = entryArray.getNextSibling();//Did not enter as I am in LDParameter Array
+                }
+                // Now finds every From entry
+                Node child = entryArray.getFirstChild();
+                while (child != null) {
+                    while (child != null && (child.getNodeType() != Node.ELEMENT_NODE || !child.getNodeName().equals(XML_E_SUBPARAMETER))) {
+                        child = child.getNextSibling();//This is a SubParameter
+                        String name = null;
+                        try {
+                            name = ((Element) child).getAttribute("name");//LDParameter Here
+                            name = ((Element) child).getAttribute("classPath");//"jmt.engine.NetStrategies.ServiceStrategies.LDParameter"
+                            name = ((Element) child).getAttribute("array"); //false
+                        } catch (Exception e) {
+                        }
+                    }
+                    if (child != null) {
+                        from.add(child);
+                        child = child.getNextSibling();//TXT
+                    }
+                }
+                LoadDependentRouting ld = new LoadDependentRouting();
+                Integer keyld;
+                for (int j = 0; j < from.size(); j++) {
+                    NodeList values = ((Element) from.get(j)).getElementsByTagName(XML_E_SUBPARAMETER);
+                    String fromValue = findText(((Element) values.item(0)).getElementsByTagName(XML_E_PARAMETER_VALUE).item(0));
+                    int fromVal = new Integer(fromValue);
+                    values = ((Element) values.item(1)).getElementsByTagName(XML_E_SUBPARAMETER);
+
+                    for(int n=0; n<values.getLength(); n++){
+                        try{//Empirical Entry..Station Name..probability Keeps repeating..
+                            String atrName = ((Element) values.item(n)).getAttribute("name");//Empirical Entry..Station Name..probability..for a from.
+                            if("EmpiricalEntry".equalsIgnoreCase(atrName)){
+                                Node empiricalEntry = values.item(n);
+                                Node station = empiricalEntry.getFirstChild().getNextSibling();
+                                String stationName = findText(((Element)station).getElementsByTagName(XML_E_PARAMETER_VALUE).item(0));
+                                Node probability = empiricalEntry.getFirstChild().getNextSibling().getNextSibling().getNextSibling();
+                                String probabilityValue = findText(((Element)probability).getElementsByTagName(XML_E_PARAMETER_VALUE).item(0));
+                                Double prob = Double.parseDouble(probabilityValue);
+                                //ld.getRange(fromVal).setProbabilities(stationName, probVal);
+                                ld.addEmricalEntryForFrom(new Integer(fromVal),stationName, prob);
+                            }
+                        }catch(Exception e){
+
+                        }
+                    }
+                }
+                rs = ld;
+                model.setRoutingStrategy(key, classes.get(className2), rs);
+            }
 		}
 	}
 	

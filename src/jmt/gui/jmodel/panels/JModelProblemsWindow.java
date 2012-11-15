@@ -33,6 +33,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Vector;
 
 import javax.swing.Icon;
@@ -619,6 +621,21 @@ public class JModelProblemsWindow extends JDialog {
 							"<font color=\"white\">---------</font>" +
 							stationName + " switch between fork/join. This topology is not allowed.", stationKey, null));
 				}				
+			}
+            if (mc.isThereLoadDependentRoutingError()) {
+				Map<Object, HashMap<Object, Object>> temp = mc.getInvalidLoadDependentRoutingStations();
+				for (Iterator<Object> it = temp.keySet().iterator(); it.hasNext();) {
+                    Object key = it.next();
+                    HashMap<Object, Object> val = (HashMap<Object, Object>)temp.get(key);
+                    Map.Entry m = val.entrySet().iterator().next();
+					Object stationKey = m.getKey();
+                    Object classKey = m.getValue();
+                    String className = mc.getClassModel().getClassName(classKey);
+					String sourceName = mc.getStationModel().getStationName(stationKey);
+					problems.add(new ProblemElement(ModelChecker.ERROR_PROBLEM, ModelChecker.LOAD_DEPENDENT_ROUTING_INVALID,
+							"<html><font color=\"white\">----</font><b>Error</b><font color=\"white\">---------</font>" +
+                            "station: " + sourceName + " for class: " + className	+ " with invalid LoadDependentRouting", stationKey, classKey));
+				}
 			}
 		}
 	}

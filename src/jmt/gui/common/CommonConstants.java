@@ -21,14 +21,7 @@ package jmt.gui.common;
 import java.awt.Dimension;
 
 import jmt.framework.data.ConstMap;
-import jmt.gui.common.routingStrategies.FastestServiceRouting;
-import jmt.gui.common.routingStrategies.LeastUtilizationRouting;
-import jmt.gui.common.routingStrategies.ProbabilityRouting;
-import jmt.gui.common.routingStrategies.RandomRouting;
-import jmt.gui.common.routingStrategies.RoundRobinRouting;
-import jmt.gui.common.routingStrategies.RoutingStrategy;
-import jmt.gui.common.routingStrategies.ShortestQueueLengthRouting;
-import jmt.gui.common.routingStrategies.ShortestResponseTimeRouting;
+import jmt.gui.common.routingStrategies.*;
 
 /**
  * Created by IntelliJ IDEA.
@@ -39,7 +32,10 @@ import jmt.gui.common.routingStrategies.ShortestResponseTimeRouting;
  * 
  * Modified by Ashanka (May 2010):
  * Desc: Renamed the default of Queueing Station to Queue Stat. 
- *       in the inner class : ConstMap function: fill 
+ *       in the inner class : ConstMap function: fill
+ *
+ * Modified by Ashanka (Nov 2012)
+ * Desc: Added new LoadDependent Routing
  */
 public interface CommonConstants {
 
@@ -114,6 +110,7 @@ public interface CommonConstants {
 	public final static RoutingStrategy ROUTING_SHORTESTRT = new ShortestResponseTimeRouting();
 	public final static RoutingStrategy ROUTING_LEASTUTILIZATION = new LeastUtilizationRouting();
 	public final static RoutingStrategy ROUTING_FASTESTSERVICE = new FastestServiceRouting();
+    public final static RoutingStrategy ROUTING_LOADDEPENDANT = new LoadDependentRouting();
 
 	/**HTML formats for panels descriptions*/
 	final static String HTML_START = "<html><body align=\"left\">";
@@ -168,6 +165,12 @@ public interface CommonConstants {
 	public final static String CONVERSION_WARNING_DESCRIPTION = HTML_START + HTML_FONT_TITLE + "Conversion performed" + HTML_FONT_TIT_END
 			+ HTML_FONT_NORM + "Input model was automatically converted from <b>%PAR1%</b> to <b>%PAR2%</b>. "
 			+ "The conversion was completed with the warnings shown below" + HTML_FONT_NOR_END + HTML_END;
+
+    public final static String LDROUTING_DESCRIPTION = HTML_START + HTML_FONT_TITLE + "Description" + HTML_FONT_TIT_END +
+                    HTML_FONT_NORM + "Customers of each class are routed depending on their number on the current station. " +
+                    "The outgoing paths must have associated probabilities that should sum to 1 for each range."
+                    + HTML_FONT_NOR_END + HTML_END;
+
 
 	// String tokens
 	public static final String PAR1 = "%PAR1%";

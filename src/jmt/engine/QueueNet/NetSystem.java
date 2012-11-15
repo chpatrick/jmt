@@ -228,7 +228,7 @@ public class NetSystem {
 		return netController.getSimulationTime();
 	}
 
-	static final NetNode getNode(int Id) {
+	public static final NetNode getNode(int Id) {
 		return (NetNode) SimSystem.getEntity(Id);
 	}
 
