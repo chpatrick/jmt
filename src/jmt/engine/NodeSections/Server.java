@@ -55,8 +55,6 @@ public class Server extends ServiceSection {
 
 	private ServiceStrategy serviceStrategy[];
 
-	private boolean blocked = false;
-
 	/** Creates a new instance of Server.
 	 * @param numberOfVisitsPerClass Number of job visits per class: if null
 	 * the server will be single visit.
@@ -178,28 +176,12 @@ public class Server extends ServiceSection {
 
 	@Override
 	protected int process(NetMessage message) throws jmt.common.exception.NetException {
-//		if(message.getEvent() == 4 || message.getEvent() == 8) {
-//			String debug = "I am the server of " + this.getOwnerNode().name + "\n" +
-//						"\t I am processing  " + message.getEvent() + ":" + message.getJob().getId() + "\n" +
-//						"\t Am I blocked? " + blocked;
-//			System.err.println(debug);
-//		}
 		int c;
 		Job job;
 		double serviceTime;
 		switch (message.getEvent()) {
 
 			case NetEvent.EVENT_ACK:
-				
-				if(blocked) {
-					blocked = false;
-//					System.err.println("\t I am no longer blocked");
-					sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
-					if (busyCounter != 0) {
-						busyCounter--;
-					}
-					return MSG_PROCESSED;
-				}
 				//EVENT_ACK
 				//If there are no jobs in the service section, message is not processed.
 				//Otherwise an ack is sent backward to the input section and
@@ -212,7 +194,7 @@ public class Server extends ServiceSection {
 					sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
 					busyCounter--;
 				} else {
-					// Avoid ACK as we already sent ack
+					// Avoid ACK as we've already sent it
 					busyCounter--;
 				}
 				break;
@@ -238,10 +220,6 @@ public class Server extends ServiceSection {
 					// forwards the job to the output section
 					sendForward(job, 0.0);
 				} else {
-					if(blocked) {
-//						System.err.println("\t Sorry, I am blocked");
-						return MSG_NOT_PROCESSED;
-					}
 					//message received from another node section: if the server is not completely busy,
 					//it sends itself a message with this job
 					if (busyCounter < numberOfServers) {
@@ -251,10 +229,7 @@ public class Server extends ServiceSection {
 						serviceTime = serviceStrategy[c].wait(this);
 						// Calculates the service time of job
 						sendMe(job, serviceTime);
-
-//						System.err.println("\t From now on I am blocked");
-						blocked = true;
-
+						
 						busyCounter++;
 						if (busyCounter < numberOfServers) {
 							// Sends an ACK to the input section (remember not to propagate

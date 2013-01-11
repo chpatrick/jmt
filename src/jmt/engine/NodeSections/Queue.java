@@ -166,7 +166,7 @@ public class Queue extends InputSection {
 			this.getStrategy = getStrategy;
 		}
 		this.putStrategy = putStrategy;
-		// Uses putstrategy.length to extimate number of classes. It's a bit unclean but we are forced for compatibility.
+		// Uses putstrategy.length to estimate number of classes. It's a bit unclean but we are forced for compatibility.
 		this.drop = new boolean[putStrategy.length];
 		this.block = new boolean[putStrategy.length];
 		Arrays.fill(this.drop, drop);
@@ -227,8 +227,8 @@ public class Queue extends InputSection {
 	}
 
 	/**
-	 * Creates a new instance of finite Queue. This is the newwst constructor that supports
-	 * differend drop strategies. Other constructors are left for compatibility.
+	 * Creates a new instance of finite Queue. This is the newest constructor that supports
+	 * different drop strategies. Other constructors are left for compatibility.
 	 * @param size Queue size (-1 = infinite queue).
 	 * @param getStrategy Queue get strategy: if null FCFS strategy is used.
 	 * @param putStrategy Queue put strategy: if null Tail strategy is used.
@@ -533,6 +533,7 @@ public class Queue extends InputSection {
 						// No jobs in queue: Refresh jobsList and sends job (don't use put strategy, because queue is empty)
 						queueJobInfoList.add(new JobInfo(job));
 
+						
 						//forward without any delay
 						forward(queueJobInfoList.removeFirst().getJob());
 
