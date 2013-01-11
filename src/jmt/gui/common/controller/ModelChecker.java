@@ -1744,6 +1744,26 @@ public class ModelChecker implements CommonConstants {
 								//... start exploring from thisForwardStation
 								temp = this.exploreForAllForwardStationAreSink(classKey, thisForwardStation, alreadyVisited);
 							}
+						} else if (strategy instanceof LoadDependentRouting) {
+                            String stationName = station_def.getStationName(thisForwardStation);
+                            LoadDependentRouting loadDependentRouting = (LoadDependentRouting)strategy;
+							Map<Integer, LoadDependentRouting.EmpiricalEntry[]> empiricalEntries = loadDependentRouting.getEmpiricalEntries();
+                            Iterator<LoadDependentRouting.EmpiricalEntry[]> rows = empiricalEntries.values().iterator();
+                            Collection<LoadDependentRouting.EmpiricalEntry> allEntries = new ArrayList<LoadDependentRouting.EmpiricalEntry>(5);
+                            while(rows.hasNext()){
+                                LoadDependentRouting.EmpiricalEntry[] entries = rows.next();
+                                allEntries.addAll(Arrays.asList(entries));
+                            }
+                            for(Iterator<LoadDependentRouting.EmpiricalEntry> itEntries = allEntries.iterator(); itEntries.hasNext();){
+                                LoadDependentRouting.EmpiricalEntry entry = itEntries.next();
+                                if(entry.getStationName().equals(stationName)){
+                                    double p = entry.getProbability();
+                                    if (p != 0) {
+                                        //... start exploring from thisForwardStation
+                                        temp = this.exploreForAllForwardStationAreSink(classKey, thisForwardStation, alreadyVisited);
+                                    }
+                                }
+                            }
 						} else {
 							temp = this.exploreForAllForwardStationAreSink(classKey, thisForwardStation, alreadyVisited);
 						}
