@@ -227,6 +227,8 @@ public class ExactModel implements ExactConstants {
 		classTypes = ArrayUtils.copy(e.classTypes);
 		classData = ArrayUtils.copy(e.classData);
 		
+		algorithmType = e.algorithmType;
+		tolerance = e.tolerance;
 		whatifAlgorithms = EnumSet.copyOf(e.whatifAlgorithms);
 		whatifAlgorithmsTollerance = new EnumMap<SolverAlgorithm, Double>(e.whatifAlgorithmsTollerance);
 

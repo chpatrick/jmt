@@ -20,9 +20,11 @@ package jmt.gui.exact.link;
 
 import java.awt.Frame;
 import java.io.File;
+
 import jmt.analytical.SolverDispatcher;
 import jmt.common.exception.InputDataException;
 import jmt.common.exception.SolverException;
+import jmt.engine.log.JSimLogger;
 import jmt.framework.xml.XMLUtils;
 import jmt.gui.exact.ExactModel;
 import jmt.gui.exact.panels.ProgressWindow;
@@ -51,6 +53,8 @@ public class SolverClient {
 	private XMLUtils xmlUtils;
 	private Frame owner;
 	private ProgressWindow progress;
+	
+	private JSimLogger logger = JSimLogger.getLogger(SolverClient.class);
 
 	public SolverClient(Frame owner) {
 		solver = new SolverDispatcher();
@@ -88,13 +92,13 @@ public class SolverClient {
 				progress.terminateAnalysis(num);
 			}
 		});
-		progress.hide();
+		progress.setVisible(false);
 		// Starts solution and shows progress window
 		/* EDITED by Abhimanyu Chugh */
 		long startTime = System.currentTimeMillis();
 		/* END */
 		solverThread.start();
-		progress.show();
+		progress.setVisible(true);
 
 		// Waits for computation to be terminated
 		try {
@@ -130,7 +134,7 @@ public class SolverClient {
 		}
 		/** Edited by Georgios Poullaides **/
 		long endTime = System.currentTimeMillis();
-		System.out.println("Total elapsed time in execution of method callMethod() is :"+ (endTime-startTime));
+		logger.debug("JMVA Total elapsed time in execution of method callMethod() is :"+ (endTime-startTime));
 		/** End **/
 		return temp;
 		
