@@ -54,7 +54,7 @@ public class AboutDialogFactory {
 	/**
 	 * Authors of each application
 	 */
-	private static String[] JMVA = { "Bertoli Marco", "Conti Andrea", "Dall'Orso Federico", "Omini Stefano", "Granata Federico", "Abhimanyu Chugh" };
+	private static String[] JMVA = { "Bertoli Marco", "Conti Andrea", "Dall'Orso Federico", "Omini Stefano", "Granata Federico", "Abhimanyu Chugh (Imperial College London)" };
 
 	private static String[] JSIM = { "Bertoli Marco", "Granata Federico", "Omini Stefano", "Radaelli Francesco", "Dall'Orso Federico" };
 
