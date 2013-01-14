@@ -235,7 +235,7 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 	            
 				//Find the beginning of the chapter selected, 
 				//then take the page start and page end number
-				if (child.toString().equals(marker.toString())) {
+				if (child.toString().toLowerCase().startsWith(marker.getChapterPrefix().toLowerCase())) {
 					currentOutline = child;
 					pageStart = pdfFile.getPageNumber(act.getDestination()
 							.getPage());
