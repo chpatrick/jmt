@@ -2,23 +2,31 @@
 <html>
 <head>
 	<title>Java Modelling Tools</title>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 
 <body>
-<font size="-1" face="Courier New, Courier, mono"> BEFORE YOU INSTALL JAVA MODELLING TOOLS... 
-<br>
-<br>
+
+<h1>Installation notes</h1>
 It is recommended to UNINSTALL any previous version of Java Modelling
-Tools present on your PC before installing this new release. <br>
-New JMT versions will always be available, for free, at http://jmt.sourceforge.net .
+Tools present on your PC before installing this new release.
+
+<h2>Working folder</h2>
+Since <b>JMT 0.9.0 version</b> the new concept of working folder was introduced.
 <br>
-<br>
-Java Modelling Tools requires Java Runtime Environment (1.6 or higher).
-The Java Runtime Environment (JRE) provides the libraries, the Java
-Virtual Machine, and other components to run applets and applications
-written in the Java programming language. 
-<br>
-For more info visit: http://java.sun.com/</font>
+The working folder is created in the home directory of the user to store the examples and for some working
+files of JMT. Also the files created by the Loggers (xxx.csv files) are located in this folder. The location of the
+JMT working folder depends on the operating system of the machine and the user name:
+<ul>
+	<li>on Linux and Unix os in general, the user home is located in path /home/<i>&lt;user name&gt;</i>/JMT</li>
+	<li>on Windows XP the working folder is C:\Documents and Settings\<i>&lt;user name&gt;</i>\JMT</li>
+	<li>on Windows Vista, Windows 7 and later the folder is C:\Users\<i>&lt;user name&gt;</i>\JMT</li>
+	<li>on Mac OS X the folder is /Users/<i>&lt;user name&gt;</i>/JMT</li>
+</ul>
+In previous JMT versions, the default working folder was the JMT installation path. 
+If you have stored some JMT models there, we suggest you to move them in the new working folder.
+
+<h2>Be updated</h2>
+New JMT versions will always be available, for free, at http://jmt.sourceforge.net
 </body>
 </html>
