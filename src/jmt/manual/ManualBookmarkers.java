@@ -7,6 +7,7 @@ package jmt.manual;
  * @author Lucia Guglielmetti 
  */
 public enum ManualBookmarkers {
+	INTRO("1 Intro"),
 	JMVA("2 JMVA"),
 	JSIMgraph("3 JSIMgraph"),
 	JSIMwiz("4 JSIMwiz"),

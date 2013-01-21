@@ -22,6 +22,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.EventQueue;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -29,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
 import java.net.URL;
 
 import javax.swing.AbstractAction;
@@ -45,7 +47,7 @@ import javax.swing.ToolTipManager;
 import jmt.common.GlobalSettings;
 import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.components.QuickHTMLViewer;
-import jmt.framework.net.BareBonesBrowserLaunch;
+import jmt.framework.net.BrowserLauncher;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.common.startScreen.sampleAnimation.SampleQNAnimation;
 import jmt.gui.exact.ExactWizard;
@@ -54,6 +56,8 @@ import jmt.gui.jmodel.mainGui.MainWindow;
 import jmt.gui.jsim.JSIMMain;
 import jmt.gui.jwat.MainJwatWizard;
 import jmt.jmarkov.MMQueues;
+import jmt.manual.ManualBookmarkers;
+import jmt.manual.PDFViewerBuffer;
 
 /**
  * <p>Title: Graph StartScreen</p>
@@ -83,9 +87,7 @@ public class GraphStartScreen extends JMTFrame {
 			// Content for logo panel
 			FONT_TYPE = "Arial", HTML_CONTENT_TITLE = "<html><body align=\"center\"><b>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + FONT_SIZE
 					+ "\">Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION) + "</font><br>" + "<font face=\"" + FONT_TYPE
-					+ "\" size=\"" + (FONT_SIZE - 1) + "\">Performance Evaluation Lab</font><br>" + "<font face=\"" + FONT_TYPE + "\" size=\""
-					+ (FONT_SIZE - 1) + "\">Dipartimento di Elettronica e Informazione<br>"
-					+ "Politecnico di Milano - Italy</b><font size=\"0\"><br><br></font>"
+					+ "\" size=\"" + (FONT_SIZE - 1) + "\">DEIB - Politecnico di Milano - Italy</b><font size=\"0\"><br><br></font>"
 					+ "Project Coordinator: prof. G.Serazzi</font></body></html>";
 	// Queue Animation
 	private SampleQNAnimation sampleQNAni;
@@ -212,7 +214,7 @@ public class GraphStartScreen extends JMTFrame {
 	 */
 	private void initGUI() {
 		//set tooltip delay for whole project
-		ToolTipManager.sharedInstance().setInitialDelay(0);
+		ToolTipManager.sharedInstance().setInitialDelay(300);
 		ToolTipManager.sharedInstance().setDismissDelay(100000);
 		// Sets default title, close operation and dimensions
 		this.setTitle("JMT - Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION));
@@ -286,13 +288,21 @@ public class GraphStartScreen extends JMTFrame {
 	private void addListeners() {
 		onlineDoc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				BareBonesBrowserLaunch.openURL(URL_DOCUMENTATION_ONLINE);
+				BrowserLauncher.openURL(URL_DOCUMENTATION_ONLINE);
 			}
 		});
 		introEng.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				URL url = getClass().getResource(URL_JMT_INTRO_ENG);
-				showDescrWin(url, "Introduction to JMT");
+				Runnable r = new Runnable() {
+					public void run() {
+						try {
+							new PDFViewerBuffer("Introduction to JMT", ManualBookmarkers.INTRO);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				};
+				EventQueue.invokeLater(r);
 			}
 		});
 	}
@@ -322,7 +332,7 @@ public class GraphStartScreen extends JMTFrame {
 		if (url != null) {
 			QuickHTMLViewer qhv = new QuickHTMLViewer(url, title);
 			qhv.centerWindow(730, 480);
-			qhv.show();
+			qhv.setVisible(true);
 			qhv.setIconImage(getIconImage());
 		}
 	}
@@ -378,6 +388,6 @@ public class GraphStartScreen extends JMTFrame {
 	public static void main(String args[]) {
 		GraphStartScreen.args = args;
 		GraphStartScreen gss = new GraphStartScreen();
-		gss.show();
+		gss.setVisible(true);
 	}
 }

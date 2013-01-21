@@ -28,7 +28,7 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.plaf.basic.BasicHTML;
 
-import jmt.framework.net.BareBonesBrowserLaunch;
+import jmt.framework.net.BrowserLauncher;
 
 /**
  * <p><b>Name:</b> HtmlPanel</p> 
@@ -100,7 +100,7 @@ public class HtmlPanel extends JEditorPane {
 						setURL(e.getURL());
 					} else {
 						// Open external links in default browser
-						BareBonesBrowserLaunch.openURL(e.getURL().toString());
+						BrowserLauncher.openURL(e.getURL().toString());
 					}
 				}
 			}
