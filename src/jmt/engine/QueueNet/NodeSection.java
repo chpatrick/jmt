@@ -89,11 +89,11 @@ public abstract class NodeSection {
 	/** Identifier of this NodeSection. */
 	private byte sectionID;
 
-	public JobInfoList jobsList;
+	protected JobInfoList jobsList;
 
 	protected JSimLogger logger = JSimLogger.getLogger(this.getClass());
 
-	protected boolean auto; //auto refresh of the jobsList attribute.
+	private boolean auto; //auto refresh of the jobsList attribute.
 	private boolean nodeAuto; // auto refresh the joblist attribute at node level.
 
 	/** Creates a new instance of this NodeSection.
@@ -438,7 +438,6 @@ public abstract class NodeSection {
 	 * @throws jmt.common.exception.NetException
 	 */
 	protected RemoveToken send(int event, Object data, double delay, byte destinationSection) throws jmt.common.exception.NetException {
-		
 		if (auto && (event == NetEvent.EVENT_JOB) && (destinationSection != sectionID)) {
 			updateJobsList((Job) data);
 		}
@@ -482,7 +481,7 @@ public abstract class NodeSection {
 	 * @throws jmt.common.exception.NetException
 	 */
 	protected RemoveToken send(Job job, double delay, NetNode destination) throws jmt.common.exception.NetException {
-		if (auto && getOwnerNode().getSection(OUTPUT) != this) {
+		if (auto) {
 			updateJobsList(job);
 		}
 		return ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, NodeSection.INPUT, destination);
@@ -497,9 +496,7 @@ public abstract class NodeSection {
 	 */
 	protected RemoveToken send(Job job, double delay, byte destinationSection) throws jmt.common.exception.NetException {
 		if (auto && destinationSection != sectionID) {
-			if(this.getOwnerNode().serviceSection != this) {
-				updateJobsList(job);
-			}
+			updateJobsList(job);
 		}
 		return ownerNode.send(NetEvent.EVENT_JOB, job, delay, sectionID, destinationSection, ownerNode);
 	}
@@ -548,13 +545,13 @@ public abstract class NodeSection {
 		return message.sentBy(sectionID, ownerNode);
 	}
 
-	protected void updateJobsList(Job job) throws jmt.common.exception.NetException {
+	private void updateJobsList(Job job) throws jmt.common.exception.NetException {
 		JobInfo jobInfo = jobsList.lookFor(job);
 		if (jobInfo != null) {
 			jobsList.remove(jobInfo);
 		}
 	}
-	
+
 	void setOwnerNode(NetNode ownerNode) {
 		this.ownerNode = ownerNode;
 		//if (auto)

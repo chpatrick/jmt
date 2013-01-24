@@ -194,7 +194,7 @@ public class Server extends ServiceSection {
 					sendBackward(NetEvent.EVENT_ACK, message.getJob(), 0.0);
 					busyCounter--;
 				} else {
-					// Avoid ACK as we've already sent it
+					// Avoid ACK as we already sent ack
 					busyCounter--;
 				}
 				break;
@@ -229,7 +229,7 @@ public class Server extends ServiceSection {
 						serviceTime = serviceStrategy[c].wait(this);
 						// Calculates the service time of job
 						sendMe(job, serviceTime);
-						
+
 						busyCounter++;
 						if (busyCounter < numberOfServers) {
 							// Sends an ACK to the input section (remember not to propagate

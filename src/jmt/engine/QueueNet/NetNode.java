@@ -464,17 +464,7 @@ public class NetNode extends SimEntity {
 				}
 			}
 		}
-
-		if (message.getEvent() == NetEvent.EVENT_ACK) {
-			if ((message.getDestinationSection() == NodeSection.OUTPUT) && 	(message.getSourceSection() == NodeSection.INPUT)) {
-				JobInfo local = jobsList.lookFor(message.getJob());
-				if(local!=null) {
-					jobsList.remove(local);
-				}
-			}
-		}
 	}
-	
 
 	/** This method implements the body of a NetNode.
 	 **/
@@ -645,19 +635,18 @@ public class NetNode extends SimEntity {
 	 */
 	RemoveToken send(int event, Object data, double delay, byte sourceSection, byte destinationSection, NetNode destination)
 			throws jmt.common.exception.NetException {
-
-//SPICUGLIA		
+		
 		//Look if message is a job message and if job is leaving this node
-//		if (outputSection != null
-//				&& outputSection.automaticUpdateNodeJobinfolist()
-//				&& (event == NetEvent.EVENT_JOB)
-//				&& (destination == this && (sourceSection == NodeSection.OUTPUT) && (destinationSection == NodeSection.INPUT))) {
-//			Job job = (Job) data;
-//			JobInfo jobInfo = jobsList.lookFor(job);
-//			if (jobInfo != null) {
-//				jobsList.remove(jobInfo);
-//			}
-//		}
+		if (outputSection != null
+				&& outputSection.automaticUpdateNodeJobinfolist()
+				&& (event == NetEvent.EVENT_JOB)
+				&& ((destination != this) || ((destination == this) && (sourceSection == NodeSection.OUTPUT) && (destinationSection == NodeSection.INPUT)))) {
+			Job job = (Job) data;
+			JobInfo jobInfo = jobsList.lookFor(job);
+			if (jobInfo != null) {
+				jobsList.remove(jobInfo);
+			}
+		}
 
 		//
 		//EVENT_MASK        = 0x0000FFFF;
@@ -675,7 +664,7 @@ public class NetNode extends SimEntity {
 		tag += destinationSection << NodeSection.DESTINATION_SHIFT;
 		return simSchedule(destination.getId(), delay, tag, data);
 	}
-	
+
 	/**
 	 * Unschedules a message given a remove token
 	 * @param token the token to remove the message
@@ -903,10 +892,6 @@ public class NetNode extends SimEntity {
 		if (outputSection != null) {
 			outputSection.setOwnerNode(this);
 		}
-	}
-
-	public NodeSection getOutputSection() {
-		return outputSection;		
 	}
 
 }
