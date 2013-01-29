@@ -11,6 +11,8 @@ import java.awt.Scrollbar;
 import java.awt.Toolkit;
 import java.awt.event.AdjustmentEvent;
 import java.awt.event.AdjustmentListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 import java.io.IOException;
@@ -26,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.WindowConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
@@ -41,7 +44,7 @@ import com.sun.pdfview.action.GoToAction;
  * @author Lucia Guglielmetti
  */
 public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
-		TreeSelectionListener {
+TreeSelectionListener {
 	/**
 	 * 
 	 */
@@ -49,22 +52,22 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 	private static final int PAGE_NUM_RESERVED = -1;
 	private static final String MANUAL_RESOURCE = "manuals/manual.pdf";
 	private static final String EMPTY_RESOURCE = "emptyFile.txt";
-	
+
 	//size of buffer
 	private static int BUFFER_SIZE = 3;// MUST BE ODD
 	//size of page display
 	private static int PAGE_DIMENSION_RATIO = 65;
-	
+
 	//buffer to memory use for load manual
 	private Image buffer[];
 	private int bufferIndex[];
-	
+
 	//manual
 	private PDFFile pdfFile;
 	//page start and page end to section of manual specified
 	private int pageStart;
 	private int pageEnd;
-	
+
 	// use to create bar in the panel
 	private Scrollbar bar;
 	private static int SCROLLBAR_ACCURANCY = 1;
@@ -75,19 +78,22 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 	//size of image displayed
 	private double imageWidth;
 	private double imageHeight;
-	
+
 	//grid with one row and one column for displayed images
 	private GridLayout canvasLayout;
-	
+
 	private OutlineNode outline;
-	
+
 	//Second Panel to display index
 	private JDialog olf;
-	
+
 	private OutlineNode currentOutline;
-	
+
 	//tree use to display index
 	private JTree jt;
+	
+	//help file
+	private RandomAccessFile raf;
 
 	/**
 	 * It render the section of the manual specified by @marker. 
@@ -100,9 +106,9 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 			throws IOException {
 		super(title);
 
-	/**	To avoid out of
-	 * memory issue, it uses a buffer to load the pages.	
-	 */	
+		/**	To avoid out of
+		 * memory issue, it uses a buffer to load the pages.	
+		 */	
 		buffer = new Image[BUFFER_SIZE];
 		bufferIndex = new int[BUFFER_SIZE];
 		JPanel omni = new JPanel(new BorderLayout());
@@ -112,11 +118,11 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 		loadPage(0);
 
 		updateCanvas();
-	
-	/**	
-	 * creation and management scrollbars	
-	 */	
-		
+
+		/**	
+		 * creation and management scrollbars	
+		 */	
+
 		bar = new Scrollbar(Scrollbar.VERTICAL, 0, 1, 0, (pageEnd - pageStart)
 				* SCROLLBAR_ACCURANCY);
 		bar.addAdjustmentListener(this);
@@ -129,15 +135,18 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 		omni.add(bar, BorderLayout.EAST);
 		setContentPane(omni);
 
-		setPreferredSize(new Dimension((int) imageWidth,
-				(int) (imageHeight * 1.9)));
+		this.addWindowListener(new CloseHelpFileAdapter());
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		Toolkit tk = Toolkit.getDefaultToolkit();
+		setPreferredSize(new Dimension((int) Math.min(imageWidth, tk.getScreenSize().getWidth()),
+				(int) Math.min(imageHeight * 1.9, tk.getScreenSize().getHeight())));
 		pack();
-		 setVisible(true);
+		setVisible(true);
 
 	}
 
-	
-	
+
+
 	/**
 	 * Creating jpanel with image upload and creation secondary window
 	 * with index
@@ -160,7 +169,7 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 			outline = pdfFile.getOutline();
 		} catch (IOException ioe) {
 		}
-		
+
 		/**
 		 * Creation a secondary window. 
 		 * This window see with tree hierarchy of the index menu.
@@ -168,7 +177,7 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 		if (outline != null && jt == null) {
 			if (outline.getChildCount() > 0) {
 				olf = new JDialog(this, "Menù");
-				olf.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+				olf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				olf.setLocation(876, 0);
 
 				jt = new JTree(currentOutline);
@@ -214,12 +223,12 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 		if (!manualFile.isFile()) {
 			manualFile = new File(Defaults.getWorkingPath(), MANUAL_RESOURCE);
 		}
-		
+
 		if (!manualFile.isFile()) {
 			throw new IOException("Could not find JMT manual.pdf file. Please place it in " + manualFile.getCanonicalPath() + " location.");
 		}
 
-		RandomAccessFile raf = new RandomAccessFile(manualFile, "r");
+		raf = new RandomAccessFile(manualFile, "r");
 
 		FileChannel fc = raf.getChannel();
 		ByteBuffer buf = fc.map(FileChannel.MapMode.READ_ONLY, 0, fc.size());
@@ -227,12 +236,12 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 
 		pageStart = 0;
 		pageEnd = pdfFile.getNumPages();
-		OutlineNode on = (OutlineNode) pdfFile.getOutline();
+		OutlineNode on = pdfFile.getOutline();
 		if (on != null) {
 			for (int i = 0; i < on.getChildCount(); i++) {
 				OutlineNode child = (OutlineNode) on.getChildAt(i);
 				GoToAction act = (GoToAction) child.getAction();
-	            
+
 				//Find the beginning of the chapter selected, 
 				//then take the page start and page end number
 				if (child.toString().toLowerCase().startsWith(marker.getChapterPrefix().toLowerCase())) {
@@ -253,11 +262,11 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 		}
 
 	}
-    /**
-     * Loads the number of pages (indicated to @num ) of the selected section 
-     * of the manual.
-     * To avoid problems of memory used is a buffer memory
-     **/
+	/**
+	 * Loads the number of pages (indicated to @num ) of the selected section 
+	 * of the manual.
+	 * To avoid problems of memory used is a buffer memory
+	 **/
 	private void loadPage(int num) {
 
 		for (int i = 0; i < BUFFER_SIZE; i++) {
@@ -276,11 +285,11 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 			bufferIndex[i] = page;
 		}
 	}
-    /**
-     * 
-     * @param page
-     * @return
-     */
+	/**
+	 * 
+	 * @param page
+	 * @return
+	 */
 	private Image getPageFromBuffer(int page) {
 		Image res = null;
 		for (int i = 0; i < BUFFER_SIZE; i++) {
@@ -289,7 +298,7 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 		}
 		return res;
 	}
-	
+
 	/**
 	 * create the image to load
 	 **/
@@ -309,6 +318,7 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 
 	public static void main(final String[] args) throws IOException {
 		Runnable r = new Runnable() {
+			@Override
 			public void run() {
 				try {
 					new PDFViewerBuffer("PDF Viewer",
@@ -322,6 +332,7 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 
 	}
 
+	@Override
 	public void adjustmentValueChanged(AdjustmentEvent ev) {
 		int value = bar.getValue();
 		int page = value;
@@ -334,12 +345,13 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 	 * Once you select a subsection from the menu window,
 	 * it does refer to the correct page
 	 */
+	@Override
 	public void valueChanged(TreeSelectionEvent e) {
 
 		TreePath path = e.getNewLeadSelectionPath();
 		OutlineNode selectedNode = (OutlineNode) path.getLastPathComponent();
 		GoToAction act = (GoToAction) selectedNode.getAction();
-		
+
 		try {
 			int pageNode = pdfFile
 					.getPageNumber(act.getDestination().getPage());
@@ -350,6 +362,22 @@ public class PDFViewerBuffer extends JFrame implements AdjustmentListener,
 
 		}
 
+	}
+	
+	/** Close PDF file when help window is closed */
+	private class CloseHelpFileAdapter extends WindowAdapter {
+
+		@Override
+		public void windowClosing(WindowEvent e) {
+			if (raf != null) {
+				try {
+					raf.close();
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+		}
+		
 	}
 
 }
