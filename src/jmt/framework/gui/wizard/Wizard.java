@@ -19,15 +19,19 @@
 package jmt.framework.gui.wizard;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -194,17 +198,26 @@ public class Wizard extends JMTFrame {
 					super.setSelectedIndex(index);
 					currentIndex = model.getSelectedIndex();
 					currentPanel = (WizardPanel) getComponentAt(currentIndex);
-					if (oldIndex >= 0 && oldIndex < getTabCount()) {
-						WizardPanel oldPanel = (WizardPanel) getComponentAt(oldIndex);
-						setTitleAt(oldIndex, oldPanel.getName());
-					}
-					setTitleAt(index,
-							"<html><body align=\"center\"><font color=\"000000\"><b>"
-									+ currentPanel.getName()
-									+ "</b></font></body></html>");
 					currentPanel.gotFocus();
 					updateActions();
 				}
+			}
+			
+
+			@Override
+			public Component getTabComponentAt(int index) {
+				Component obj = super.getTabComponentAt(index);
+				if (obj instanceof JLabel) {
+					JLabel label = (JLabel) obj;
+					label.setHorizontalAlignment(JLabel.CENTER);
+					label.setBorder(BorderFactory.createEmptyBorder(1,2,0,2));
+					if(getSelectedIndex() == index) {
+						label.setFont(label.getFont().deriveFont(Font.BOLD));
+					} else {
+						label.setFont(label.getFont().deriveFont(Font.PLAIN));
+					}
+				}
+				return obj;
 			}
 		};
 	}
@@ -293,7 +306,9 @@ public class Wizard extends JMTFrame {
 	public void addPanel(WizardPanel p) {
 		p.setParentWizard(this);
 		panels.add(p);
-		tabbedPane.add(p.getName(), p);
+		int size = tabbedPane.getTabCount();
+		tabbedPane.addTab(null, p);
+		tabbedPane.setTabComponentAt(size, new JLabel(p.getName()));
 		panelCount = tabbedPane.getTabCount();
 		if (panelCount == 1) {
 			tabbedPane.setSelectedIndex(0);
@@ -307,7 +322,8 @@ public class Wizard extends JMTFrame {
 	public void addPanel(WizardPanel p, int index) {
 		p.setParentWizard(this);
 		panels.add(p);
-		tabbedPane.insertTab(p.getName(), null, p, "", index);
+		tabbedPane.insertTab(null, null, p, "", index);
+		tabbedPane.setTabComponentAt(index, new JLabel(p.getName()));
 		panelCount = tabbedPane.getTabCount();
 		if (panelCount == 1) {
 			tabbedPane.setSelectedIndex(0);
