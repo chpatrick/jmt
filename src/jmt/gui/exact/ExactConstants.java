@@ -98,7 +98,7 @@ public interface ExactConstants {
 	public static final String DESCRIPTION_THROUGHPUTS = "<html><body align=\"left\"><font size=\"4\"><b>Throughput</b>"
 			+ "</font><font size=\"3\"><br>Throughput for each class at each station.</body></html>";
 	public static final String DESCRIPTION_RESPONSETIMES = "<html><body align=\"left\"><font size=\"4\"><b>Residence Times</b>"
-			+ "</font><font size=\"3\"><br>Total time spent by each customer class at each station. Note that the aggregate values are weighted by relative per-class throughput."
+			+ "</font><font size=\"3\"><br>Total time spent by each customer class summed across all visits to a station. Note that the aggregate values are weighted by relative per-class throughput."
 			+ " The global aggregate is the system response time.</body></html>";
 	public static final String DESCRIPTION_UTILIZATIONS = "<html><body align=\"left\"><font size=\"4\"><b>Utilization</b>"
 			+ "</font><font size=\"3\"><br>Utilization of a customer class at the selected station. "
@@ -129,7 +129,7 @@ public interface ExactConstants {
 			+ "</font></body></html>";
 	public static final String DESCRIPTION_WHATIF_MIX = "<html><body align=\"left\"><font size=\"4\"><b>What-if analysis</b>"
 			+ "</font><font size=\"3\"><br>Solve models with different proportion of jobs between two closed classes, "
-			+ "keeping constant the total number of jobs N (�i = Ni / N). It is required that Ni > 0."
+			+ "keeping constant the total number of jobs N (\u03b2i = Ni / N). It is required that Ni > 0."
 			+ "<br>Since only integer Ni values are allowed, the number of models executed can be very small." + "</font></body></html>";
 	public static final String DESCRIPTION_GRAPH = "<html><body align=\"left\"><font size=\"4\"><b>Graphical Results</b>"
 			+ "</font><font size=\"3\"><br>Select performance indices to be plotted. Right-click and drag on the graph to zoom "
@@ -137,7 +137,7 @@ public interface ExactConstants {
 
 	//Added by ASHANKA START
 	public static final String DESCRIPTION_SYSPOWER = "<html><body align=\"left\"><font size=\"4\"><b>System Power</b>"
-			+ "</font><font size=\"3\"><br>System Power (Aggregate or Per Class): Throughout Xi /Response Time Ri</body></html>";
+			+ "</font><font size=\"3\"><br>System Power (Aggregate or Per Class): Throughput Xi / Response Time Ri</body></html>";
 
 	//Added by ASHANKA STOP
 

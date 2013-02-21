@@ -35,6 +35,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -127,7 +128,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	private double[] values;
 	private String currentType, currentClass;
 	private ArrayList<String> openClasses, closedClasses; // All open classes and closed classes names
-	private ArrayList<String> modes = new ArrayList<String>(); // Available what-if types
+	private HashMap<String,Integer> algorithmIndex;
 	// Current value ('from' field)
 	private double current;
 
@@ -204,48 +205,48 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		}
 
 		// Finds available analysis types
-		modes.clear();
+		algorithmIndex = new HashMap<String, Integer>();
 		type.removeAllItems();
-		modes.add(NO_ANALYSIS);
-		type.addItem(NO_ANALYSIS);
+		algorithmIndex.put(NO_ANALYSIS, type.getItemCount());
+		type.addItem(new TypeLabel(NO_ANALYSIS, NO_ANALYSIS));
 		// If model has some closed classes
 		if (data.isClosed() || data.isMixed()) {
-			modes.add(WHAT_IF_CUSTOMERS);
-			type.addItem(WHAT_IF_CUSTOMERS);
+			algorithmIndex.put(WHAT_IF_CUSTOMERS, type.getItemCount());
+			type.addItem(new TypeLabel(WHAT_IF_CUSTOMERS, "Number of Customers"));
 		} else {
-			type.addItem(GRAY_S + WHAT_IF_CUSTOMERS + " (only closed classes)" + GRAY_E);
+			type.addItem(new TypeLabel(WHAT_IF_CUSTOMERS, GRAY_S + "Number of Customers (only closed classes)" + GRAY_E, false));
 		}
 
 		// If model has some open classes
 		if (data.isOpen() || data.isMixed()) {
-			modes.add(WHAT_IF_ARRIVAL);
-			type.addItem(WHAT_IF_ARRIVAL);
+			algorithmIndex.put(WHAT_IF_ARRIVAL, type.getItemCount());
+			type.addItem(new TypeLabel(WHAT_IF_ARRIVAL, WHAT_IF_ARRIVAL));
 		} else {
-			type.addItem(GRAY_S + WHAT_IF_ARRIVAL + " (only open classes)" + GRAY_E);
+			type.addItem(new TypeLabel(WHAT_IF_ARRIVAL, GRAY_S + WHAT_IF_ARRIVAL + " (only open classes)" + GRAY_E, false));
 		}
 
 		// If model has two closed classes, allow population mix
 		if (closedClasses.size() == 2) {
-			modes.add(WHAT_IF_MIX);
-			type.addItem(WHAT_IF_MIX);
+			algorithmIndex.put(WHAT_IF_MIX, type.getItemCount());
+			type.addItem(new TypeLabel(WHAT_IF_MIX, WHAT_IF_MIX));
 		} else {
-			type.addItem(GRAY_S + WHAT_IF_MIX + " (only 2 closed classes)" + GRAY_E);
+			type.addItem(new TypeLabel(WHAT_IF_MIX, GRAY_S + WHAT_IF_MIX + " (only 2 closed classes)" + GRAY_E, false));
 		}
 
 		// If model has at least one not LD station, allows service demands
 		if (stationNames.size() > 0) {
-			modes.add(WHAT_IF_DEMANDS);
-			type.addItem(WHAT_IF_DEMANDS);
+			algorithmIndex.put(WHAT_IF_DEMANDS, type.getItemCount());
+			type.addItem(new TypeLabel(WHAT_IF_DEMANDS, WHAT_IF_DEMANDS));
 		} else {
-			type.addItem(GRAY_S + WHAT_IF_DEMANDS + " (only LI or Delay)" + GRAY_E);
+			type.addItem(new TypeLabel(WHAT_IF_DEMANDS, GRAY_S + WHAT_IF_DEMANDS + " (only LI or Delay)" + GRAY_E, false));
 		}
 
 		// Selects correct type
-		if (!data.isWhatIf() || data.getWhatIfType() == null || !modes.contains(data.getWhatIfType())) {
-			type.setSelectedItem(NO_ANALYSIS);
-		} else {
-			type.setSelectedItem(data.getWhatIfType());
+		Integer index = algorithmIndex.get(data.getWhatIfType());
+		if (!data.isWhatIf() || data.getWhatIfType() == null || index == null) {
+			index = 0;
 		}
+		type.setSelectedIndex(index);
 
 		// Selects correct class
 		if (data.getWhatIfClass() < 0 || data.getWhatIfClass() >= data.getClasses()) {
@@ -306,10 +307,10 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	 */
 	private void setFromToIterations() {
 		// Gets type
-		String type = (String) this.type.getSelectedItem();
+		TypeLabel type = (TypeLabel) this.type.getSelectedItem();
 
 		// Sets from and to values
-		if (values != null && !type.equals(NO_ANALYSIS)) {
+		if (values != null && !type.getName().equals(NO_ANALYSIS)) {
 			// Percentage values
 			if (classNames.get(className.getSelectedItem()).intValue() < 0) {
 				from.setText(doubleFormatter.format(values[0] * 100));
@@ -317,7 +318,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 			}
 			// Normal values
 			else {
-				if (!type.equals(ExactConstants.WHAT_IF_CUSTOMERS)) {
+				if (!type.getName().equals(ExactConstants.WHAT_IF_CUSTOMERS)) {
 					from.setText(doubleFormatter.format(values[0]));
 					to.setText(doubleFormatter.format(values[values.length - 1]));
 				} else { // Integer values
@@ -333,13 +334,14 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	 * Commits changes to data structure
 	 */
 	private void commit() {
-		if (type.getSelectedItem().equals(NO_ANALYSIS)) {
+		TypeLabel selected = (TypeLabel) type.getSelectedItem();
+		if (selected.getName().equals(NO_ANALYSIS)) {
 			data.setWhatIfType(null);
 			data.setWhatIfClass(-1);
 			data.setWhatIfStation(-1);
 			data.setWhatIfValues(null);
 		} else {
-			data.setWhatIfType((String) type.getSelectedItem());
+			data.setWhatIfType(selected.getName());
 			data.setWhatIfValues(values);
 			// Sets selected class
 			data.setWhatIfClass(classNames.get(className.getSelectedItem()).intValue());
@@ -376,7 +378,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		JPanel paramPanel = new JPanel(new GridLayout(6, 2, 5, 5));
 		// Control parameter
 		paramPanel.add(new JLabel("Control Parameter :", SwingConstants.RIGHT));
-		type = new JComboBox(new String[] { NO_ANALYSIS });
+		type = new JComboBox(new Object[] {new TypeLabel(NO_ANALYSIS, NO_ANALYSIS)});
 		type.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				updateType();
@@ -604,14 +606,19 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	 * This method is called each time what-if analysis type is changed
 	 */
 	private void updateType() {
-		String parameter = (String) type.getSelectedItem();
+		TypeLabel selected = (TypeLabel) type.getSelectedItem();
+		if (selected == null) {
+			return;
+		}
+		
+		String parameter = selected.getName();
 		if (currentType != null && currentType.equalsIgnoreCase(parameter)) {
 			return;
 		}
 
 		// If an unavailable mode is selected, select previous one
-		if (currentType != null && !modes.contains(parameter)) {
-			type.setSelectedItem(currentType);
+		if (currentType != null && !selected.isValid()) {
+			type.setSelectedIndex(algorithmIndex.get(currentType));
 			return;
 		}
 
@@ -741,7 +748,8 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	 * @param changedType tells if type of what-if analysis was changed too.
 	 */
 	private void updateLabels(boolean changedType) {
-		String selType = (String) type.getSelectedItem();
+		TypeLabel selected = (TypeLabel) type.getSelectedItem();
+		String selType = selected.getName();
 		if (changedType || (currentClass != null && className.getSelectedItem() != null)) {
 			if (className.getSelectedItem().equals(ALL_CLASSES)) {
 				fromLabel.setText(FROM_ALL);
@@ -819,7 +827,8 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	 * This function is called each time from, to or iterations field is changed.
 	 */
 	private void updateFields() {
-		String type = (String) this.type.getSelectedItem();
+		TypeLabel selected = (TypeLabel) type.getSelectedItem();
+		String type = selected.getName();
 		double from = current;
 		// From field is 'current' value if parsing fails.
 		try {
@@ -1033,7 +1042,8 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		 * @see #getRowCount
 		 */
 		public int getColumnCount() {
-			String parameter = (String) type.getSelectedItem();
+			TypeLabel selected = (TypeLabel) type.getSelectedItem();
+			String parameter = selected.getName();
 			if (parameter.equals(NO_ANALYSIS)) {
 				return 1;
 			} else if (parameter.equals(WHAT_IF_CUSTOMERS) || parameter.equals(WHAT_IF_MIX)) {
@@ -1055,7 +1065,8 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		 * @see #getColumnCount
 		 */
 		public int getRowCount() {
-			String parameter = (String) type.getSelectedItem();
+			TypeLabel selected = (TypeLabel) type.getSelectedItem();
+			String parameter = selected.getName();
 			if (parameter.equals(WHAT_IF_CUSTOMERS) || parameter.equals(WHAT_IF_MIX)) {
 				return 3;
 			} else {
@@ -1067,7 +1078,8 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		 * @return the object at (rowIndex, columnIndex)
 		 */
 		public Object getValueAt(int rowIndex, int columnIndex) {
-			String parameter = (String) type.getSelectedItem();
+			TypeLabel selected = (TypeLabel) type.getSelectedItem();
+			String parameter = selected.getName();
 			int index;
 			// First column is header
 			if (columnIndex == 0) {
@@ -1124,7 +1136,8 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 		@Override
 		public String getColumnName(int index) {
 			// First column is row header
-			String parameter = (String) type.getSelectedItem();
+			TypeLabel selected = (TypeLabel) type.getSelectedItem();
+			String parameter = selected.getName();
 			if (parameter.equals(NO_ANALYSIS) || index == 0) {
 				return "";
 			}
@@ -1136,5 +1149,50 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 				return data.getClassNames()[index - 1];
 			}
 		}
+	}
+	
+	/** Defines a label for the whatif type */
+	private static class TypeLabel {
+		private String name, label;
+		private boolean valid;
+
+		public TypeLabel(String name, String label) {
+			this(name, label, true);
+		}
+
+		public TypeLabel(String name, String label, boolean valid) {
+			this.name = name;
+			this.label = label;
+			this.valid = valid;
+		}
+
+		@Override
+		public String toString() {
+			return getLabel();
+		}
+
+		/**
+		 * @return the name
+		 */
+		public String getName() {
+			return name;
+		}
+
+		/**
+		 * @return the label
+		 */
+		public String getLabel() {
+			return label;
+		}
+
+		/**
+		 * @return true if the algo is valid
+		 */
+		public boolean isValid() {
+			return valid;
+		}
+		
+		
+		
 	}
 }
