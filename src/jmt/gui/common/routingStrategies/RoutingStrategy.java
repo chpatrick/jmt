@@ -35,6 +35,7 @@ import java.util.Map;
  */
 public abstract class RoutingStrategy {
 	protected static RoutingStrategy[] all = null; // Used to store all strategies
+    protected static RoutingStrategy[] allForSource = null; // Used to store all valid strategies for Station Type SOURCE
 
 	protected String description;
 
@@ -95,6 +96,30 @@ public abstract class RoutingStrategy {
 			ret[i] = strategies.get(i);
 		}
 		all = ret;
+		return ret;
+	}
+
+    public static RoutingStrategy[] findAllForSource() {
+		if (allForSource != null) {
+			return allForSource;
+		}
+		ArrayList<RoutingStrategy> strategies = new ArrayList<RoutingStrategy>();
+		Field[] fields = jmt.gui.jmodel.JMODELConstants.class.getFields();
+		try {
+			for (Field field : fields) {
+				if (field.getName().startsWith("ROUTING_") && !field.getName().endsWith("LOADDEPENDANT") ) {
+					strategies.add((RoutingStrategy) field.get(null));
+				}
+			}
+		} catch (IllegalAccessException ex) {
+			System.err.println("A security manager has blocked reflection");
+			ex.printStackTrace();
+		}
+		RoutingStrategy[] ret = new RoutingStrategy[strategies.size()];
+		for (int i = 0; i < strategies.size(); i++) {
+			ret[i] = strategies.get(i);
+		}
+		allForSource = ret;
 		return ret;
 	}
 

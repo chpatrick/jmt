@@ -170,7 +170,15 @@ public class RoutingSectionPanel extends WizardPanel implements CommonConstants 
 		@Override
 		public TableCellEditor getCellEditor(int row, int column) {
 			if (column == 1) {
-				return ComboBoxCellEditor.getEditorInstance(RoutingStrategy.findAll());
+				RoutingStrategy[] routingStrategies = null;
+                Vector<Object> sources = stationData.getStationKeysSource();
+                if(sources.contains(stationKey)){
+                    routingStrategies = RoutingStrategy.findAllForSource();
+                }else{
+                    routingStrategies = RoutingStrategy.findAll();
+                }
+                return ComboBoxCellEditor.getEditorInstance(routingStrategies);
+
 			} else {
 				return super.getCellEditor(row, column);
 			}
