@@ -96,7 +96,7 @@ import jmt.manual.PDFViewerBuffer;
  */
 public class ExactWizard extends Wizard {
 	private static final long serialVersionUID = 1L;
-	private static final String TITLE = "JMVA - Product form queueing network exact solver";
+	private static final String TITLE = "JMVA - Product form queueing network solver";
 	private final static boolean DEBUG = false;
 
 	private ExactModel data;
@@ -652,7 +652,11 @@ public class ExactWizard extends Wizard {
 	//NEW Dall'Orso
 	private void createSolutionWindow() {
 		JTabbedPane jtp = new JTabbedPane();
-		JFrame solutionWindow = new JFrame("jMVA Solutions");
+		String resultTitle = "JMVA Solutions";
+		if (!data.isWhatifAlgorithms()) {
+			resultTitle += " - " + data.getAlgorithmType().toString();
+		}
+		JFrame solutionWindow = new JFrame(resultTitle);
 		solutionWindow.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		solutionWindow.getContentPane().add(jtp);
 		solutionWindow.setIconImage(this.getIconImage());
