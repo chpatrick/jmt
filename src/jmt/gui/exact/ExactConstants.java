@@ -98,8 +98,10 @@ public interface ExactConstants {
 	public static final String DESCRIPTION_THROUGHPUTS = "<html><body align=\"left\"><font size=\"4\"><b>Throughput</b>"
 			+ "</font><font size=\"3\"><br>Throughput for each class at each station.</body></html>";
 	public static final String DESCRIPTION_RESPONSETIMES = "<html><body align=\"left\"><font size=\"4\"><b>Residence Times</b>"
-			+ "</font><font size=\"3\"><br>Total time spent by each customer class summed across all visits to a station. Note that the aggregate values are weighted by relative per-class throughput."
-			+ " The global aggregate is the system response time.</body></html>";
+			+ "</font><font size=\"3\"><br>Total time spent by each customer class summed across all visits to a station."
+			+ " The aggregate values of each class are the class Response Time (sum of the residence times of the class)."
+			+ " The global aggregate is the \"System Response Time\" and is obtained weighting the aggregated values by the relative per-class throughput."
+			+ "</body></html>";
 	public static final String DESCRIPTION_UTILIZATIONS = "<html><body align=\"left\"><font size=\"4\"><b>Utilization</b>"
 			+ "</font><font size=\"3\"><br>Utilization of a customer class at the selected station. "
 			+ "The utilization of a delay station is the average number of customers in the station (it may be greater than 1)</body></html>";

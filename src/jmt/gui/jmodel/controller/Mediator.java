@@ -2217,7 +2217,7 @@ public class Mediator implements GuiInterface {
 					parent = resultsWindow;
 				}
 
-				int resultValue = JOptionPane.showConfirmDialog(parent, "This operation will overwrite old simulation results." + "Continue anyway?",
+				int resultValue = JOptionPane.showConfirmDialog(parent, "This operation will overwrite old simulation results. Continue anyway?",
 						"JMT - Warning", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 				if (resultValue == JOptionPane.NO_OPTION) {
 					return;

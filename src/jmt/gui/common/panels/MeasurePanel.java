@@ -102,7 +102,7 @@ public class MeasurePanel extends WizardPanel implements CommonConstants {
 	protected MeasureTable measureTable;
 
 	//types of measures selectable
-	protected static final String[] measureTypes = new String[] { "---select an index---", SimulationDefinition.MEASURE_QL, SimulationDefinition.MEASURE_QT,
+	protected static final String[] measureTypes = new String[] { "---Select an index---", SimulationDefinition.MEASURE_QL, SimulationDefinition.MEASURE_QT,
 			SimulationDefinition.MEASURE_RD, SimulationDefinition.MEASURE_RP, SimulationDefinition.MEASURE_U, SimulationDefinition.MEASURE_X,
 			SimulationDefinition.MEASURE_DR, SimulationDefinition.MEASURE_S_X, SimulationDefinition.MEASURE_S_RP, SimulationDefinition.MEASURE_S_DR,
 			SimulationDefinition.MEASURE_S_CN,
