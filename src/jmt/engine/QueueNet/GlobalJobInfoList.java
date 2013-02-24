@@ -411,13 +411,26 @@ public class GlobalJobInfoList {
 	 * @param newClass the new class of @job
 	 */
 	public void performJobClassSwitch(Job job, JobClass newClass) {
-		jobsPerClass[job.getJobClass().getId()]--;
-		updateJobNumber(job);
-		lastModifyNumberPerClass[job.getJobClass().getId()] = NetSystem.getTime();
-		jobsPerClass[newClass.getId()]++;
+		// Get identifiers to old and new classes
+		int oldClassId = job.getJobClass().getId();
+		int newClassId = newClass.getId();
+		
+		// Switch job class
 		job.setClass(newClass);
-		updateJobNumber(job);
-		lastModifyNumberPerClass[job.getJobClass().getId()] = NetSystem.getTime();
+		jobsPerClass[oldClassId]--;
+		jobsPerClass[newClassId]++;
+		
+		// Updates old class measure (if not null)
+		if (jobNumPerClass != null && jobNumPerClass[oldClassId] != null) {
+			jobNumPerClass[oldClassId].update(jobsPerClass[oldClassId], NetSystem.getTime() - lastModifyNumberPerClass[oldClassId]);
+		}
+		lastModifyNumberPerClass[oldClassId] = NetSystem.getTime();
+		
+		// Updates new class measure (if not null)
+		if (jobNumPerClass != null && jobNumPerClass[newClassId] != null) {
+			jobNumPerClass[newClassId].update(jobsPerClass[newClassId], NetSystem.getTime() - lastModifyNumberPerClass[newClassId]);
+		}
+		lastModifyNumberPerClass[newClassId] = NetSystem.getTime();
 	}
 
 }
