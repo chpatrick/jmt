@@ -79,7 +79,7 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/{
 	private Ellipse2D lastStatusE, transitionE;
 	private QuadCurve2D[][] arc;
 	private GeneralPath arrow;
-	private float arroww = 5.0f, arrowh = 5.0f;
+	private float arroww = 5.0f;
 	private int frame, maxframe;
 
 	//colors
@@ -308,7 +308,6 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/{
 
 	public void drawMoreStatus(Graphics2D g2d) {
 		double x = 2.0 * (2.0 * STATUS_RAD + ELEMS_GAP) * (queueLenght() - 2) + START_GAP;
-		double y = panelH / 2.0 - STATUS_RAD;
 		Color ctmp = g2d.getColor();
 		g2d.setPaint(Color.BLACK);
 		drawCenteredText(" . . . ", Color.BLACK, x + STATUS_RAD, panelH / 2.0, g2d, false);
@@ -319,7 +318,7 @@ public class StatiDrawer extends JPanel implements Notifier/*, Runnable*/{
 		Color oldc = g2d.getColor();
 		g2d.setColor(c);
 		arrow = new GeneralPath(GeneralPath.WIND_EVEN_ODD);
-		double x1, x2, ctrlx, ctrly, arrowx, arrowy, y;
+		double x1, x2, ctrlx, ctrly, y;
 		if (bold) {
 			g2d.setStroke(strokeB);
 		}

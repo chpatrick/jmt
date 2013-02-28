@@ -57,8 +57,6 @@ class CustomDialogMethod extends JDialog implements ActionListener, PropertyChan
 	private Label numberLabel;
 
 	private String btnString1 = "Enter";
-	private String btnString2 = "Cancel";
-	private MMQueues frame;
 
 	// maximum number of server (c) 
 	private int maximumServer = 30;
@@ -78,7 +76,6 @@ class CustomDialogMethod extends JDialog implements ActionListener, PropertyChan
 	/** Creates the reusable dialog. */
 	public CustomDialogMethod(Frame aFrame) {
 		super(aFrame, true);
-		frame = (MMQueues) aFrame;
 		setTitle("Select The Station Type");
 		textField = new JTextField(10);
 		textField.setEnabled(false);

@@ -71,13 +71,13 @@ public class QueueDrawer extends JComponent implements Notifier {
 
 	// draw settings
 	private DrawConstrains dCst;
-	private static double START_GAP, END_GAP, ELEM_HEIGHT, ELEM_WIDTH, ELEMS_GAP, PROC_RAD, STAT_RAD, MORE_JOBS_MAX = 100, LOST_JOBS_MAX = 100;
+	private static double START_GAP, END_GAP, ELEM_HEIGHT, ELEM_WIDTH, ELEMS_GAP, PROC_RAD, MORE_JOBS_MAX = 100, LOST_JOBS_MAX = 100;
 	private Rectangle2D[] queue;
 	private RoundRectangle2D viewB;
 	private Ellipse2D processor, occupiedEll;
-	private Rectangle2D occupiedRect, moreStatiRect, lostJobsR, txtBounds, tb;
-	private Area occupiedArea, jobsRemaining;
-	private String moreJobsStr, lostJobsStr;
+	private Rectangle2D occupiedRect, moreStatiRect, txtBounds;
+	private Area occupiedArea;
+
 	private Stroke stroke;
 	private Font f;
 	private String[] legendaS;
@@ -85,9 +85,8 @@ public class QueueDrawer extends JComponent implements Notifier {
 
 	// color settings
 	private Color emptyC = Color.WHITE, queueC = Color.BLUE, busyC = queueC.brighter().brighter(), animC = Color.RED;
-	private boolean procUseGradient = true, queueUseGradient = true, gradientF, viewButtonClicked = false;
+	private boolean gradientF, viewButtonClicked = false;
 
-	private boolean[] processorRunning;
 	private int executingJobId;
 
 	public QueueDrawer(QueueLogic ql) {
@@ -728,12 +727,6 @@ public class QueueDrawer extends JComponent implements Notifier {
 		return txtBounds;
 	}
 
-	private Color invertedColor(Color c) {
-		int invertColor = 255;
-		return new Color(invertColor - c.getRed(), invertColor - c.getGreen(), invertColor - c.getBlue());
-
-	}
-
 	private Color readColor(Color c) {
 		Color rc;
 		int r = 0, g = 0, b = 0;
@@ -930,12 +923,10 @@ public class QueueDrawer extends JComponent implements Notifier {
 	}
 
 	public void exitSystem(int jobId, int processorId, double enterQueueTime, double enterCpuTime, double exitSystemTime) {
-		// TODO Auto-generated method stub
 
 	}
 
 	public void jobLost(int jobId, double time) {
-		// TODO Auto-generated method stub
 		lostJobs++;
 		this.repaint();
 	}

@@ -30,7 +30,6 @@ import java.awt.LayoutManager;
 import java.awt.RenderingHints;
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
-import java.awt.geom.Line2D;
 import java.awt.geom.Rectangle2D;
 
 import javax.swing.JPanel;
@@ -103,7 +102,6 @@ public class JobsDrawer extends JPanel implements Notifier/*, Runnable */{
 			float percent = (float) donejobs / (float) totjobs;
 			Color col1 = Color.RED;
 			Color col2 = Color.GREEN;
-			Line2D jline, tjline;
 			Rectangle2D jR = new Rectangle2D.Float((x + percent * w), y, w, h);
 			GeneralPath tjpath = new GeneralPath();
 
@@ -127,7 +125,6 @@ public class JobsDrawer extends JPanel implements Notifier/*, Runnable */{
 
 			//legend:
 			for (int i = 0; i < 3; i++) {
-				tjline = new Line2D.Float(x + w * i / 2, y + h, x + w * i / 2, y + h + h / 5);
 				drawCenteredText("" + (int) (totjobs * (i / 2.0)), Color.BLACK, x + w * i / 2, y + 1.25 * h, g2d, true);
 
 			}

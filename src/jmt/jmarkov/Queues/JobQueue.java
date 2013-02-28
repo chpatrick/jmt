@@ -33,7 +33,7 @@ import jmt.jmarkov.Job;
  * the jobs waiting for processing
  *
  */
-public class JobQueue extends LinkedList {
+public class JobQueue extends LinkedList<Job> {
 
 	/**
 	 * 

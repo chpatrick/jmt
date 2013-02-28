@@ -139,7 +139,6 @@ public class MMQueues extends JMTFrame {
 	private JPanel accelerationP;
 	private JPanel jobsP;
 	private JSlider accelerationS;
-	private MMQueues mmqueue;
 
 	// Label & Label strings
 	private JLabel sL, lambdaL, mediaJobsL, utilizationL, buffL, thrL, responseL, accelerationL;
@@ -185,7 +184,6 @@ public class MMQueues extends JMTFrame {
 
 	public MMQueues() {
 		mf = this;
-		mmqueue = this;
 		initGUI();
 
 		this.setVisible(true);
@@ -386,7 +384,7 @@ public class MMQueues extends JMTFrame {
 			c.weightx = 0.5;
 
 			sL = new JLabel();
-			sL.setAlignmentX(JLabel.CENTER);
+			sL.setAlignmentX(SwingConstants.CENTER);
 			sPanel.add(sL);
 			sS.setMaximum(100);
 			sS.setMinimum(0);
@@ -437,7 +435,7 @@ public class MMQueues extends JMTFrame {
 			buffPanel.setVisible(false);
 			parametersP.add(buffPanel, c);
 			buffL = new JLabel();
-			buffL.setAlignmentX(JLabel.CENTER);
+			buffL.setAlignmentX(SwingConstants.CENTER);
 			buffL.setFont(dCst.getNormalGUIFont());
 			buffPanel.add(buffL);
 			buffS.setValue(BUFF_I);
@@ -546,6 +544,11 @@ public class MMQueues extends JMTFrame {
 			queueMenu = new JMenu("Queue");
 
 			selectQueueRB = new AbstractAction("Select Station Type") {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent event) {
 					// action code goes here
 					selectMethod();
@@ -557,6 +560,11 @@ public class MMQueues extends JMTFrame {
 			queueMenu.addSeparator();
 			// exitMenuItem = new JMenuItem();
 			Action exitAction = new AbstractAction("Exit") {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent event) {
 					// action code goes here
 					dispose();
@@ -570,6 +578,11 @@ public class MMQueues extends JMTFrame {
 			settingsMenu = new JMenu("Settings");
 			colorsMenu = new JMenu("Colors");
 			Action queueCAction = new AbstractAction("Probability...") {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent event) {
 					// action code goes here
 					Color tmpC;
@@ -585,6 +598,11 @@ public class MMQueues extends JMTFrame {
 			};
 			colorsMenu.add(queueCAction);
 			Action queueFCAction = new AbstractAction("Queue...") {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent event) {
 					// action code goes here
 					Color tmpC;
@@ -601,6 +619,8 @@ public class MMQueues extends JMTFrame {
 			colorsMenu.add(queueFCAction);
 			colorsMenu.addSeparator();
 			Action statusCAction = new AbstractAction("Empty state...") {
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent event) {
 					// action code goes here
 					Color tmpC;
@@ -616,6 +636,11 @@ public class MMQueues extends JMTFrame {
 			};
 			colorsMenu.add(statusCAction);
 			Action animCAction = new AbstractAction("Animation...") {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent event) {
 					// action code goes here
 					Color tmpC;
@@ -648,6 +673,8 @@ public class MMQueues extends JMTFrame {
 
 			// Action drawSmallAction = new AbstractAction("Piccole"){
 			Action drawSmallAction = new AbstractAction("Small") {
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent event) {
 					// action code goes here
 					dCst = new DrawSmall();
@@ -659,6 +686,8 @@ public class MMQueues extends JMTFrame {
 
 			// Action drawNormalAction = new AbstractAction("Normali"){
 			Action drawNormalAction = new AbstractAction("Normal") {
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent event) {
 					// action code goes here
 					dCst = new DrawNormal();
@@ -668,6 +697,11 @@ public class MMQueues extends JMTFrame {
 			sizeMenu.add(drawNormalAction);
 			// Action drawBigAction = new AbstractAction("Grandi"){
 			Action drawBigAction = new AbstractAction("Large") {
+				/**
+				 * 
+				 */
+				private static final long serialVersionUID = 1L;
+
 				public void actionPerformed(ActionEvent event) {
 					// action code goes here
 					dCst = new DrawBig();
@@ -918,7 +952,7 @@ public class MMQueues extends JMTFrame {
 			tan[3] = jobsDrawer;
 			tan[4] = logFile;
 
-			arrival = new Arrivals(ql, jq, tan, (int) jobsDialog.getValidatedValue());
+			arrival = new Arrivals(ql, jq, tan, jobsDialog.getValidatedValue());
 
 			int numServer;
 			numServer = ql.getNumberServer();
@@ -1021,18 +1055,6 @@ public class MMQueues extends JMTFrame {
 			outputTA.setAnalyticalResult();
 		}
 
-	}
-
-	private static void configureUI(String plafURI) {
-		UIManager.put(Options.USE_SYSTEM_FONTS_APP_KEY, Boolean.TRUE);
-		// Options.setGlobalFontSizeHints(FontSizeHints.MIXED);
-		Options.setDefaultIconSize(new Dimension(18, 18));
-		try {
-
-			UIManager.setLookAndFeel(plafURI);
-		} catch (Exception e) {
-			System.err.println("Can't set look & feel:" + e);
-		}
 	}
 
 	private TitledBorder addTitle(String title, Font f) {
