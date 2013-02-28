@@ -137,11 +137,9 @@ public interface ExactConstants {
 			+ "</font><font size=\"3\"><br>Select performance indices to be plotted. Right-click and drag on the graph to zoom "
 			+ "it, right-click to save it in EPS or PNG format.</body></html>";
 
-	//Added by ASHANKA START
 	public static final String DESCRIPTION_SYSPOWER = "<html><body align=\"left\"><font size=\"4\"><b>System Power</b>"
-			+ "</font><font size=\"3\"><br>System Power (Aggregate or Per Class): Throughput Xi / Response Time Ri</body></html>";
-
-	//Added by ASHANKA STOP
+			+ "</font><font size=\"3\"><br>Aggregate System Power: Aggregate System Throughput (sum of the per-class throughputs)/Aggregate System Response Time (sum of the Response Times per class weighted by the relative throughputs) "
+			+ "<br>Per-class System Power: Throughput/Response Time of each class</body></html>";
 
 	/** What-if Analysis type constants */
 	public static final String WHAT_IF_ARRIVAL = "Arrival Rates";
