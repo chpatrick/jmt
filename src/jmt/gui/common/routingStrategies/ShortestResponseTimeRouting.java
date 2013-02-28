@@ -36,7 +36,7 @@ public class ShortestResponseTimeRouting extends RoutingStrategy {
 
 	@Override
 	public String getName() {
-		return "Shortest R Time";
+		return "Shortest Response Time";
 	}
 
 	@Override
