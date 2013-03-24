@@ -21,11 +21,23 @@ package jmt.framework.gui.graph;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
-import java.util.Vector;
+import java.util.List;
 
+import javax.swing.AbstractAction;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+
+import jmt.engine.jaba.DPoint;
+import jmt.gui.jaba.cartesian.CartesianPositivePlane;
+
+import org.freehep.util.export.ExportDialog;
+
 
 /**
  * <p>Title: FastGraph</p>
@@ -49,11 +61,22 @@ public class FastGraph extends JPanel {
 	private static final Color graphBackgroundColor = Color.WHITE;
 	private static final Color boundsColor = Color.red;
 	private static final int MARGIN = 8;
-	private Vector values;
+	private List<MeasureValue> values;
 	private double xunit;
 	private Color drawColor = Color.BLUE;
 	private int x0, y0; // Position of origin of cartesian axes
 	private double xstep, ystep; // Increment for each unit in pixels
+	private double currenty;
+	private boolean lastIntervalDisabled;
+	protected PlotPopupMenu popup = new PlotPopupMenu();
+	private int x, y;
+	// Value of the current zoom
+	private CartesianPositivePlane plane;
+	private static final int WIDTH_POINT_SIZE_RATIO = 150;
+	private double maxx, maxy;
+	double [] timePoint= new double [(int) maxx]; 
+	private double maximum;
+	private String labelX="";
 
 	// Used to format numbers. Static as will be recycled among all graphs
 	private static DecimalFormat decimalFormat0 = new DecimalFormat("0.0E0");
@@ -62,13 +85,17 @@ public class FastGraph extends JPanel {
 	private static DecimalFormat decimalFormat3 = new DecimalFormat("#0.0");
 	private static DecimalFormat decimalFormat4 = new DecimalFormat("#00 ");
 
+	private static DecimalFormat decimalFormat5 = new DecimalFormat("0");
+	private static DecimalFormat decimalFormat6 = new DecimalFormat("00");
+	private static DecimalFormat decimalFormat7 = new DecimalFormat("000");
+
 	/**
 	 * Builds a new FastGraph with specified input vector.
 	 * @param values vector with values to be shown on graph (in MeasureValue format)
 	 * @param xunit measure of unit of x axis. Each sample is distant from previous one of
 	 * xunit.
 	 */
-	public FastGraph(Vector values, double xunit) {
+	public FastGraph(List<MeasureValue> values, double xunit) {
 		this.values = values;
 		this.xunit = xunit;
 	}
@@ -106,22 +133,43 @@ public class FastGraph extends JPanel {
 		}
 
 		// Find maximum value for x
-		double maxx;
-		if (values.size() > 1) {
-			maxx = (values.size() - 1) * xunit;
-		} else {
-			maxx = values.size() * xunit;
+		MeasureValue lastValue = values.get(values.size() - 1);
+		double lastXValue = getXValue(lastValue, values.size() - 1);
+		
+		// Detect X measure unit. It should be a multiple of 10^3
+		String xLabel;
+		double xMeasureUnit;
+		double maxXLabel;
+		{
+			long xScale = (long)Math.log10(maxx);
+			xScale = xScale - (xScale % 3);
+			xMeasureUnit = Math.pow(10, xScale);
+			
+			maxXLabel = Math.ceil(lastXValue / xMeasureUnit);
+			maxx = maxXLabel * xMeasureUnit;
+			if (xScale > 1) {
+				xLabel = "10^" + xScale;
+			} else {
+				xLabel = "";
+			}
 		}
+		
 		// Find maximum value for y
-		double maxy = 0;
 		for (int i = 0; i < values.size(); i++) {
-			double currenty = ((MeasureValue) values.get(i)).getMeanValue();
+			MeasureValue currValue = values.get(i);
+			currenty = currValue.getMeanValue();
 			if (currenty > maxy && !Double.isInfinite(currenty)) {
 				maxy = currenty;
 			}
-			currenty = ((MeasureValue) values.get(i)).getUpperBound();
+			currenty = currValue.getUpperBound();
 			if (currenty > maxy && !Double.isInfinite(currenty)) {
 				maxy = currenty;
+			}
+			if (!lastIntervalDisabled) {
+				currenty = currValue.getLastIntervalAvgValue();
+				if (currenty > maxy && !Double.isInfinite(currenty)) {
+					maxy = currenty;
+				}
 			}
 		}
 		// Correct zero maxy value, to avoid division per zero in ystep
@@ -129,13 +177,11 @@ public class FastGraph extends JPanel {
 			maxy = 1;
 		}
 
-		// Rounds up maxy and maxx
-		maxx = Math.ceil(maxx);
-
 		//Get text bounds
 		FontMetrics metric = g.getFontMetrics();
-		Rectangle2D xtextBound = metric.getStringBounds(Long.toString(Math.round(maxx)) + "s", g);
+		Rectangle2D xtextBound = metric.getStringBounds(Long.toString(Math.round(maxXLabel)) + "s", g);
 		Rectangle2D ytextBound = metric.getStringBounds(formatNumber(maxy), g);
+		Rectangle2D xLabelBound = metric.getStringBounds(xLabel, g);
 
 		// Find initial position
 		x0 = (int) Math.ceil(ytextBound.getWidth()) + 2 + MARGIN;
@@ -155,56 +201,97 @@ public class FastGraph extends JPanel {
 			g.drawLine(x0, getY(maxy / num * i), x0 - 1, getY(maxy / num * i));
 			g.drawString(formatNumber(maxy / num * i), MARGIN, getY(maxy / num * i) + halfHeight);
 		}
+		g.setColor(axisColor);
 
 		// X axis
 		g.drawLine(x0, y0, getX(maxx), y0);
+		
 		int halfWidth;
 		num = (int) Math.floor((getX(maxx) - x0) / (xtextBound.getWidth() + 4));
 		if (num > maxx) {
 			num = (int) maxx;
 		}
-		int inc = (int) Math.ceil(maxx / num);
+		long inc = (long) Math.ceil(maxx / num);
 		// Draws caption for x axis - must be integer
-		for (int i = 0; i <= maxx; i += inc) {
-			String label = Integer.toString(i);
+		for (long i = 0; i <= maxx; i += inc) {
+			String label = Long.toString((long)(i/xMeasureUnit));
 			halfWidth = (int) Math.round(metric.getStringBounds(label, g).getWidth() / 2);
 			g.drawLine(getX(i), y0, getX(i), y0 + 1);
 			g.drawString(label, getX(i) - halfWidth, height - MARGIN);
 		}
 		// Draws measure unit on X axis
-		g.drawString("s", getX(maxx) + MARGIN, height - MARGIN);
+		g.drawString(xLabel, getX(maxx) + MARGIN - (int)xLabelBound.getWidth(), MARGIN + (int)xLabelBound.getHeight());
 
-		// Draws upper and lower bounds
-		g.setColor(boundsColor);
-		double value;
+		// Draw chart series
 		for (int i = 0; i < values.size() - 1; i++) {
+			MeasureValue currValue = values.get(i);
+			MeasureValue nextValue = values.get(i+1);
+			double xValue = getXValue(currValue, i);
+			double nextXValue = getXValue(nextValue, i+1);
+
+			g.setColor(boundsColor);
 			// upper bound
-			value = ((MeasureValue) values.get(i)).getUpperBound();
-			if (value > 0 && !Double.isInfinite(value)) {
-				g.drawLine(getX(i * xunit), getY(value), getX((i + 1) * xunit), getY(((MeasureValue) values.get(i + 1)).getUpperBound()));
+			if (currValue.getUpperBound() > 0 && !Double.isInfinite(currValue.getUpperBound())) {
+				g.drawLine(getX(xValue),getY(currValue.getUpperBound()),getX(nextXValue),getY(nextValue.getUpperBound()));
 			}
-			// lower bound
-			value = ((MeasureValue) values.get(i)).getLowerBound();
-			if (value > 0 && !Double.isInfinite(value)) {
-				g.drawLine(getX(i * xunit), getY(value), getX((i + 1) * xunit), getY(((MeasureValue) values.get(i + 1)).getLowerBound()));
-			}
-		}
-		value = ((MeasureValue) values.get(values.size() - 1)).getLowerBound();
-		if (value > 0 && !Double.isInfinite(value)) {
-			g.fillOval(getX(((values.size() - 1)) * xunit), getY(value), 2, 1);
-		}
-		value = ((MeasureValue) values.get(values.size() - 1)).getUpperBound();
-		if (value > 0 && !Double.isInfinite(value)) {
-			g.fillOval(getX(((values.size() - 1)) * xunit), getY(value), 2, 1);
-		}
 
-		// Draws the mean value
-		g.setColor(drawColor);
-		for (int i = 0; i < values.size() - 1; i++) {
-			g.drawLine(getX(i * xunit), getY(((MeasureValue) values.get(i)).getMeanValue()), getX((i + 1) * xunit), getY(((MeasureValue) values
-					.get(i + 1)).getMeanValue()));
+			// lower bound
+			if (currValue.getLowerBound() > 0 && !Double.isInfinite(currValue.getLowerBound())) {
+				g.drawLine(getX(xValue),getY(currValue.getLowerBound()),getX(nextXValue),getY(nextValue.getLowerBound()));
+			}
+
+			// average value
+			g.setColor(drawColor);
+			g.drawLine(getX(xValue),getY(currValue.getMeanValue()),getX(nextXValue),getY(nextValue.getMeanValue()));
+
+			// Draws last measured value
+			if (lastIntervalDisabled == false) {
+				g.setColor(Color.GREEN);
+				g.drawLine(getX(xValue),
+						getY(0),
+						getX((xValue)), getY(currValue.getLastIntervalAvgValue()));
+			}
 		}
-		g.fillOval(getX(((values.size() - 1)) * xunit), getY(((MeasureValue) values.get(values.size() - 1)).getMeanValue()), 2, 1);
+		
+		// Draw last points
+		g.setColor(boundsColor);
+		if (lastValue.getLowerBound() > 0 && !Double.isInfinite(lastValue.getLowerBound())) {
+			g.fillOval(getX(lastXValue), getY(lastValue.getLowerBound()), 2, 1);
+		}
+		if (lastValue.getUpperBound() > 0 && !Double.isInfinite(lastValue.getUpperBound())) {
+			g.fillOval(getX(lastXValue), getY(lastValue.getUpperBound()), 2, 1);
+		}
+		g.setColor(drawColor);
+		g.fillOval(getX(lastXValue),getY(lastValue.getMeanValue()), 2, 1);
+		
+		if (lastIntervalDisabled == false) {
+			g.setColor(Color.GREEN);
+			g.drawLine(getX(lastXValue),
+					getY(0),
+					getX((lastXValue)), getY(lastValue.getLastIntervalAvgValue()));
+		}
+	}
+
+	/**
+	 * Reads the X value for the chart
+	 * @param value the measure value variable
+	 * @param index the index
+	 * @return the X value
+	 */
+	private double getXValue(MeasureValue value, int index) {
+		if (value.getSimTime() > 0) {
+			// For new models use simulation time
+			return value.getSimTime();
+		} else {
+			// Compatibility with old models
+			return xunit * index;
+		}
+	}
+
+
+
+	public void rightClick(MouseEvent ev) {
+		popup.show(this, ev.getX(), ev.getY());
 	}
 
 	/**
@@ -216,6 +303,11 @@ public class FastGraph extends JPanel {
 		return (int) Math.round(x0 + value * xstep);
 	}
 
+	public void mousePressed(MouseEvent e) {
+		x = e.getX();
+		y = e.getY();
+
+	}
 	/**
 	 * Returns Y coordinate for the screen of a point, given its value
 	 * @param value value of point Y
@@ -245,4 +337,115 @@ public class FastGraph extends JPanel {
 			return decimalFormat4.format(value);
 		}
 	}
+
+
+	private static String formatNumberX(double value) {
+		if (value == 0) {
+			return "0";
+		} else if (value>=1000 & value<1000000) {
+			value=value/1000;
+			return decimalFormat5.format(value);
+		} else if (value >= 1000000) {
+			value=value/1000000;
+			return decimalFormat6.format(value);
+		}
+		return decimalFormat7.format(value);
+
+	}
+
+	public void setLastIntervalAvgValueVisible(boolean flag) {
+		lastIntervalDisabled = flag;
+		repaint();
+	}
+
+	protected class PlotPopupMenu extends JPopupMenu {
+		private static final long serialVersionUID = 1L;
+		public JMenuItem saveAs;
+		public PlotPopupMenu() {
+			saveAs = new JMenuItem("Save as...");
+			this.add(saveAs);
+			addListeners();
+		}
+		public void addListeners() {
+			saveAs.addActionListener(new AbstractAction() {
+				private static final long serialVersionUID = 1L;
+				public void actionPerformed(ActionEvent e) {
+					ExportDialog export = new ExportDialog();
+					export.showExportDialog(FastGraph.this,"Export view as ...", FastGraph.this,"Export");
+				}});
+
+		}
+
+	}
+
+	public void mouseClicked(MouseEvent ev) {
+		if (ev.getButton() == MouseEvent.BUTTON3) {
+			rightClick(ev);
+		} else {
+			repaint();
+		}
+	}
+
+
+	/**
+	 * If a generic point and a point on the screen are the same point
+	 * 
+	 * @param mousePoint
+	 *            The point on screen
+	 * @param ifPoint
+	 *            A generic point
+	 * @return If the point on screen and a generic point are the same
+	 */
+	public boolean theSame(Point mousePoint, DPoint ifPoint, int more) {
+		if (Math.pow(mousePoint.getX() - plane.getTrueX(ifPoint.getX()), 2)
+				+ Math.pow(mousePoint.getY() - plane.getTrueY(ifPoint.getY()),
+						2) <= Math.pow(getPointSize(), 2)) {
+			return true;
+		}
+		return false;
+	} 
+
+
+	/**
+	 * Return the size of the points on screen
+	 * 
+	 * @return The size of the points
+	 */
+	public int getPointSize() {
+		return getWidth() / WIDTH_POINT_SIZE_RATIO;
+	}
+
+	class ConvexSegment {
+
+		private static final double Error = 1;
+		private DPoint p1;
+		private DPoint p2;
+
+		public ConvexSegment(DPoint p1, DPoint p2) {
+			this.p1 = p1;
+			this.p2 = p2;
+		}
+
+		public DPoint getP2() {
+			return p2;
+		}
+
+		public DPoint getP1() {
+			return p1;
+		}
+
+		public boolean contains(Point p) {
+			Rectangle2D area;
+
+			area = new Rectangle2D.Double(p1.getX() - Error, p1.getY() - Error,
+					p2.getX() + Error, p2.getY() + Error);
+			if (area.contains(p)) {
+				return true;
+			}
+			return false;
+		}
+
+	}
+
+
 }
