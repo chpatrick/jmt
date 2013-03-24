@@ -67,6 +67,8 @@ public class DynamicDataAnalyzerImpl implements DynamicDataAnalyzer {
 	protected double extVar = 0;
 	/**the exitmated confidence intervals */
 	protected double confInt = 0;
+	/** the extimated instantaneous value*/
+	private double lastIntervalAvg=0;
 
 	/**the sum of samples of the last batch */
 	protected double sumLastBatch;
@@ -191,7 +193,8 @@ public class DynamicDataAnalyzerImpl implements DynamicDataAnalyzer {
 
 	//constant (instead of computing the same expression at each time)
 	private final double sqrt_45 = Math.sqrt(45);
-
+	private double lastSampleWeight, lastWeight;
+	
 	/** Creates a new DynamicDataAnalyzer
 	 *  @param alfa the quantile required for the confidence interval
 	 *  @param precision maximum amplitude of confidence interval (precision = maxamplitude / mean )
@@ -237,7 +240,8 @@ public class DynamicDataAnalyzerImpl implements DynamicDataAnalyzer {
 		int index = nSamples / 5;
 
 		nSamples++;
-
+		lastSampleWeight= lastSampleWeight+(newSample*weight);
+		lastWeight= lastWeight+weight;
 		//NEW
 		//@author Stefano Omini
 
@@ -1216,5 +1220,22 @@ public class DynamicDataAnalyzerImpl implements DynamicDataAnalyzer {
 		nullTestPeriod = (int) (nullTestRate * maxData);
 
 	}
+
+	@Override
+	public double getLastIntervalAvg() {
+		if(lastWeight==0){
+			lastWeight=0;
+			lastSampleWeight=0;
+			return lastIntervalAvg;
+			}
+		else{
+			lastIntervalAvg=(lastSampleWeight/lastWeight);
+			lastWeight=0;
+			lastSampleWeight=0;
+			return lastIntervalAvg;
+			}
+	}
+
+	
 
 }

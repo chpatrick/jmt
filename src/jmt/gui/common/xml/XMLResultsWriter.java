@@ -215,6 +215,9 @@ public class XMLResultsWriter implements XMLResultsConstants {
 				Element sample = doc.createElement(XML_E_SAMPLE);
 				value = (MeasureValue) samples.get(i);
 				sample.setAttribute(XML_A_SAMPLE_MEAN, Double.toString(value.getMeanValue()));
+				sample.setAttribute(XML_A_LAST_INTERVAL_AVG_VALUE, Double.toString(value.getLastIntervalAvgValue()));
+				sample.setAttribute(XML_A_TIME, Double.toString(value.getSimTime()));
+					
 				if (value.getLowerBound() > 0 && !Double.isInfinite(value.getLowerBound())) {
 					sample.setAttribute(XML_A_SAMPLE_LOWERBOUND, Double.toString(value.getLowerBound()));
 				}

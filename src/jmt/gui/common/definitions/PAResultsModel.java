@@ -663,6 +663,18 @@ public class PAResultsModel implements MeasureDefinition {
 		public boolean isValid() {
 			return valid;
 		}
+		
+		@Override
+		public double getLastIntervalAvgValue() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
+		
+		@Override
+		public double getSimTime() {
+			// TODO Auto-generated method stub
+			return 0;
+		}
 	}
 
 	//Added by ASHANKA START
@@ -698,4 +710,6 @@ public class PAResultsModel implements MeasureDefinition {
 
 	public void detectedMalformedReplayerFile(String msg) {
 	}
+
+	
 }

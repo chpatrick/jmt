@@ -61,6 +61,12 @@ public interface DynamicDataAnalyzer {
 	 */
 	public double getConfInt();
 
+	
+	/**
+	 * This method return inverse of the instantaneous value 
+	 */
+	public double getLastIntervalAvg();
+	
 	/**
 	 * This method should be called only if mean is equal to zero (@see isZero()), that is
 	 * whne nullTest() returns true.
@@ -121,5 +127,6 @@ public interface DynamicDataAnalyzer {
 	 * @param parameters
 	 */
 	public void setParameters(SimParameters parameters);
+
 
 }

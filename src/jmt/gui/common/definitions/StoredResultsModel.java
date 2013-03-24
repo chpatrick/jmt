@@ -447,9 +447,9 @@ public class StoredResultsModel implements MeasureDefinition {
 	 * @param upperBound upper bound of the sample
 	 * @param lowerBound lower bound of the sample
 	 */
-	public void addMeasureSample(String measureName, double meanValue, double upperBound, double lowerBound) {
+	public void addMeasureSample(String measureName, double lastIntervalAvgValue, double simulationTime, double meanValue, double upperBound, double lowerBound) {
 		Measure tmp = names.get(measureName);
-		tmp.addSample(meanValue, upperBound, lowerBound);
+		tmp.addSample(meanValue, lastIntervalAvgValue, simulationTime, upperBound, lowerBound);
 	}
 
 	/**
@@ -502,9 +502,12 @@ public class StoredResultsModel implements MeasureDefinition {
 		 * @param meanValue mean value of the sample
 		 * @param upperBound upper bound of the sample
 		 * @param lowerBound lower bound of the sample
+		 * @param lastIntervalAvgValue 
+		 * @param simulationTime 
+		
 		 */
-		public void addSample(double meanValue, double upperBound, double lowerBound) {
-			MeasureValueImpl val = new MeasureValueImpl(meanValue, upperBound, lowerBound);
+		public void addSample(double meanValue, double lastIntervalAvgValue, double simulationTime, double upperBound, double lowerBound) {
+			MeasureValueImpl val = new MeasureValueImpl(meanValue, lastIntervalAvgValue, simulationTime, upperBound, lowerBound);
 			values.add(val);
 		}
 	}
@@ -514,6 +517,7 @@ public class StoredResultsModel implements MeasureDefinition {
 	 */
 	public class MeasureValueImpl implements MeasureValue {
 		private double mean, upper, lower;
+		private double lastS, simulationT;
 
 		/**
 		 * Creates a new MeasureValue object
@@ -521,10 +525,12 @@ public class StoredResultsModel implements MeasureDefinition {
 		 * @param upperBound sample upper bound
 		 * @param lowerBound sample lower bound
 		 */
-		public MeasureValueImpl(double meanValue, double upperBound, double lowerBound) {
+		public MeasureValueImpl(double meanValue, double lastIntervalAvgValue, double simulationTime, double upperBound, double lowerBound) {
 			mean = meanValue;
 			upper = upperBound;
 			lower = lowerBound;
+			lastS =lastIntervalAvgValue;
+			simulationT= simulationTime;
 		}
 
 		public double getUpperBound() {
@@ -537,6 +543,16 @@ public class StoredResultsModel implements MeasureDefinition {
 
 		public double getMeanValue() {
 			return mean;
+		}
+		
+		@Override
+		public double getLastIntervalAvgValue() {
+			return lastS;
+		}
+		
+		@Override
+		public double getSimTime() {
+			return simulationT;
 		}
 	}
 

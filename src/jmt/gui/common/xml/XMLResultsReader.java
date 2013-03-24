@@ -114,43 +114,43 @@ public class XMLResultsReader implements XMLResultsConstants {
 			Element current = (Element) measures.item(i);
 			String measureName = current.getAttribute(XML_A_MEASURE_NAME);
 			// Adds its samples
-			NodeList samples = current.getElementsByTagName(XML_E_SAMPLE);
-			model.addMeasure(measureName, current.getAttribute(XML_A_MEASURE_STATION), current.getAttribute(XML_A_MEASURE_CLASS), Double
-					.parseDouble(current.getAttribute(XML_A_MEASURE_ALPHA)), Double.parseDouble(current.getAttribute(XML_A_MEASURE_PRECISION)),
-					Integer.parseInt(current.getAttribute(XML_A_MEASURE_TYPE)), current.getAttribute(XML_A_MEASURE_NODETYPE));
-			for (int j = 0; j < samples.getLength(); j++) {
-				Element sample = (Element) samples.item(j);
-				double mean = 0;
-				double upper = 0;
-				double lower = 0;
-				boolean valid;
-				valid = Boolean.valueOf(sample.getAttribute(XML_A_SAMPLE_VALIDITY)).booleanValue();
-				mean = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_MEAN));
-				// If the sample was calculated with the requested precision simply parse
-				if (valid) {
-					upper = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_UPPERBOUND));
-					lower = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_LOWERBOUND));
-				}
-				//else check or fields equal to the String "Infinity"
-				else {
-					String u = sample.getAttribute(XML_A_SAMPLE_UPPERBOUND);
-					if (u.equals("Infinity")) {
-						upper = Double.POSITIVE_INFINITY;
-					} else {
-						upper = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_UPPERBOUND));
+						NodeList samples = current.getElementsByTagName(XML_E_SAMPLE);
+						model.addMeasure(measureName, current.getAttribute(XML_A_MEASURE_STATION), current.getAttribute(XML_A_MEASURE_CLASS), Double
+								.parseDouble(current.getAttribute(XML_A_MEASURE_ALPHA)), Double.parseDouble(current.getAttribute(XML_A_MEASURE_PRECISION)),
+								Integer.parseInt(current.getAttribute(XML_A_MEASURE_TYPE)), current.getAttribute(XML_A_MEASURE_NODETYPE));
+						for (int j = 0; j < samples.getLength(); j++) {
+							Element sample = (Element) samples.item(j);
+							double mean = 0;
+							double upper = 0;
+							double lower = 0;
+							boolean valid;
+							
+							valid = Boolean.valueOf(sample.getAttribute(XML_A_SAMPLE_VALIDITY)).booleanValue();
+							mean = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_MEAN));
+							// If the sample was calculated with the requested precision simply parse
+							if (valid) {
+								upper = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_UPPERBOUND));
+								lower = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_LOWERBOUND));
+							}
+							//else check or fields equal to the String "Infinity"
+							else {
+								String u = sample.getAttribute(XML_A_SAMPLE_UPPERBOUND);
+								if (u.equals("Infinity")) {
+									upper = Double.POSITIVE_INFINITY;
+								} else {
+									upper = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_UPPERBOUND));
+								}
+								String l = sample.getAttribute(XML_A_SAMPLE_LOWERBOUND);
+								if (l.equals("Infinity")) {
+									lower = Double.POSITIVE_INFINITY;
+								} else {
+									lower = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_LOWERBOUND));
+								}
+							}
+							model.addSample(measureName, lower, mean, upper, valid);
+						}
 					}
-					String l = sample.getAttribute(XML_A_SAMPLE_LOWERBOUND);
-					if (l.equals("Infinity")) {
-						lower = Double.POSITIVE_INFINITY;
-					} else {
-						lower = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_LOWERBOUND));
-					}
 				}
-				model.addSample(measureName, lower, mean, upper, valid);
-			}
-		}
-	}
-
 	/**
 	 * Loads measures data from saved XML document
 	 * @param root root element of xml document
@@ -175,7 +175,16 @@ public class XMLResultsReader implements XMLResultsConstants {
 				double mean = 0;
 				double upper = 0;
 				double lower = 0;
+				double lastIntervalAvgValue = 0;
+				double simulationTime = 0;
+				
 				mean = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_MEAN));
+				if (sample.getAttribute(XML_A_LAST_INTERVAL_AVG_VALUE) != null && sample.getAttribute(XML_A_LAST_INTERVAL_AVG_VALUE)!=""){
+					lastIntervalAvgValue= Double.parseDouble(sample.getAttribute(XML_A_LAST_INTERVAL_AVG_VALUE));
+				}
+				if (sample.getAttribute(XML_A_TIME) != null && sample.getAttribute(XML_A_TIME)!=""){
+					simulationTime= Double.parseDouble(sample.getAttribute(XML_A_TIME));
+				}
 				// Gets upperBound if specified
 				if (sample.getAttribute(XML_A_SAMPLE_UPPERBOUND) != null && sample.getAttribute(XML_A_SAMPLE_UPPERBOUND) != "") {
 					upper = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_UPPERBOUND));
@@ -185,7 +194,7 @@ public class XMLResultsReader implements XMLResultsConstants {
 					lower = Double.parseDouble(sample.getAttribute(XML_A_SAMPLE_LOWERBOUND));
 				}
 				// Adds sample
-				model.addMeasureSample(measureName, mean, upper, lower);
+				model.addMeasureSample(measureName, lastIntervalAvgValue, simulationTime, mean, upper, lower);
 			}
 		}
 	}
@@ -211,6 +220,15 @@ public class XMLResultsReader implements XMLResultsConstants {
 			double mean = 0;
 			if (attr != null && attr != "") {
 				mean = Double.parseDouble(attr);
+			}
+			double lastIntervalAvgValue = 0;
+			if (attr != null && attr != "") {
+				lastIntervalAvgValue = Double.parseDouble(attr);
+			}
+			
+			double simulationTime = 0;
+			if (attr != null && attr != "") {
+				simulationTime = Double.parseDouble(attr);
 			}
 			String nodeType = current.getAttribute(XML_AO_MEASURE_NODETYPE);
 			attr = current.getAttribute(XML_AO_MEASURE_UPPER);
@@ -297,7 +315,7 @@ public class XMLResultsReader implements XMLResultsConstants {
 			}
 			// Adds loaded informations into model data structure
 			model.addMeasure(Name, stationName, className, alpha, precision, samples, state, numType, nodeType);
-			model.addMeasureSample(Name, mean, upper, lower);
+			model.addMeasureSample(Name, mean,lastIntervalAvgValue, simulationTime, upper, lower);
 		}
 	}
 }

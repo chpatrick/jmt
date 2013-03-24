@@ -106,6 +106,8 @@ public class CartesianPositivePlane {
 		placer.place(g, getTrueY(0) + SPACE_BETWEEN_X_AXIS_AND_LABEL,
 				getTrueY(0));
 	}
+	
+
 
 	/**
 	 * Draws the value of the ordinate for all points in the @points list.

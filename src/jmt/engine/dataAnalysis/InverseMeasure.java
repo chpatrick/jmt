@@ -64,6 +64,19 @@ public class InverseMeasure extends jmt.engine.dataAnalysis.Measure {
 		}
 	}
 
+	/** Gets lower limit of the inverse measure.
+	 * @return Lower limit.
+	 */
+	@Override
+	public double getLastIntervalAvgValue() {
+		if (receivedNoSamples()) {
+			//no samples have been collected -> throughput is zero
+			return 0.0;
+		} else {
+			return 1 / (analyzer.getLastIntervalAvg());
+		}
+	}
+	
 	/** Gets upper limit of the inverse measure.
 	 * @return Lower limit.
 	 */

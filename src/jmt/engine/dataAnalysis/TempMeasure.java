@@ -60,7 +60,7 @@ public class TempMeasure {
 	// --- Bertoli Marco
 	// alpha, precision
 	private double alpha, precision;
-	private double upperBound, lowerBound;
+	private double upperBound, lowerBound, lastIntervalAvgValue, simulationTime;
 
 	// --- end
 
@@ -112,6 +112,8 @@ public class TempMeasure {
 			tempMean = measure.getExtimatedMeanValue();
 			upperBound = measure.getUpperLimit();
 			lowerBound = measure.getLowerLimit();
+			lastIntervalAvgValue = measure.getLastIntervalAvgValue();
+			simulationTime= measure.getSimTime(); 
 			finished = measure.hasFinished();
 			if (finished) {
 				success = measure.getSuccess();
@@ -182,9 +184,23 @@ public class TempMeasure {
 	public double getLowerBound() {
 		return lowerBound;
 	}
+	
+	public double getLastIntervalAvgValue() {
+		return lastIntervalAvgValue;
+	}
+	
+	
+	
+	public double getSimTime() {
+		return simulationTime;
+	}
 
 	public String getNodeType() {
 		return nodeType;
 	}
+
+	
+
+	
 
 }

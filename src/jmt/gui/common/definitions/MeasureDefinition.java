@@ -18,6 +18,7 @@
 
 package jmt.gui.common.definitions;
 
+import java.util.List;
 import java.util.Vector;
 
 import jmt.framework.gui.graph.MeasureValue;
@@ -251,7 +252,7 @@ public interface MeasureDefinition {
 	 * implement a GUI with a reactive approch.
 	 */
 	public interface MeasureListener {
-		public void measureChanged(Vector measureValues, boolean finished);
+		public void measureChanged(List<MeasureValue> measureValues, boolean finished);
 	}
 
 	/**

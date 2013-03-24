@@ -32,6 +32,7 @@ import jmt.common.exception.NetException;
 import jmt.engine.NodeSections.BlockingQueue;
 import jmt.engine.QueueNet.JobClass;
 import jmt.engine.QueueNet.NetNode;
+import jmt.engine.QueueNet.NetSystem;
 import jmt.engine.QueueNet.NodeSection;
 import jmt.engine.QueueNet.QueueNetwork;
 import jmt.engine.QueueNet.SimConstants;
@@ -168,6 +169,8 @@ public class Measure {
 	//the scale factor
 	double scaleFactor = 1.0;
 
+	protected double lastIntervalAvgValue, simulationTime, lastSampleWeight, lastWeight;
+	
 	//end NEW
 
 	//-------end SCALE FACTOR FOR RESIDENCE TIME MEASURES------------//
@@ -355,6 +358,21 @@ public class Measure {
 			return 0;
 		}
 	}
+	
+	public double getLastIntervalAvgValue() {
+		if(lastWeight==0){
+			lastWeight=0;
+			lastSampleWeight=0;
+			return lastIntervalAvgValue;
+			}
+		else{
+			lastIntervalAvgValue=(lastSampleWeight/lastWeight);
+			lastWeight=0;
+			lastSampleWeight=0;
+			return lastIntervalAvgValue;
+			}
+			
+	}
 
 	/** Gets upper limit.
 	 * @return Lower limit.
@@ -442,7 +460,9 @@ public class Measure {
 
 		// Resets measure dead state
 		deadState = 0;
-
+		lastSampleWeight= lastSampleWeight+(sample*weight);
+		lastWeight= lastWeight+weight;
+		simulationTime=NetSystem.getTime();
 		mean.putNewSample(sample * weight);
 
 		//the sample is added, but the value of mean is updated only if counter
@@ -456,6 +476,8 @@ public class Measure {
 		//@author Stefano Omini
 		if (counter % pointSize == 0 && (counter % pointSize) < size_samples && counter >= 0) {
 			samples[counter / pointSize] = mean.getMean();
+		
+			
 		}
 		counter++;
 
@@ -865,5 +887,14 @@ public class Measure {
 		maxDeadState = param.getDeadMeasureMaxChecks();
 	}
 	//end NEW
+	
+	
+
+	
+	public double getSimTime() {
+		return simulationTime;
+	}
+
+
 
 }

@@ -511,12 +511,26 @@ public class ResultsModel implements MeasureDefinition {
 	 * Implementation of Value interface
 	 */
 	public class MeasureValueImpl implements MeasureValue {
-		private double value, upper, lower;
-
+		private double value, upper, lower, lastIntervalAvgValue, simulationTime;
+		
 		public MeasureValueImpl(TempMeasure tm) {
 			value = tm.getTempMean();
 			upper = tm.getUpperBound();
 			lower = tm.getLowerBound();
+			
+			lastIntervalAvgValue = tm.getLastIntervalAvgValue();
+			simulationTime= tm.getSimTime();
+			
+		}
+		
+		public double getLastIntervalAvgValue() {
+			return lastIntervalAvgValue;
+		}
+		
+		
+		
+		public double getSimTime() {
+			return simulationTime;
 		}
 
 		public double getUpperBound() {

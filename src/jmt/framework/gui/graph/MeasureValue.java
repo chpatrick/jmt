@@ -42,4 +42,13 @@ public interface MeasureValue {
 	 * @return the mean value
 	 */
 	public double getMeanValue();
+	/**
+	 * @return the last measured value
+	 */
+	public double getLastIntervalAvgValue();
+
+	/**
+	 * @return the simulation time
+	 */
+	public double getSimTime();	
 }

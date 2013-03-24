@@ -29,6 +29,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.AbstractAction;
@@ -40,7 +41,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -131,7 +131,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 		this.setTitle("Simulation Results...");
 		this.setIconImage(JMTImageLoader.loadImage("Results").getImage());
-		int width = 800, height = 500;
+		int width = 800, height = 600;
 		this.centerWindow(width, height);
 
 		// Creates all tabs
@@ -324,13 +324,16 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		protected int measureIndex;
 		protected JLabel icon;
 		protected JLabel msgLabel;
-		protected Vector values;
+		protected Vector<MeasureValue> values;
 		protected JTextField samples, mean, lower, upper;
 		protected JButton abortButton;
 		protected FastGraph graph, popupGraph;
-		protected JSplitPane graphPanel;
+		protected JPanel graphPanel;
 		protected JFrame popupFrame;
 		protected JTextArea textState;
+		private JButton hideLastIntervalAvgValueButton;
+		protected boolean lastIntervalAvgValueFlag;
+		private JTextArea textState2;
 
 		public MeasurePanel(MeasureDefinition md, int measureIndex) {
 			this.md = md;
@@ -344,7 +347,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		 * Used to create the panel holding all measure's data
 		 */
 		protected void createPanel() {
-			this.setLayout(new BorderLayout(5, 5));
+			this.setLayout(new BorderLayout(7, 7));
 			this.setBorder(BorderFactory.createRaisedBevelBorder());
 			// Sets correct icon for this measure
 			icon = new JLabel();
@@ -414,7 +417,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			dataPanel.add(label);
 			dataPanel.add(samples);
 
-			MeasureValue lastValue = (MeasureValue) values.lastElement();
+			MeasureValue lastValue = values.lastElement();
 
 			// Lower Bound
 			label = new JLabel("Min: ");
@@ -443,18 +446,18 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			dataPanel.add(upper);
 
 			SpringUtilities.makeCompactGrid(dataPanel, 3, 4, //rows, cols
-					6, 6, //initX, initY
-					6, 6);//xPad, yPad
+					2, 2, //initX, initY
+					2, 2);//xPad, yPad
 			mainPanel.add(dataPanel, BorderLayout.CENTER);
 			
 			// Temp mean and abort button are threated in a separate panel
-			JPanel bottomPanel = new JPanel(new BorderLayout(6, 6));
+			JPanel bottomPanel = new JPanel(new BorderLayout(7, 7));
 			label = new JLabel(TEMP_MEAN);
 			mean = new JTextField();
 			mean.setEditable(false);
 			mean.setToolTipText("Current mean value of this measure: " + mean.getText());
 			label.setLabelFor(mean);
-			mean.setText(doubleToString(((MeasureValue) values.lastElement()).getMeanValue()));
+			mean.setText(doubleToString((values.lastElement()).getMeanValue()));
 			bottomPanel.add(label, BorderLayout.WEST);
 			bottomPanel.add(mean, BorderLayout.CENTER);
 			bottomPanel.add(new JLabel("Warniiiin"), BorderLayout.SOUTH);
@@ -468,10 +471,47 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, 6, 6, 6));
 	
 			JPanel pivotPanel = new JPanel(new BorderLayout());
+			JPanel abortAndHidePanel = new JPanel(new BorderLayout());
+			JPanel dummyPanel = new JPanel(new BorderLayout());
+			hideLastIntervalAvgValueButton = new JButton("Hide instantaneous values");
+
+			hideLastIntervalAvgValueButton.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					if (hideLastIntervalAvgValueButton.getText().equals(
+							"Hide instantaneous values")) {
+						hideLastIntervalAvgValueButton
+								.setText("Show instantaneous values");
+					} else {
+						hideLastIntervalAvgValueButton
+								.setText("Hide instantaneous values");
+					}
+
+					lastIntervalAvgValueFlag = !lastIntervalAvgValueFlag;
+					graph.setLastIntervalAvgValueVisible(lastIntervalAvgValueFlag);
+					if (popupGraph != null) {
+						popupGraph.setLastIntervalAvgValueVisible(lastIntervalAvgValueFlag);
+					}
+
+				}
+			});
+
+			dummyPanel.add(new JLabel("   "), BorderLayout.CENTER);
+			dummyPanel.add(hideLastIntervalAvgValueButton, BorderLayout.EAST);
+
+			dummyPanel.setBorder(BorderFactory.createEmptyBorder(0, 6, 6, 6));
+
+			abortAndHidePanel.add(bottomPanel, BorderLayout.NORTH);
+			abortAndHidePanel.add(dummyPanel, BorderLayout.SOUTH);
 			pivotPanel.add(mainPanel, BorderLayout.CENTER);
-			pivotPanel.add(bottomPanel, BorderLayout.SOUTH);
+			pivotPanel.add(abortAndHidePanel, BorderLayout.SOUTH);
 			// Pack text area in the north of the panel
-			JPanel pivotPanel2 = new JPanel(new BorderLayout());
+		  
+			pivotPanel.add(mainPanel, BorderLayout.CENTER);
+			pivotPanel.add(abortAndHidePanel, BorderLayout.SOUTH);
+			// Pack text area in the north of the panel
+		    JPanel pivotPanel2 = new JPanel(new BorderLayout());
 			pivotPanel2.add(pivotPanel, BorderLayout.NORTH);
 			// Adds a textPanel to show state
 			textState = new JTextArea();
@@ -479,27 +519,41 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			textState.setLineWrap(true);
 			textState.setWrapStyleWord(true);
 			JPanel textStatePanel = new JPanel(new BorderLayout());
-			textStatePanel.add(textState, BorderLayout.CENTER);
-			textStatePanel.setBorder(BorderFactory.createEmptyBorder(BORDERSIZE / 2, BORDERSIZE / 2, BORDERSIZE / 2, BORDERSIZE / 2));
-			pivotPanel2.add(textStatePanel, BorderLayout.SOUTH);
+			textStatePanel.add(textState, BorderLayout.SOUTH);
+			textStatePanel.setBorder(BorderFactory.createEmptyBorder(
+					BORDERSIZE / 2, BORDERSIZE / 2, BORDERSIZE / 2,
+					BORDERSIZE / 2));
+		    pivotPanel2.add(textStatePanel, BorderLayout.SOUTH);
+
+			textState2 = new JTextArea();
+			textState2.setEditable(false);
+			textState2.setLineWrap(true);
+			textState2.setWrapStyleWord(true);
+			JPanel textStatePanel2 = new JPanel(new BorderLayout());
+			textStatePanel2.add(textState2, BorderLayout.SOUTH);
+			textStatePanel2.setBorder(BorderFactory.createEmptyBorder(
+					BORDERSIZE / 2, BORDERSIZE / 2, BORDERSIZE / 2,
+					BORDERSIZE / 2));
+			pivotPanel2.add(textStatePanel2);
+			
 			// Sets a minimal size for text area panel
-			Dimension minimumSize = new Dimension(360, 180);
-			pivotPanel2.setPreferredSize(minimumSize);
+			pivotPanel2.setPreferredSize(new Dimension(360, 150));
 
 			// Adds graph
+			graphPanel = new JPanel(new BorderLayout());
 			graph = new FastGraph(values, md.getPollingInterval());
-			graph.setToolTipText("Double click on this graph to open it in a new window");
-			graphPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
-					pivotPanel2, graph);
-			graphPanel.setOneTouchExpandable(true);
-			graphPanel.setDividerLocation(360);
-			pivotPanel2.setMinimumSize(minimumSize);
-			graph.setMinimumSize(new Dimension(200, 180));
+			graphPanel.add(graph, BorderLayout.CENTER);
+			graphPanel.add(pivotPanel2, BorderLayout.WEST);
 			add(graphPanel, BorderLayout.CENTER);
-
 			// Sets icon image and abort button state
-			setCorrectState();
-		}
+			graph.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				graph.mouseClicked(e);
+			//	graph.mouseClicked2(e);
+			}
+			});
+					}
 
 		/**
 		 * Adds listeners to this panel, to refresh measures and abort simulation
@@ -508,21 +562,22 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			if (md.getMeasureState(measureIndex) == MeasureDefinition.MEASURE_IN_PROGRESS) {
 				md.setMalformedReplayerFileListener(new MeasureDefinition.MalformedReplayerFileListener() {
 					public void detectedError(String msg) {
-						if(msgLabel != null)
+						if(msgLabel != null) {
 							msgLabel.setText(msg);
+						}
 					}
 				});
 		
 				// If simulation is not finished, adds a measure listener
 				md.addMeasureListener(measureIndex, new MeasureDefinition.MeasureListener() {
-					public void measureChanged(Vector measureValues, boolean finished) {
+					public void measureChanged(List<MeasureValue> measureValues, boolean finished) {
 						// Update graphics
 						graph.repaint();
 						if (popupGraph != null) {
 							popupGraph.repaint();
 						}
 
-						MeasureValue lastValue = (MeasureValue) measureValues.lastElement();
+						MeasureValue lastValue = measureValues.get(measureValues.size() - 1);
 
 						// Updates mean, lower, upper and samples
 						if (lastValue.getLowerBound() > 0 && !Double.isInfinite(lastValue.getUpperBound())) {
@@ -570,6 +625,13 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 							int width = 640, height = 480;
 							Dimension scrDim = Toolkit.getDefaultToolkit().getScreenSize();
 							popupFrame.setBounds((scrDim.width - width) / 2, (scrDim.height - height) / 2, width, height);
+							popupGraph.addMouseListener(new MouseAdapter() {
+								@Override
+								public void mouseClicked(MouseEvent e) {
+								//	popupGraph.rightClick2(e);
+									
+								}
+							});
 						}
 						popupFrame.show();
 					}
@@ -587,24 +649,32 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 					icon.setIcon(JMTImageLoader.loadImage(IN_PROGRESS_IMAGE));
 					icon.setToolTipText(IN_PROGRESS_TEXT);
 					textState.setText(IN_PROGRESS_TEXT);
+					icon.setToolTipText(FOR_GREEN_GRAPH);
+					textState.setText(FOR_GREEN_GRAPH);
 					abortButton.setEnabled(true);
 					break;
 				case MeasureDefinition.MEASURE_SUCCESS:
 					icon.setIcon(JMTImageLoader.loadImage(SUCCESS_IMAGE));
 					icon.setToolTipText(SUCCESS_TEXT);
 					textState.setText(SUCCESS_TEXT);
+					icon.setToolTipText(FOR_GREEN_GRAPH);
+					textState.setText(FOR_GREEN_GRAPH);
 					abortButton.setEnabled(false);
 					break;
 				case MeasureDefinition.MEASURE_FAILED:
 					icon.setIcon(JMTImageLoader.loadImage(FAILED_IMAGE));
 					icon.setToolTipText(FAILED_TEXT);
 					textState.setText(FAILED_TEXT);
+					icon.setToolTipText(FOR_GREEN_GRAPH);
+					textState.setText(FOR_GREEN_GRAPH);
 					abortButton.setEnabled(false);
 					break;
 				case MeasureDefinition.MEASURE_NO_SAMPLES:
 					icon.setIcon(JMTImageLoader.loadImage(NO_SAMPLES_IMAGE));
 					icon.setToolTipText(NO_SAMPLES_TEXT);
 					textState.setText(NO_SAMPLES_TEXT);
+					icon.setToolTipText(FOR_GREEN_GRAPH);
+					textState.setText(FOR_GREEN_GRAPH);
 					abortButton.setEnabled(false);
 					mean.setText("-");
 					graph.setVisible(false); // Hides graph if no samples were received

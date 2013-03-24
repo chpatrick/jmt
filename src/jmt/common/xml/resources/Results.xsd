@@ -13,6 +13,9 @@
 							<xs:element name="sample" maxOccurs="unbounded">
 								<xs:complexType>
 									<xs:attribute name="meanValue" type="xs:double" use="required"/>
+									<!--lastIntervalAvgValue shoud be required, it is optional just for backward compatibility -->
+									<xs:attribute name="lastIntervalAvgValue" type="xs:double" use="optional"/>
+									<xs:attribute name="simulationTime" type="xs:double" use="optional"/>
 									<xs:attribute name="upperBound" type="xs:double" use="optional"/>
 									<xs:attribute name="lowerBound" type="xs:double" use="optional"/>
 									<xs:attribute name="validity" type="xs:boolean" use="optional"/>

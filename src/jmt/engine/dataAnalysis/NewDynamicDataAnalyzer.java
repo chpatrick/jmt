@@ -116,6 +116,9 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 	protected double extVar = 0;
 	/**the exitmated confidence intervals */
 	protected double confInt = 0;
+	/** the extimated instantaneous value*/
+	private double lastIntervalAvg=0;
+
 
 	/**constant chosen to reduce bias of variance extimator */
 	protected double C1;
@@ -161,7 +164,9 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 	private double nullTestRate = 0.01;
 	//to save time and resources, null test is repeated every nullTestPeriod samples
 	private int nullTestPeriod;
-
+	private double lastSampleWeight;
+	private double lastWeight;
+	
 	//If measure is zero, this is the value of the upper limit of confidence interval
 	private static double nullMeasure_upperLimit = 0.0;
 
@@ -205,7 +210,11 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 		if (weight == 0.0) {
 			return end;
 		}
-
+		
+		lastSampleWeight= lastSampleWeight+(newSample*weight);
+		lastWeight= lastWeight+weight;
+		
+		
 		// Abort simulation when maxData is reached
 		if (nsamples > maxData && !confIntervalOk) {
 			success = false;
@@ -339,7 +348,21 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 		}
 		return end;
 	}
-	
+	public double getLastIntervalAvg() {
+		
+		if(lastWeight==0){
+			lastWeight=0;
+			lastSampleWeight=0;
+			return lastIntervalAvg;
+			}
+		else{
+			lastIntervalAvg=(lastSampleWeight/lastWeight);
+			lastWeight=0;
+			lastSampleWeight=0;
+			return lastIntervalAvg;
+			}
+			
+	}
 	/**
 	 * Checks minimum constraints to determine if data analysis can end
 	 * @return true if the data analysis can end
@@ -927,4 +950,10 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 		this.disableStatisticStop = parameters.isDisableStatisticStop();
 		this.minData = parameters.getMinSamples();
 	}
+
+	
+
+	
+
+	
 }

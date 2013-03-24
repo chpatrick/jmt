@@ -49,18 +49,18 @@ package jmt.gui.common.definitions;
  *              each sink per class. 
  */
 public interface ResultsConstants {
-	public static final int BORDERSIZE = 20;
+	public static final int BORDERSIZE = 5;
 	public static final String IN_PROGRESS_IMAGE = "Measure_running";
 	public static final String IN_PROGRESS_TEXT = "Simulator is still computing this measure";
 	public static final String SUCCESS_IMAGE = "Measure_ok";
-	public static final String SUCCESS_TEXT = "This measure was computed with the specified confidence interval (red lines) and the requested maximum relative error";
+	public static final String SUCCESS_TEXT = "This measure was computed with the requested confidence interval (red lines) and maximum relative error";
 	public static final String FAILED_IMAGE = "Measure_fail";
-	public static final String FAILED_TEXT = "Simulator failed to compute this measure with the specified confidence interval and maximum relative error";
+	public static final String FAILED_TEXT = "Simulator failed to compute this measure with the requested confidence interval and maximum relative error";
 	public static final String NO_SAMPLES_IMAGE = "Measure_nosamples";
 	public static final String NO_SAMPLES_TEXT = "Simulator cannot compute this measure as no samples were received";
 	public static final String ALL_CLASSES = "-- All --";
 	public static final String ALL_STATIONS = "-- Network --";
-
+	public static final String FOR_GREEN_GRAPH = "Double click on this graph to open it in a new windows.\nRight-click to save it.\nClick on green bars to see the simulation time.\n";
 	/**HTML formats for panels descriptions*/
 	final static String HTML_START = "<html><body align=\"left\">";
 	final static String HTML_END = "</body></html>";

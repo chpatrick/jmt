@@ -50,6 +50,8 @@ public interface XMLResultsConstants {
 	public static final String XML_A_SAMPLE_UPPERBOUND = "upperBound";
 	public static final String XML_A_SAMPLE_LOWERBOUND = "lowerBound";
 	public static final String XML_A_SAMPLE_VALIDITY = "validity"; //only for parametri analysis models
+	public static final String XML_A_LAST_INTERVAL_AVG_VALUE = "lastIntervalAvgValue";
+	public static final String XML_A_TIME = "simulationTime";
 
 	// --- Constants to read SIMmodeloutput compliant files --------------------------------------------
 	public static final String XML_DOCUMENT_O_XSD = "SIMmodeloutput.xsd";
