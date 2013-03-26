@@ -74,20 +74,20 @@ public class FastGraph extends JPanel {
 	private CartesianPositivePlane plane;
 	private static final int WIDTH_POINT_SIZE_RATIO = 150;
 	private double maxx, maxy;
-	double [] timePoint= new double [(int) maxx]; 
-	private double maximum;
-	private String labelX="";
 
 	// Used to format numbers. Static as will be recycled among all graphs
-	private static DecimalFormat decimalFormat0 = new DecimalFormat("0.0E0");
-	private static DecimalFormat decimalFormat1 = new DecimalFormat("#0.000");
-	private static DecimalFormat decimalFormat2 = new DecimalFormat("#0.00");
-	private static DecimalFormat decimalFormat3 = new DecimalFormat("#0.0");
-	private static DecimalFormat decimalFormat4 = new DecimalFormat("#00 ");
+	private DecimalFormat decimalFormat0 = new DecimalFormat("0.0E0");
+	private DecimalFormat decimalFormat1 = new DecimalFormat("#0.000");
+	private DecimalFormat decimalFormat2 = new DecimalFormat("#0.00");
+	private DecimalFormat decimalFormat3 = new DecimalFormat("#0.0");
+	private DecimalFormat decimalFormat4 = new DecimalFormat("#00 ");
 
-	private static DecimalFormat decimalFormat5 = new DecimalFormat("0");
-	private static DecimalFormat decimalFormat6 = new DecimalFormat("00");
-	private static DecimalFormat decimalFormat7 = new DecimalFormat("000");
+	private DecimalFormat decimalFormat5 = new DecimalFormat("0");
+	private DecimalFormat decimalFormat6 = new DecimalFormat("00");
+	private DecimalFormat decimalFormat7 = new DecimalFormat("000");
+
+	private DecimalFormat formatXsimple  = new DecimalFormat("#0");
+	private DecimalFormat formatXdecimal  = new DecimalFormat("#0.#");
 
 	/**
 	 * Builds a new FastGraph with specified input vector.
@@ -140,13 +140,18 @@ public class FastGraph extends JPanel {
 		String xLabel;
 		double xMeasureUnit;
 		double maxXLabel;
+		boolean xDecimalDigit = false;
 		{
-			long xScale = (long)Math.log10(maxx);
+			long xScale = (long)Math.log10(lastXValue);
 			xScale = xScale - (xScale % 3);
 			xMeasureUnit = Math.pow(10, xScale);
 			
+			// Allow one decimal digit if scaled value is less than 10
 			maxXLabel = Math.ceil(lastXValue / xMeasureUnit);
-			maxx = maxXLabel * xMeasureUnit;
+			if (maxXLabel < 10) {
+				maxXLabel = Math.ceil(lastXValue / xMeasureUnit * 10) / 10;
+				xDecimalDigit = true;
+			} 
 			if (xScale > 1) {
 				xLabel = "10^" + xScale;
 			} else {
@@ -179,14 +184,26 @@ public class FastGraph extends JPanel {
 
 		//Get text bounds
 		FontMetrics metric = g.getFontMetrics();
-		Rectangle2D xtextBound = metric.getStringBounds(Long.toString(Math.round(maxXLabel)) + "s", g);
+		Rectangle2D xtextBound = metric.getStringBounds("XXXX", g);
 		Rectangle2D ytextBound = metric.getStringBounds(formatNumber(maxy), g);
 		Rectangle2D xLabelBound = metric.getStringBounds(xLabel, g);
 
 		// Find initial position
 		x0 = (int) Math.ceil(ytextBound.getWidth()) + 2 + MARGIN;
-		y0 = height - (int) Math.ceil(xtextBound.getHeight()) - 2 - MARGIN;
+		y0 = height - (int) Math.ceil(xtextBound.getHeight()) - 12 - MARGIN;
 
+		// Rounds the x axis step and adjust maxx accordingly.
+		double maxAvailableXWidth = width - x0 - MARGIN - xtextBound.getWidth() / 2;
+		int xTicNum = (int) Math.floor(maxAvailableXWidth / (xtextBound.getWidth() + 4));
+		
+		double xTicSize;
+		if (!xDecimalDigit) {
+			xTicSize = Math.ceil(maxXLabel / xTicNum);
+		} else {
+			xTicSize = Math.ceil(maxXLabel / xTicNum * 10) / 10;
+		}
+		maxx = xTicSize * xTicNum * xMeasureUnit;
+		
 		xstep = (width - x0 - MARGIN - xtextBound.getWidth() / 2) / maxx;
 		ystep = (y0 - MARGIN) / maxy;
 
@@ -198,7 +215,7 @@ public class FastGraph extends JPanel {
 		int num = (int) Math.floor((y0 - getY(maxy)) / (ytextBound.getHeight() + 2));
 		// Draws caption for y axis
 		for (int i = 0; i <= num; i++) {
-			g.drawLine(x0, getY(maxy / num * i), x0 - 1, getY(maxy / num * i));
+			g.drawLine(x0, getY(maxy / num * i), x0 - 2, getY(maxy / num * i));
 			g.drawString(formatNumber(maxy / num * i), MARGIN, getY(maxy / num * i) + halfHeight);
 		}
 		g.setColor(axisColor);
@@ -206,21 +223,24 @@ public class FastGraph extends JPanel {
 		// X axis
 		g.drawLine(x0, y0, getX(maxx), y0);
 		
-		int halfWidth;
+		
 		num = (int) Math.floor((getX(maxx) - x0) / (xtextBound.getWidth() + 4));
-		if (num > maxx) {
-			num = (int) maxx;
-		}
-		long inc = (long) Math.ceil(maxx / num);
-		// Draws caption for x axis - must be integer
-		for (long i = 0; i <= maxx; i += inc) {
-			String label = Long.toString((long)(i/xMeasureUnit));
-			halfWidth = (int) Math.round(metric.getStringBounds(label, g).getWidth() / 2);
-			g.drawLine(getX(i), y0, getX(i), y0 + 1);
-			g.drawString(label, getX(i) - halfWidth, height - MARGIN);
+		// Draws caption for x axis
+		for (int i=0; i<=xTicNum;i++) {
+			double axisValue = xTicSize * i;
+			double unscaledAxisValue = axisValue * xMeasureUnit;
+			String label;
+			if (!xDecimalDigit) {
+				label = formatXsimple.format(axisValue);
+			} else {
+				label = formatXdecimal.format(axisValue);
+			}
+			int halfWidth = (int) Math.floor(metric.getStringBounds(label,g).getWidth() / 2);
+			g.drawLine(getX(unscaledAxisValue), y0, getX(unscaledAxisValue), y0 + 2);
+			g.drawString(label, getX(unscaledAxisValue) - halfWidth, height - MARGIN - 12);
 		}
 		// Draws measure unit on X axis
-		g.drawString(xLabel, getX(maxx) + MARGIN - (int)xLabelBound.getWidth(), MARGIN + (int)xLabelBound.getHeight());
+		g.drawString(xLabel, width - (int)xLabelBound.getWidth() - MARGIN/2 - 1, height - MARGIN/2 - 1);
 
 		// Draw chart series
 		for (int i = 0; i < values.size() - 1; i++) {
@@ -322,7 +342,7 @@ public class FastGraph extends JPanel {
 	 * @param value number to be converted
 	 * @return value converted into string
 	 */
-	private static String formatNumber(double value) {
+	private String formatNumber(double value) {
 		if (value == 0) {
 			return "0.000";
 		} else if (value < 0.001) {
@@ -339,7 +359,7 @@ public class FastGraph extends JPanel {
 	}
 
 
-	private static String formatNumberX(double value) {
+	private String formatNumberX(double value) {
 		if (value == 0) {
 			return "0";
 		} else if (value>=1000 & value<1000000) {
