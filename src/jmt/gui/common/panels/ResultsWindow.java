@@ -550,7 +550,6 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				graph.mouseClicked(e);
-			//	graph.mouseClicked2(e);
 			}
 			});
 					}
@@ -628,7 +627,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 							popupGraph.addMouseListener(new MouseAdapter() {
 								@Override
 								public void mouseClicked(MouseEvent e) {
-								//	popupGraph.rightClick2(e);
+									popupGraph.mouseClicked(e);
 									
 								}
 							});

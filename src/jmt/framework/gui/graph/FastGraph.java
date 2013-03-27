@@ -21,20 +21,18 @@ package jmt.framework.gui.graph;
 import java.awt.Color;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 import java.text.DecimalFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-
-import jmt.engine.jaba.DPoint;
-import jmt.gui.jaba.cartesian.CartesianPositivePlane;
 
 import org.freehep.util.export.ExportDialog;
 
@@ -53,13 +51,13 @@ import org.freehep.util.export.ExportDialog;
  *         Time: 12.34.37
  */
 public class FastGraph extends JPanel {
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private static final Color axisColor = Color.BLACK;
 	private static final Color graphBackgroundColor = Color.WHITE;
-	private static final Color boundsColor = Color.red;
+	private static final Color boundsColor = Color.RED;
+	private static final Color lastIntervalColor = Color.GREEN;
+	private static final Color simTimePopupColor = Color.decode("#C218FF");
+	private static final Color simTimePopupBgColor = Color.decode("#FFFBF2");
 	private static final int MARGIN = 8;
 	private List<MeasureValue> values;
 	private double xunit;
@@ -68,26 +66,20 @@ public class FastGraph extends JPanel {
 	private double xstep, ystep; // Increment for each unit in pixels
 	private double currenty;
 	private boolean lastIntervalDisabled;
+	private MeasureValue selectedValue = null;
 	protected PlotPopupMenu popup = new PlotPopupMenu();
-	private int x, y;
-	// Value of the current zoom
-	private CartesianPositivePlane plane;
-	private static final int WIDTH_POINT_SIZE_RATIO = 150;
-	private double maxx, maxy;
 
-	// Used to format numbers. Static as will be recycled among all graphs
+	// Used to format numbers. Formatters are not thread safe, so they should never be static.
 	private DecimalFormat decimalFormat0 = new DecimalFormat("0.0E0");
 	private DecimalFormat decimalFormat1 = new DecimalFormat("#0.000");
 	private DecimalFormat decimalFormat2 = new DecimalFormat("#0.00");
 	private DecimalFormat decimalFormat3 = new DecimalFormat("#0.0");
 	private DecimalFormat decimalFormat4 = new DecimalFormat("#00 ");
 
-	private DecimalFormat decimalFormat5 = new DecimalFormat("0");
-	private DecimalFormat decimalFormat6 = new DecimalFormat("00");
-	private DecimalFormat decimalFormat7 = new DecimalFormat("000");
-
 	private DecimalFormat formatXsimple  = new DecimalFormat("#0");
 	private DecimalFormat formatXdecimal  = new DecimalFormat("#0.#");
+	
+	private DecimalFormat simulationTimeFormat = new DecimalFormat("#,##0.00");
 
 	/**
 	 * Builds a new FastGraph with specified input vector.
@@ -160,6 +152,7 @@ public class FastGraph extends JPanel {
 		}
 		
 		// Find maximum value for y
+		double maxy = 0;
 		for (int i = 0; i < values.size(); i++) {
 			MeasureValue currValue = values.get(i);
 			currenty = currValue.getMeanValue();
@@ -202,7 +195,7 @@ public class FastGraph extends JPanel {
 		} else {
 			xTicSize = Math.ceil(maxXLabel / xTicNum * 10) / 10;
 		}
-		maxx = xTicSize * xTicNum * xMeasureUnit;
+		double maxx = xTicSize * xTicNum * xMeasureUnit;
 		
 		xstep = (width - x0 - MARGIN - xtextBound.getWidth() / 2) / maxx;
 		ystep = (y0 - MARGIN) / maxy;
@@ -266,7 +259,7 @@ public class FastGraph extends JPanel {
 
 			// Draws last measured value
 			if (lastIntervalDisabled == false) {
-				g.setColor(Color.GREEN);
+				g.setColor(lastIntervalColor);
 				g.drawLine(getX(xValue),
 						getY(0),
 						getX((xValue)), getY(currValue.getLastIntervalAvgValue()));
@@ -290,6 +283,31 @@ public class FastGraph extends JPanel {
 					getY(0),
 					getX((lastXValue)), getY(lastValue.getLastIntervalAvgValue()));
 		}
+		
+		// Draws the selected value
+		if (selectedValue != null) {
+			String str = simulationTimeFormat.format(selectedValue.getSimTime());
+			Rectangle2D bounds = metric.getStringBounds(str, g);
+			int selectedValueX = getX(selectedValue.getSimTime());
+			int textX = (int)(selectedValueX - bounds.getWidth() / 2);
+			// Fix value out of chart for label
+			if (textX < 2) {
+				textX = 2;
+			} else if (textX + bounds.getWidth() + 4 > width) {
+				textX = width - (int)bounds.getWidth() - 4;
+			}
+			int textY = getY(maxy / 2) - (int)bounds.getHeight();
+			
+			g.setColor(simTimePopupColor);
+			g.drawLine(selectedValueX,
+					getY(0),
+					selectedValueX, getY(selectedValue.getLastIntervalAvgValue()));
+			g.setColor(simTimePopupBgColor);
+			g.fillRoundRect(textX - 2, textY - (int)bounds.getHeight(), (int)bounds.getWidth() + 4, (int)bounds.getHeight() + 4, 4, 4);
+			g.setColor(simTimePopupColor);
+			g.drawRoundRect(textX - 2, textY - (int)bounds.getHeight(), (int)bounds.getWidth() + 4, (int)bounds.getHeight() + 4, 4, 4);
+			g.drawString(str, textX, textY);
+		}
 	}
 
 	/**
@@ -310,8 +328,72 @@ public class FastGraph extends JPanel {
 
 
 
-	public void rightClick(MouseEvent ev) {
+	/**
+	 * Called when a right click is done on the chart
+	 * @param ev the click event
+	 */
+	private void rightClick(MouseEvent ev) {
 		popup.show(this, ev.getX(), ev.getY());
+	}
+
+	/**
+	 * Called when a left click is done on the chart
+	 * @param ev the click event
+	 */
+	private void leftClick(MouseEvent ev) {
+		// If a value is already selected, removes selection.
+		if (selectedValue != null) {
+			selectedValue = null;
+			repaint();
+			return;
+		}
+		
+		// Selects the best matching value.
+		int clickedX = ev.getX();
+		double simulationTime = (clickedX - x0) / xstep;
+		int position = Collections.binarySearch(values, simulationTime, new SimTimeComparator());
+		if (position < 0) {
+			// Returns the best matching element. Checks position, the previous value and the next value.
+			position = - position - 1;
+			MeasureValue value = null;
+			if (position > 0) {
+				value = values.get(position - 1);
+			}
+			if (position < values.size()) {
+				value = getNearestValue(value, values.get(position), simulationTime);
+			}
+			if (position + 1 < values.size()) {
+				value = getNearestValue(value, values.get(position + 1), simulationTime);
+			}
+			selectedValue = value;
+		} else {
+			// Exact match... We were extremely lucky.
+			selectedValue = values.get(position);
+		}
+		repaint();
+	}
+	
+	/**
+	 * Returns the nearest value between left and right values
+	 * @param leftValue one of the values
+	 * @param rightValue the other values
+	 * @param simulationTime the simulation time to match.
+	 * @return the nearest value between the two.
+	 */
+	private MeasureValue getNearestValue(MeasureValue leftValue, MeasureValue rightValue, double simulationTime) {
+		if (leftValue == null) {
+			return rightValue;
+		} else if (rightValue == null) {
+			return leftValue;
+		} else {
+			double diff1 = Math.abs(leftValue.getSimTime() - simulationTime);
+			double diff2 = Math.abs(rightValue.getSimTime() - simulationTime);
+			if (diff1 < diff2) {
+				return leftValue;
+			} else {
+				return rightValue;
+			}
+		}
 	}
 
 	/**
@@ -323,11 +405,6 @@ public class FastGraph extends JPanel {
 		return (int) Math.round(x0 + value * xstep);
 	}
 
-	public void mousePressed(MouseEvent e) {
-		x = e.getX();
-		y = e.getY();
-
-	}
 	/**
 	 * Returns Y coordinate for the screen of a point, given its value
 	 * @param value value of point Y
@@ -358,21 +435,6 @@ public class FastGraph extends JPanel {
 		}
 	}
 
-
-	private String formatNumberX(double value) {
-		if (value == 0) {
-			return "0";
-		} else if (value>=1000 & value<1000000) {
-			value=value/1000;
-			return decimalFormat5.format(value);
-		} else if (value >= 1000000) {
-			value=value/1000000;
-			return decimalFormat6.format(value);
-		}
-		return decimalFormat7.format(value);
-
-	}
-
 	public void setLastIntervalAvgValueVisible(boolean flag) {
 		lastIntervalDisabled = flag;
 		repaint();
@@ -398,74 +460,50 @@ public class FastGraph extends JPanel {
 
 	}
 
+	/**
+	 * Invoked when mouse is clicked on the graph
+	 * @param ev the click event
+	 */
 	public void mouseClicked(MouseEvent ev) {
-		if (ev.getButton() == MouseEvent.BUTTON3) {
+		if (ev.getButton() == MouseEvent.BUTTON1) {
+			leftClick(ev);
+		} else if (ev.getButton() == MouseEvent.BUTTON3) {
 			rightClick(ev);
 		} else {
 			repaint();
 		}
 	}
 
-
-	/**
-	 * If a generic point and a point on the screen are the same point
-	 * 
-	 * @param mousePoint
-	 *            The point on screen
-	 * @param ifPoint
-	 *            A generic point
-	 * @return If the point on screen and a generic point are the same
-	 */
-	public boolean theSame(Point mousePoint, DPoint ifPoint, int more) {
-		if (Math.pow(mousePoint.getX() - plane.getTrueX(ifPoint.getX()), 2)
-				+ Math.pow(mousePoint.getY() - plane.getTrueY(ifPoint.getY()),
-						2) <= Math.pow(getPointSize(), 2)) {
-			return true;
-		}
-		return false;
-	} 
-
-
-	/**
-	 * Return the size of the points on screen
-	 * 
-	 * @return The size of the points
-	 */
-	public int getPointSize() {
-		return getWidth() / WIDTH_POINT_SIZE_RATIO;
-	}
-
-	class ConvexSegment {
-
-		private static final double Error = 1;
-		private DPoint p1;
-		private DPoint p2;
-
-		public ConvexSegment(DPoint p1, DPoint p2) {
-			this.p1 = p1;
-			this.p2 = p2;
-		}
-
-		public DPoint getP2() {
-			return p2;
-		}
-
-		public DPoint getP1() {
-			return p1;
-		}
-
-		public boolean contains(Point p) {
-			Rectangle2D area;
-
-			area = new Rectangle2D.Double(p1.getX() - Error, p1.getY() - Error,
-					p2.getX() + Error, p2.getY() + Error);
-			if (area.contains(p)) {
-				return true;
+	/** Compares simulation time, either in a MeasureValue data structure or in a Double */
+	private static class SimTimeComparator implements Comparator<Object> {
+		@Override
+		public int compare(Object arg0, Object arg1) {
+			double val0 = getSimulationTime(arg0);
+			double val1 = getSimulationTime(arg1);
+			if (val0 < val1) {
+				return -1;
+			} else if (val0 > val1) {
+				return 1;
+			} else {
+				return 0;
 			}
-			return false;
 		}
-
+		
+		/**
+		 * Return the simulation time from the given object
+		 * @param obj the object
+		 * @return the simulation time
+		 */
+		private double getSimulationTime(Object obj) {
+			if (obj instanceof Double) {
+				return (Double) obj;
+			} else if (obj instanceof MeasureValue) {
+				return ((MeasureValue)obj).getSimTime();
+			} else {
+				return 0;
+			}
+		}
+		
 	}
-
 
 }
