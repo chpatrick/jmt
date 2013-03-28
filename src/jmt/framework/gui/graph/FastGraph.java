@@ -353,7 +353,7 @@ public class FastGraph extends JPanel {
 		double simulationTime = (clickedX - x0) / xstep;
 		int position = Collections.binarySearch(values, simulationTime, new SimTimeComparator());
 		if (position < 0) {
-			// Returns the best matching element. Checks position, the previous value and the next value.
+			// Returns the best matching element. Checks position and the previous value.
 			position = - position - 1;
 			MeasureValue value = null;
 			if (position > 0) {
@@ -361,9 +361,6 @@ public class FastGraph extends JPanel {
 			}
 			if (position < values.size()) {
 				value = getNearestValue(value, values.get(position), simulationTime);
-			}
-			if (position + 1 < values.size()) {
-				value = getNearestValue(value, values.get(position + 1), simulationTime);
 			}
 			selectedValue = value;
 		} else {
