@@ -130,7 +130,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 		queueLengthPanel.add(finiteQueueSelector);
 		JPanel spinnerPanel = new JPanel();
 		new BoxLayout(spinnerPanel, BoxLayout.Y_AXIS);
-		JLabel label = new JLabel("max no. customers: ");
+		JLabel label = new JLabel("<html>max no. customers <br>(queue+service) </html>");
 		label.setToolTipText("The maximum number of customers allowed in the station.");
 		spinnerPanel.add(label);
 		spinnerPanel.add(queueLengthSpinner);
@@ -293,7 +293,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 		 */
 		private static final long serialVersionUID = 1L;
 		private String[] columnNames = new String[] { "Class", "Queue Policy", "Drop Rule" };
-		private Class[] columnClasses = new Class[] { String.class, String.class, String.class };
+		private Class<?>[] columnClasses = new Class[] { String.class, String.class, String.class };
 		public int[] columnSizes = new int[] { 90, 60, 60 };
 
 		public int getRowCount() {
@@ -310,7 +310,7 @@ public class InputSectionPanel extends WizardPanel implements CommonConstants {
 		}
 
 		@Override
-		public Class<Integer> getColumnClass(int columnIndex) {
+		public Class<?> getColumnClass(int columnIndex) {
 			return columnClasses[columnIndex];
 		}
 
