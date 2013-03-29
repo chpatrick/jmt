@@ -222,7 +222,7 @@ public class ClassesPanel extends WizardPanel implements JabaConstants, ForceUpd
 			if (classNames[i] == null) {
 				//classNames[i] = "Class" + (++nameCounter);
 				//NEW Zanzottera
-				// ++nameCounter+1 per avere subito class3; la soluzione precedente immetteva class2 che Ë gi‡ presente
+				// ++nameCounter+1 per avere subito class3; la soluzione precedente immetteva class2 che √® gi√† presente
 				classNames[i] = "Class" + (++nameCounter + 1);
 				//END NEW
 			}

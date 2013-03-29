@@ -342,7 +342,7 @@ public class JmtEdgeRenderer extends EdgeRenderer {
 											}
 											//	  		            				  }else {
 											//	  		            					  System.out.println("Entrata speciale 1 in jmtedgerenderer");
-											//	  		            					  //if((p[0].getX()-p[1].getX()<20)&&((p[0].getX()-p[1].getX())>0)) per quando ci sarà left
+											//	  		            					  //if((p[0].getX()-p[1].getX()<20)&&((p[0].getX()-p[1].getX())>0)) per quando ci sarÃ  left
 											//	  		            				 view.sharedPath.curveTo((float) (p[0].getX()),(float) (p[0].getY()) ,(float) (p[0].getX()+4),(float) p[0].getY() - 10,(float) (p[1].getX()),(float) (p[1].getY()));
 											//	  		            				 
 											//	  		            				  }

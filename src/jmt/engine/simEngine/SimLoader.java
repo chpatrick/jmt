@@ -325,7 +325,7 @@ public class SimLoader {
 					type = JobClass.CLOSED_CLASS;
 
 					//TODO: al momento non viene letto l'attributo opzionale "customers"
-					//(che comunque non � necessario: i job vengono creati dal terminal o precaricati
+					//(che comunque non ï¿½ necessario: i job vengono creati dal terminal o precaricati
 					//nelle code)
 				} else {
 					type = JobClass.OPEN_CLASS;

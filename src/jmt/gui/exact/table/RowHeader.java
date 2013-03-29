@@ -135,7 +135,7 @@ public class RowHeader extends JTable {
 			 */
 			private static final long serialVersionUID = 1L;
 
-			/* keeps the #@£$*& thing from growing */
+			/* keeps the #@Â£$*& thing from growing */
 			@Override
 			public Dimension getPreferredSize() {
 				Dimension d = super.getPreferredSize();

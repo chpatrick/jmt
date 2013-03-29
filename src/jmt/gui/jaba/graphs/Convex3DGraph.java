@@ -490,7 +490,7 @@ public class Convex3DGraph extends JabaGraph implements ComponentListener,
 		/*
 		 * Per ogni faccia faccia.contatore = 0; faccia.marcata = false;
 		 * 
-		 * Per ogni vertice € convex hull Per ogni faccia Se vertice € faccia
+		 * Per ogni vertice Â€ convex hull Per ogni faccia Se vertice Â€ faccia
 		 * incrementaFaccia(faccia) Per ogni faccia faccia.marcata = false
 		 */
 
@@ -528,7 +528,7 @@ public class Convex3DGraph extends JabaGraph implements ComponentListener,
 		/*
 		 * faccia.contatore++ faccia.marcata = true
 		 * 
-		 * Per ogni spigolo € faccia Per ogni faccia adiacente € spigolo Se
+		 * Per ogni spigolo Â€ faccia Per ogni faccia adiacente Â€ spigolo Se
 		 * adiacente != questa && adiacente coplanare faccia &&
 		 * !adiacente.marcata incrementaFaccia(adiacente)
 		 */
@@ -998,11 +998,11 @@ public class Convex3DGraph extends JabaGraph implements ComponentListener,
 		// FontMetrics fm = g.getFontMetrics();
 		g.drawString("rotY = " + floatString(rotY, 6) + " rad", 16, y);
 		g.drawString("= " + floatString((float) (rotY * 180 / Math.PI), 6)
-				+ "°", 110, y);
+				+ "Â°", 110, y);
 		y += 10;
 		g.drawString("rotX = " + floatString(rotX, 6) + " rad", 16, y);
 		g.drawString("= " + floatString((float) (rotX * 180 / Math.PI), 6)
-				+ "°", 110, y);
+				+ "Â°", 110, y);
 		y += 16;
 
 		y = printMatrix4(g, prj.getModelView(), 16, y + 16, "viewMatrix");
@@ -1054,11 +1054,11 @@ public class Convex3DGraph extends JabaGraph implements ComponentListener,
 			rotYdelta /= zoomFactor;
 		}
 
-		// Keep pitch rotation between ±90°
+		// Keep pitch rotation between Â±90Â°
 		rotX = clamp((float) Math.toRadians(-89), rotX + rotXdelta,
 				(float) Math.toRadians(89));
 
-		// Yaw rotation modulo 360°
+		// Yaw rotation modulo 360Â°
 		rotY -= rotYdelta;
 		if (rotY < 0) {
 			rotY += (2 * Math.PI);

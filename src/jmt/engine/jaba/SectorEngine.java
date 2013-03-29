@@ -31,7 +31,7 @@ public class SectorEngine {
 
 	// Istanzio la classe ViewResults per stampare a video i risultati
 	// ViewResults vres = new ViewResults();
-	// Inizializzo il vettore che sar‡ poi passato dalla funzione faces3d
+	// Inizializzo il vettore che sar√† poi passato dalla funzione faces3d
 	Vector<newFace> faces = new Vector<newFace>();
 	// Inizializzo il vettore dei lati da unire per il calcolo
 	Vector<Object> lati = new Vector<Object>();
@@ -74,7 +74,7 @@ public class SectorEngine {
 		vertices2D = util.DomRemove2D(vertices2D);
 
 		// Aggiungo l'origine per rendere effettivamente convesso il poligono
-		// Serve perchË il Graham Scan Ë stato pensato per ogni caso
+		// Serve perch√® il Graham Scan √® stato pensato per ogni caso
 		vertices2D.addElement(new newPoint(0, 0));
 
 		// Lancio la funzione doGraham che chiede come parametro un vettore di
@@ -83,7 +83,7 @@ public class SectorEngine {
 		vertices2D = gra.doGraham(vertices2D);
 
 		// todo controllare meglio le proiezioni: caso (10,4) - (10,0)
-		// bisogna fare in modo che un punto venga cmq scartato se Ë collineare
+		// bisogna fare in modo che un punto venga cmq scartato se √® collineare
 		// Elimino le proiezioni v1.5
 		Vector<newPoint> verticesnp = new Vector<newPoint>();
 		for (int i = 0; i < vertices2D.size(); i++) {
@@ -100,7 +100,7 @@ public class SectorEngine {
 
 		// Faccio il mapping sui punti rimasti
 		Beta2D b2d = new Beta2D();
-		Vector<Sector2D> sector = new Vector<Sector2D>(); // Ë il vettore con le
+		Vector<Sector2D> sector = new Vector<Sector2D>(); // √® il vettore con le
 															// Beta
 		sector = b2d.BetaVector(verticesnp);
 
@@ -110,9 +110,9 @@ public class SectorEngine {
 		 * //Aggiungo i punti collineari "diagonali" inserendoli nel giusto
 		 * posto if (verticesnp.size()>1 && original2D.size()>1) { for (int
 		 * i=0;i<(verticesnp.size()-1);i++) { for (int
-		 * j=0;j<original2D.size();j++) { // un vertice Ë buono quando non Ë gi‡
-		 * incluso, // Ë collineare ai 2 del settore // la sua x Ë maggiore del
-		 * primo v del settore // la sua x Ë minore del secondo v del settore
+		 * j=0;j<original2D.size();j++) { // un vertice √® buono quando non √® gi√†
+		 * incluso, // √® collineare ai 2 del settore // la sua x √® maggiore del
+		 * primo v del settore // la sua x √® minore del secondo v del settore
 		 * 
 		 * if (verticesnp.contains(original2D.get(j))==false &&
 		 * util.Collinear((newPoint
@@ -196,7 +196,7 @@ public class SectorEngine {
 		vertices2D = util.DomRemove2D(vertices2D);
 
 		// Aggiungo l'origine per rendere effettivamente convesso il poligono
-		// Serve perchË il Graham Scan Ë stato pensato per ogni caso
+		// Serve perch√® il Graham Scan √® stato pensato per ogni caso
 		vertices2D.addElement(new newPoint(0, 0));
 
 		// Lancio la funzione doGraham che chiede come parametro un vettore di
@@ -205,14 +205,14 @@ public class SectorEngine {
 		grahamScan gra = new grahamScan();
 		vertices2D = gra.doGraham(vertices2D);
 
-		// todo controllare Ë il nuovo (e non funziona!)
+		// todo controllare √® il nuovo (e non funziona!)
 		/*
 		 * newGraham gra = new newGraham();
 		 * vertices2D=gra.GrahamScan(vertices2D);
 		 */
 
 		// todo controllare meglio le proiezioni: caso (10,4) - (10,0)
-		// bisogna fare in modo che un punto venga cmq scartato se Ë collineare
+		// bisogna fare in modo che un punto venga cmq scartato se √® collineare
 		// Elimino le proiezioni v1.5
 		Vector<newPoint> verticesnp = new Vector<newPoint>();
 		for (int i = 0; i < vertices2D.size(); i++) {
@@ -229,7 +229,7 @@ public class SectorEngine {
 
 		// Faccio il mapping sui punti rimasti
 		Beta2D b2d = new Beta2D();
-		Vector<Sector2D> sector = new Vector<Sector2D>(); // Ë il vettore con le
+		Vector<Sector2D> sector = new Vector<Sector2D>(); // √® il vettore con le
 															// Beta
 		sector = b2d.BetaVector(verticesnp);
 
@@ -239,9 +239,9 @@ public class SectorEngine {
 		 * //Aggiungo i punti collineari "diagonali" inserendoli nel giusto
 		 * posto if (verticesnp.size()>1 && original2D.size()>1) { for (int
 		 * i=0;i<(verticesnp.size()-1);i++) { for (int
-		 * j=0;j<original2D.size();j++) { // un vertice Ë buono quando non Ë gi‡
-		 * incluso, // Ë collineare ai 2 del settore // la sua x Ë maggiore del
-		 * primo v del settore // la sua x Ë minore del secondo v del settore
+		 * j=0;j<original2D.size();j++) { // un vertice √® buono quando non √® gi√†
+		 * incluso, // √® collineare ai 2 del settore // la sua x √® maggiore del
+		 * primo v del settore // la sua x √® minore del secondo v del settore
 		 * 
 		 * if (verticesnp.contains(original2D.get(j))==false &&
 		 * util.Collinear((newPoint
@@ -351,13 +351,13 @@ public class SectorEngine {
 		// Istanzio la classe Segment3D
 		Segment3D seg = new Segment3D();
 
-		// Inizializzo il nome del file pdf che sar‡ creato
+		// Inizializzo il nome del file pdf che sar√† creato
 		String name = "noname";
 
 		// ------------------------------------- START
 		// ----------------------------------------------------//
 
-		// Se c'Ë una sola stazione oppure una sola Ë dominante finisce qui
+		// Se c'√® una sola stazione oppure una sola √® dominante finisce qui
 		OneDominator od = new OneDominator();
 		od.setVertices(vertices);
 		if (od.IsOneDominator()) {
@@ -398,7 +398,7 @@ public class SectorEngine {
 			vertices = faces3d.LExplode3D(vertices);
 
 			// Chiamo il metodo Hull3D della classe faces3d che mi restituisce
-			// le facce del poligono gi‡ contrassegnando quelle complanari
+			// le facce del poligono gi√† contrassegnando quelle complanari
 			faces = faces3d.Hull3D(vertices);
 
 			// Controllo che ci sia almeno una faccia
@@ -594,13 +594,13 @@ public class SectorEngine {
 		// Istanzio la classe Segment3D
 		Segment3D seg = new Segment3D();
 
-		// Inizializzo il nome del file pdf che sar‡ creato
+		// Inizializzo il nome del file pdf che sar√† creato
 		String name = "noname";
 
 		// ------------------------------------- START
 		// ----------------------------------------------------//
 
-		// Se c'Ë una sola stazione oppure una sola Ë dominante finisce qui
+		// Se c'√® una sola stazione oppure una sola √® dominante finisce qui
 		OneDominator od = new OneDominator();
 		od.setVertices(vertices);
 		if (od.IsOneDominator()) {
@@ -663,7 +663,7 @@ public class SectorEngine {
 			vertices = faces3d.LExplode3D(vertices);
 
 			// Chiamo il metodo Hull3D della classe faces3d che mi restituisce
-			// le facce del poligono gi‡ contrassegnando quelle complanari
+			// le facce del poligono gi√† contrassegnando quelle complanari
 			faces = faces3d.Hull3D(vertices);
 
 			// Controllo che ci sia almeno una faccia

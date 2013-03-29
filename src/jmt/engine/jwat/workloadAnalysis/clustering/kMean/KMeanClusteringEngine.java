@@ -173,7 +173,7 @@ public class KMeanClusteringEngine {
 		//Costruisce effettivamente i vari cluster
 		//aggiorna lo stato dei calcoli sulla Status Bar
 		int km = 0;
-		/* creazione variaibili di utilit‡ ignota */
+		/* creazione variaibili di utilit√† ignota */
 		int nclus = 0;
 		double dclus = 0;
 		int retVal = 0;
@@ -195,7 +195,7 @@ public class KMeanClusteringEngine {
 						}
 					}
 				}
-				/* Il primo ciclo entra sempre nell'if poichË nc = 0 e err Ë settato a TRUE */
+				/* Il primo ciclo entra sempre nell'if poich√® nc = 0 e err √® settato a TRUE */
 				if (err) {
 					for (int kkk = 0; kkk <= kk; kkk++) {
 						/* Azzero il numero di osservazioni per il cluster kkk */
@@ -227,7 +227,7 @@ public class KMeanClusteringEngine {
 						nclus = 0; /* Presumo siano il numero di cluster ??????????? */
 						dclus = Double.POSITIVE_INFINITY; /* Indica la differenza iniziale da considerare tra i cluster ???????????????? */
 						/*************************************************/
-						/* kk Ë il numero corrente di cluster utilizzati
+						/* kk √® il numero corrente di cluster utilizzati
 						  /*************************************************/
 						for (int j = 0; j <= kk; j++) {
 							/*

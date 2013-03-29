@@ -119,7 +119,7 @@ public class SolverDispatcher {
 		for (int i = 0; i < stations; i++) {
 			// Crea il vettore da passare a Calc2D
 			//System.out.println(i);
-			// il giusto sarebbe moltiplicare per 1000000, ma dà problemi
+			// il giusto sarebbe moltiplicare per 1000000, ma dÃ  problemi
 			int a = (int) (serviceTimes[i][0][0] * prop * visits[i][0]);
 			int b = (int) (serviceTimes[i][1][0] * prop * visits[i][1]);
 			//System.out.println(i+": "+a+" "+b);

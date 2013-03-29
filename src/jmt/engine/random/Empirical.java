@@ -58,7 +58,7 @@ public class Empirical extends AbstractDistribution implements Distribution {
 			//OLD
 			//return pdf[k];
 
-			//TODO: l'approssimazione del casting è per difetto o per eccesso??
+			//TODO: l'approssimazione del casting Ã¨ per difetto o per eccesso??
 			//TODO: e se vado oltre??? return 0???
 			//NEW
 			//@author Stefano Omini
@@ -90,7 +90,7 @@ public class Empirical extends AbstractDistribution implements Distribution {
 
 	public double cdf(double x, Parameter p) throws IncorrectDistributionParameterException {
 		if (p.check()) {
-			//TODO: x è la posizione???
+			//TODO: x Ã¨ la posizione???
 			int k = (int) x;
 			double[] cdf = ((EmpiricalPar) p).getCDF();
 			if (k < 0) {
@@ -155,7 +155,7 @@ public class Empirical extends AbstractDistribution implements Distribution {
 			double variance = 0;
 			mean = theorMean(p);
 			for (int ptn = 0; ptn < pdf.length; ptn++) {
-				// TODO: qual è la formula giusta??
+				// TODO: qual Ã¨ la formula giusta??
 				//OLD
 				//variance += (((pdf[ptn] - mean) * (pdf[ptn] - mean)) * ptn);
 				//NEW

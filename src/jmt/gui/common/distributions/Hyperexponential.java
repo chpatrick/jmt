@@ -24,7 +24,7 @@ import jmt.gui.common.resources.JMTImageLoader;
 
 /**
  * <p>Title: Hyperexponential Distribution</p>
- * <p>Description: Hyperexponential distribution data structure n� 1. This one has parameters
+ * <p>Description: Hyperexponential distribution data structure nï¿½ 1. This one has parameters
  * (p, lambda1, lambda2)</p>
  * 
  * @author Bertoli Marco

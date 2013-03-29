@@ -242,8 +242,8 @@ public class Sector3D {
 	}
 
 	/**
-	 * Verifica se un Sector3D Ë un triangolo dove saturano 3 stazioni contemp.
-	 * @return TRUE se Ë un triangolo
+	 * Verifica se un Sector3D √® un triangolo dove saturano 3 stazioni contemp.
+	 * @return TRUE se √® un triangolo
 	 */
 	public boolean IsTriangle() {
 		if (type == 3) {
@@ -358,7 +358,7 @@ public class Sector3D {
 						k++;
 					}
 				}
-				//se il nome non Ë gi‡ stato usato lo si aggiunge
+				//se il nome non √® gi√† stato usato lo si aggiunge
 				if (k == arname.length - 1) {
 					name = name.concat(statname.get(i) + " ");
 				}
@@ -410,7 +410,7 @@ public class Sector3D {
 							k++;
 						}
 					}
-					//se il nome non Ë gi‡ stato usato lo si aggiunge
+					//se il nome non √® gi√† stato usato lo si aggiunge
 					if (k == arname.length - 1) {
 						name = name.concat(statname.get(i) + " ");
 					}

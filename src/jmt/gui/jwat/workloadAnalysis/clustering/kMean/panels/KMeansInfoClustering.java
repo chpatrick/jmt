@@ -499,7 +499,7 @@ public class KMeansInfoClustering extends JPanel implements JWATConstants, Commo
 					return "Cluster " + (rowIndex + 1);
 				}
 				if (columnIndex == 1) {
-					return f.format(Perc[rowIndex]); //HA dato errore 35° cluster
+					return f.format(Perc[rowIndex]); //HA dato errore 35Â° cluster
 				}
 				if (columnIndex == 2) {
 					return JavaWatColor.getColor(rowIndex);

@@ -734,7 +734,7 @@ public class NetNode extends SimEntity {
 	 */
 	@Override
 	public void restart() {
-		//TODO: � giusto che non faccia niente?
+		//TODO: ï¿½ giusto che non faccia niente?
 	}
 
 	@Override

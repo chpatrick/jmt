@@ -377,7 +377,7 @@ public class NewDynamicDataAnalyzer implements DynamicDataAnalyzer {
 	 * transient period.
 	 * <br>See
 	 * <br>
-	 *  Fishman G.S. 1973 �Concepts and Methods in discrete Event Digital Simulation�.
+	 *  Fishman G.S. 1973 ï¿½Concepts and Methods in discrete Event Digital Simulationï¿½.
 	 *  New York Wiley
 	 *
 	 * <br>

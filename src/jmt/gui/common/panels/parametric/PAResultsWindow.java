@@ -185,7 +185,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 		if (pad instanceof NumberOfCustomerParametricAnalysis) {
 			return "N";
 		} else if (pad instanceof PopulationMixParametricAnalysis) {
-			return "ß of " + pad.getReferenceClassName();
+			return "ÃŸ of " + pad.getReferenceClassName();
 		} else if (pad instanceof SeedParametricAnalysis) {
 			return "Step";
 		} else if (pad instanceof ArrivalRateParametricAnalysis) {
@@ -1158,7 +1158,7 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 				}
 
 				public void mouseClicked(MouseEvent e) {
-					//show a popup menù where you can zomm in and out and save
+					//show a popup menÃ¹ where you can zomm in and out and save
 					//the plot to an image
 					if (SwingUtilities.isRightMouseButton(e)) {
 						PlotPopupMenu plotPopup = new PlotPopupMenu(getReference());
@@ -1450,12 +1450,12 @@ public class PAResultsWindow extends JMTFrame implements ResultsConstants, Param
 				int val = ((Double) (assumedValues.get(index))).intValue();
 				columnName = "N = " + Integer.toString(val);
 			}
-			//for population mix parametric analysis return the value of ß
+			//for population mix parametric analysis return the value of ÃŸ
 			else if (pad.getType().equals(PA_TYPE_POPULATION_MIX)) {
 				Vector<Number> assumedValues = pad.getParameterValues();
 				DecimalFormat threeDec = new DecimalFormat("0.000");
 				double value = ((Double) assumedValues.get(index)).doubleValue();
-				columnName = "ß = " + threeDec.format(value);
+				columnName = "ÃŸ = " + threeDec.format(value);
 			}
 			// if it is a seed parametric analysis just enumerate columns
 			else if (pad.getType().equals(PA_TYPE_SEED)) {

@@ -97,7 +97,7 @@ public class ClusteringInfoPanel extends WizardPanel implements CommonConstants,
 			if (clusteringTable.getSelectedRow() >= 0) {
 				session.removeClustering(clusteringTable.getSelectedRow());
 				clusteringTable.tableChanged(new TableModelEvent(clusteringTable.getModel()));
-				//Non ci sono più clustering passo a finestra precedente
+				//Non ci sono piÃ¹ clustering passo a finestra precedente
 				if (session.getListOfClustering().size() == 0) {
 					parent.setLastPanel(WORKLOAD_CLUSTERING_PANEL);
 					parent.setLastPanel();

@@ -46,7 +46,7 @@ public class RandomSource extends InputSection {
 
 	private boolean coolStart;//when is true the waitingjobs queue is void
 
-	private LinkedList<Job> waitingJobs; //TODO: se riusciamo a convertire in job info list è meglio
+	private LinkedList<Job> waitingJobs; //TODO: se riusciamo a convertire in job info list Ã¨ meglio
 
 	private ServiceStrategy[] strategy;
 

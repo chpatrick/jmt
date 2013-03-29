@@ -51,7 +51,7 @@ public class KMean implements Clustering, JWATConstants {
 	public void setRatio(int endClust) {
 		if (endClust > 2) {
 			//Mostra riassunto sui cluster
-			/* Calcola un indice che mostri la validit‡ di un clustering */
+			/* Calcola un indice che mostri la validit√† di un clustering */
 			for (int i = 1; i < (endClust - 1); i++) {
 				if (results[i + 1].omsr != 0) {
 					results[i].ratio = results[i].omsr / results[i + 1].omsr;

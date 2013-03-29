@@ -147,7 +147,7 @@ public class SolverMultiMixed extends SolverMulti {
 		oCounter = 0;
 		cCounter = 0;
 
-		//TODO: non crea strutture analoghe anche per open,perchè le D delle classi open non cambiano
+		//TODO: non crea strutture analoghe anche per open,perchÃ¨ le D delle classi open non cambiano
 		double[][][] closedServTime = new double[stations][closedClasses.length][1];
 		double[][] closedVisits = new double[stations][closedClasses.length];
 

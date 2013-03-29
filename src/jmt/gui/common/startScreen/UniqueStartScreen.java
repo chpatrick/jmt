@@ -189,7 +189,7 @@ public class UniqueStartScreen extends JMTFrame {
 		{
 			putValue(Action.SHORT_DESCRIPTION, "Starts asyntotic bound analysis solver");
 			putValue(Action.SMALL_ICON, resizeButtonIcon(JMTImageLoader.loadImage(IMG_JABAICON)));
-			//TODO:mettere il collegamento quando è pronto il tool e abilitare
+			//TODO:mettere il collegamento quando Ã¨ pronto il tool e abilitare
 			setEnabled(false);
 		}
 

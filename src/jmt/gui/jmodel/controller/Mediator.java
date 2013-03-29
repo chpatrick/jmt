@@ -1278,7 +1278,7 @@ public class Mediator implements GuiInterface {
 				// Adds edge for removal
 				edges.addAll(DefaultGraphModel.getEdges(graphmodel, new Object[] { cells[i] }));
 				// Giuseppe De Cicco & Fabio Granara
-				// quando vado a eliminare un nodo, a cui è collegato un arco,
+				// quando vado a eliminare un nodo, a cui Ã¨ collegato un arco,
 				// vado ad incrementare o diminuire il contatore per il
 				// pulsanteAGGIUSTATUTTO
 				// Iterator iter = edges.iterator();
@@ -1681,7 +1681,7 @@ public class Mediator implements GuiInterface {
 		int oldPointX = 0;
 		int oldPointY = 0;
 		boolean inGroup = false;
-		// Il flag è stato creato per capire sapere se e' una block regione e
+		// Il flag Ã¨ stato creato per capire sapere se e' una block regione e
 		// quindi utilizzare
 		// il vecchio metodo oppure se e' una cella quindi flag=true allora uso
 		// il nuovo
@@ -1751,7 +1751,7 @@ public class Mediator implements GuiInterface {
 					// &&((JmtEdge)overlapping[j]).intersects((EdgeView)(graph.getGraphLayoutCache()).getMapping(overlapping[j],
 					// false),
 					// GraphConstants.getBounds(((JmtCell)cell).getAttributes())))
-					// System.out.println("Intersect è TRUE");
+					// System.out.println("Intersect Ã¨ TRUE");
 
 					// Puts last to last corner of overlapping cells
 					if (overlapping[j] instanceof JmtCell && overlapping[j] != cell && inGroup) {

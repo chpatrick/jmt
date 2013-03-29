@@ -54,7 +54,7 @@ public class Beta2D {
 
 	/**
 	 * Dato un vettore di vertici ritorna un vettore di double[] che rappresentano
-	 * le beta e i punti del settore a cui è associato.
+	 * le beta e i punti del settore a cui Ã¨ associato.
 	 * @param verticesnp    il vettore di vertici passato
 	 * @return              un vettore con le beta con la struttura dati di BetaCalc2D
 	 */

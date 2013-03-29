@@ -221,7 +221,7 @@ public class SelectState extends UIStateDefault {
 							//System.out.println("Numero di celle in gruppo: "+ celless.length);
 
 							if (rett2 != null) {
-								//System.out.println("Dentro DRAG mi restituisce un rettangolo se è di tipoBLockingRegion");
+								//System.out.println("Dentro DRAG mi restituisce un rettangolo se Ã¨ di tipoBLockingRegion");
 								Xmin[i] = new Integer((int) rett2.getMinX());
 								Ymin[i] = new Integer((int) rett2.getMinY());
 								//                        		Xmax[i]=new Integer((int) rett2.getMaxX());

@@ -17,7 +17,7 @@ import jmt.gui.jaba.graphs.JabaCanvas;
 import jmt.gui.jaba.graphs.Sectors2DGraph;
 import jmt.gui.jaba.graphs.Sectors3DGraph;
 
-// Pannello iniziale che conterr‡ quelli specifici a 2 o 3 dimensioni
+// Pannello iniziale che conterr√† quelli specifici a 2 o 3 dimensioni
 public class SectorsGraphicPanel extends WizardPanel {
 	/**
 		 * 

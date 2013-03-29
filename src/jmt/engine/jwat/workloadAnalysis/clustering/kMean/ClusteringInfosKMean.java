@@ -39,7 +39,7 @@ public class ClusteringInfosKMean implements ClusteringInfos {
 
 		double ssb; // varianza fra le classi sulla variabile j
 		double ssw; // varianza interna sulla variabile j
-		double dfw = 0; // grado di libert‡ interna fra le classi
+		double dfw = 0; // grado di libert√† interna fra le classi
 		double assw = 0;// errore totale nella partizione
 
 		double sd, sc, r[];

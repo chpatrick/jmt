@@ -43,7 +43,7 @@ public class HyperExp extends AbstractDistribution implements Distribution {
 		expDistr = new Exponential();
 	}
 
-	//TODO: perchè pdf e cdf sono uguali a zero?? Devono essere ancora implementate
+	//TODO: perchÃ¨ pdf e cdf sono uguali a zero?? Devono essere ancora implementate
 	/**
 	 * it returns the pdf of the distribution.
 	 * This method is used to obtain from the distribution his probability distribution

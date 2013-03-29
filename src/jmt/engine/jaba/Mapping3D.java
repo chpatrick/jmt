@@ -34,7 +34,7 @@ public class Mapping3D {
 	private final double rad3d2 = Math.sqrt(3) / 2;
 
 	/**
-	 * Questo metodo è usato per mappare le 3 coordinate beta in un sistema di 2 coordinate
+	 * Questo metodo Ã¨ usato per mappare le 3 coordinate beta in un sistema di 2 coordinate
 	 * @param beta1
 	 * @param beta2
 	 * @return xy

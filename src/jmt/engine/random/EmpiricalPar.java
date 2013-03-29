@@ -196,7 +196,7 @@ public class EmpiricalPar extends AbstractParameter implements Parameter {
 
 	// 11/09/03 - Massimo Cattai //
 
-	//TODO: Ë permesso il valore 0 delle probabilit‡??
+	//TODO: √® permesso il valore 0 delle probabilit√†??
 
 	/**
 	 * Checks whether a parameter value is correct

@@ -85,7 +85,7 @@ public class PopulationMixPanel extends ParameterOptionPanel {
 				+ "(and possibly other open classes) and it applies only to the closed classes.\n\n"
 				+ "Repeat the simulation changing the proportion of jobs "
 				+ "between the two closed classes, keeping constant the total number of jobs.\n\n"
-				+ "The 'From' and 'To' values represent the initial and final values of " + "population mix (ßi = Ni / N) for the chosen class.\n\n"
+				+ "The 'From' and 'To' values represent the initial and final values of " + "population mix (ÃŸi = Ni / N) for the chosen class.\n\n"
 				+ "Since only integer values are allowed " + "the number of steps that can be practically executed may be very small.";
 
 		sd = stationDef;
@@ -96,10 +96,10 @@ public class PopulationMixPanel extends ParameterOptionPanel {
 
 	public void initialize() {
 		JPanel edit = new JPanel(new GridLayout(4, 1, 0, 5));
-		fromLabel = new JLabel("Initial ß: ");
+		fromLabel = new JLabel("Initial ÃŸ: ");
 		from = new JSpinner(new SpinnerNumberModel(PMPA.getInitialValue(), 0.000, 1.000, 0.001));
 		from.setToolTipText("Sets the initial proportion of jobs");
-		toLabel = new JLabel("Final ß: ");
+		toLabel = new JLabel("Final ÃŸ: ");
 		to = new JSpinner(new SpinnerNumberModel(PMPA.getFinalValue(), 0.000, 1.000, 0.001));
 		to.setToolTipText("Sets the final proportion of jobs");
 		stepsLabel = new JLabel("Steps (n. of exec.): ");

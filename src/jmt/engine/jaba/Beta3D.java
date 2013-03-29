@@ -74,8 +74,8 @@ public class Beta3D {
 		Sector3D s3d = new Sector3D();
 		for (int i = 0; i < faces.size(); i++) {
 			s3d = BetaTriangle(faces.get(i));
-			// Controllo: se una classe Ë sempre nulla non la inserisco xË non
-			// Ë un triangolo ma sta sul lato.
+			// Controllo: se una classe √® sempre nulla non la inserisco x√® non
+			// √® un triangolo ma sta sul lato.
 			if ((Math.abs(s3d.getBeta(0, 1) - 0) > EPSYLON && Math.abs(s3d.getBeta(0, 2) - 0) > EPSYLON && Math.abs(s3d.getBeta(0, 3) - 0) > EPSYLON)
 					&& (Math.abs(s3d.getBeta(1, 1) - 0) > EPSYLON && Math.abs(s3d.getBeta(1, 2) - 0) > EPSYLON && Math.abs(s3d.getBeta(1, 3) - 0) > EPSYLON)
 					&& (Math.abs(s3d.getBeta(2, 1) - 0) > EPSYLON && Math.abs(s3d.getBeta(2, 2) - 0) > EPSYLON && Math.abs(s3d.getBeta(2, 3) - 0) > EPSYLON)) {
@@ -279,8 +279,8 @@ public class Beta3D {
 				int[] pxy2 = (((Segment3D) latixy.get(j)).getS2()).getCoords();
 
 				// 2 segmenti possono essere unibili se hanno gli stessi estremi.
-				// Questo puÚ accadere in 2 modi: se A1-A2 e B1-B2 sono gli estremi
-				// dei segmenti A e B, si puÚ avere A1=B1 e A2=B2
+				// Questo pu√≤ accadere in 2 modi: se A1-A2 e B1-B2 sono gli estremi
+				// dei segmenti A e B, si pu√≤ avere A1=B1 e A2=B2
 				if ((p1[0] == pxy1[0] && p1[1] == pxy1[1] && p2[0] == pxy2[0] && p2[1] == pxy2[1])) {
 					Vector<BetaVertex> betav = new Vector<BetaVertex>();
 					betav.addElement((((Segment3D) latixy.get(j)).getBeta(0)));
@@ -333,8 +333,8 @@ public class Beta3D {
 				int[] pxz2 = (((Segment3D) latixz.get(j)).getS2()).getCoords();
 
 				// 2 segmenti possono essere unibili se hanno gli stessi estremi.
-				// Questo puÚ accadere in 2 modi: se A1-A2 e B1-B2 sono gli estremi
-				// dei segmenti A e B, si puÚ avere A1=B1 e A2=B2
+				// Questo pu√≤ accadere in 2 modi: se A1-A2 e B1-B2 sono gli estremi
+				// dei segmenti A e B, si pu√≤ avere A1=B1 e A2=B2
 				if ((p1[0] == pxz1[0] && pxz1[1] == -1 && p1[2] == pxz1[2] && p2[0] == pxz2[0] && pxz2[1] == -1 && p2[2] == pxz2[2])) {
 					Vector<BetaVertex> betav = new Vector<BetaVertex>();
 					betav.addElement((((Segment3D) latixz.get(j)).getBeta(0)));
@@ -389,10 +389,10 @@ public class Beta3D {
 				int[] pyz1 = (((Segment3D) latiyz.get(j)).getS1()).getCoords();
 				int[] pyz2 = (((Segment3D) latiyz.get(j)).getS2()).getCoords();
 				// 2 segmenti possono essere unibili se hanno gli stessi estremi.
-				// Questo puÚ accadere in 2 modi: se A1-A2 e B1-B2 sono gli estremi
+				// Questo pu√≤ accadere in 2 modi: se A1-A2 e B1-B2 sono gli estremi
 				// dei segmenti A e B,
 
-				// si puÚ avere A1=B1 e A2=B2
+				// si pu√≤ avere A1=B1 e A2=B2
 				if ((p1[2] == pyz1[2] && p1[1] == pyz1[1] && p2[2] == pyz2[2] && p2[1] == pyz2[1])) {
 					Vector<BetaVertex> betav = new Vector<BetaVertex>();
 					betav.addElement((((Segment3D) latiyz.get(j)).getBeta(0)));
@@ -418,7 +418,7 @@ public class Beta3D {
 					//i--;
 					//j--;
 				}
-				// oppure si puÚ avere A1=B2 e A2=B1
+				// oppure si pu√≤ avere A1=B2 e A2=B1
 				else if ((p1[2] == pyz2[2] && p1[1] == pyz2[1] && p2[2] == pyz1[2] && p2[1] == pyz1[1])) {
 					Vector<BetaVertex> betav = new Vector<BetaVertex>();
 					betav.addElement((((Segment3D) latiyz.get(j)).getBeta(0)));
@@ -448,9 +448,9 @@ public class Beta3D {
 		//Vector out = new Vector();
 
 		for (int i = 0; i < lati.size(); i++) {
-			//Vector stemp = new Vector();    // Conterr‡ i segmenti selezionati
-			Vector<BetaVertex> ptemp = new Vector<BetaVertex>(); // Conterr‡ i punti dei segmenti
-			Vector<Vertex> statp = new Vector<Vertex>(); // Conterr‡ le stazioni a cui sono associati i punti dei segmenti
+			//Vector stemp = new Vector();    // Conterr√† i segmenti selezionati
+			Vector<BetaVertex> ptemp = new Vector<BetaVertex>(); // Conterr√† i punti dei segmenti
+			Vector<Vertex> statp = new Vector<Vertex>(); // Conterr√† le stazioni a cui sono associati i punti dei segmenti
 
 			// Creo un array con le coordinate dei primi punti dei lati
 			int[] clato = ((((Segment3D) lati.get(i)).getS1()).getCoords());
@@ -565,7 +565,7 @@ public class Beta3D {
 
 					// 2 segmenti possono essere uniti se hanno gli stessi estremi.
 					if ((p1xy[0] == pxz1[0] && p2xy[0] == pxz2[0] && p1xy[0] != p2xy[0] && //assicura che non sia la stessa stazione
-							p2xy[0] != -1 //assicura che non Ë un estremo
+							p2xy[0] != -1 //assicura che non √® un estremo
 							)
 							|| (p2xy[0] == pxz1[0] && p1xy[0] == pxz2[0] && p1xy[0] != p2xy[0] && p2xy[0] != -1))
 
@@ -665,9 +665,9 @@ public class Beta3D {
 	}
 
 	/**
-	 * Il metodo Ë usato per unire i settori complanari, quelli cioË dove saturano pi˘ di 3 stazioni contemp.
+	 * Il metodo √® usato per unire i settori complanari, quelli cio√® dove saturano pi√π di 3 stazioni contemp.
 	 *
-	 * @param triangles Ë un vettore contenente i settori a triangolo dove saturano 3 stazioni contemporaneamente
+	 * @param triangles √® un vettore contenente i settori a triangolo dove saturano 3 stazioni contemporaneamente
 	 * @return un vettore con i settori uniti
 	 */
 	public Vector<Object> JoinComplanars(Vector<Object> triangles) {

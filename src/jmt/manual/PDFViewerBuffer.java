@@ -176,7 +176,7 @@ TreeSelectionListener {
 		 */
 		if (outline != null && jt == null) {
 			if (outline.getChildCount() > 0) {
-				olf = new JDialog(this, "Menù");
+				olf = new JDialog(this, "MenÃ¹");
 				olf.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 				olf.setLocation(876, 0);
 

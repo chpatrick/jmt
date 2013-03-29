@@ -144,7 +144,7 @@ public class Segment3D {
 
 	/**
 	 * Partendo dai lati dei settori dove saturano 2 stazioni ottenute unendo quelle
-	 * dove saturano 3 stazioni aggiunge i segmenti creati e toglie quelli gi‡ usati
+	 * dove saturano 3 stazioni aggiunge i segmenti creati e toglie quelli gi√† usati
 	 * @param sett2staz
 	 * @param lt
 	 * @return
@@ -187,7 +187,7 @@ public class Segment3D {
 		Vector<Object> out = new Vector<Object>();
 		for (int i = 0; i < resxy.size(); i++) {
 			Vertex st1 = new Vertex((resxy.get(i).getP1()).x, (resxy.get(i).getP1()).y,
-			// metto -1 per indicare che la coordinata originale si Ë persa
+			// metto -1 per indicare che la coordinata originale si √® persa
 					-1);
 			Vertex st2 = new Vertex((resxy.get(i).getP2()).x, (resxy.get(i).getP2()).y, -1);
 			out.addElement(new Segment3D(resxy.get(i).getBeta1(), resxy.get(i).getBeta11(),
@@ -201,7 +201,7 @@ public class Segment3D {
 		Vector<Object> out = new Vector<Object>();
 		for (int i = 0; i < resxz.size(); i++) {
 			Vertex st1 = new Vertex((resxz.get(i).getP1()).x,
-			// metto -1 per indicare che la coordinata originale si Ë persa
+			// metto -1 per indicare che la coordinata originale si √® persa
 					-1, (resxz.get(i).getP1()).y);
 			Vertex st2 = new Vertex((resxz.get(i).getP2()).x, -1, (resxz.get(i).getP2()).y);
 			out.addElement(new Segment3D(resxz.get(i).getBeta1(),
@@ -215,7 +215,7 @@ public class Segment3D {
 		Vector<Object> out = new Vector<Object>();
 		for (int i = 0; i < resyz.size(); i++) {
 			Vertex st1 = new Vertex(
-			// metto -1 per indicare che la coordinata originale si Ë persa
+			// metto -1 per indicare che la coordinata originale si √® persa
 					-1, (resyz.get(i).getP1()).x, (resyz.get(i).getP1()).y);
 			Vertex st2 = new Vertex(-1, (resyz.get(i).getP2()).x, (resyz.get(i).getP2()).y);
 			out.addElement(new Segment3D(

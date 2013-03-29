@@ -51,7 +51,7 @@
 
         <!-- Compile the java code from ${src} into ${build} -->
         <!-- includes resource files -->
-        <javac srcdir="${src}" destdir="${class}" classpath="${javac.libs}" compiler="javac1.6" />
+        <javac srcdir="${src}" destdir="${class}" classpath="${javac.libs}" compiler="javac1.6" encoding="UTF-8" />
 
     </target>
 

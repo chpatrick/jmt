@@ -215,7 +215,7 @@ public class JabaModel implements JabaConstants {
 		// NEW minimum classes = 2
 		classes = 2;
 
-		// TODO: perchè è 1 se non ci sono customers?? Lasciare così
+		// TODO: perchÃ¨ Ã¨ 1 se non ci sono customers?? Lasciare cosÃ¬
 		maxpop = 1;
 		changed = true;
 
@@ -584,7 +584,7 @@ public class JabaModel implements JabaConstants {
 		// validate sizes
 		for (int s = 0; s < stations; s++) {
 			currSize = (stationTypes[s] == STATION_LD ? maxpop : 1);
-			// TODO: se stazione è LD ma non ci sono customers, max pop = 0
+			// TODO: se stazione Ã¨ LD ma non ci sono customers, max pop = 0
 			if (currSize == 0) {
 				currSize = 1;
 			}
@@ -695,7 +695,7 @@ public class JabaModel implements JabaConstants {
 			if (classTypes[i] != CLASS_CLOSED) {
 				// make sure we stay in a consistent state
 				removeLD();
-				// TODO: rimuove le LD perchè il caso LD multiclasse non è
+				// TODO: rimuove le LD perchÃ¨ il caso LD multiclasse non Ã¨
 				// gestibile
 				return false;
 			}
@@ -1020,8 +1020,8 @@ public class JabaModel implements JabaConstants {
 
 			break;
 
-		case STATION_DELAY: // TODO: è uguale al caso Li ad eccezione del nome
-							// (forse si può semplificare)
+		case STATION_DELAY: // TODO: Ã¨ uguale al caso Li ad eccezione del nome
+							// (forse si puÃ² semplificare)
 
 			station_element = root.createElement("delaystation");
 			station_element.setAttribute("name", this.stationNames[stationNum]);
@@ -1082,7 +1082,7 @@ public class JabaModel implements JabaConstants {
 				st_element.setAttribute("customerclass", class_name);
 				;
 				// TODO: questa parte va cambiata, devo avere una stringa csv
-				// con tutti i serv times (tranne l'elem 0 che è nullo)
+				// con tutti i serv times (tranne l'elem 0 che Ã¨ nullo)
 
 				String serv_t = ArrayUtils.toCSV(serviceTimes[stationNum][j]);
 
@@ -1781,7 +1781,7 @@ public class JabaModel implements JabaConstants {
 
 		for (int i = 0; i < stations; i++) {
 			// Crea il vettore da passare a Calc3D
-			// il giusto sarebbe moltiplicare per 1000000, ma dà problemi
+			// il giusto sarebbe moltiplicare per 1000000, ma dÃ  problemi
 			int a = (int) Math
 					.round((serviceTimes[i][0][0] * prop * visits[i][0]));
 			int b = (int) Math
@@ -1801,7 +1801,7 @@ public class JabaModel implements JabaConstants {
 
 		for (int i = 0; i < stations; i++) {
 			// Crea il vettore da passare a Calc3D
-			// il giusto sarebbe moltiplicare per 1000000, ma dà problemi
+			// il giusto sarebbe moltiplicare per 1000000, ma dÃ  problemi
 			int a = (int) Math
 					.round((serviceTimes[i][0][0] * prop * visits[i][0]));
 			int b = (int) Math

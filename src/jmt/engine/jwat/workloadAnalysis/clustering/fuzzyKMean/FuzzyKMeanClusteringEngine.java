@@ -64,7 +64,7 @@ public class FuzzyKMeanClusteringEngine {
 		m_nNumNorm = indVarSel.length;
 		m_nMaxClust = nMaxClust; // Num.massimo di clusters da considerare
 		m_nFLev = nFLev; // Livello di fuzzyness
-		m_nIter = nIter; // Valore di tollerabilit‡ dell'errore
+		m_nIter = nIter; // Valore di tollerabilit√† dell'errore
 		clus_entropy = new double[m_nMaxClust - 1];
 
 		obsSel = m.getVariables()[indVarSel[0]].getCurObs();

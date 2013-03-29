@@ -160,7 +160,7 @@ public class SolverMultiClosedMVA extends SolverMulti {
 
 	}
 
-	//TODO: attenzione, non è in grado di gestire classi con popolazioni nulle
+	//TODO: attenzione, non Ã¨ in grado di gestire classi con popolazioni nulle
 	/** initializes the Multi class solver with the system parameters.
 	 * @param  n   array of names of the service centers.
 	 * @param  t   array of types (LD or LI) of the service centers.
@@ -225,7 +225,7 @@ public class SolverMultiClosedMVA extends SolverMulti {
 		}
 
 		//moves in the last position the class with maximum population
-		//todo: perchè? (per ottimizzare consumo di memoria muovendosi intelligentemente nello spazio degli stati)
+		//todo: perchÃ¨? (per ottimizzare consumo di memoria muovendosi intelligentemente nello spazio degli stati)
 		population[lastClass] = pop[maxIndex];
 		population[maxIndex] = pop[lastClass];
 
@@ -245,7 +245,7 @@ public class SolverMultiClosedMVA extends SolverMulti {
 				System.arraycopy(s[i][j], 0, servTime[i][j], 0, s[i][j].length);
 			}
 			System.arraycopy(s[i][maxIndex], 0, servTime[i][lastClass], 0, s[i][maxIndex].length);
-			//todo: perchè copia s[i][0].length e non s[i][lastClass].length ?
+			//todo: perchÃ¨ copia s[i][0].length e non s[i][lastClass].length ?
 			//OLD
 			//System.arraycopy(s[i][lastClass], 0, servTime[i][maxIndex], 0, s[i][0].length);
 			//NEW
@@ -368,7 +368,7 @@ public class SolverMultiClosedMVA extends SolverMulti {
 		}
 
 		do {
-			//TODO: tolta per controllare se serve, probabilmente è solo per debug
+			//TODO: tolta per controllare se serve, probabilmente Ã¨ solo per debug
 			//printStatus();
 			//compute residence time
 			for (m = 0; m < stations; m++) {
@@ -527,7 +527,7 @@ public class SolverMultiClosedMVA extends SolverMulti {
 		}
 
 		do {
-			//TODO: tolta per controllare se serve, probabilmente è solo per debug
+			//TODO: tolta per controllare se serve, probabilmente Ã¨ solo per debug
 			//printStatus();
 			//compute residence time
 			for (m = 0; m < stations; m++) {

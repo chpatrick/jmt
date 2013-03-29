@@ -158,7 +158,7 @@ public class AlphaNumStartScreen extends JMTFrame {
 		formatJTextArea(simDescr);
 		simArea.add(simAppl);
 		simArea.add(simDescr);
-		//TODO:abilitare il pulsante quando sar‡ pronto il simulatore alfanumerico
+		//TODO:abilitare il pulsante quando sar√† pronto il simulatore alfanumerico
 		simAppl.setEnabled(false);
 		//add components to the aba area
 		abaAppl = new JButton("Start jABA");
@@ -166,7 +166,7 @@ public class AlphaNumStartScreen extends JMTFrame {
 		formatJTextArea(abaDescr);
 		abaArea.add(abaAppl);
 		abaArea.add(abaDescr);
-		//TODO:abilitare il pulsante quando sar‡ pronto il jaba alfanumerico
+		//TODO:abilitare il pulsante quando sar√† pronto il jaba alfanumerico
 		abaAppl.setEnabled(false);
 
 		//set preferred size for all buttons
@@ -191,13 +191,13 @@ public class AlphaNumStartScreen extends JMTFrame {
 		});
 		simAppl.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				/*TODO:quando sar‡ pronto il programma alfanumerico del simulatore,
+				/*TODO:quando sar√† pronto il programma alfanumerico del simulatore,
 				TODO:  inserire qui l'istruzione di avvio.*/
 			}
 		});
 		abaAppl.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				/*TODO:quando sar‡ pronto il programma aba,
+				/*TODO:quando sar√† pronto il programma aba,
 				TODO:  inserire qui l'istruzione di avvio.*/
 			}
 		});

@@ -32,7 +32,7 @@ public class Util2d {
 	private double EPSYLON = 0.000001; // Costante di errore per i moduli    
 
 	/**
-	 * Il metodo controlla se p è collineare ai punti a e b
+	 * Il metodo controlla se p Ã¨ collineare ai punti a e b
 	 * @param a
 	 * @param b
 	 * @param p
@@ -75,7 +75,7 @@ public class Util2d {
 
 	/**
 	 * La funzione elimina i punti dominati dal vettore passato
-	 * @param vertices      è un vettore di NewPoint
+	 * @param vertices      Ã¨ un vettore di NewPoint
 	 * @return              un vettore di NewPoint contenente i vertici non dominati
 	 */
 	public Vector<newPoint> DomRemove2D(Vector<newPoint> vertices) {
@@ -105,7 +105,7 @@ public class Util2d {
 
 	/**
 	 * Il metodo aggiunge le proiezioni sugli assi ad un vettore di vertici
-	 * @param vertices      è il vettore di NewPoint passato
+	 * @param vertices      Ã¨ il vettore di NewPoint passato
 	 * @return              un vettore di NewPoint contenente i vertici iniziali + le proiezioni
 	 */
 	public Vector<newPoint> LExplode2D(Vector<newPoint> vertices) {
@@ -120,10 +120,10 @@ public class Util2d {
 	}
 
 	/**
-	 * Il metodo controlla se un vertice 2D è presente in un vettore di vertici
+	 * Il metodo controlla se un vertice 2D Ã¨ presente in un vettore di vertici
 	 * @param a             il newPoint passato
 	 * @param vertices      il vettore di newPoint da controllare
-	 * @return              true se è presente
+	 * @return              true se Ã¨ presente
 	 */
 	public boolean VPresent(newPoint a, Vector<newPoint> vertices) {
 		boolean out = false;

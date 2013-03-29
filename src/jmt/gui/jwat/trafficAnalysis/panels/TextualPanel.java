@@ -163,7 +163,7 @@ public class TextualPanel extends WizardPanel implements JWATConstants {
 		double[] lambda = burstengine.getData("lambda");
 		String res = "<html><body align=\"Left\">";
 		for (int i = 1; i < (resultB).length; i++) {
-			res = res + "<b><i>Epoch n° = " + (i + 1) + "</i></b><br><br>";
+			res = res + "<b><i>Epoch nÂ° = " + (i + 1) + "</i></b><br><br>";
 			res = res + " b = " + resultB[i] + "<br>";
 			res = res + " a = " + resultA[i] + "<br>";
 			res = res + " lambda = " + lambda[0] + "<br>";

@@ -630,7 +630,7 @@ public class NumberOfCustomersPanel extends ParameterOptionPanel {
 			if (rowIndex == 0) {
 				return "Ni";
 			} else {
-				return "ßi";
+				return "ÃŸi";
 			}
 		}
 

@@ -665,7 +665,7 @@ public class SolverSingleClosedMVA extends Solver {
 						wcomp = servTime[stat][0];
 						if (type[stat] == Solver.DELAY) {
 							for (cust = 1; cust <= customers; cust++)
-								//TODO: attenzione, qui va in out of bound, non c'è un elemento x ogni popolazione!
+								//TODO: attenzione, qui va in out of bound, non c'Ã¨ un elemento x ogni popolazione!
 		                        servTime[stat][cust] = wcomp / cust;
 						} else {
 							for (cust = 1; cust <= customers; cust++)
@@ -1869,7 +1869,7 @@ public class SolverSingleClosedMVA extends Solver {
 
 		//OLD
 		//for (m = noLI ? 1 : LICount; m < stations; m++) {
-		//TODO: se noLI è vero non dovrebbe partire da 0??
+		//TODO: se noLI Ã¨ vero non dovrebbe partire da 0??
 
 		//TODO: a meno che:: (COMMENTO tratto da solveSingleLD)
 		//loop over all stations except the first, it merges a station at every
@@ -2166,7 +2166,7 @@ public class SolverSingleClosedMVA extends Solver {
 		//System.out.println();
 
 		//calculation of other parameters
-		//TODO: perchè moltiplica per visits[stations-1] ??
+		//TODO: perchÃ¨ moltiplica per visits[stations-1] ??
 		totThroughput = X[customers] / visits[stations - 1];
 		for (m = noLI ? 0 : LICount; m < stations; m++) {
 			throughput[m] = totThroughput * visits[m];
@@ -2217,7 +2217,7 @@ public class SolverSingleClosedMVA extends Solver {
 		int k;//index of customers, in marginal probability
 		double sum = 0.0;
 
-		//TODO: questo dovrebbero essere il throughput: quale differenza c'è tra X e Y??
+		//TODO: questo dovrebbero essere il throughput: quale differenza c'Ã¨ tra X e Y??
 		//R: non hai guardato la bibliografia? l'articolo di balbo bruell????
 		//si X e Y sono il throughput ma calcolato in maniera diversa, mi spiego X e' quello
 		//classico da Lazowska, Y invece vience calcolato mano a mano ponendo 1 alla volta il tempo di
@@ -2252,7 +2252,7 @@ public class SolverSingleClosedMVA extends Solver {
 		double[][] usPrec = new double[stations][customers + 1];
 		double[][] usCorr = new double[stations][customers + 1];
 
-		//TODO: queste dovrebbero essere probabilità marginali di avere j customer nalla stazione (con o<j<n)
+		//TODO: queste dovrebbero essere probabilitÃ  marginali di avere j customer nalla stazione (con o<j<n)
 		double[] pPrec = new double[customers + 1];
 		double[] pCorr = new double[customers + 1];
 
@@ -2362,7 +2362,7 @@ public class SolverSingleClosedMVA extends Solver {
 				//calculation of marginal probabilities p(k,n) except k = 0, n
 				for (k = 1; k < n; k++) {
 					pCorr[k] = servTime[m][k] * X[n] * pPrec[k - 1];
-					//TODO: exp ?? Forse serve per probabilità troppo basse??
+					//TODO: exp ?? Forse serve per probabilitÃ  troppo basse??
 					//R: hai aganciato il concetto
 					expMultCorr[k] = expMultPrec[k - 1];
 					if (pCorr[k] < MIN) {

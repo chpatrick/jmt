@@ -270,12 +270,12 @@ public class SimulationStateChecker {
 				Object thisClassKey = classes.get(j);
 				String thisClassName = mediator.getClassDefinition().getClassName(thisClassKey);
 				int degrees = (int) (((Double) perServerMapUtilizations.get(thisClassKey)).floatValue() * 360);
-				System.out.println("                " + thisClassName + " at " + thisServerName + ":    from " + start + "°" + " to "
-						+ (start + degrees) + "°");
+				System.out.println("                " + thisClassName + " at " + thisServerName + ":    from " + start + "Â°" + " to "
+						+ (start + degrees) + "Â°");
 				start += degrees;
 			}
 		}
-		System.out.println("\n    Max n° job: " + Integer.toString((int) this.maxJobCount));
+		System.out.println("\n    Max nÂ° job: " + Integer.toString((int) this.maxJobCount));
 		System.out.println("***********************************************\n");
 		iteration++;
 	}

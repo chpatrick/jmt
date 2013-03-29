@@ -313,7 +313,7 @@ public class GraphicalQueueState {
 	 * @param x  see Graphics.fillArc(...)
 	 * @param y  see Graphics.fillArc(...)
 	 * @param diameter  the diameter of the arc
-	 * @param startAngle  the starting angle in degrees (0° is interpreted as 3 o'clock)
+	 * @param startAngle  the starting angle in degrees (0Â° is interpreted as 3 o'clock)
 	 * @param angle  the angle width
 	 */
 	private void myFillArc(Graphics g, int x, int y, int diameter, int startAngle, int angle) {

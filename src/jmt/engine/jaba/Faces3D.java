@@ -60,7 +60,7 @@ public class Faces3D {
 
 		int NSettori = newfaces.size();
 
-		// Controllo della complanarit‡ ed assegnazione dei colori
+		// Controllo della complanarit√† ed assegnazione dei colori
 		for (int i = 0; i < NSettori; i++) {
 			//TODO Meglio mettere j=i o j=0???
 			for (int j = i; j < NSettori; j++) {
@@ -71,7 +71,7 @@ public class Faces3D {
 			}
 		}
 
-		// A questo punto si ha a disposizione il vettore newfaces (che Ë un vettore di newFace),
+		// A questo punto si ha a disposizione il vettore newfaces (che √® un vettore di newFace),
 		// con al suo interno i vertici delle facce e in ultimo il "colore" associato.
 
 		return newfaces;
@@ -145,11 +145,11 @@ public class Faces3D {
 	}
 
 	/**
-	 * Controlla se il vertice v Ë presente nel vettore di vertici vertices
+	 * Controlla se il vertice v √® presente nel vettore di vertici vertices
 	 *
 	 * @param v
 	 * @param vertices
-	 * @return      true se v Ë presente in vertices
+	 * @return      true se v √® presente in vertices
 	 */
 	public boolean HasVertex(Vertex v, Vector<Vertex> vertices) {
 		boolean out = false;

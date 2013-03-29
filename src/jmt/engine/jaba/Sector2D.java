@@ -74,7 +74,7 @@ public class Sector2D {
 		beta22 = b22;
 		this.p1 = p1;
 		this.p2 = p2;
-		// vs Ë un vettore di newPoint
+		// vs √® un vettore di newPoint
 		vp = vs;
 		//stations[0]=-1;
 
@@ -132,8 +132,8 @@ public class Sector2D {
 	}
 
 	/**
-	 * Controlla se un punto Ë collineare con i 2 che caratterizzano il settore
-	 * Se il controllo d‡ esito positivo aggiunge il punto al vettore dei collineari
+	 * Controlla se un punto √® collineare con i 2 che caratterizzano il settore
+	 * Se il controllo d√† esito positivo aggiunge il punto al vettore dei collineari
 	 * @param ss
 	 * @param p3
 	 * @return

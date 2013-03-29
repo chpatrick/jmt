@@ -355,7 +355,7 @@ public class InputPanel extends WizardPanel implements CommonConstants, JWATCons
 		public void actionPerformed(ActionEvent arg0) {
 			// Se esistono dei valori li salvo
 			if (((JWatVariableInputTableModel) inputTable.getModel()).getSize() > 0) {
-				//Il formato è selezionato
+				//Il formato Ã¨ selezionato
 				if (formatchooser.getSelectedIndex() >= 0) {
 					int response = JOptionPane.showConfirmDialog(null, "Overwrite existing file?", "Confirm overwrite", JOptionPane.YES_NO_OPTION,
 							JOptionPane.QUESTION_MESSAGE);
@@ -396,7 +396,7 @@ public class InputPanel extends WizardPanel implements CommonConstants, JWATCons
 					}
 					new FormatFileWriter(mod.getNames(), mod.getComments(), mod.getDelimiters(), mod.getRegExpr(), mod.getTypes(), fFile
 							.getAbsolutePath(), mod.getDefaults(), mod.getReplaces());
-					//controllo se il file è attualmente caricato o no
+					//controllo se il file Ã¨ attualmente caricato o no
 					boolean exist = false;
 					//controllo se esiste gia' la voce selezionata
 					for (int i = 1; i < formatchooser.getModel().getSize(); i++) {

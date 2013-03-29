@@ -643,7 +643,7 @@ public class RandomMVAModelGenerator {
 
 				break;
 
-			case STATION_DELAY: //TODO: è uguale al caso Li ad eccezione del nome (forse si può semplificare)
+			case STATION_DELAY: //TODO: Ã¨ uguale al caso Li ad eccezione del nome (forse si puÃ² semplificare)
 
 				station_element = root.createElement("delaystation");
 				station_element.setAttribute("name", this.stationNames[stationNum]);
@@ -692,7 +692,7 @@ public class RandomMVAModelGenerator {
 					/* set service times, one for each population (values are CSV formatted) */
 					Element st_element = root.createElement("servicetimes");
 					st_element.setAttribute("customerclass", class_name);;
-					//TODO: questa parte va cambiata, devo avere una stringa csv con tutti i serv times (tranne l'elem 0 che è nullo)
+					//TODO: questa parte va cambiata, devo avere una stringa csv con tutti i serv times (tranne l'elem 0 che Ã¨ nullo)
 
 					String serv_t = ArrayUtils.toCSV(serviceTimes[stationNum][j]);
 

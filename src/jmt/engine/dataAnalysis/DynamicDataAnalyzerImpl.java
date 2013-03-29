@@ -32,7 +32,7 @@ import Jama.Matrix;
  *	interval of the sample mean of a sequence. <br>It is robust to data correlation.
  *  <br><br>
  *	See:<br>
- * (1) K. Pawlikowski, "Steady­State Simulation of Queueing Processes: A Survey
+ * (1) K. Pawlikowski, "SteadyÂ­State Simulation of Queueing Processes: A Survey
  *	of Problems and Solutions", ACM Computing Surveys 22, 2 (1990), pp. 122--170
  *
  *
@@ -82,7 +82,7 @@ public class DynamicDataAnalyzerImpl implements DynamicDataAnalyzer {
 	/**degrees of freeedom of the t-distribution */
 	protected int C2;
 
-	//TODO: serve oppure no?? Viene inizializzata ma poi non è aggiornata
+	//TODO: serve oppure no?? Viene inizializzata ma poi non Ã¨ aggiornata
 	/**sample mean*/
 	protected SampleMean sampleMean = new SampleMean();
 
@@ -397,7 +397,7 @@ public class DynamicDataAnalyzerImpl implements DynamicDataAnalyzer {
 	 * <br>See
 	 * <br>
 	 *  K. Pawlikowski
-	 * "Steady­State Simulation of Queueing Processes: A Survey of Problems and
+	 * "SteadyÂ­State Simulation of Queueing Processes: A Survey of Problems and
 	 * Solutions" ACM Computing Surveys 22, 2 (1990), pp. 122--170.
 	 */
 	protected boolean heuristicR5(double newSample, double Weight) {
@@ -746,7 +746,7 @@ public class DynamicDataAnalyzerImpl implements DynamicDataAnalyzer {
 			//TODO: come si arriva a questo punto??
 			delet = false;
 			minSamples += discarded;
-			//TODO: forse è minSamples > maxData????
+			//TODO: forse Ã¨ minSamples > maxData????
 			if (minSamples < maxData) {
 				end = true;
 				if (DEBUG) {
