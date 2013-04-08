@@ -19,6 +19,7 @@
 package jmt.framework.gui.graph;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -42,9 +43,9 @@ import org.freehep.util.export.ExportDialog;
  * <p>Description: Displays a graph with autoresizing property. This is designed to be a
  * really lightweight component as is supposed to be updated during simulation.
  * The component will draw data from a vector that can be changed to update the graph.
- * Vector must contain only object implementing </code>MeasureDefinition.Value</code> interface.
- * After updating Vector, user should call <code>repaint()</code> method to force update
- * of this graph. Labels on x axis are based on xunit value specified in the constructor.</p>
+ * List must contain only object implementing </code>MeasureDefinition.Value</code> interface.
+ * After updating List, user should call <code>repaint()</code> method to force update
+ * of this graph. Labels on x axis are based on xunit value specified in the constructor or on SimulationTime.</p>
  * 
  * @author Bertoli Marco
  *         Date: 27-set-2005
@@ -52,20 +53,27 @@ import org.freehep.util.export.ExportDialog;
  */
 public class FastGraph extends JPanel {
 	private static final long serialVersionUID = 1L;
-	private static final Color axisColor = Color.BLACK;
-	private static final Color graphBackgroundColor = Color.WHITE;
-	private static final Color boundsColor = Color.RED;
-	private static final Color lastIntervalColor = Color.GREEN;
-	private static final Color simTimePopupColor = Color.decode("#C218FF");
-	private static final Color simTimePopupBgColor = Color.decode("#FFFBF2");
+	
+	private static final Color COLOR_DRAW = Color.BLUE;
+	private static final Color COLOR_AXIS = Color.BLACK;
+	private static final Color COLOR_BG = Color.WHITE;
+	private static final Color COLOR_BOUNDS = Color.RED;
+	private static final Color COLOR_LAST_INTERVAL = Color.GREEN;
+	private static final Color COLOR_POPUP = Color.decode("#C218FF");
+	private static final Color COLOR_POPUP_BG = Color.decode("#FFFBF2");
 	private static final int MARGIN = 8;
+	
+	private static final String POPUP_X_PREFIX = "t";
+	private static final String POPUP_MIDDLE = " : ";
+	private static final String POPUP_FULL_X_PREFIX = POPUP_X_PREFIX + POPUP_MIDDLE;
+	private static final int POPUP_VSPACING = 1;
+	private static final int POPUP_MARGIN = 5;
+	
 	private List<MeasureValue> values;
 	private double xunit;
-	private Color drawColor = Color.BLUE;
 	private int x0, y0; // Position of origin of cartesian axes
 	private double xstep, ystep; // Increment for each unit in pixels
-	private double currenty;
-	private boolean lastIntervalDisabled;
+	private boolean hideLastInterval;
 	private MeasureValue selectedValue = null;
 	protected PlotPopupMenu popup = new PlotPopupMenu();
 
@@ -79,7 +87,7 @@ public class FastGraph extends JPanel {
 	private DecimalFormat formatXsimple  = new DecimalFormat("#0");
 	private DecimalFormat formatXdecimal  = new DecimalFormat("#0.#");
 	
-	private DecimalFormat simulationTimeFormat = new DecimalFormat("#,##0.00");
+	private DecimalFormat simulationTimeFormat = new DecimalFormat("#,##0");
 
 	/**
 	 * Builds a new FastGraph with specified input vector.
@@ -93,14 +101,6 @@ public class FastGraph extends JPanel {
 	}
 
 	/**
-	 * Sets drawing color for this graph. (Default is BLUE)
-	 * @param c color to be set
-	 */
-	public void setDrawColor(Color c) {
-		drawColor = c;
-	}
-
-	/**
 	 * Overrides default paint method to draw the graph
 	 * @param g graphic component
 	 */
@@ -111,7 +111,7 @@ public class FastGraph extends JPanel {
 		int width = this.getWidth();
 
 		// Draw graph area
-		g.setColor(graphBackgroundColor);
+		g.setColor(COLOR_BG);
 		g.fillRect(MARGIN / 2, MARGIN / 2, width - MARGIN, height - MARGIN);
 
 		// Aborts drawing if no elements are present
@@ -155,7 +155,7 @@ public class FastGraph extends JPanel {
 		double maxy = 0;
 		for (int i = 0; i < values.size(); i++) {
 			MeasureValue currValue = values.get(i);
-			currenty = currValue.getMeanValue();
+			double currenty = currValue.getMeanValue();
 			if (currenty > maxy && !Double.isInfinite(currenty)) {
 				maxy = currenty;
 			}
@@ -163,7 +163,7 @@ public class FastGraph extends JPanel {
 			if (currenty > maxy && !Double.isInfinite(currenty)) {
 				maxy = currenty;
 			}
-			if (!lastIntervalDisabled) {
+			if (!hideLastInterval) {
 				currenty = currValue.getLastIntervalAvgValue();
 				if (currenty > maxy && !Double.isInfinite(currenty)) {
 					maxy = currenty;
@@ -201,7 +201,7 @@ public class FastGraph extends JPanel {
 		ystep = (y0 - MARGIN) / maxy;
 
 		// Draws axis and captions
-		g.setColor(axisColor);
+		g.setColor(COLOR_AXIS);
 		// Y axis
 		g.drawLine(x0, y0, x0, getY(maxy));
 		int halfHeight = (int) Math.floor(ytextBound.getHeight() / 2);
@@ -211,7 +211,7 @@ public class FastGraph extends JPanel {
 			g.drawLine(x0, getY(maxy / num * i), x0 - 2, getY(maxy / num * i));
 			g.drawString(formatNumber(maxy / num * i), MARGIN, getY(maxy / num * i) + halfHeight);
 		}
-		g.setColor(axisColor);
+		g.setColor(COLOR_AXIS);
 
 		// X axis
 		g.drawLine(x0, y0, getX(maxx), y0);
@@ -242,7 +242,7 @@ public class FastGraph extends JPanel {
 			double xValue = getXValue(currValue, i);
 			double nextXValue = getXValue(nextValue, i+1);
 
-			g.setColor(boundsColor);
+			g.setColor(COLOR_BOUNDS);
 			// upper bound
 			if (currValue.getUpperBound() > 0 && !Double.isInfinite(currValue.getUpperBound())) {
 				g.drawLine(getX(xValue),getY(currValue.getUpperBound()),getX(nextXValue),getY(nextValue.getUpperBound()));
@@ -254,60 +254,106 @@ public class FastGraph extends JPanel {
 			}
 
 			// average value
-			g.setColor(drawColor);
+			g.setColor(COLOR_DRAW);
 			g.drawLine(getX(xValue),getY(currValue.getMeanValue()),getX(nextXValue),getY(nextValue.getMeanValue()));
 
 			// Draws last measured value
-			if (lastIntervalDisabled == false) {
-				g.setColor(lastIntervalColor);
+			if (hideLastInterval == false) {
+				g.setColor(COLOR_LAST_INTERVAL);
 				g.drawLine(getX(xValue),
 						getY(0),
 						getX((xValue)), getY(currValue.getLastIntervalAvgValue()));
 			}
 		}
 		
-		// Draw last points
-		g.setColor(boundsColor);
-		if (lastValue.getLowerBound() > 0 && !Double.isInfinite(lastValue.getLowerBound())) {
-			g.fillOval(getX(lastXValue), getY(lastValue.getLowerBound()), 2, 1);
-		}
-		if (lastValue.getUpperBound() > 0 && !Double.isInfinite(lastValue.getUpperBound())) {
-			g.fillOval(getX(lastXValue), getY(lastValue.getUpperBound()), 2, 1);
-		}
-		g.setColor(drawColor);
-		g.fillOval(getX(lastXValue),getY(lastValue.getMeanValue()), 2, 1);
-		
-		if (lastIntervalDisabled == false) {
-			g.setColor(Color.GREEN);
-			g.drawLine(getX(lastXValue),
-					getY(0),
-					getX((lastXValue)), getY(lastValue.getLastIntervalAvgValue()));
+		// Draw last points as dot if no lines were drawn during the previous cycle.
+		if (values.size() == 1) {
+			g.setColor(COLOR_BOUNDS);
+			if (lastValue.getLowerBound() > 0 && !Double.isInfinite(lastValue.getLowerBound())) {
+				g.fillOval(getX(lastXValue), getY(lastValue.getLowerBound()), 2, 1);
+			}
+			if (lastValue.getUpperBound() > 0 && !Double.isInfinite(lastValue.getUpperBound())) {
+				g.fillOval(getX(lastXValue), getY(lastValue.getUpperBound()), 2, 1);
+			}
+			g.setColor(COLOR_DRAW);
+			g.fillOval(getX(lastXValue),getY(lastValue.getMeanValue()), 2, 1);
+			
+			if (hideLastInterval == false) {
+				g.setColor(COLOR_LAST_INTERVAL);
+				g.drawLine(getX(lastXValue),
+						getY(0),
+						getX((lastXValue)), getY(lastValue.getLastIntervalAvgValue()));
+			}
 		}
 		
 		// Draws the selected value
 		if (selectedValue != null) {
-			String str = simulationTimeFormat.format(selectedValue.getSimTime());
-			Rectangle2D bounds = metric.getStringBounds(str, g);
-			int selectedValueX = getX(selectedValue.getSimTime());
-			int textX = (int)(selectedValueX - bounds.getWidth() / 2);
-			// Fix value out of chart for label
-			if (textX < 2) {
-				textX = 2;
-			} else if (textX + bounds.getWidth() + 4 > width) {
-				textX = width - (int)bounds.getWidth() - 4;
-			}
-			int textY = getY(maxy / 2) - (int)bounds.getHeight();
-			
-			g.setColor(simTimePopupColor);
-			g.drawLine(selectedValueX,
-					getY(0),
-					selectedValueX, getY(selectedValue.getLastIntervalAvgValue()));
-			g.setColor(simTimePopupBgColor);
-			g.fillRoundRect(textX - 2, textY - (int)bounds.getHeight(), (int)bounds.getWidth() + 4, (int)bounds.getHeight() + 4, 4, 4);
-			g.setColor(simTimePopupColor);
-			g.drawRoundRect(textX - 2, textY - (int)bounds.getHeight(), (int)bounds.getWidth() + 4, (int)bounds.getHeight() + 4, 4, 4);
-			g.drawString(str, textX, textY);
+			paintSelectedValue(selectedValue, g, width, height, maxx, maxy);
 		}
+	}
+	
+	/**
+	 * Draws the selected value
+	 * @param selectedValue the selected value to draw
+	 * @param g the graphics object
+	 * @param width the total chart width
+	 * @param height the total chart height
+	 * @param maxx the maximum X value (simulation time)
+	 * @param maxy the maximum Y value
+	 */
+	private void paintSelectedValue(MeasureValue selectedValue, Graphics g, int width, int height, double maxx, double maxy) {
+		FontMetrics metric = g.getFontMetrics();
+		String x_str = simulationTimeFormat.format(selectedValue.getSimTime());
+		String m_str = formatNumber(selectedValue.getMeanValue());
+		String i_str = formatNumber(selectedValue.getLastIntervalAvgValue());
+		
+		Dimension bounds = composeVerticalBounds(g, metric, POPUP_FULL_X_PREFIX + x_str, POPUP_FULL_X_PREFIX + m_str, POPUP_FULL_X_PREFIX + i_str);
+		int selectedValueX = getX(selectedValue.getSimTime());
+		int textX = (int)(selectedValueX - bounds.getWidth() / 2);
+		// Fix value out of chart for label
+		if (textX < 2) {
+			textX = 2;
+		} else if (textX + bounds.getWidth() + POPUP_MARGIN > width) {
+			textX = width - (int)bounds.getWidth() - POPUP_MARGIN;
+		}
+		int textY = getY(maxy / 2) - (int)bounds.getHeight();
+		
+		g.setColor(COLOR_POPUP);
+		g.drawLine(selectedValueX,
+				getY(0),
+				selectedValueX, getY(selectedValue.getLastIntervalAvgValue()));
+		g.setColor(COLOR_POPUP_BG);
+		g.fillRoundRect(textX - POPUP_MARGIN, textY - (int)bounds.getHeight(), (int)bounds.getWidth() + POPUP_MARGIN * 2, (int)bounds.getHeight() + POPUP_MARGIN, 4, 4);	
+		g.setColor(COLOR_POPUP);
+		g.drawRoundRect(textX - POPUP_MARGIN, textY - (int)bounds.getHeight(), (int)bounds.getWidth() + POPUP_MARGIN * 2, (int)bounds.getHeight() + POPUP_MARGIN, 4, 4);
+		
+		// Draw squares
+		Rectangle2D prefixBounds = metric.getStringBounds(POPUP_X_PREFIX, g);
+		g.setColor(COLOR_DRAW);
+		g.fillRect(textX, textY - (int)prefixBounds.getHeight() - bounds.height / 3, (int)prefixBounds.getWidth(), (int)prefixBounds.getHeight());
+		g.setColor(COLOR_LAST_INTERVAL);
+		g.fillRect(textX, textY - (int)prefixBounds.getHeight(), (int)prefixBounds.getWidth(), (int)prefixBounds.getHeight());
+		
+		// Draws texts
+		g.setColor(COLOR_AXIS);
+		g.drawString(POPUP_FULL_X_PREFIX + x_str, textX, textY - bounds.height * 2 / 3);
+		g.drawString(POPUP_MIDDLE + m_str, textX + (int)prefixBounds.getWidth(), textY - bounds.height / 3);
+		g.drawString(POPUP_MIDDLE + i_str, textX + (int)prefixBounds.getWidth(), textY);
+	}
+	
+	private Dimension composeVerticalBounds(Graphics g, FontMetrics metric, String...strings) {
+		double xBounds = 0.0, yBounds = 0.0;
+		for (int i=0; i<strings.length; i++) {
+			Rectangle2D bounds = metric.getStringBounds(strings[i], g);
+			if (xBounds < bounds.getWidth()) {
+				xBounds = bounds.getWidth();
+			}
+			yBounds = yBounds + bounds.getHeight();
+			if (i > 0) {
+				yBounds = yBounds + POPUP_VSPACING;
+			}
+		}
+		return new Dimension((int)xBounds, (int)yBounds);
 	}
 
 	/**
@@ -432,8 +478,12 @@ public class FastGraph extends JPanel {
 		}
 	}
 
-	public void setLastIntervalAvgValueVisible(boolean flag) {
-		lastIntervalDisabled = flag;
+	/**
+	 * Show/hide last interval display
+	 * @param flag true to show last interval lines, false to hide them
+	 */
+	public void setHideLastInterval(boolean flag) {
+		hideLastInterval = flag;
 		repaint();
 	}
 

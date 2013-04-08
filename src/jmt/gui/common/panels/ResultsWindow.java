@@ -489,9 +489,9 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 					}
 
 					lastIntervalAvgValueFlag = !lastIntervalAvgValueFlag;
-					graph.setLastIntervalAvgValueVisible(lastIntervalAvgValueFlag);
+					graph.setHideLastInterval(lastIntervalAvgValueFlag);
 					if (popupGraph != null) {
-						popupGraph.setLastIntervalAvgValueVisible(lastIntervalAvgValueFlag);
+						popupGraph.setHideLastInterval(lastIntervalAvgValueFlag);
 					}
 
 				}
