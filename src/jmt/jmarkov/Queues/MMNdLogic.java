@@ -64,7 +64,16 @@ public class MMNdLogic extends MM1Logic {
 
 	private double v() throws NonErgodicException {// m to m / m! * ((p)to the m) * (1- (p to the k+1)) /(1-p) 
 		double p = p();
-		return Math.pow(numberOfServer, numberOfServer) / factorial(numberOfServer) * (Math.pow(p, numberOfServer)) * (1 - Math.pow(p, (max + 1)))
+		if(p==1){
+			double sum = 0;
+			for(int i=numberOfServer;i<=numberOfServer+max;i++){
+				double mp = p() * numberOfServer;
+				sum += Math.pow(mp, i)/factorial(numberOfServer)/Math.pow(numberOfServer, i-numberOfServer); 
+			}
+			return sum;
+		}
+		else
+			return Math.pow(numberOfServer, numberOfServer) / factorial(numberOfServer) * (Math.pow(p, numberOfServer)) * (1 - Math.pow(p, (max + 1)))
 				/ (1 - p);
 
 	}

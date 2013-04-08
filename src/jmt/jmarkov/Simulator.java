@@ -99,11 +99,11 @@ public class Simulator implements Runnable {
 			//this is for calculating if the system will pause or not?
 			if ((long) currentTimeMultiplied > realTimeCurrent) {
 				//System.out.println(currentTime + "\t" + currentTimeMultiplied + "\t" + realTimeCurrent);
-				/*				try {
-									Thread.sleep((long) currentTimeMultiplied - realTimeCurrent);
-								} catch (InterruptedException e) {
-									e.printStackTrace();
-								}*/
+				try {
+					Thread.sleep((long) currentTimeMultiplied - realTimeCurrent);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 
 				//System.out.println("\t\tSLEEP:\t" + ((long) currentTimeMultiplied - realTimeCurrent));
 				realTimeCurrent = new Date().getTime() - realTimeStart;
