@@ -27,7 +27,7 @@
 
         <!-- Compile the java code from ${src} into ${build} -->
         <!-- includes resource files -->
-        <javac srcdir="${src}" destdir="${class}" compiler="javac1.6" encoding="UTF-8">
+        <javac srcdir="${src}" destdir="${class}" source="1.6" target="1.6" encoding="UTF-8" includeantruntime="false">
         	<classpath>
         		<fileset dir="${lib}">
         	    	<include name="*.jar"/>
