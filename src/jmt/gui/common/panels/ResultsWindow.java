@@ -100,8 +100,8 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 	private JButton start, stop, pause;
 	private JProgressBar progressBar;
 	// Used to format numbers
-	private static DecimalFormat decimalFormatExp = new DecimalFormat("0.000E0");
-	private static DecimalFormat decimalFormatNorm = new DecimalFormat("#0.00000000");
+	private static DecimalFormat decimalFormatExp = new DecimalFormat("0.00E0");
+	private static DecimalFormat decimalFormatNorm = new DecimalFormat("#0.000");
 
 	/**
 	 * Creates a new ResultsWindow

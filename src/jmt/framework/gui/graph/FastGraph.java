@@ -277,13 +277,13 @@ public class FastGraph extends JPanel {
 			}
 			g.setColor(COLOR_DRAW);
 			g.fillOval(getX(lastXValue),getY(lastValue.getMeanValue()), 2, 1);
-			
-			if (hideLastInterval == false) {
-				g.setColor(COLOR_LAST_INTERVAL);
-				g.drawLine(getX(lastXValue),
-						getY(0),
-						getX((lastXValue)), getY(lastValue.getLastIntervalAvgValue()));
-			}
+		}
+		
+		if (hideLastInterval == false) {
+			g.setColor(COLOR_LAST_INTERVAL);
+			g.drawLine(getX(lastXValue),
+					getY(0),
+					getX((lastXValue)), getY(lastValue.getLastIntervalAvgValue()));
 		}
 		
 		// Draws the selected value
@@ -316,7 +316,7 @@ public class FastGraph extends JPanel {
 		} else if (textX + bounds.getWidth() + POPUP_MARGIN > width) {
 			textX = width - (int)bounds.getWidth() - POPUP_MARGIN;
 		}
-		int textY = getY(maxy / 2) - (int)bounds.getHeight();
+		int textY = getY(maxy / 2) + (int)bounds.getHeight() / 2;
 		
 		g.setColor(COLOR_POPUP);
 		g.drawLine(selectedValueX,
