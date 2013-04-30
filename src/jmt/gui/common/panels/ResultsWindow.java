@@ -41,6 +41,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -328,7 +329,7 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 		protected JTextField samples, mean, lower, upper;
 		protected JButton abortButton;
 		protected FastGraph graph, popupGraph;
-		protected JPanel graphPanel;
+		protected JSplitPane graphPanel;
 		protected JFrame popupFrame;
 		protected JTextArea textState;
 		private JButton hideLastIntervalAvgValueButton;
@@ -537,22 +538,26 @@ public class ResultsWindow extends JMTFrame implements ResultsConstants {
 			pivotPanel2.add(textStatePanel2);
 			
 			// Sets a minimal size for text area panel
-			pivotPanel2.setPreferredSize(new Dimension(360, 150));
+			pivotPanel2.setMinimumSize(new Dimension(320, 150));
 
 			// Adds graph
-			graphPanel = new JPanel(new BorderLayout());
 			graph = new FastGraph(values, md.getPollingInterval());
-			graphPanel.add(graph, BorderLayout.CENTER);
-			graphPanel.add(pivotPanel2, BorderLayout.WEST);
+			graphPanel = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,
+					pivotPanel2, graph);
+			graphPanel.setOneTouchExpandable(true);
+			graphPanel.setDividerLocation(360);
+			graph.setMinimumSize(new Dimension(200, 150));
+			
 			add(graphPanel, BorderLayout.CENTER);
 			// Sets icon image and abort button state
+			setCorrectState();
 			graph.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				graph.mouseClicked(e);
-			}
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					graph.mouseClicked(e);
+				}
 			});
-					}
+		}
 
 		/**
 		 * Adds listeners to this panel, to refresh measures and abort simulation
