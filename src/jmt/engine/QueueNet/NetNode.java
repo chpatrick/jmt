@@ -557,11 +557,6 @@ public class NetNode extends SimEntity {
 				// checks jobs routing
 				if (message.getEvent() == NetEvent.EVENT_JOB) {
 					if (source != this) {
-						// If this message is JOB and we are reference node for that job, signals it
-						// This is needed for global measures - Bertoli Marco
-						if (message.getEvent() == NetEvent.EVENT_JOB && message.getJob().getJobClass().getReferenceNodeName().equals(this.getName())) {
-							this.getQueueNet().getJobInfoList().recycleJob(message.getJob());
-						}
 						if (sourceSection != NodeSection.OUTPUT) {
 							//the exterior source section can be the input
 							// section only in case of redirecting queue
@@ -576,6 +571,18 @@ public class NetNode extends SimEntity {
 						}
 					}
 				}
+				
+				// If this message is JOB and we are reference node for that job, signals it
+				// This is needed for global measures - Bertoli Marco
+				if (sourceSection == NodeSection.OUTPUT && message.getEvent() == NetEvent.EVENT_JOB) {
+					if (message.getJob().getJobClass().getReferenceNodeName().equals(this.getName())) {
+						this.getQueueNet().getJobInfoList().recycleJob(message.getJob());
+					} else {
+						// Update job number since the job still exists
+						this.getQueueNet().getJobInfoList().existJob(message.getJob());
+					}			
+				}
+				
 				if (inputSection != null) {
 					processed = inputSection.receive(message);
 				}

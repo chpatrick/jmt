@@ -138,7 +138,7 @@ public class GlobalJobInfoList {
 	
 	/**
 	 * This method MUST be called each time a job cycles in its reference station
-	 * @param job identifier or cycling job
+	 * @param job identifier of cycling job
 	 */
 	public void recycleJob(Job job) {
 		updateResponseTime(job);
@@ -156,6 +156,15 @@ public class GlobalJobInfoList {
 		lastJobOutTimePerClass[job.getJobClass().getId()] = lastJobOutTime = NetSystem.getTime();
 
 		job.resetSystemEnteringTime();
+	}
+	
+	/**
+	 * This method COULD be called to notify that a JOB exists
+	 * @param job identifier
+	 */
+	public void existJob(Job job) {
+		updateJobNumber(job);
+		lastModifyNumberPerClass[job.getJobClass().getId()] = lastModifyNumber = NetSystem.getTime();
 	}
 
 	/**
@@ -411,14 +420,9 @@ public class GlobalJobInfoList {
 	 * @param newClass the new class of @job
 	 */
 	public void performJobClassSwitch(Job job, JobClass newClass) {
-		// Get identifiers to old and new classes
+		// Get the identifiers of old and new classes
 		int oldClassId = job.getJobClass().getId();
 		int newClassId = newClass.getId();
-		
-		// Switch job class
-		job.setClass(newClass);
-		jobsPerClass[oldClassId]--;
-		jobsPerClass[newClassId]++;
 		
 		// Updates old class measure (if not null)
 		if (jobNumPerClass != null && jobNumPerClass[oldClassId] != null) {
@@ -431,6 +435,11 @@ public class GlobalJobInfoList {
 			jobNumPerClass[newClassId].update(jobsPerClass[newClassId], NetSystem.getTime() - lastModifyNumberPerClass[newClassId]);
 		}
 		lastModifyNumberPerClass[newClassId] = NetSystem.getTime();
+		
+		// Switch job class
+		job.setClass(newClass);
+		jobsPerClass[oldClassId]--;
+		jobsPerClass[newClassId]++;
 	}
 
 }
