@@ -52,7 +52,7 @@ public class ClassSwitchSectionPanel extends WizardPanel implements
 			+ "The value (i, j) is the probability that a job of class i "
 			+ "switches to class j. The values may be either probabilities or number of visits. "
 			+ "If the sum of each row is greater than one, the values will be normalized "
-			+ "in order to sum to one. The sum less than one will raise a simulation error."
+			+ "in order to sum to one. A sum less than one will raise a simulation error."
 			+ HTML_END;
 	private static final String NORMALIZATION_ERROR = HTML_START
 			+ "<font color=\"red\"> Error: some rows sum to a value less than one.</font>"

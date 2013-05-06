@@ -60,7 +60,7 @@ public interface ResultsConstants {
 	public static final String NO_SAMPLES_TEXT = "Simulator cannot compute this measure as no samples were received";
 	public static final String ALL_CLASSES = "-- All --";
 	public static final String ALL_STATIONS = "-- Network --";
-	public static final String FOR_GREEN_GRAPH = "Double click on this graph to open it in a new windows.\nRight-click to save it.\nClick on green bars to see the simulation time.\n";
+	public static final String FOR_GREEN_GRAPH = "Double click on this graph to open it in a new windows.\nRight-click to save it.\nClick on green bars to see the simulation time, the sample average (blue), and the sample values (green).\n";
 	/**HTML formats for panels descriptions*/
 	final static String HTML_START = "<html><body align=\"left\">";
 	final static String HTML_END = "</body></html>";
@@ -78,7 +78,7 @@ public interface ResultsConstants {
 			+ "Average response time for each chosen class at each chosen station." + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_UTILIZATIONS = HTML_START + HTML_FONT_TITLE + "Utilization" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Utilization of a customer class at the selected station. The utilization of a queueing station with more than one server is the "
-			+ "average utilization of each server.  The utilization of a delay station is the average number of customers in the station "
+			+ "average utilization of each server.  The utilization of a delay station is the average number of customers in the station. "
 			+ "(it may be greater than 1)" + HTML_FONT_NOR_END + HTML_END;
 	public static final String DESCRIPTION_RESIDENCETIMES = HTML_START + HTML_FONT_TITLE + "Residence Time" + HTML_FONT_TIT_END + HTML_FONT_NORM
 			+ "Average residence time for each chosen class at each chosen station. (Residence Time = Number of Visits * Response Time)"
