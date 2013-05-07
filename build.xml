@@ -130,13 +130,14 @@
         <copy file="${util}/javax.imageio.spi.ImageWriterSpi" todir="${dist}/singlejar_JMT/META-INF/services" />
 
         <!-- jar all dir contents into a single jar file-->
-        <jar destfile="${dist}/${jarName}" basedir="${dist}/singlejar_JMT/" includes="**/*.*">
+        <jar destfile="${dist}/${singlejarName}" basedir="${dist}/singlejar_JMT/" includes="**/*.*">
     		<manifest>
     	    	<attribute name="Built-By" value="${user.name}"/>
     			<attribute name="Main-Class" value="${startScreen}"/>
     		</manifest>
     	</jar>
-
+    	<!-- Clean singleJAR directory -->
+    	<delete dir="${dist}/singlejar_JMT"/>
     </target>
 
     <target name="create_JMT_output_dir" depends="create_jar" description="create output package">
@@ -197,11 +198,11 @@
         <!-- Create license directory -->
 
         <echo message="Makes the installer using IzPack"/>
-
-        <mkdir dir="${installer}"/>
-
-        <iz_pack input="${out}/jmt_install.xml"
-            output="${installer}/${jarName}"
+    	
+    	<mkdir dir="${dist}" />
+        
+    	<iz_pack input="${out}/jmt_install.xml"
+            output="${dist}/${installerName}"
             installerType="standard"
             basedir="${out}"
             izPackDir="${izpack}/" 
@@ -213,8 +214,7 @@
     <target name="clean_intermediate_dirs"
         description="clean up" >
 
-        <!-- Delete the ${out} and ${dist} directory trees -->
-        <delete dir="${dist}"/>
+        <!-- Delete the ${out} directory tree -->
         <delete dir="${out}" />
     </target>
 
@@ -223,8 +223,8 @@
     <target name="clean_all" depends="clean_intermediate_dirs"
         description="clean up" >
 
-        <!-- Delete the ${out} directory -->
-        <delete dir="${installer}"/>
+        <!-- Delete the ${dist} directory -->
+        <delete dir="${dist}"/>
     	<delete dir="${class}"/>
     </target>
 	
@@ -266,6 +266,29 @@
         	</manifest>
 		</jar>
 	</target>
-
+	
+    <target name="package_sources" description="package source files" >
+    	<mkdir dir="${dist}" />
+    	<tar destfile="${dist}/${srcName}" compression="gzip">
+            <fileset dir="${jmt_base}">
+            	<include name="src/**"/>
+            	<include name="build_util/**"/>
+            	<include name="examples/**"/>
+            	<include name="jwatFormats/**"/>
+            	<include name="lib/**"/>
+            	<include name="license/**"/>
+            	<include name="manuals/**"/>
+            	<include name="*.properties" />
+            	<include name="*.txt" />
+            	<exclude name="**/.svn"/>
+            	<exclude name="*custom*"/>
+            </fileset>
+        </tar>
+    </target>
+	
+	<target name="FULL_release" description="provide a full release" 
+		depends="clean_all,create_installer,create_single_jar,package_sources">
+		<echo>Full release ${jmt.version} created</echo>
+	</target>
 </project>
 
