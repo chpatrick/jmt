@@ -280,6 +280,7 @@
             	<include name="manuals/**"/>
             	<include name="*.properties" />
             	<include name="*.txt" />
+            	<include name="*.xml" />
             	<exclude name="**/.svn"/>
             	<exclude name="*custom*"/>
             </fileset>
