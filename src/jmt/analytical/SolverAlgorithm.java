@@ -31,7 +31,9 @@ import java.util.Map;
  */
 public enum SolverAlgorithm {
 	EXACT("MVA", true, true),
-	//MoM("MoM", true, true),
+	RECAL("RECAL", true, true),
+	MOM("MoM", true, true),
+	COMOM("CoMoM", true, true),
 	CHOW("Chow", true, false),
 	BARD_SCHWEITZER("Bard-Schweitzer", true, false),
 	AQL("AQL", true, false),
@@ -120,6 +122,6 @@ public enum SolverAlgorithm {
 	}
 	
 	public static int noOfExactAlgs() {
-		return 1;
+		return 4;
 	}
 }

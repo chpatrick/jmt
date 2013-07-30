@@ -356,13 +356,28 @@ public class SolverDispatcher {
 							fail("Error initializing MVAMultiSolver", null);
 						}
 						solver = closedsolver;
-					/*} else if (SolverAlgorithm.MoM.equals(algorithmType)) {
-						SolverMultiClosedMoM closedSolver = new SolverMultiClosedMoM(classes, stations, classPop);
-						if (!closedSolver.input(stationNames, stationTypes, serviceTimes, visits, 1)) {
-							fail("Error initializing MoMMultiSolver", null);
+					} else if (SolverAlgorithm.RECAL.equals(algorithmType)) {
+						int nThreads = 1;
+						SolverMultiClosedRECAL closedSolver = new SolverMultiClosedRECAL(classes, stations, classPop);
+						if (!closedSolver.input(stationTypes, serviceTimes, visits, nThreads)) {
+								fail("Error initializing RECALMultiSolver", null);
 						}
 						solver = closedSolver;
-					*/} else {
+					} else if (SolverAlgorithm.MOM.equals(algorithmType)) {
+						int nThreads = 1;
+						SolverMultiClosedMoM closedSolver = new SolverMultiClosedMoM(classes, stations, classPop);
+						if (!closedSolver.input(stationTypes, serviceTimes, visits, nThreads)) {
+								fail("Error initializing MoMMultiSolver", null);
+						}
+						solver = closedSolver;
+					} else if (SolverAlgorithm.COMOM.equals(algorithmType)) {
+						int nThreads = 1;
+						SolverMultiClosedCoMoM closedSolver = new SolverMultiClosedCoMoM(classes, stations, classPop);
+						if (!closedSolver.input(stationTypes, serviceTimes, visits, nThreads)) {
+								fail("Error initializing CoMoMMultiSolver", null);
+						}
+						solver = closedSolver;
+					} else {
 						double tolerance = model.getTolerance();
 						SolverMultiClosedAMVA closerSolver = null;
 						if (SolverAlgorithm.CHOW.equals(algorithmType)) {
