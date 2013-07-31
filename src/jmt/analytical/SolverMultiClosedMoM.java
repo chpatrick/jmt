@@ -19,12 +19,10 @@ package jmt.analytical;
 import javax.naming.OperationNotSupportedException;
 
 import QueuingNet.MoMSolver;
-import DataStructures.BigRational;
 import DataStructures.QNModel;
 import Exceptions.BTFMatrixErrorException;
 import Exceptions.InconsistentLinearSystemException;
 import Exceptions.InternalErrorException;
-import QueuingNet.QNSolver;
 
 /**
  * This class implements the API to allow use by other applications. One can
@@ -39,6 +37,8 @@ public class SolverMultiClosedMoM extends SolverMulti {
 	 * Array containing population for each class
 	 */
 	protected int[] population;
+	private Integer scale = 1000000;
+
 	/**
 	 * Contains the queuing network model
 	 */
@@ -68,12 +68,12 @@ public class SolverMultiClosedMoM extends SolverMulti {
 	 *  @param  nThreads The number of threads the solver should use. If nThreads > 2 then the parallel algorithm is used.
 	 *  @return True if the operation is completed with success
 	 */
-	public boolean input(int[] t, double[][][] s, double[][] v, int nThread) {
+	public boolean input(int[] t, double[][][] s, double[][] v, int nThr) {
 		if ((t.length > stations) || (s.length > stations) || (v.length > stations)) {
 			// wrong input.
 			return false;
 		}
-		nThreads = nThread;
+		nThreads = nThr;
 		visits = new double[stations][classes];
 		for (int i = 0; i < stations; i++) {
 			System.arraycopy(v[i], 0, visits[i], 0, classes);
@@ -82,7 +82,7 @@ public class SolverMultiClosedMoM extends SolverMulti {
 		servTime = new double[stations][classes][1];
 		for (int i = 0; i < stations; i++) {
 			for (int r = 0; r < classes; r++) {
-				servTime[i][r][0]=s[i][r][0] * 1000000;
+				servTime[i][r][0]=s[i][r][0] * scale;
 			}
 		}
 
@@ -158,26 +158,50 @@ public class SolverMultiClosedMoM extends SolverMulti {
 	@Override
 	public void solve() {
 		QueuingNet.QNSolver c = null;
-
-		c = new MoMSolver(qnm,nThreads);
-
-		try {
+		boolean isPerturbed = false;
+		try{
+			c = new MoMSolver(qnm, nThreads);
 			c.computeNormalisingConstant();
 		} catch (OperationNotSupportedException | InternalErrorException
 				| InconsistentLinearSystemException | BTFMatrixErrorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			Integer D[][]=new Integer[qnm.M][qnm.R];
+			Integer Z[]=new Integer[qnm.R];
+			Integer mi[]=new Integer[qnm.M];
+			Integer N[]=new Integer[qnm.R];
+			Integer pert = (Integer) 1;
+			Integer newscale = scale  * pert;
+			for (int r=0; r<qnm.R; r++) {
+				Z[r] = (int) qnm.getDelay(r) * pert;
+				N[r] = qnm.getPopulationVector().get(r);
+				for (int i=0; i<qnm.M; i++) {
+					mi[i] = qnm.getMultiplicitiesVector().get(i);
+					D[i][r] = (Integer) (qnm.getDemand(i, r) * pert + (Integer) (i + 1)); // i is a perturbation of 10^-6 magnitude
+				}
+			}
+			scale = newscale;
+			isPerturbed = true;
+			QNModel qnm2 = null;
+			try {
+				qnm2 = new QNModel(qnm.R, qnm.M, N, Z, mi, D);
+			} catch (Exception e3) {
+			}
+			qnm = qnm2;
+			try {
+				c = new MoMSolver(qnm, nThreads);
+				c.computeNormalisingConstant();
+			} catch (InternalErrorException | BTFMatrixErrorException
+					| InconsistentLinearSystemException | OperationNotSupportedException e1) {
+			}
 		}
+
 		try {
 			c.computePerformanceMeasures();
 		} catch (InternalErrorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 		clsThroughput = qnm.getMeanThroughputsAsDoubles();
 		queueLen = qnm.getMeanQueueLengthsAsDoubles();
-		
+
 		throughput = new double[stations][classes];
 		utilization = new double[stations][classes];
 		scThroughput = new double[stations];
@@ -186,9 +210,9 @@ public class SolverMultiClosedMoM extends SolverMulti {
 		scQueueLen = new double[stations];
 		for (int m = 0; m < qnm.M; m++) {
 			for (int r = 0; r < qnm.R; r++) {
-				throughput[m][r] = clsThroughput[r] * visits[m][r] * 1000000;
-				utilization[m][r] = throughput[m][r] * servTime[m][r][0] / 1000000; // Umc=Xmc*Smc
-				residenceTime[m][r] = queueLen[m][r] / clsThroughput[r] / 1000000;
+				throughput[m][r] = clsThroughput[r] * visits[m][r] * scale;
+				utilization[m][r] = throughput[m][r] * servTime[m][r][0] / scale; // Umc=Xmc*Smc
+				residenceTime[m][r] = queueLen[m][r] / clsThroughput[r] / scale;
 				scThroughput[m] += throughput[m][r];
 				scUtilization[m] += utilization[m][r];
 				scResidTime[m] += residenceTime[m][r];
