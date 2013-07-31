@@ -161,7 +161,6 @@ public class SolverMultiClosedCoMoM extends SolverMulti {
 	@Override
 	public void solve() {
 		QueuingNet.QNSolver c = null;
-		boolean isPerturbed = false;
 		try{
 			//			c = new CoMoMSimpleSolver(qnm, nThreads);
 			c = new CoMoMBTFSolver(qnm);
