@@ -18,14 +18,11 @@ package jmt.analytical;
 
 import javax.naming.OperationNotSupportedException;
 
-import QueuingNet.CoMoMSimpleSolver;
 import QueuingNet.CoMoMBTFSolver;
-import DataStructures.BigRational;
 import DataStructures.QNModel;
 import Exceptions.BTFMatrixErrorException;
 import Exceptions.InconsistentLinearSystemException;
 import Exceptions.InternalErrorException;
-import QueuingNet.QNSolver;
 
 /**
  * This class implements the API to allow use by other applications. One can
@@ -178,11 +175,11 @@ public class SolverMultiClosedCoMoM extends SolverMulti {
 				N[r] = qnm.getPopulationVector().get(r);
 				for (int i=0; i<qnm.M; i++) {
 					mi[i] = qnm.getMultiplicitiesVector().get(i);
-					D[i][r] = (Integer) (qnm.getDemand(i, r) * pert + (Integer) (i + 1)); // i is a perturbation of 10^-6 magnitude
+					D[i][r] = (Integer) (qnm.getDemand(i, r) * pert + (Integer) (i + 1) + (Integer) (int) Math.round((int)100*Math.random())); // i is a perturbation of 10^-6 magnitude
 				}
 			}
 			scale = newscale;
-			isPerturbed = true;
+
 			QNModel qnm2 = null;
 			try {
 				qnm2 = new QNModel(qnm.R, qnm.M, N, Z, mi, D);
