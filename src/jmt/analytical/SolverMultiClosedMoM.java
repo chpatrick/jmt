@@ -162,8 +162,7 @@ public class SolverMultiClosedMoM extends SolverMulti {
 		try{
 			c = new MoMSolver(qnm, nThreads);
 			c.computeNormalisingConstant();
-		} catch (OperationNotSupportedException | InternalErrorException
-				| InconsistentLinearSystemException | BTFMatrixErrorException e) {
+		} catch (Exception e) {
 			Integer D[][]=new Integer[qnm.M][qnm.R];
 			Integer Z[]=new Integer[qnm.R];
 			Integer mi[]=new Integer[qnm.M];
@@ -189,8 +188,7 @@ public class SolverMultiClosedMoM extends SolverMulti {
 			try {
 				c = new MoMSolver(qnm, nThreads);
 				c.computeNormalisingConstant();
-			} catch (InternalErrorException | BTFMatrixErrorException
-					| InconsistentLinearSystemException | OperationNotSupportedException e1) {
+			} catch (Exception e1) {
 			}
 		}
 

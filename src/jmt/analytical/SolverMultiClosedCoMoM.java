@@ -162,8 +162,7 @@ public class SolverMultiClosedCoMoM extends SolverMulti {
 			//			c = new CoMoMSimpleSolver(qnm, nThreads);
 			c = new CoMoMBTFSolver(qnm);
 			c.computeNormalisingConstant();
-		} catch (OperationNotSupportedException | InternalErrorException
-				| InconsistentLinearSystemException | BTFMatrixErrorException e) {
+		} catch (Exception e) {
 			Integer D[][]=new Integer[qnm.M][qnm.R];
 			Integer Z[]=new Integer[qnm.R];
 			Integer mi[]=new Integer[qnm.M];
@@ -189,8 +188,7 @@ public class SolverMultiClosedCoMoM extends SolverMulti {
 			try {
 				c = new CoMoMBTFSolver(qnm);
 				c.computeNormalisingConstant();
-			} catch (InternalErrorException | BTFMatrixErrorException
-					| InconsistentLinearSystemException | OperationNotSupportedException e1) {
+			} catch (Exception e1) {
 			}
 		}
 

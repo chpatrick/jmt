@@ -176,8 +176,7 @@ public class SolverMultiClosedRECAL extends SolverMulti {
 
 		try {
 			c.computeNormalisingConstant();
-		} catch (OperationNotSupportedException | InternalErrorException
-				| InconsistentLinearSystemException | BTFMatrixErrorException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
