@@ -347,22 +347,16 @@ public class ExactWizard extends Wizard {
 		AbstractJMTAction[] actions = { FILE_NEW, FILE_OPEN, FILE_SAVE, null, ACTION_SOLVE, SWITCH_TO_SIMULATOR, ACTION_RANDOMIZE_MODEL, null, HELP,null };
 		String[] htext = { "Creates a new model", "Opens a saved model", "Saves the current model", "Solves the current model",
 				"Import current model to JSIMwiz to solve it with the simulator", "Randomize model data", "Show help"};
-		ArrayList buttons = tb.populateToolbar(actions);
+		ArrayList<AbstractButton> buttons = new ArrayList<AbstractButton>();
+		buttons.addAll(tb.populateToolbar(actions));
 		
-		/* EDITED by Abhimanyu Chugh and Georgios Poullaides */
 		//adds the algorithm selection box
 		amvaPanel = new AMVAPanel(this);
-		tb.add(amvaPanel.algLabel());
-		tb.add(amvaPanel.algorithmList());
-		tb.add(amvaPanel.tolLabel());
-		tb.add(amvaPanel.tolerance());
-		amvaPanel.tolerance.setVisible(false);
-		amvaPanel.tolLabel.setVisible(false);
-		/* END */
+		tb.add(amvaPanel);
 		
 		// Adds help
 		for (int i = 0; i < buttons.size(); i++) {
-			AbstractButton button = (AbstractButton) buttons.get(i);
+			AbstractButton button = buttons.get(i);
 			help.addHelp(button, htext[i]);
 		}
 		return tb;
@@ -787,7 +781,7 @@ public class ExactWizard extends Wizard {
 				(panels.get(i)).gotFocus();
 			}
 		}
-		amvaPanel.update();
+		amvaPanel.update(null, null, null);
 	}
 
 	@Override
@@ -834,10 +828,12 @@ public class ExactWizard extends Wizard {
 	}	
 	
 	/**
-	 * Enables or disables the AMVA algorithm panel
-	 * @param enabled true to enable, false to disable
+	 * Updates the algo panel
+	 * @param isClosed true if model is closed, false if not, null to read from data structure
+	 * @param isOpen true if model is open, false if not, null to read from data structure
+	 * @param isAlgowhatif true if whatif on algorithm was selected, false if not, null to read from data structure
 	 */
-	public void setAlgPanelEnabled(boolean enabled) {
-		this.amvaPanel.setAlgPanelEnabled(enabled);
+	public void updateAlgoPanel(Boolean isClosed, Boolean isOpen, Boolean isAlgowhatif) {
+		this.amvaPanel.update(isClosed, isOpen, isAlgowhatif);
 	}
 }

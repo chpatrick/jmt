@@ -276,7 +276,6 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 	private void setAlgorithms() {
 		if ((data.isWhatifAlgorithms() && !compMultiAlg.isSelected()) || (!data.isWhatifAlgorithms() && compMultiAlg.isSelected())) {
 			algPanel.setVisible(true);
-			wizard.setAlgPanelEnabled(false);
 			compMultiAlg.setSelected(true);
 		}
 		if (!data.isClosed()) {
@@ -458,7 +457,7 @@ public class WhatIfPanel extends WizardPanel implements ExactConstants, ForceUpd
 					data.clearWhatifAlgorithms();
 				}
 				algPanel.setVisible(selected);
-				wizard.setAlgPanelEnabled(!selected && data.isClosed());
+				wizard.updateAlgoPanel(null, null, selected);
 				repaint();
 			}
 		});

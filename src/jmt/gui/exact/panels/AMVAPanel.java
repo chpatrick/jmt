@@ -18,8 +18,10 @@
 
 package jmt.gui.exact.panels;
 
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
@@ -47,22 +49,47 @@ import jmt.gui.exact.ExactWizard;
 /**
  * Panel representing the combo box on ExactWizard (GUI of JMVA)
  * 
- * @author Abhimanyu Chugh
+ * @author Abhimanyu Chugh, Marco Bertoli
  *
  */
 public final class AMVAPanel extends JPanel {
 	private static final long serialVersionUID = 1L;
+	private static final String LABEL_ALGORITHM = "Algorithm:";
+	private static final String LABEL_ALGORITHM_MIXED = LABEL_ALGORITHM + " MVA";
+	private static final String LABEL_ALGORITHM_OPEN = LABEL_ALGORITHM + " QN";
+	private static final String LABEL_ALGORITHM_WHATIF = LABEL_ALGORITHM + " (what-if)";
+	
+	private static enum PanelStatus {
+		ENABLED(LABEL_ALGORITHM, true, false), 
+		ENABLED_TOL(LABEL_ALGORITHM, true, true), 
+		DISABLED_OPEN(LABEL_ALGORITHM_OPEN, false, false), 
+		DISABLED_MIXED(LABEL_ALGORITHM_MIXED, false, false),
+		DISABLED_WHATIF(LABEL_ALGORITHM_WHATIF, false, false);
+		
+		private String algorithmLabel;
+		private boolean tolleranceVisible;
+		private boolean selectorVisible;
+		
+		private PanelStatus(String algorithmLabel, boolean selectorVisible, boolean tolleranceVisible) {
+			this.algorithmLabel = algorithmLabel;
+			this.selectorVisible = selectorVisible;
+			this.tolleranceVisible = tolleranceVisible;
+		}
+	
+		
+	};
 	
 	private HoverHelp help;
 	private NumberFormat numFormat = new DecimalFormat("#.###############");
 
 	private ExactWizard ew;
 	
-	public JLabel tolLabel, algLabel;
-	public JTextField tolerance;
-	public String algorithm;
-	public JComboBox algorithmList;
-	public String [] modelName;
+	private JLabel tolLabel, algLabel;
+	private JTextField tolerance;
+	private JComboBox algorithmList;
+	private String [] modelName;
+	private PanelStatus status = PanelStatus.ENABLED;
+	
 	
 	private ActionListener ACTION_CHANGE_ALGORITHM = new ActionListener() {
 		// initial value
@@ -70,17 +97,20 @@ public final class AMVAPanel extends JPanel {
 		
 		public void actionPerformed(ActionEvent e) {
 			JComboBox algorithmList = (JComboBox)e.getSource();
-			algorithm = (String)algorithmList.getSelectedItem();
+			String algorithm = (String)algorithmList.getSelectedItem();
 			
 			// check if algorithm or not
-			if (SolverAlgorithm.fromString(algorithm) == null) {
+			SolverAlgorithm algo = SolverAlgorithm.fromString(algorithm);
+			if (algo == null) {
 				algorithmList.setSelectedIndex(currentItem);
 			} else {
 				currentItem = algorithmList.getSelectedIndex();
-				ew.getData().setAlgorithmType(SolverAlgorithm.fromString(algorithm));
-				SolverAlgorithm alg = SolverAlgorithm.fromString(algorithm);
-				boolean exact = alg != null && alg.isExact();
-				showToleranceField(!exact);
+				ew.getData().setAlgorithmType(algo);
+				if (algo.isExact()) {
+					updateStatus(PanelStatus.ENABLED);
+				} else {
+					updateStatus(PanelStatus.ENABLED_TOL);
+				}
 			}
 		}
 	};
@@ -88,6 +118,7 @@ public final class AMVAPanel extends JPanel {
 	private ToleranceInputListener ACTION_CHANGE_TOLERANCE = new ToleranceInputListener();
 	
 	public AMVAPanel(ExactWizard ew) {
+		super(new BorderLayout());
 		this.ew = ew;
 		help = ew.getHelp();
 		
@@ -106,30 +137,29 @@ public final class AMVAPanel extends JPanel {
 			modelName[index] = names[i];
 			index++;
 		}
+		
+		initialize();
 	}
 	
 	/**
-	 * Enables or disables the AMVA algorithm panel
-	 * @param enabled true to enable, false to disable
+	 * Initialize this panel
 	 */
-	public void setAlgPanelEnabled(boolean enabled) {
-		algLabel.setEnabled(enabled);
-		algorithmList.setEnabled(enabled);
-		tolLabel.setEnabled(enabled);
-		tolerance.setEnabled(enabled);
+	private void initialize() {
+		JPanel mainPanel = new JPanel(new FlowLayout());
+		mainPanel.add(algLabel());
+		mainPanel.add(algorithmList());
+		mainPanel.add(tolLabel());
+		mainPanel.add(tolerance());
+		this.add(mainPanel, BorderLayout.WEST);
 	}
 	
-	public void showToleranceField(boolean show) {
-		tolLabel.setVisible(show);
-		tolerance.setVisible(show);
-	}
-	
-	public JComponent algorithmList() {
+	private JComponent algorithmList() {
 		Dimension d = new Dimension(160,30);
 		algorithmList = new JComboBox(modelName);
 		algorithmList.setMaximumSize(d);
 		algorithmList.setSelectedIndex(1);
 		algorithmList.addActionListener(ACTION_CHANGE_ALGORITHM);
+		algorithmList.setVisible(status.selectorVisible);
 		algorithmList.setRenderer(new DefaultListCellRenderer() {
 			/**
 			 * 
@@ -159,53 +189,87 @@ public final class AMVAPanel extends JPanel {
 		return algorithmList;
 	}
 	
-	public JComponent tolLabel() {
+	private JComponent tolLabel() {
 		Dimension d = new Dimension(70,30);
 		tolLabel = new JLabel("  Tolerance:");
 		tolLabel.setMaximumSize(d);
 		tolLabel.setFocusable(false);
+		tolLabel.setVisible(status.tolleranceVisible);
 		return tolLabel;
 	}
 
-	public JComponent tolerance() {
+	private JComponent tolerance() {
 		Dimension d = new Dimension(80,30);
 		tolerance = new JTextField(10);
 		tolerance.setText(numFormat.format(ew.getData().getTolerance()));
-		//tolerance.setText(numFormat.format(SolverMultiClosedAMVA.DEFAULT_TOLERANCE));
 		tolerance.setMaximumSize(d);
 		help.addHelp(tolerance, "Input Tolerance for AMVA Algorithms");
 		tolerance.setFocusable(true);
 		tolerance.addKeyListener(ACTION_CHANGE_TOLERANCE);
 		tolerance.addFocusListener(ACTION_CHANGE_TOLERANCE);
+		tolerance.setVisible(status.tolleranceVisible);
 		return tolerance;
 	}
 	
-	public void setAlgorithm (String alg) {
-		algorithm = alg;
-	}
-	
-	public String getName() {
-		return "Classes";
-	}
-	
-	public void update() {
+	/**
+	 * Updates the algo panel
+	 * @param isClosed true if model is closed, false if not, null to read from data structure
+	 * @param isOpen true if model is open, false if not, null to read from data structure
+	 * @param isAlgowhatif true if whatif on algorithm was selected, false if not, null to read from data structure
+	 */
+	public void update(Boolean isClosed, Boolean isOpen, Boolean isAlgowhatif) {
 		ExactModel data = ew.getData();
-		algorithm = data.getAlgorithmType().toString();
+		SolverAlgorithm algorithm = data.getAlgorithmType();
 		tolerance.setText(numFormat.format(data.getTolerance()));
-		algorithmList.setSelectedItem(algorithm);
-		setAlgPanelEnabled(data.isClosed() && !data.isWhatifAlgorithms());
-
+		algorithmList.setSelectedItem(algorithm.toString());
+		if (isClosed == null) {
+			isClosed = ew.getData().isClosed();
+		}
+		if (isOpen == null) {
+			isOpen = ew.getData().isOpen();
+		}
+		if (isAlgowhatif == null) {
+			isAlgowhatif = ew.getData().isWhatifAlgorithms();
+		}
+		
+		if (isAlgowhatif) {
+			updateStatus(PanelStatus.DISABLED_WHATIF);
+		} else if (isOpen) {
+			updateStatus(PanelStatus.DISABLED_OPEN);
+		} else if (!isClosed) {
+			updateStatus(PanelStatus.DISABLED_MIXED);
+		} else if (!algorithm.isExact()) {
+			updateStatus(PanelStatus.ENABLED_TOL);
+		} else {
+			updateStatus(PanelStatus.ENABLED);
+		}
+	}
+	
+	/**
+	 * Updates the panel status
+	 * @param newStatus the new panel status
+	 */
+	private void updateStatus(PanelStatus newStatus) {
+		if (status == newStatus) {
+			return;
+		}
+		algLabel.setText(newStatus.algorithmLabel);
+		algLabel.setEnabled(newStatus.selectorVisible);
+		algorithmList.setVisible(newStatus.selectorVisible);
+		tolLabel.setVisible(newStatus.tolleranceVisible);
+		tolerance.setVisible(newStatus.tolleranceVisible);
+		status = newStatus;
 	}
 
-	public JComponent algLabel() {
+	private JComponent algLabel() {
 		Dimension d = new Dimension(65,30);
-		algLabel = new JLabel("Algorithm:");
+		algLabel = new JLabel(status.algorithmLabel);
 		algLabel.setMaximumSize(d);
 		algLabel.setFocusable(false);
-		help.addHelp(algLabel, "Algorithm for solving model");
+		help.addHelp(algLabel, "Algorithm used to solve the model");
 		return algLabel;
 	}
-
+	
 	private void updateTolerance() {
 		Double tol = SolverMultiClosedAMVA.validateTolerance(tolerance.getText());
 		if (tol != null) {

@@ -22,7 +22,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -163,28 +162,6 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			addClass();
 		}
 	};
-	
-	/* EDITED by Abhimanyu Chugh */
-	private ActionListener amvaListener = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			
-			JComboBox modelType = (JComboBox)e.getSource();
-			String type = (String)modelType.getSelectedItem();
-
-			boolean open = type.equalsIgnoreCase("open");
-			if (!open) {
-				for (int i = 0; i<classTypes.length; i++) {
-					if (CLASS_TYPENAMES[classTypes[i]] == "open" ) {
-						open = true;
-						break;
-					}
-				}
-			}
-			ew.setAlgPanelEnabled(!open && !ew.getData().isWhatifAlgorithms());
-			repaint();
-		}
-	};
-	/* END */
 
 	public ClassesPanel(ExactWizard ew) {
 		this.ew = ew;
@@ -273,6 +250,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 
 		classSpinner.setValue(new Integer(classes));
 		classTable.updateDeleteCommand();
+		updateAlgoPanel();
 	}
 
 	/**
@@ -479,10 +457,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 				data.recalculateWhatifValues();
 			}
 
-			//NEW
-			//@author Stefano Omini
 			sync();
-			//end NEW
 		}
 	}
 
@@ -507,6 +482,7 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 		}
 		updateSizes();
 		deleting = false;
+		updateAlgoPanel();
 	}
 
 	private void deleteClass(int i) {
@@ -550,6 +526,23 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 
 	public void commitData() {
 		commit();
+	}
+	
+	/**
+	 * Updates the algorithm panel based on the current classes.
+	 */
+	private void updateAlgoPanel() {
+		boolean isClosed = true;
+		boolean isOpen = true;
+		for (int type : classTypes) {
+			if (type == ExactModel.CLASS_CLOSED) {
+				isOpen = false;
+			} else if (type == ExactModel.CLASS_OPEN) {
+				isClosed = false;
+			}
+		}
+		// Updates the algorithm panel
+		ew.updateAlgoPanel(isClosed, isOpen, null);
 	}
 
 	//END
@@ -596,9 +589,6 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 			//END Federico Dall'Orso 8/3/2005
 
 			JComboBox classTypeBox = new JComboBox(CLASS_TYPENAMES);
-			/** Edited by Georgios Poullaides **/
-			classTypeBox.addActionListener(amvaListener);
-			/** End **/
 			classTypeCellEditor = new DefaultCellEditor(classTypeBox);
 			classTypeBox.setEditable(false);
 
@@ -805,6 +795,10 @@ public final class ClassesPanel extends WizardPanel implements ExactConstants, F
 							break;
 						}
 					}
+					// Updates the algorithm panel
+					updateAlgoPanel();
+
+					
 					break;
 				case 2: {//customers
 					try {
