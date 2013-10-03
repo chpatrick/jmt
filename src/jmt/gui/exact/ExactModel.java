@@ -2738,7 +2738,7 @@ public class ExactModel implements ExactConstants {
 	public int checkSaturation() {
 		// Checks saturation without what-if analysis
 		if (checkForSaturation(classData, visits, serviceTimes, stationServers)) {
-			return SATURATION_WHATIF;
+			return SATURATION;
 		}
 		if (isWhatIf()) {
 			double maxValue = whatIfValues[iterations - 1];
