@@ -36,6 +36,7 @@ import java.net.URL;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -78,19 +79,29 @@ public class GraphStartScreen extends JMTFrame {
 	private static String[] args;
 	private JButton onlineDoc, introEng;
 
+	// Queue Animation
+	private SampleQNAnimation sampleQNAni;
+
 	// Images
-	public static final String IMG_LOGOPOLI = "logo", IMG_JMODELICON = "JMODELIcon", IMG_JMVAICON = "JMVAIcon", IMG_JSIMICON = "JSIMIcon",
-			IMG_JABAICON = "JABAIcon", IMG_JMCHICON = "JMCHIcon", IMG_JWATICON = "JWATIcon", IMG_SUITEICON = "JMTIcon",
-			//names for URLS of documents to be shown as description of main applications
-			URL_JMT_INTRO_ITA = "IntroIta.html", URL_JMT_INTRO_ENG = "IntroEng.html",
-			URL_DOCUMENTATION_ONLINE = "http://jmt.sourceforge.net/Documentation.html",
-			// Content for logo panel
-			FONT_TYPE = "Arial", HTML_CONTENT_TITLE = "<html><body align=\"center\"><b>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + FONT_SIZE
+	public static final String IMG_LOGOPOLI = "logo";
+	private static final String IMG_LOGO_ICL = "logo_icl";
+	public static final String IMG_JMODELICON = "JMODELIcon";
+	public static final String IMG_JMVAICON = "JMVAIcon";
+	public static final String IMG_JSIMICON = "JSIMIcon";
+	public static final String	IMG_JABAICON = "JABAIcon";
+	public static final String IMG_JMCHICON = "JMCHIcon";
+	public static final String IMG_JWATICON = "JWATIcon";
+	public static final String IMG_SUITEICON = "JMTIcon";
+	//names for URLS of documents to be shown as description of main applications
+	private static final String	URL_JMT_INTRO_ITA = "IntroIta.html";
+	private static final String URL_JMT_INTRO_ENG = "IntroEng.html";
+	private static final String	URL_DOCUMENTATION_ONLINE = "http://jmt.sourceforge.net/Documentation.html";
+	// Content for logo panel
+	private static final String FONT_TYPE = "Arial";
+	public static final String HTML_CONTENT_TITLE = "<html><body align=\"center\"><b>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + FONT_SIZE
 					+ "\">Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION) + "</font><br>" + "<font face=\"" + FONT_TYPE
 					+ "\" size=\"" + (FONT_SIZE - 1) + "\">DEIB - Politecnico di Milano - Italy</b><font size=\"0\"><br><br></font>"
 					+ "Project Coordinator: prof. G.Serazzi</font></body></html>";
-	// Queue Animation
-	private SampleQNAnimation sampleQNAni;
 
 	/**
 	 * Constructs a new GraphStartScreen
@@ -251,13 +262,22 @@ public class GraphStartScreen extends JMTFrame {
 		JPanel leftPanel = new JPanel(new BorderLayout());
 		leftPanel.setOpaque(false);
 		this.setGlassPane(topPanel);
-		JLabel logo = new JLabel(HTML_CONTENT_TITLE);
-		logo.setHorizontalTextPosition(SwingConstants.CENTER);
-		logo.setVerticalTextPosition(SwingConstants.BOTTOM);
-		logo.setIcon(JMTImageLoader.loadImage(IMG_LOGOPOLI, new Dimension(75, 75)));
 		topPanel.add(leftPanel, BorderLayout.WEST);
 		// Adds logo and title to leftPanel
-		leftPanel.add(logo, BorderLayout.NORTH);
+		{
+			JLabel logo = new JLabel(HTML_CONTENT_TITLE);
+			logo.setHorizontalTextPosition(SwingConstants.CENTER);
+			logo.setVerticalTextPosition(SwingConstants.BOTTOM);
+			logo.setIcon(JMTImageLoader.loadImage(IMG_LOGOPOLI, new Dimension(75, 75)));
+			JLabel iclLogo = new JLabel(JMTImageLoader.loadImage(IMG_LOGO_ICL, new Dimension(250,60)));
+			iclLogo.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+			JPanel logoPanel = new JPanel();
+			BoxLayout layout = new BoxLayout(logoPanel, BoxLayout.Y_AXIS);
+			logoPanel.setLayout(layout);
+			logoPanel.add(logo);
+			logoPanel.add(iclLogo);
+			leftPanel.add(logoPanel, BorderLayout.NORTH);
+		}
 		this.getGlassPane().setVisible(true);
 		// Now Adds Sample Animation in the bottom
 		sampleQNAni = new SampleQNAnimation();
