@@ -254,7 +254,7 @@ public final class AMVAPanel extends JPanel {
 			return;
 		}
 		algLabel.setText(newStatus.algorithmLabel);
-		algLabel.setEnabled(newStatus.selectorVisible);
+		algLabel.setEnabled(newStatus != PanelStatus.DISABLED_WHATIF);
 		algorithmList.setVisible(newStatus.selectorVisible);
 		tolLabel.setVisible(newStatus.tolleranceVisible);
 		tolerance.setVisible(newStatus.tolleranceVisible);

@@ -3,9 +3,9 @@ package jmt.gui.exact.panels;
 import java.awt.BorderLayout;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Vector;
 
 import javax.swing.JTabbedPane;
+
 import jmt.analytical.SolverAlgorithm;
 import jmt.framework.gui.wizard.WizardPanel;
 import jmt.gui.exact.ExactWizard;

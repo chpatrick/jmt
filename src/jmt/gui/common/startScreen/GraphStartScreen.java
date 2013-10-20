@@ -49,6 +49,7 @@ import jmt.common.GlobalSettings;
 import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.components.QuickHTMLViewer;
 import jmt.framework.net.BrowserLauncher;
+import jmt.gui.common.panels.AboutDialogFactory;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.common.startScreen.sampleAnimation.SampleQNAnimation;
 import jmt.gui.exact.ExactWizard;
@@ -77,14 +78,14 @@ public class GraphStartScreen extends JMTFrame {
 	private static URL imageURL = GraphStartScreen.class.getResource(IMAGE);
 	private static final int FONT_SIZE = 4;
 	private static String[] args;
-	private JButton onlineDoc, introEng;
+	private JButton onlineDoc, introEng, about;
 
 	// Queue Animation
 	private SampleQNAnimation sampleQNAni;
 
 	// Images
 	public static final String IMG_LOGOPOLI = "logo";
-	private static final String IMG_LOGO_ICL = "logo_icl";
+	public static final String IMG_LOGO_ICL = "logo_icl";
 	public static final String IMG_JMODELICON = "JMODELIcon";
 	public static final String IMG_JMVAICON = "JMVAIcon";
 	public static final String IMG_JSIMICON = "JSIMIcon";
@@ -93,15 +94,24 @@ public class GraphStartScreen extends JMTFrame {
 	public static final String IMG_JWATICON = "JWATIcon";
 	public static final String IMG_SUITEICON = "JMTIcon";
 	//names for URLS of documents to be shown as description of main applications
-	private static final String	URL_JMT_INTRO_ITA = "IntroIta.html";
-	private static final String URL_JMT_INTRO_ENG = "IntroEng.html";
 	private static final String	URL_DOCUMENTATION_ONLINE = "http://jmt.sourceforge.net/Documentation.html";
 	// Content for logo panel
 	private static final String FONT_TYPE = "Arial";
-	public static final String HTML_CONTENT_TITLE = "<html><body align=\"center\"><b>" + "<font face=\"" + FONT_TYPE + "\" size=\"" + FONT_SIZE
-					+ "\">Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION) + "</font><br>" + "<font face=\"" + FONT_TYPE
-					+ "\" size=\"" + (FONT_SIZE - 1) + "\">DEIB - Politecnico di Milano - Italy</b><font size=\"0\"><br><br></font>"
-					+ "Project Coordinator: prof. G.Serazzi</font></body></html>";
+	public static final String HTML_CONTENT_TITLE = 
+			String.format("<html><body><b><font face='%s' size='+1'>JMT - Java Modelling Tools v.%s</font></b><br>" +
+					"<font face='%s' size='-1'>Project Coordinator: prof. G.Serazzi</font>" +
+					"</body></html>",
+					FONT_TYPE, GlobalSettings.getSetting(GlobalSettings.VERSION), FONT_TYPE);
+	public static final String HTML_CONTENT_TITLE_HREF = 
+			String.format("<html><body><b><font face='%s' size='+1'>JMT - Java Modelling Tools v.%s</font></b><br>" +
+					"<font face='%s' size='-1'>Project Coordinator: prof. G.Serazzi<br><br>" +
+					"<b>Home Page:</b> <a href=\"http://jmt.sourceforge.net\">http://jmt.sourceforge.net</a></font>" +
+					"</body></html>",
+					FONT_TYPE, GlobalSettings.getSetting(GlobalSettings.VERSION), FONT_TYPE);
+	public static final String HTML_POLI = 
+			String.format("<html><body><font face='%s' size='%s'><b>DEIB<br>" +
+					"Politecnico di Milano<br>Italy</b></font></body></html>", 
+					FONT_TYPE, FONT_SIZE - 1);
 
 	/**
 	 * Constructs a new GraphStartScreen
@@ -231,15 +241,18 @@ public class GraphStartScreen extends JMTFrame {
 		this.setTitle("JMT - Java Modelling Tools v." + GlobalSettings.getSetting(GlobalSettings.VERSION));
 		this.setIconImage(JMTImageLoader.loadImage(IMG_SUITEICON).getImage());
 		this.setResizable(false);
-		this.centerWindow(780, 500);
+		this.centerWindow(790, 550);
 
 		JPanel mainPanel = new JPanel(new BorderLayout());
 		this.getContentPane().setLayout(new BorderLayout());
 		this.getContentPane().add(mainPanel, BorderLayout.CENTER);
+		JLabel title = new JLabel(HTML_CONTENT_TITLE);
+		title.setBorder(BorderFactory.createEmptyBorder(8,8,0,0));
+		this.getContentPane().add(title, BorderLayout.NORTH);
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(BORDERSIZE, BORDERSIZE, BORDERSIZE, BORDERSIZE));
 		// Adjusts image
 		Image image = new ImageIcon(imageURL).getImage();
-		image = image.getScaledInstance(400, 375, Image.SCALE_SMOOTH);
+		image = image.getScaledInstance(450, 400, Image.SCALE_SMOOTH);
 		JLabel imageLabel = new JLabel();
 		imageLabel.setBorder(BorderFactory.createEmptyBorder(BUTTONSIZE - 5, 1, 0, 0));
 		imageLabel.setIcon(new ImageIcon(image));
@@ -257,7 +270,7 @@ public class GraphStartScreen extends JMTFrame {
 
 		// Now adds a panel with logo on the top of everything else. Uses glassPanel to perform this
 		JPanel topPanel = new JPanel(new BorderLayout());
-		topPanel.setBorder(BorderFactory.createEmptyBorder(BORDERSIZE / 2, BORDERSIZE, BORDERSIZE, BORDERSIZE));
+		topPanel.setBorder(BorderFactory.createEmptyBorder(60, BORDERSIZE, BORDERSIZE, BORDERSIZE));
 		topPanel.setOpaque(false);
 		JPanel leftPanel = new JPanel(new BorderLayout());
 		leftPanel.setOpaque(false);
@@ -265,11 +278,13 @@ public class GraphStartScreen extends JMTFrame {
 		topPanel.add(leftPanel, BorderLayout.WEST);
 		// Adds logo and title to leftPanel
 		{
-			JLabel logo = new JLabel(HTML_CONTENT_TITLE);
-			logo.setHorizontalTextPosition(SwingConstants.CENTER);
-			logo.setVerticalTextPosition(SwingConstants.BOTTOM);
-			logo.setIcon(JMTImageLoader.loadImage(IMG_LOGOPOLI, new Dimension(75, 75)));
-			JLabel iclLogo = new JLabel(JMTImageLoader.loadImage(IMG_LOGO_ICL, new Dimension(250,60)));
+			
+			JLabel logo = new JLabel(HTML_POLI);
+			logo.setHorizontalTextPosition(SwingConstants.TRAILING);
+			logo.setVerticalTextPosition(SwingConstants.CENTER);
+			logo.setIconTextGap(10);
+			logo.setIcon(JMTImageLoader.loadImage(IMG_LOGOPOLI, new Dimension(70, 70)));
+			JLabel iclLogo = new JLabel(JMTImageLoader.loadImage(IMG_LOGO_ICL, new Dimension(-1,60)));
 			iclLogo.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 			JPanel logoPanel = new JPanel();
 			BoxLayout layout = new BoxLayout(logoPanel, BoxLayout.Y_AXIS);
@@ -288,14 +303,19 @@ public class GraphStartScreen extends JMTFrame {
 		pivotPanel.add(sampleQNAni);
 		leftPanel.add(pivotPanel, BorderLayout.SOUTH);
 		// Adds intro buttons in the centre
-		JPanel introButtonArea = new JPanel(new GridLayout(3, 1));
+		JPanel introButtonArea = new JPanel(new GridLayout(-1, 1));
 		onlineDoc = new JButton("Online Documentation");
 		onlineDoc.addMouseListener(rollover);
 		introEng = new JButton("Introduction to JMT");
 		introEng.addMouseListener(rollover);
+		about = new JButton("Credits");
+		about.addMouseListener(rollover);
+		
 		introButtonArea.add(introEng);
 		introButtonArea.add(new JPanel());
 		introButtonArea.add(onlineDoc);
+		introButtonArea.add(new JPanel());
+		introButtonArea.add(about);
 		introButtonArea.setOpaque(false);
 		pivotPanel = new JPanel(new GridBagLayout());
 		pivotPanel.add(introButtonArea);
@@ -323,6 +343,13 @@ public class GraphStartScreen extends JMTFrame {
 					}
 				};
 				EventQueue.invokeLater(r);
+			}
+		});
+		about.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				AboutDialogFactory.showJMT(GraphStartScreen.this);	
 			}
 		});
 	}
