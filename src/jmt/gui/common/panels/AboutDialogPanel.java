@@ -114,7 +114,11 @@ public class AboutDialogPanel extends JPanel {
 	 */
 	public void setNames(Contributors... contributors) {
 		for (Contributors c : contributors) {
-			mainArea.add(c.getCompany().getLogo());
+			JPanel panel = new JPanel();
+			BoxLayout layout = new BoxLayout(panel, BoxLayout.Y_AXIS);
+			panel.setLayout(layout);
+			mainArea.add(panel);
+			panel.add(c.getCompany().getLogo());
 			
 			StringBuilder sb = new StringBuilder(100);
 			sb.append("<html><p><font face='Arial' size='-1'><b>Major Contributors: </b>");
@@ -127,8 +131,14 @@ public class AboutDialogPanel extends JPanel {
 			}
 			sb.append(".</font></p></html>");
 			JLabel label = new JLabel(sb.toString());
-			label.setBorder(BorderFactory.createEmptyBorder(5, 0, 15, 0));
-			mainArea.add(label);
+			label.setBorder(BorderFactory.createEmptyBorder(5, 0, 0, 0));
+			panel.add(label);
+			panel.setBorder(
+					BorderFactory.createCompoundBorder(
+							BorderFactory.createEmptyBorder(5, 0, 5, 0),
+							BorderFactory.createCompoundBorder(
+									BorderFactory.createEtchedBorder(), 
+									BorderFactory.createEmptyBorder(5, 5, 5, 5))));
 		}
 	}
 	

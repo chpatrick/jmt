@@ -185,7 +185,7 @@ public class AboutDialogFactory {
 		JPanel bottom = new JPanel();
 		bottom.add(exit);
 		dialog.getContentPane().add(bottom, BorderLayout.SOUTH);
-		dialog.centerWindow(640, 550);
+		dialog.centerWindow(640, 580);
 		
 		// Handles autoclose
 		if (autoclose) {
@@ -289,7 +289,7 @@ public class AboutDialogFactory {
 	 */
 	public static void showJMT(Window owner) {
 		AboutDialogPanel panel = new AboutDialogPanel();
-		panel.setTitles("About JMT", "JMT", GraphStartScreen.IMG_SUITEICON);
+		panel.setTitles("About JMT", "Java Modelling Tools", GraphStartScreen.IMG_SUITEICON);
 		panel.setNames(JMT);
 		createDialog(owner, panel, false).setVisible(true);
 	}
