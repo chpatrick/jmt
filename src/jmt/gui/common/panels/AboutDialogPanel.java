@@ -103,7 +103,7 @@ public class AboutDialogPanel extends JPanel {
 
 		JLabel legal = new JLabel(LEGAL);
 		panel.add(legal, BorderLayout.SOUTH);
-		panel.setPreferredSize(new Dimension(640,480));
+		panel.setPreferredSize(new Dimension(600,480));
 		JScrollPane scroll = new JScrollPane(panel, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		this.add(scroll, BorderLayout.CENTER);
 	}

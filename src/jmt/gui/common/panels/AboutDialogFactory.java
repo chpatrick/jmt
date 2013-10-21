@@ -72,7 +72,7 @@ public class AboutDialogFactory {
 					logo.setIcon(JMTImageLoader.loadImage("logo", new Dimension(70, 70)));
 					return logo;
 				case ICL:
-					return new JLabel(JMTImageLoader.loadImage("logo_icl", new Dimension(-1,60)));
+					return new JLabel(JMTImageLoader.loadImage("logo_icl", new Dimension(-1,40)));
 				default:
 					return null;
 			}
@@ -82,7 +82,7 @@ public class AboutDialogFactory {
 	/** JMVA main contributors */
 	private static final Contributors[] JMVA = {
 		new Contributors(Company.POLIMI, "Bertoli Marco", "Conti Andrea", "Dall'Orso Federico", "Omini Stefano", "Granata Federico"),
-		new Contributors(Company.ICL, "Michalis Makaronidis", "John Bradshaw", "Abhimanyu Chugh")
+		new Contributors(Company.ICL, "Makaronidis Michalis", "Bradshaw John", "Chugh Abhimanyu", "Casale Giuliano")
 	};
 
 	/** JSIMwiz main contributors */
@@ -92,12 +92,12 @@ public class AboutDialogFactory {
 
 	/** JSIMgraph main contributors */
 	private static final Contributors[] JMODEL = {
-		new Contributors(Company.POLIMI, "Bertoli Marco", "D'Aquino Francesco", "Granata Federico", "Omini Stefano", "Radaelli Francesco", "Das Ashanka")
+		new Contributors(Company.POLIMI, "Bertoli Marco", "D'Aquino Francesco", "Granata Federico", "Omini Stefano", "Radaelli Francesco", "Das Ashanka", "Spicuglia Sebastiano")
 	};
 
 	/** JABA main contributors */
 	private static final Contributors[] JABA = {
-		new Contributors(Company.POLIMI, "Bertoli Marco", "Zanzottera Andrea", "Gimondi Carlo")
+		new Contributors(Company.POLIMI, "Bertoli Marco", "Zanzottera Andrea", "Gimondi Carlo", "Spicuglia Sebastiano")
 	};
 
 	/** JMCH main contributors */
@@ -105,7 +105,7 @@ public class AboutDialogFactory {
 		new Contributors(Company.POLIMI, "Canakoglu Arif", "Di Mauro Ernesto")
 	};
 
-	/** JSIMgraph main contributors */
+	/** JWAT main contributors */
 	private static final Contributors[] JWAT = {
 		new Contributors(Company.POLIMI, "Brambilla Davide", "Fumagalli Claudio")
 	};
@@ -185,7 +185,7 @@ public class AboutDialogFactory {
 		JPanel bottom = new JPanel();
 		bottom.add(exit);
 		dialog.getContentPane().add(bottom, BorderLayout.SOUTH);
-		dialog.centerWindow(640, 580);
+		dialog.centerWindow(640, 600);
 		
 		// Handles autoclose
 		if (autoclose) {

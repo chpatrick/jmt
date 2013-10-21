@@ -50,6 +50,7 @@ import jmt.framework.gui.components.JMTFrame;
 import jmt.framework.gui.components.QuickHTMLViewer;
 import jmt.framework.net.BrowserLauncher;
 import jmt.gui.common.panels.AboutDialogFactory;
+import jmt.gui.common.panels.AboutDialogFactory.Company;
 import jmt.gui.common.resources.JMTImageLoader;
 import jmt.gui.common.startScreen.sampleAnimation.SampleQNAnimation;
 import jmt.gui.exact.ExactWizard;
@@ -98,12 +99,12 @@ public class GraphStartScreen extends JMTFrame {
 	// Content for logo panel
 	private static final String FONT_TYPE = "Arial";
 	public static final String HTML_CONTENT_TITLE = 
-			String.format("<html><body><b><font face='%s' size='+1'>JMT - Java Modelling Tools v.%s</font></b><br>" +
+			String.format("<html><body><b><font face='%s' size='+2'>JMT - Java Modelling Tools v.%s</font></b><br>" +
 					"<font face='%s' size='-1'>Project Coordinator: prof. G.Serazzi</font>" +
 					"</body></html>",
 					FONT_TYPE, GlobalSettings.getSetting(GlobalSettings.VERSION), FONT_TYPE);
 	public static final String HTML_CONTENT_TITLE_HREF = 
-			String.format("<html><body><b><font face='%s' size='+1'>JMT - Java Modelling Tools v.%s</font></b><br>" +
+			String.format("<html><body><b><font face='%s' size='+2'>JMT - Java Modelling Tools v.%s</font></b><br>" +
 					"<font face='%s' size='-1'>Project Coordinator: prof. G.Serazzi<br><br>" +
 					"<b>Home Page:</b> <a href=\"http://jmt.sourceforge.net\">http://jmt.sourceforge.net</a></font>" +
 					"</body></html>",
@@ -111,7 +112,7 @@ public class GraphStartScreen extends JMTFrame {
 	public static final String HTML_POLI = 
 			String.format("<html><body><font face='%s' size='%s'><b>DEIB<br>" +
 					"Politecnico di Milano<br>Italy</b></font></body></html>", 
-					FONT_TYPE, FONT_SIZE - 1);
+					FONT_TYPE, FONT_SIZE);
 
 	/**
 	 * Constructs a new GraphStartScreen
@@ -252,7 +253,7 @@ public class GraphStartScreen extends JMTFrame {
 		mainPanel.setBorder(BorderFactory.createEmptyBorder(BORDERSIZE, BORDERSIZE, BORDERSIZE, BORDERSIZE));
 		// Adjusts image
 		Image image = new ImageIcon(imageURL).getImage();
-		image = image.getScaledInstance(450, 400, Image.SCALE_SMOOTH);
+		image = image.getScaledInstance(450, 370, Image.SCALE_SMOOTH);
 		JLabel imageLabel = new JLabel();
 		imageLabel.setBorder(BorderFactory.createEmptyBorder(BUTTONSIZE - 5, 1, 0, 0));
 		imageLabel.setIcon(new ImageIcon(image));
@@ -279,18 +280,13 @@ public class GraphStartScreen extends JMTFrame {
 		// Adds logo and title to leftPanel
 		{
 			
-			JLabel logo = new JLabel(HTML_POLI);
-			logo.setHorizontalTextPosition(SwingConstants.TRAILING);
-			logo.setVerticalTextPosition(SwingConstants.CENTER);
-			logo.setIconTextGap(10);
-			logo.setIcon(JMTImageLoader.loadImage(IMG_LOGOPOLI, new Dimension(70, 70)));
-			JLabel iclLogo = new JLabel(JMTImageLoader.loadImage(IMG_LOGO_ICL, new Dimension(-1,60)));
-			iclLogo.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
 			JPanel logoPanel = new JPanel();
 			BoxLayout layout = new BoxLayout(logoPanel, BoxLayout.Y_AXIS);
 			logoPanel.setLayout(layout);
-			logoPanel.add(logo);
-			logoPanel.add(iclLogo);
+			logoPanel.add(Company.POLIMI.getLogo());
+			JComponent icl = Company.ICL.getLogo();
+			icl.setBorder(BorderFactory.createEmptyBorder(20, 0, 0, 0));
+			logoPanel.add(icl);
 			leftPanel.add(logoPanel, BorderLayout.NORTH);
 		}
 		this.getGlassPane().setVisible(true);
