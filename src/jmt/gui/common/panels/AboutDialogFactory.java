@@ -82,7 +82,7 @@ public class AboutDialogFactory {
 	/** JMVA main contributors */
 	private static final Contributors[] JMVA = {
 		new Contributors(Company.POLIMI, "Bertoli Marco", "Conti Andrea", "Dall'Orso Federico", "Omini Stefano", "Granata Federico"),
-		new Contributors(Company.ICL, "Makaronidis Michalis", "Bradshaw John", "Chugh Abhimanyu", "Casale Giuliano")
+		new Contributors(Company.ICL, "Makaronidis Michalis", "Bradshaw John", "Chugh Abhimanyu", "*Casale Giuliano")
 	};
 
 	/** JSIMwiz main contributors */
@@ -300,6 +300,7 @@ public class AboutDialogFactory {
 	public static class Contributors {
 		private Company company;
 		private List<String> names;
+		private List<String> processedNames;
 		
 		/**
 		 * Builds a contributors list
@@ -318,7 +319,20 @@ public class AboutDialogFactory {
 		private Contributors(Company company, List<String> names) {
 			this.company = company;
 			Collections.sort(names);
+			// Process to show first name and surname.
+			ArrayList<String> processedNames = new ArrayList<String>(names.size());
+			for (String name : names) {
+				while (name.startsWith("*")) {
+					name = name.substring(1);
+				}
+				int nameIdx = name.lastIndexOf(" ");
+				if (nameIdx > 0) {
+					name = name.substring(nameIdx + 1) + " " + name.substring(0, nameIdx);
+				}
+				processedNames.add(name);
+			}
 			this.names = Collections.unmodifiableList(names);
+			this.processedNames = Collections.unmodifiableList(processedNames);
 		}
 
 		/**
@@ -335,6 +349,12 @@ public class AboutDialogFactory {
 			return names;
 		}
 		
+		/**
+		 * @return the contributor names showing first name and surname
+		 */
+		public List<String> getProcessedNames() {
+			return processedNames;
+		}
 		
 	}
 }

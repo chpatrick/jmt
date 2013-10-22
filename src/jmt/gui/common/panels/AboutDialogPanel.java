@@ -123,7 +123,7 @@ public class AboutDialogPanel extends JPanel {
 			StringBuilder sb = new StringBuilder(100);
 			sb.append("<html><p><font face='Arial' size='-1'><b>Major Contributors: </b>");
 			int idx=0;
-			for (String name: c.getNames()) {
+			for (String name: c.getProcessedNames()) {
 				if (idx++ > 0) {
 					sb.append(", ");
 				}

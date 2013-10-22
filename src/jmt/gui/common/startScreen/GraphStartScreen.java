@@ -100,12 +100,12 @@ public class GraphStartScreen extends JMTFrame {
 	private static final String FONT_TYPE = "Arial";
 	public static final String HTML_CONTENT_TITLE = 
 			String.format("<html><body><b><font face='%s' size='+2'>JMT - Java Modelling Tools v.%s</font></b><br>" +
-					"<font face='%s' size='-1'>Project Coordinator: prof. G.Serazzi</font>" +
+					"<font face='%s' size='-1'>Project Coordinator: G.Serazzi</font>" +
 					"</body></html>",
 					FONT_TYPE, GlobalSettings.getSetting(GlobalSettings.VERSION), FONT_TYPE);
 	public static final String HTML_CONTENT_TITLE_HREF = 
 			String.format("<html><body><b><font face='%s' size='+2'>JMT - Java Modelling Tools v.%s</font></b><br>" +
-					"<font face='%s' size='-1'>Project Coordinator: prof. G.Serazzi<br><br>" +
+					"<font face='%s' size='-1'>Project Coordinator: G.Serazzi<br><br>" +
 					"<b>Home Page:</b> <a href=\"http://jmt.sourceforge.net\">http://jmt.sourceforge.net</a></font>" +
 					"</body></html>",
 					FONT_TYPE, GlobalSettings.getSetting(GlobalSettings.VERSION), FONT_TYPE);
